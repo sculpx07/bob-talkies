@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, ChevronRight, MapPin } from 'lucide-react'
@@ -19,11 +20,73 @@ export function FeaturedTheatres() {
   })
   const featured = theatres.filter((t) => t.images[0]).slice(0, 3)
 
+  const sectionRef = useRef<HTMLElement>(null)
+  const copyRef = useRef<HTMLDivElement>(null)
+  const cardRefs = useRef<(HTMLLIElement | null)[]>([])
+
+  useEffect(() => {
+    const section = sectionRef.current
+    const copy = copyRef.current
+    const cards = cardRefs.current
+    if (!section) return
+
+    function onScroll() {
+      const rect = section!.getBoundingClientRect()
+      const vh = window.innerHeight
+      // p = 0 when section top is at bottom of screen, 1 when section top is 40% up the screen
+      const p = Math.max(0, Math.min((vh - rect.top) / (vh * 0.65), 1))
+
+      // Left copy: sweeps in from the left with a Y-rotation
+      if (copy) {
+        const cp = Math.max(0, Math.min((vh - rect.top) / (vh * 0.55), 1))
+        copy.style.opacity = String(cp)
+        copy.style.transform = `perspective(900px) rotateY(${(1 - cp) * -30}deg) translateX(${(1 - cp) * -50}px)`
+      }
+
+      // Cards: each rises from deep below with tilt, staggered by index
+      cards.forEach((card, i) => {
+        if (!card) return
+        // stagger: card i starts animating slightly later
+        const stagger = i * 0.12
+        const cp = Math.max(0, Math.min((p - stagger) / (1 - stagger), 1))
+        const rotX = (1 - cp) * 52     // tilted back 52° → 0°
+        const rotY = (1 - cp) * (i === 1 ? 0 : i === 0 ? -18 : 18) // outer cards fan in
+        const ty   = (1 - cp) * 110    // rises 110px
+        const sc   = 0.7 + cp * 0.3    // grows from 70% to 100%
+        const op   = cp                 // fades in
+
+        card.style.opacity = String(op)
+        card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(${ty}px) scale(${sc})`
+        card.style.willChange = 'transform, opacity'
+      })
+    }
+
+    // Set initial hidden state
+    if (copy) {
+      copy.style.opacity = '0'
+      copy.style.transform = 'perspective(900px) rotateY(-30deg) translateX(-50px)'
+      copy.style.willChange = 'transform, opacity'
+    }
+    cards.forEach((card) => {
+      if (!card) return
+      card.style.opacity = '0'
+      card.style.willChange = 'transform, opacity'
+    })
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll() // run once in case section already visible
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [featured.length])
+
   return (
-    <section className="py-14 md:py-20" aria-labelledby="featured-theatres-heading">
+    <section
+      ref={sectionRef}
+      className="py-14 md:py-20"
+      aria-labelledby="featured-theatres-heading"
+    >
       <div className="max-w-7xl mx-auto px-4 md:px-6 grid gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-12 items-center">
         {/* Left copy */}
-        <div>
+        <div ref={copyRef}>
           <p className="flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#32105f]">
             <span className="h-px w-4 bg-gold-500" aria-hidden="true" />
             Featured Theatres
@@ -46,9 +109,12 @@ export function FeaturedTheatres() {
         </div>
 
         {/* Cards */}
-        <ul className="grid gap-5 sm:grid-cols-3">
+        <ul className="grid gap-5 sm:grid-cols-3" style={{ perspective: '1000px', perspectiveOrigin: 'center bottom' }}>
           {featured.map((t, i) => (
-            <li key={t.id}>
+            <li
+              key={t.id}
+              ref={(el) => { cardRefs.current[i] = el }}
+            >
               <Link
                 to={`/theatres/${t.slug}`}
                 className="group relative block aspect-[3/4] overflow-hidden rounded-3xl shadow-[0_10px_30px_rgba(50,16,95,0.15)]"
@@ -60,10 +126,6 @@ export function FeaturedTheatres() {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-                <div className="absolute right-3 top-3 min-w-12 rounded-xl bg-black/45 px-2 py-1.5 text-center text-white backdrop-blur-sm">
-                  <p className="text-[10px] font-semibold tracking-wider leading-none">GUESTS</p>
-                  <p className="mt-0.5 text-lg font-bold leading-none">{t.capacityMin}–{t.capacityMax}</p>
-                </div>
                 <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-4">
                   <div className="min-w-0">
                     <p className="truncate text-base font-semibold text-white">{t.name}</p>
