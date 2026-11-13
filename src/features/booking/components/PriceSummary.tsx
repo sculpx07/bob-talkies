@@ -21,6 +21,12 @@ export function PriceSummary({ compact }: PriceSummaryProps) {
     couponCode: state.couponCode ?? undefined,
   })
 
+  useEffect(() => {
+    if (quote && JSON.stringify(state.serverQuote) !== JSON.stringify(quote)) {
+      dispatch({ type: 'SET_SERVER_QUOTE', quote })
+    }
+  }, [quote])
+
   if (isLoading) {
     return (
       <div className="space-y-2">
@@ -28,12 +34,6 @@ export function PriceSummary({ compact }: PriceSummaryProps) {
       </div>
     )
   }
-
-  useEffect(() => {
-    if (quote && JSON.stringify(state.serverQuote) !== JSON.stringify(quote)) {
-      dispatch({ type: 'SET_SERVER_QUOTE', quote })
-    }
-  }, [quote])
 
   if (!quote) return null
 
