@@ -1,0 +1,38 @@
+:root {
+  /* Backgrounds */
+  --bg-base: #0A0A0F;
+  --bg-surface: #12121A;
+  --bg-elevated: #1A1A26;
+  --bg-navy: #0E1530;
+
+  /* Borders */
+  --border-subtle: #2A2A3A;
+
+  /* Text */
+  --text-primary: #F5F1E8;
+  --text-secondary: #B8B3A7;
+  --text-muted: #7C7A85;
+
+  /* Gold palette */
+  --gold-400: #D8B867;
+  --gold-500: #C9A24B;
+  --gold-600: #A8832F;
+
+  /* Accents */
+  --champagne-200: #F1E3B8;
+  --crimson-500: #B3263E;
+
+  /* Semantic */
+  --success: #3FBF7F;
+  --warning: #E0A82E;
+  --danger: #E5484D;
+
+  /* Radius */
+  --radius-card: 12px;
+  --radius-pill: 999px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+}
