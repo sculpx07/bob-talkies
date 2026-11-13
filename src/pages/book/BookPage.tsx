@@ -1,6 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
-import { Pencil } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useQuery } from '@tanstack/react-query'
+import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck } from 'lucide-react'
+import { SAVED_KEY, SAVED_EVENT } from '@/features/booking/useSavedPlan'
+import { useToast } from '@/components/ui/Toast'
+import { theatreKeys } from '@/lib/api/queryKeys'
+import { api } from '@/lib/api/client'
+import { formatINR } from '@/lib/utils/currency'
+import type { Theatre } from '@/schemas/theatre'
 import { OCCASIONS } from '@/content/occasions'
 import { Stepper } from '@/components/ui/Stepper'
 import { Seo } from '@/components/seo/Seo'
@@ -14,11 +22,21 @@ import { PriceSummary } from '@/features/booking/components/PriceSummary'
 import { CustomerDetailsStep } from '@/features/booking/components/steps/CustomerDetailsStep'
 import { PaymentStep } from '@/features/booking/components/steps/PaymentStep'
 import { trackEvent } from '@/features/tracking/events'
-import { cn } from '@/lib/utils/cn'
 
 /* Occasion, guests and date are collected on the home page ("Find Your Perfect
    Theatre"), so the booking flow starts at the theatre step (index 3). */
 const FIRST_STEP = 3
+
+// Heading shown above the progress bar for each step
+const STEP_HEADINGS: Record<number, { kicker: string; title: string }> = {
+  3: { kicker: 'Almost there', title: 'Pick your theatre' },
+  4: { kicker: 'Great choice', title: 'Choose your package' },
+  5: { kicker: 'Make it yours', title: 'Add the finishing touches' },
+  6: { kicker: 'Save more', title: 'Apply a coupon' },
+  7: { kicker: 'Looking good', title: 'Review your booking' },
+  8: { kicker: 'Just a few details', title: 'Tell us about you' },
+  9: { kicker: 'Last step', title: 'Confirm and pay' },
+}
 
 const STEPS = [
   { id: 'occasion', label: 'Occasion' },
@@ -49,10 +67,15 @@ function canProceed(step: number, state: ReturnType<typeof useBooking>['state'])
   }
 }
 
+
 export default function BookPage() {
   const { state, dispatch } = useBooking()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const { toast } = useToast()
+  const [saved, setSaved] = useState(() => {
+    try { return Boolean(localStorage.getItem(SAVED_KEY)) } catch { return false }
+  })
 
   // Details chosen on the home page arrive as query params (they win over stale state)
   const occasion = searchParams.get('occasion') ?? state.occasion
@@ -68,6 +91,13 @@ export default function BookPage() {
     if (qDate && qDate !== state.date) dispatch({ type: 'SET_DATE', date: qDate })
     if (state.step < FIRST_STEP) dispatch({ type: 'GO_STEP', step: FIRST_STEP })
   }, []) // only on mount
+
+
+  const { data: allTheatres = [] } = useQuery({
+    queryKey: theatreKeys.list(),
+    queryFn: () => api.get<Theatre[]>('/theatres'),
+  })
+  const chosenTheatre = allTheatres.find((t) => t.id === state.theatreId) ?? null
 
   if (!occasion || !date) return <Navigate to="/" state={{ highlightPlan: true }} replace />
 
@@ -95,6 +125,42 @@ export default function BookPage() {
     <PaymentStep key="payment" />,
   ]
 
+  async function sharePlan() {
+    const url = `${window.location.origin}/book?occasion=${occasion}&guests=${guests}&date=${date}`
+    const text = `My ${occasionData?.label ?? 'celebration'} plan at BOB Talkies — ${guests} guests on ${prettyDate}`
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'BOB Talkies', text, url })
+      } else {
+        await navigator.clipboard.writeText(url)
+        toast('success', 'Link copied', 'Paste it anywhere to share your plan.')
+      }
+    } catch {
+      /* share sheet dismissed */
+    }
+  }
+
+  function toggleSave() {
+    try {
+      if (saved) {
+        localStorage.removeItem(SAVED_KEY)
+        setSaved(false)
+        window.dispatchEvent(new Event(SAVED_EVENT))
+        toast('info', 'Removed from saved')
+      } else {
+        localStorage.setItem(SAVED_KEY, JSON.stringify({
+          occasion, guests, date, theatreId: state.theatreId, slotId: state.slotId,
+          packageId: state.packageId, addonIds: state.addonIds, savedAt: Date.now(),
+        }))
+        setSaved(true)
+        window.dispatchEvent(new Event(SAVED_EVENT))
+        toast('success', 'Plan saved', 'Tap Saved in the menu bar to see it.')
+      }
+    } catch {
+      toast('error', 'Could not save', 'Your browser blocked saving.')
+    }
+  }
+
   function handleNext() {
     if (!canProceed(step, state)) return
     if (step === 8) return // CustomerDetailsStep calls onVerified itself
@@ -115,34 +181,130 @@ export default function BookPage() {
         canonical="/book"
         noindex
       />
-      <div className="min-h-screen pt-16 md:pt-20 pb-32">
-        <div className="max-w-2xl mx-auto px-4 md:px-6 py-8">
-          {/* Your celebration summary */}
-          <div className="mb-6 flex items-center justify-between gap-3 rounded-2xl bg-white/80 px-4 py-3 shadow-[0_8px_24px_rgba(107,35,152,0.1)] backdrop-blur">
-            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-semibold text-[#32105f]">
-              <span>{occasionData?.emoji} {occasionData?.label ?? occasion}</span>
-              <span className="text-[#c58be6]">•</span>
-              <span>{guests} guests</span>
-              <span className="text-[#c58be6]">•</span>
-              <span>{prettyDate}</span>
-            </p>
-            <Link
-              to="/"
-              state={{ highlightPlan: true }}
-              className="flex shrink-0 items-center gap-1 rounded-full bg-[#f6e6ef] px-3 py-1.5 text-xs font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
-            >
-              <Pencil size={12} /> Edit
-            </Link>
-          </div>
+      <div className="min-h-screen pt-20 md:pt-28 pb-40">
+        <div className="mx-auto max-w-6xl px-4 md:px-6">
+          {/* Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-6 text-center md:mb-8"
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -18 }}
+                transition={{ duration: 0.3 }}
+              >
+                <p className="font-cursive text-3xl font-semibold text-[#6b2398] md:text-4xl">{STEP_HEADINGS[step]?.kicker}</p>
+                <h1 className="font-display text-3xl font-bold text-[#2a0e4f] md:text-5xl">{STEP_HEADINGS[step]?.title}</h1>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
 
           {/* Stepper */}
-          <div className="mb-8 overflow-x-auto pb-1">
-            <Stepper steps={visibleSteps} currentStep={step - FIRST_STEP} />
+          <div className="mx-auto mb-8 max-w-3xl overflow-x-auto rounded-3xl border border-white/70 bg-white/60 px-4 py-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] backdrop-blur-xl">
+            <Stepper
+              steps={visibleSteps}
+              currentStep={step - FIRST_STEP}
+              onStepClick={(i) => dispatch({ type: 'GO_STEP', step: FIRST_STEP + i })}
+            />
           </div>
 
-          {/* Step content */}
-          <div className={cn('animate-fade-in')}>
-            {stepContent[step]}
+          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+            {/* Step content */}
+            <div className="rounded-[2rem] border border-white/70 bg-white/65 p-5 shadow-[0_20px_60px_rgba(107,35,152,0.12)] backdrop-blur-xl md:p-8">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={step}
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {stepContent[step]}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Your celebration */}
+            <motion.aside
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 shadow-[0_20px_60px_rgba(107,35,152,0.14)] backdrop-blur-xl lg:sticky lg:top-28"
+              aria-label="Your celebration"
+            >
+              <div className="relative overflow-hidden bg-[linear-gradient(135deg,#32105f,#6b2398_60%,#d946ef)] p-5 text-white">
+                <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">Your celebration</p>
+                <p className="mt-1 font-display text-2xl font-bold">
+                  {occasionData?.emoji} {occasionData?.label ?? occasion}
+                </p>
+              </div>
+              <ul className="space-y-3.5 p-5 text-sm">
+                <li className="flex items-center gap-3 text-[#2a0e4f]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><Users size={16} /></span>
+                  <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Guests</span>{guests}</span>
+                </li>
+                <li className="flex items-center gap-3 text-[#2a0e4f]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><CalendarDays size={16} /></span>
+                  <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Date</span>{prettyDate}</span>
+                </li>
+                <li className="flex items-center gap-3 text-[#2a0e4f]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><Clapperboard size={16} /></span>
+                  <span>
+                    <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Theatre</span>
+                    {chosenTheatre ? chosenTheatre.name : <span className="text-[#7d7094]">Not chosen yet</span>}
+                  </span>
+                  {step > FIRST_STEP && (
+                    <button
+                      type="button"
+                      onClick={() => dispatch({ type: 'GO_STEP', step: FIRST_STEP })}
+                      className="ml-auto rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
+                    >
+                      Change
+                    </button>
+                  )}
+                </li>
+                {state.serverQuote && (
+                  <li className="flex items-center justify-between rounded-2xl bg-[#fdf6ff] px-4 py-3 text-[#32105f]">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#7d7094]">Total</span>
+                    <span className="text-lg font-bold">{formatINR(state.serverQuote.totalPaise)}</span>
+                  </li>
+                )}
+              </ul>
+              <div className="space-y-2.5 border-t border-[#f1e2f0] p-4">
+                <div className="grid grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={sharePlan}
+                    className="flex items-center justify-center gap-1.5 rounded-full border border-[#32105f]/25 px-4 py-2.5 text-sm font-semibold text-[#32105f] transition-colors hover:bg-[#32105f]/5"
+                  >
+                    <Share2 size={15} /> Share
+                  </button>
+                  <button
+                    type="button"
+                    onClick={toggleSave}
+                    aria-pressed={saved}
+                    className={`flex items-center justify-center gap-1.5 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors ${
+                      saved ? 'border-transparent bg-[#32105f] text-white' : 'border-[#32105f]/25 text-[#32105f] hover:bg-[#32105f]/5'
+                    }`}
+                  >
+                    {saved ? <><BookmarkCheck size={15} /> Saved</> : <><Bookmark size={15} /> Save</>}
+                  </button>
+                </div>
+                <Link
+                  to="/"
+                  state={{ highlightPlan: true }}
+                  className="flex items-center justify-center gap-1.5 rounded-full bg-[#f6e6ef] px-4 py-2.5 text-sm font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
+                >
+                  <Pencil size={14} /> Edit details
+                </Link>
+              </div>
+            </motion.aside>
           </div>
         </div>
       </div>

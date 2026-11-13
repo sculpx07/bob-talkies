@@ -7,9 +7,9 @@ import { useSlots } from '../../hooks/useAvailability'
 import { formatINR } from '@/lib/utils/currency'
 import { formatTime } from '@/lib/utils/date'
 import { cn } from '@/lib/utils/cn'
-import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { Users, Monitor, Volume2, Clock, Zap, CheckCircle2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Users, Monitor, Clock, Zap, CheckCircle2, Sparkles } from 'lucide-react'
 
 export function TheatreSlotStep() {
   const { state, dispatch } = useBooking()
@@ -51,22 +51,20 @@ export function TheatreSlotStep() {
         <p className="text-text-muted">No theatres available for this guest count. Please go back and adjust.</p>
       ) : (
         <>
-          {/* Horizontal scroll theatre picker */}
-          <div className="relative -mx-1">
-            <div className="flex gap-3 overflow-x-auto pb-3 px-1 scroll-smooth snap-x snap-mandatory"
-              style={{ scrollbarWidth: 'none' }}>
-              {eligibleTheatres.map((theatre) => (
-                <TheatreCard
-                  key={theatre.id}
-                  theatre={theatre}
-                  isSelected={state.theatreId === theatre.id}
-                  occasion={state.occasion}
-                  onSelect={() =>
-                    dispatch({ type: 'SET_THEATRE_SLOT', theatreId: theatre.id, theatreSlug: theatre.slug, slotId: state.slotId ?? '' })
-                  }
-                />
-              ))}
-            </div>
+          {/* Theatre picker */}
+          <div className="grid gap-5 sm:grid-cols-2">
+            {eligibleTheatres.map((theatre, i) => (
+              <TheatreCard
+                key={theatre.id}
+                index={i}
+                theatre={theatre}
+                isSelected={state.theatreId === theatre.id}
+                occasion={state.occasion}
+                onSelect={() =>
+                  dispatch({ type: 'SET_THEATRE_SLOT', theatreId: theatre.id, theatreSlug: theatre.slug, slotId: state.slotId ?? '' })
+                }
+              />
+            ))}
           </div>
 
           {/* Slot picker for selected theatre */}
@@ -93,9 +91,9 @@ export function TheatreSlotStep() {
 }
 
 function TheatreCard({
-  theatre, isSelected, occasion, onSelect,
+  theatre, isSelected, occasion, onSelect, index,
 }: {
-  theatre: Theatre; isSelected: boolean; occasion: string | null; onSelect: () => void
+  theatre: Theatre; isSelected: boolean; occasion: string | null; onSelect: () => void; index: number
 }) {
   const isRecommended =
     theatre.capacityMin <= 4 && (occasion === 'anniversary' || occasion === 'date-night' || occasion === 'proposal')
@@ -103,60 +101,67 @@ function TheatreCard({
       : false
 
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onSelect}
       aria-pressed={isSelected}
+      initial={{ opacity: 0, y: 40, scale: 0.94 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.7, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -6 }}
+      whileTap={{ scale: 0.98 }}
       className={cn(
-        'relative shrink-0 snap-start w-44 rounded-2xl overflow-hidden text-left transition-all duration-250 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c026d3]',
+        'group relative aspect-[4/3] w-full overflow-hidden rounded-3xl text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c026d3]/40',
         isSelected
-          ? 'ring-2 ring-[#c026d3] shadow-[0_12px_30px_rgba(192,38,211,0.3)] -translate-y-1'
-          : 'ring-1 ring-[#ecdaf5] shadow-md hover:shadow-lg hover:-translate-y-0.5',
+          ? 'shadow-[0_22px_50px_rgba(192,38,211,0.4)] ring-[3px] ring-[#c026d3]'
+          : 'shadow-[0_14px_34px_rgba(107,35,152,0.18)]',
       )}
     >
-      {/* Image */}
-      <div className="relative h-32 overflow-hidden">
-        <img
-          src={theatre.images[0]}
-          alt={theatre.name}
-          className="h-full w-full object-cover transition-transform duration-400 group-hover:scale-105"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+      <img
+        src={theatre.images[0]}
+        alt={theatre.name}
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+        loading="lazy"
+      />
+      <span className="absolute inset-0 bg-gradient-to-t from-[#1b0b3a]/90 via-[#1b0b3a]/25 to-transparent" />
+
+      {/* badges */}
+      <div className="absolute left-3 top-3 flex flex-wrap gap-1.5 pr-14">
         {isRecommended && (
-          <span className="absolute top-2 left-2 rounded-full bg-[#f3e1ff] px-2 py-0.5 text-[10px] font-bold text-[#6b2398]">
-            ✦ Recommended
+          <span className="flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-[#6b2398] backdrop-blur">
+            <Sparkles size={11} /> Recommended
           </span>
         )}
         {theatre.currentOffer && (
-          <span className="absolute top-2 right-2 rounded-full bg-[#ffe9f1] px-2 py-0.5 text-[10px] font-bold text-[#c2255c]">
+          <span className="rounded-full bg-[#ffe9f1]/95 px-2.5 py-1 text-[11px] font-bold text-[#c2255c]">
             {theatre.currentOffer}
-          </span>
-        )}
-        {isSelected && (
-          <span className="absolute bottom-2 right-2 rounded-full bg-[#c026d3] p-0.5">
-            <CheckCircle2 size={14} className="text-white" />
           </span>
         )}
       </div>
 
-      {/* Info */}
-      <div className={cn(
-        'p-3 transition-colors duration-200',
-        isSelected ? 'bg-[#faf0ff]' : 'bg-white',
-      )}>
-        <p className={cn('text-sm font-bold leading-tight truncate', isSelected ? 'text-[#6b2398]' : 'text-[#2a0e4f]')}>
-          {theatre.name}
-        </p>
-        <div className="flex flex-wrap gap-x-2.5 gap-y-0.5 mt-1 text-[10px] text-text-muted">
-          <span className="flex items-center gap-0.5"><Users size={9} />{theatre.capacityMin}–{theatre.capacityMax}</span>
-          <span className="flex items-center gap-0.5"><Monitor size={9} />{theatre.screenSize}</span>
+      {/* selected tick */}
+      <span
+        className={cn(
+          'absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300',
+          isSelected ? 'scale-100 bg-[#c026d3] text-white' : 'scale-90 border border-white/60 bg-white/20 text-transparent backdrop-blur',
+        )}
+        aria-hidden="true"
+      >
+        <CheckCircle2 size={20} />
+      </span>
+
+      {/* info */}
+      <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+        <p className="font-display text-2xl font-bold leading-tight">{theatre.name}</p>
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+          <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 backdrop-blur"><Users size={12} />{theatre.capacityMin}–{theatre.capacityMax} guests</span>
+          <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 backdrop-blur"><Monitor size={12} />{theatre.screenSize}</span>
+          <span className="ml-auto rounded-full bg-[#f5d7a1] px-3 py-1 text-xs font-bold text-[#4a2a00]">
+            from {formatINR(theatre.startingPricePaise)}
+          </span>
         </div>
-        <p className="mt-2 text-[11px] font-bold text-[#8f6420] bg-[#fff1d6] rounded-full px-2 py-0.5 inline-block">
-          {formatINR(theatre.startingPricePaise)}+
-        </p>
       </div>
-    </button>
+    </motion.button>
   )
 }
 
@@ -168,53 +173,68 @@ function SlotPicker({
   const { data: slots = [], isLoading } = useSlots(theatre.id, date)
 
   return (
-    <div className="mt-5 rounded-2xl bg-[#faf3fb] border border-[#ecdaf5] p-4 transition-all duration-300">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="h-8 w-8 rounded-full bg-[#6b2398]/10 flex items-center justify-center shrink-0">
-          <Clock size={14} className="text-[#6b2398]" />
-        </div>
+    <motion.div
+      key={theatre.id}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="mt-6 rounded-3xl border border-[#ecd9ec] bg-white/80 p-5 shadow-[0_10px_30px_rgba(107,35,152,0.08)] md:p-6"
+    >
+      <div className="mb-4 flex items-center gap-3">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#f6e6ef] text-[#6b2398]">
+          <Clock size={20} />
+        </span>
         <div>
-          <p className="text-sm font-bold text-[#2a0e4f]">Pick a time slot</p>
-          <p className="text-xs text-text-muted">{theatre.name} · {date}</p>
+          <p className="text-base font-bold text-[#2a0e4f]">Pick a time slot</p>
+          <p className="text-xs text-[#7d7094]">{theatre.name} · {date}</p>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex gap-2 flex-wrap">
-          {[1, 2, 3, 4, 5].map((i) => <Skeleton key={i} className="h-9 w-24" rounded="full" />)}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => <Skeleton key={i} className="h-14 w-full" rounded="lg" />)}
         </div>
       ) : slots.length === 0 ? (
-        <p className="text-sm text-text-muted py-2">No slots available on this date.</p>
+        <p className="py-2 text-sm text-[#7d7094]">No slots available on this date.</p>
       ) : (
-        <div className="flex flex-wrap gap-2">
-          {slots.map((slot) => {
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {slots.map((slot, i) => {
             const isSelected = selectedSlotId === slot.id
             const booked = slot.status === 'booked' || slot.status === 'held'
+            const hot = slot.status === 'high_demand'
             return (
-              <button
+              <motion.button
                 key={slot.id}
                 type="button"
                 onClick={() => !booked && onSelect(slot.id)}
                 disabled={booked}
                 aria-pressed={isSelected}
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 18, delay: 0.1 + i * 0.05 }}
+                whileHover={booked ? undefined : { y: -3 }}
+                whileTap={booked ? undefined : { scale: 0.96 }}
                 className={cn(
-                  'px-4 py-2 rounded-full border text-xs font-semibold transition-all duration-150',
+                  'relative flex h-14 flex-col items-center justify-center rounded-2xl border text-sm font-semibold transition-colors',
                   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#c026d3]',
-                  booked && 'opacity-30 cursor-not-allowed line-through',
+                  booked && 'cursor-not-allowed opacity-40',
                   isSelected
-                    ? 'border-transparent bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_6px_16px_rgba(107,35,152,0.35)]'
-                    : slot.status === 'high_demand'
-                    ? 'border-[#f5a3c4] bg-white text-[#c2255c] hover:bg-[#fff0f5]'
-                    : 'border-[#e6cfe9] bg-white text-[#32105f] hover:border-[#c026d3] hover:text-[#6b2398]',
+                    ? 'border-transparent bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_10px_24px_rgba(107,35,152,0.4)]'
+                    : hot
+                    ? 'border-[#f5a3c4] bg-[#fff6f9] text-[#c2255c]'
+                    : 'border-[#e6cfe9] bg-white text-[#32105f] hover:border-[#c026d3]',
                 )}
               >
-                {formatTime(slot.start)}
-                {slot.status === 'high_demand' && <Zap size={10} className="inline ml-1" />}
-              </button>
+                <span className={booked ? 'line-through' : ''}>{formatTime(slot.start)}</span>
+                {hot && !isSelected && !booked && (
+                  <span className="flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wide"><Zap size={9} /> Filling fast</span>
+                )}
+                {booked && <span className="text-[10px] font-bold uppercase tracking-wide">Booked</span>}
+              </motion.button>
             )
           })}
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }

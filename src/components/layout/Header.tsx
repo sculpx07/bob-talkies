@@ -4,6 +4,8 @@ import { Menu, X, Phone, ChevronDown, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
 import { config } from '@/lib/config'
+import { useSavedPlan } from '@/features/booking/useSavedPlan'
+import { OPEN_SAVED_EVENT } from '@/components/layout/SavedDrawer'
 
 const NAV_LINKS = [
   { label: 'Our Theatres', to: '/theatres' },
@@ -31,6 +33,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
   const location = useLocation()
+  const { plan: savedPlan } = useSavedPlan()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -61,7 +64,7 @@ export function Header() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-2" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-0.5" aria-label="Main navigation">
             {NAV_LINKS.map((link) =>
               link.hasMega ? (
                 <div key={link.label} className="relative">
@@ -120,10 +123,21 @@ export function Header() {
               <Phone size={15} />
               <span>Call</span>
             </a>
+            {savedPlan && (
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new Event(OPEN_SAVED_EVENT))}
+                className="hidden items-center gap-1.5 whitespace-nowrap px-2 py-2 text-base font-medium leading-6 text-[#32105f] md:flex"
+                aria-label="Open your saved plan"
+              >
+                Saved
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#6b2398] text-[11px] font-bold text-white">1</span>
+              </button>
+            )}
             <Button
               asChild
               size="md"
-              className="hidden sm:inline-flex !px-6 !bg-none !bg-[#32105f] !text-white hover:!bg-[#32105f] !rounded-full !shadow-none"
+              className="hidden sm:inline-flex whitespace-nowrap !px-6 !bg-none !bg-[#32105f] !text-white hover:!bg-[#32105f] !rounded-full !shadow-none"
             >
               <Link to="/" state={{ highlightPlan: true }}>Book Now <ArrowRight size={14} /></Link>
             </Button>

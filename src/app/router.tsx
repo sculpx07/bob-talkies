@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter, Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 import { Header } from '@/components/layout/Header'
+import { SavedDrawer } from '@/components/layout/SavedDrawer'
 import { Footer } from '@/components/layout/Footer'
 import { MobileBottomBar } from '@/components/layout/MobileBottomBar'
 import { WhatsAppFab } from '@/components/layout/WhatsAppFab'
@@ -79,6 +80,7 @@ function RootLayout() {
       <div className="relative isolate">
         <PageBackground />
         <Header />
+        <SavedDrawer />
         <Outlet />
         <Footer />
         <MobileBottomBar />

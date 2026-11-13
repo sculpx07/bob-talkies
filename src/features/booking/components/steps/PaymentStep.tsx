@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../../state/booking.context'
 import { bookingApi } from '../../api'
 import { PriceSummary } from '../PriceSummary'
-import { Button } from '@/components/ui/Button'
+import { motion } from 'framer-motion'
 import { formatINR } from '@/lib/utils/currency'
-import { CreditCard, Building2, Shield } from 'lucide-react'
+import { Check, CreditCard, Shield } from 'lucide-react'
 import { trackEvent } from '@/features/tracking/events'
 import { clearBookingState } from '../../state/booking.storage'
 
@@ -100,66 +100,74 @@ export function PaymentStep() {
 
   const isLoading = creating || paying
 
+  const options = [
+    { full: false, title: 'Pay Advance (30%)', amount: advanceAmount, note: `Remaining ${formatINR(totalAmount - advanceAmount)} at the venue.` },
+    { full: true, title: 'Pay Full Amount', amount: totalAmount, note: 'Nothing due at the venue.' },
+  ]
+
   return (
-    <div className="max-w-lg">
-      <h2 className="font-display text-2xl md:text-3xl text-text-primary mb-2">
-        Confirm and Pay
-      </h2>
-      <p className="text-text-secondary mb-6">
-        Review your booking and choose how much to pay.
-      </p>
+    <div>
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Confirm and Pay</h2>
+      <p className="mb-7 text-sm text-[#5b4578]">Review your booking and choose how much to pay.</p>
 
       <PriceSummary />
 
       {/* Payment choice */}
-      <div className="mt-6 space-y-3">
-        <h3 className="text-sm font-semibold text-text-secondary">How would you like to pay?</h3>
-        <label className={`flex items-start gap-4 p-4 rounded-card border-2 cursor-pointer transition-all ${!payFull ? 'border-gold-500 bg-gold-500/10' : 'border-border-subtle bg-bg-surface'}`}>
-          <input
-            type="radio"
-            name="payChoice"
-            checked={!payFull}
-            onChange={() => setPayFull(false)}
-            className="mt-1 accent-[var(--gold-500)]"
-            aria-label="Pay advance only"
-          />
-          <div>
-            <p className="font-medium text-text-primary">Pay Advance (30%)</p>
-            <p className="text-sm text-text-secondary">Pay {formatINR(advanceAmount)} now. Remaining {formatINR(totalAmount - advanceAmount)} at the venue.</p>
-          </div>
-        </label>
-        <label className={`flex items-start gap-4 p-4 rounded-card border-2 cursor-pointer transition-all ${payFull ? 'border-gold-500 bg-gold-500/10' : 'border-border-subtle bg-bg-surface'}`}>
-          <input
-            type="radio"
-            name="payChoice"
-            checked={payFull}
-            onChange={() => setPayFull(true)}
-            className="mt-1 accent-[var(--gold-500)]"
-            aria-label="Pay full amount"
-          />
-          <div>
-            <p className="font-medium text-text-primary">Pay Full Amount</p>
-            <p className="text-sm text-text-secondary">Pay {formatINR(totalAmount)} now. Nothing due at the venue.</p>
-          </div>
-        </label>
+      <p className="mb-3 mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#6b2398]">How would you like to pay?</p>
+      <div role="radiogroup" aria-label="Payment option" className="grid gap-4 sm:grid-cols-2">
+        {options.map((o, i) => {
+          const active = payFull === o.full
+          return (
+            <motion.button
+              key={o.title}
+              type="button"
+              role="radio"
+              aria-checked={active}
+              onClick={() => setPayFull(o.full)}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              className={`relative rounded-3xl p-5 text-left transition-shadow duration-300 ${
+                active
+                  ? 'bg-[linear-gradient(135deg,#faf0ff,#fff)] shadow-[0_16px_38px_rgba(192,38,211,0.28)] ring-2 ring-[#c026d3]'
+                  : 'bg-white/85 shadow-[0_8px_24px_rgba(107,35,152,0.1)] ring-1 ring-[#ecd9ec]'
+              }`}
+            >
+              <span
+                className={`absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors ${
+                  active ? 'border-[#c026d3] bg-[#c026d3]' : 'border-[#d9b8e0]'
+                }`}
+                aria-hidden="true"
+              >
+                {active && <Check size={13} strokeWidth={3} className="text-white" />}
+              </span>
+              <p className="text-sm font-semibold text-[#5b4578]">{o.title}</p>
+              <p className="mt-1 text-3xl font-bold tabular-nums text-[#32105f]">{formatINR(o.amount)}</p>
+              <p className="mt-1 text-xs text-[#7d7094]">{o.note}</p>
+            </motion.button>
+          )
+        })}
       </div>
 
       {/* Security notice */}
-      <div className="flex items-center gap-2 mt-4 text-xs text-text-muted">
-        <Shield size={14} className="text-success" aria-hidden="true" />
+      <div className="mt-5 flex items-center gap-2 rounded-2xl bg-[#e7f7ee] px-4 py-3 text-xs text-emerald-800">
+        <Shield size={15} className="shrink-0 text-emerald-600" aria-hidden="true" />
         Payments are secured by Razorpay. We never store your card details.
       </div>
 
-      <Button
-        fullWidth
-        size="xl"
-        loading={isLoading}
+      <motion.button
+        type="button"
         onClick={handlePay}
-        className="mt-6 gap-2"
+        disabled={isLoading}
+        whileHover={{ y: -2 }}
+        whileTap={{ scale: 0.98 }}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#6b2398,#d946ef)] px-8 py-4 text-base font-semibold text-white shadow-[0_14px_34px_rgba(107,35,152,0.4)] disabled:opacity-60"
       >
         <CreditCard size={18} aria-hidden="true" />
-        Pay {formatINR(payAmount)} Securely
-      </Button>
+        {isLoading ? 'Processing…' : `Pay ${formatINR(payAmount)} Securely`}
+      </motion.button>
     </div>
   )
 }

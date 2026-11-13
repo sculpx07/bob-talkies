@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft, Clapperboard, ArrowRight } from 'lucide-react'
 import { Seo } from '@/components/seo/Seo'
+import { useBooking } from '@/features/booking/state/booking.context'
 import { OfferTicket } from '@/components/ui/OfferTicket'
 import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
 import { PartySelect } from '@/components/ui/PartySelect'
@@ -92,6 +93,8 @@ const GUEST_STORIES = [
 
 export default function HomePage() {
   const navigate = useNavigate()
+  const { dispatch: bookingDispatch } = useBooking()
+  const resetBooking = () => bookingDispatch({ type: 'RESET' })
   const location = useLocation()
   const [planHighlight, setPlanHighlight] = useState(false)
 
@@ -156,6 +159,8 @@ export default function HomePage() {
     if (selectedOccasion) params.set('occasion', selectedOccasion)
     params.set('guests', guests || '2')
     if (date) params.set('date', date)
+    // every new booking starts fresh, at the theatre step
+    resetBooking()
     navigate(`/book?${params.toString()}`)
   }
 

@@ -55,55 +55,55 @@ export function PartyCounter({
           <span className="pointer-events-none text-[11px] font-bold uppercase tracking-[0.12em] text-black leading-none">
             {label}
           </span>
-          <div className="flex w-full items-center gap-3">
-            <span className="min-w-0 flex-1 text-base font-semibold tabular-nums text-[#5b1fa3]">
+          <div className="flex w-full items-center gap-2">
+            <span className="min-w-0 flex-1 whitespace-nowrap text-left text-base font-semibold tabular-nums text-[#5b1fa3]">
               {count} {displayLabel}
             </span>
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex shrink-0 items-center gap-1.5">
               <button
                 type="button"
                 onClick={decrement}
                 disabled={count <= min}
                 aria-label="Fewer guests"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
               >
-                <Minus size={14} strokeWidth={2.5} />
+                <Minus size={13} strokeWidth={2.5} />
               </button>
               <button
                 type="button"
                 onClick={increment}
                 disabled={count >= max}
                 aria-label="More guests"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
               >
-                <Plus size={14} strokeWidth={2.5} />
+                <Plus size={13} strokeWidth={2.5} />
               </button>
             </div>
           </div>
         </>
       ) : (
-        <div className="flex w-full items-center gap-3">
-          <span className={cn('min-w-0 flex-1 text-base tabular-nums', count === min ? 'font-medium text-[#b0a0c8]' : 'font-semibold text-[#5b1fa3]')}>
+        <div className="flex w-full items-center gap-2">
+          <span className={cn('min-w-0 flex-1 whitespace-nowrap text-left text-base tabular-nums', count === min ? 'font-medium text-[#b0a0c8]' : 'font-semibold text-[#5b1fa3]')}>
             {count} {displayLabel}
           </span>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1.5">
             <button
               type="button"
               onClick={decrement}
               disabled={count <= min}
               aria-label="Fewer guests"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
             >
-              <Minus size={14} strokeWidth={2.5} />
+              <Minus size={13} strokeWidth={2.5} />
             </button>
             <button
               type="button"
               onClick={increment}
               disabled={count >= max}
               aria-label="More guests"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
             >
-              <Plus size={14} strokeWidth={2.5} />
+              <Plus size={13} strokeWidth={2.5} />
             </button>
           </div>
         </div>

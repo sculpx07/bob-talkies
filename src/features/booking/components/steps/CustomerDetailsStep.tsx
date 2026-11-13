@@ -6,10 +6,9 @@ import { useBooking } from '../../state/booking.context'
 import { CustomerSchema, type Customer } from '@/schemas/customer'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
-import { Button } from '@/components/ui/Button'
+import { motion } from 'framer-motion'
 import { api } from '@/lib/api/client'
 import { Phone, MessageSquare, Check } from 'lucide-react'
-import { cn } from '@/lib/utils/cn'
 
 export function CustomerDetailsStep({ onVerified }: { onVerified: () => void }) {
   const { state, dispatch } = useBooking()
@@ -72,134 +71,140 @@ export function CustomerDetailsStep({ onVerified }: { onVerified: () => void }) 
     sendOtp(data.mobile)
   }
 
+  const field = '!rounded-2xl !border-[#ecd9ec] !bg-white !py-3 !text-[#2a0e4f] placeholder:!text-[#b0a0c8] hover:!border-[#c58be6] focus:!border-[#c026d3] focus:!ring-2 focus:!ring-[#c026d3]/25'
+
   return (
     <div>
-      <h2 className="font-display text-2xl md:text-3xl text-text-primary mb-2">Your details</h2>
-      <p className="text-text-secondary mb-6">
-        Tell us about yourself so we can personalise your experience.
-      </p>
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Your details</h2>
+      <p className="mb-7 text-sm text-[#5b4578]">Tell us about yourself so we can personalise your experience.</p>
 
-      <form onSubmit={handleSubmit(onSaveAndSendOtp)} className="space-y-4 max-w-md">
-        <Input
-          label="Full Name"
-          required
-          placeholder="Your name"
-          error={errors.name?.message}
-          {...register('name')}
-        />
-        <div className="flex gap-3 items-start">
+      <form onSubmit={handleSubmit(onSaveAndSendOtp)} className="space-y-5">
+        <div className="grid gap-5 md:grid-cols-2">
+          <Input
+            label="Full Name"
+            required
+            placeholder="Your name"
+            error={errors.name?.message}
+            className={field}
+            {...register('name')}
+          />
+          <Input
+            label="Email (optional)"
+            type="email"
+            placeholder="your@email.com"
+            error={errors.email?.message}
+            className={field}
+            {...register('email')}
+          />
+        </div>
+
+        <div className="flex items-start gap-3">
           <div className="flex-1">
             <Input
               label="Mobile Number"
               required
               placeholder="10-digit mobile"
-              leftIcon={<Phone size={15} />}
+              leftIcon={<Phone size={16} className="text-[#8e39c7]" />}
               error={errors.mobile?.message}
               inputMode="numeric"
               maxLength={10}
+              className={field}
               {...register('mobile')}
             />
           </div>
           {!verified && (
-            <div className="pt-6">
-              <Button
-                type="submit"
-                size="md"
-                loading={sendingOtp}
-                disabled={otpSent && resendCooldown > 0}
-                variant={otpSent ? 'secondary' : 'primary'}
-              >
-                {otpSent
+            <button
+              type="submit"
+              disabled={sendingOtp || (otpSent && resendCooldown > 0)}
+              className="mt-[26px] flex h-[50px] shrink-0 items-center rounded-full bg-[#32105f] px-6 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
+            >
+              {sendingOtp
+                ? 'Sending…'
+                : otpSent
                   ? resendCooldown > 0
                     ? `Resend (${resendCooldown}s)`
                     : 'Resend OTP'
                   : 'Send OTP'}
-              </Button>
-            </div>
+            </button>
           )}
         </div>
-
-        <Input
-          label="Email (optional)"
-          type="email"
-          placeholder="your@email.com"
-          error={errors.email?.message}
-          {...register('email')}
-        />
 
         <Textarea
           label="Special Instructions"
           placeholder="Cake flavour preference, surprise notes, any requests..."
           rows={3}
+          className="!rounded-2xl !border-[#ecd9ec] !bg-white !text-[#2a0e4f] placeholder:!text-[#b0a0c8] hover:!border-[#c58be6] focus:!border-[#c026d3] focus:!ring-2 focus:!ring-[#c026d3]/25"
           {...register('specialInstructions')}
         />
 
         {/* Consents */}
-        <div className="space-y-3 pt-2">
-          <label className="flex items-start gap-3 cursor-pointer">
+        <div className="space-y-3 rounded-2xl bg-[#fdf6ff] p-4">
+          <label className="flex cursor-pointer items-start gap-3">
             <input
               type="checkbox"
-              className="mt-0.5 w-4 h-4 rounded border-border-subtle bg-bg-surface accent-[var(--gold-500)]"
+              className="mt-0.5 h-4 w-4 rounded accent-[#6b2398]"
               {...register('consentTnC')}
             />
-            <span className="text-sm text-text-secondary">
+            <span className="text-sm text-[#5b4578]">
               I agree to the{' '}
-              <a href="/terms" target="_blank" className="text-gold-400 hover:underline">Terms & Conditions</a>
+              <a href="/terms" target="_blank" className="font-semibold text-[#6b2398] hover:underline">Terms & Conditions</a>
               {' '}and{' '}
-              <a href="/refund-policy" target="_blank" className="text-gold-400 hover:underline">Refund Policy</a>
-              <span className="text-crimson-500 ml-1" aria-hidden="true">*</span>
+              <a href="/refund-policy" target="_blank" className="font-semibold text-[#6b2398] hover:underline">Refund Policy</a>
+              <span className="ml-1 text-[#c2255c]" aria-hidden="true">*</span>
             </span>
           </label>
           {errors.consentTnC && (
-            <p role="alert" className="text-xs text-danger">{errors.consentTnC.message}</p>
+            <p role="alert" className="text-xs text-[#c2255c]">{errors.consentTnC.message}</p>
           )}
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label className="flex cursor-pointer items-start gap-3">
             <input
               type="checkbox"
               defaultChecked
-              className="mt-0.5 w-4 h-4 rounded border-border-subtle bg-bg-surface accent-[var(--gold-500)]"
+              className="mt-0.5 h-4 w-4 rounded accent-[#6b2398]"
               {...register('consentWhatsapp')}
             />
-            <span className="text-sm text-text-secondary">
-              Send my booking confirmation and updates via WhatsApp
-            </span>
+            <span className="text-sm text-[#5b4578]">Send my booking confirmation and updates via WhatsApp</span>
           </label>
         </div>
 
         {/* OTP verification */}
         {otpSent && !verified && (
-          <div className="mt-4 p-4 bg-bg-elevated border border-border-subtle rounded-card space-y-3">
-            <p className="text-sm text-text-secondary">
-              <MessageSquare size={14} className="inline mr-1.5" aria-hidden="true" />
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+            className="space-y-3 rounded-3xl bg-[linear-gradient(135deg,#32105f,#6b2398_60%,#d946ef)] p-5 text-white shadow-[0_16px_40px_rgba(107,35,152,0.3)]"
+          >
+            <p className="flex items-center gap-2 text-sm text-white/90">
+              <MessageSquare size={16} aria-hidden="true" />
               Enter the 6-digit OTP sent to your mobile
             </p>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Enter OTP"
+            <div className="flex items-center gap-2 rounded-full bg-white p-1.5">
+              <input
+                placeholder="------"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 inputMode="numeric"
                 maxLength={6}
-                error={otpError}
-                className="font-mono tracking-[0.5rem] text-center text-lg"
+                aria-label="OTP"
+                className="min-w-0 flex-1 bg-transparent px-4 text-center font-mono text-xl font-bold tracking-[0.5rem] text-[#32105f] outline-none placeholder:text-[#d6c5de]"
               />
-              <Button
+              <button
                 type="button"
-                size="md"
-                loading={verifyingOtp}
-                disabled={otp.length < 6}
+                disabled={otp.length < 6 || verifyingOtp}
                 onClick={() => verifyOtp({ mobile: getValues('mobile'), otp })}
-                className="shrink-0"
+                className="h-11 shrink-0 rounded-full bg-[#32105f] px-6 text-sm font-semibold text-white transition-opacity disabled:opacity-40"
               >
-                Verify
-              </Button>
+                {verifyingOtp ? 'Checking…' : 'Verify'}
+              </button>
             </div>
-            <p className="text-xs text-text-muted">Use OTP 123456 in test mode</p>
-          </div>
+            {otpError && <p className="text-sm text-[#ffd1e0]">{otpError}</p>}
+            <p className="text-xs text-white/70">Use OTP 123456 in test mode</p>
+          </motion.div>
         )}
 
         {verified && (
-          <div className="flex items-center gap-2 text-success text-sm mt-2">
+          <div className="flex items-center gap-2 rounded-2xl bg-[#e7f7ee] px-4 py-3 text-sm font-semibold text-emerald-700">
             <Check size={16} /> Mobile verified successfully!
           </div>
         )}

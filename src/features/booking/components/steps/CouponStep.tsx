@@ -1,11 +1,9 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useBooking } from '../../state/booking.context'
 import { bookingApi } from '../../api'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Badge } from '@/components/ui/Badge'
-import { Check, X, Tag } from 'lucide-react'
+import { Check, X, Tag, Loader2 } from 'lucide-react'
 
 const SUGGESTED_COUPONS = ['BOB500', 'WEEKDAY200']
 
@@ -17,13 +15,13 @@ export function CouponStep() {
 
   const { mutate: validate, isPending } = useMutation({
     mutationFn: (c: string) => bookingApi.validateCoupon(c, state.theatreId ?? undefined),
-    onSuccess: (data) => {
-      dispatch({ type: 'SET_COUPON', couponCode: code })
+    onSuccess: (data, c) => {
+      dispatch({ type: 'SET_COUPON', couponCode: c })
       const disc =
         data.offer.discountType === 'flat'
           ? `₹${data.offer.discountValue / 100} off`
           : `${data.offer.discountValue}% off`
-      setAppliedMsg(`Coupon applied! You get ${disc}.`)
+      setAppliedMsg(`You get ${disc}.`)
       setErrorMsg('')
     },
     onError: (err: Error) => {
@@ -48,74 +46,82 @@ export function CouponStep() {
 
   return (
     <div>
-      <h2 className="font-display text-2xl md:text-3xl text-text-primary mb-2">
-        Have a coupon?
-      </h2>
-      <p className="text-text-secondary mb-6">
-        Apply a discount code to save on your booking. You can skip this step.
-      </p>
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Have a coupon?</h2>
+      <p className="mb-7 text-sm text-[#5b4578]">Apply a discount code to save on your booking. You can skip this step.</p>
 
-      <div className="max-w-sm">
+      <AnimatePresence mode="wait">
         {state.couponCode ? (
-          <div className="flex items-center gap-3 p-4 bg-success/10 border border-success/30 rounded-card">
-            <Check size={18} className="text-success shrink-0" aria-hidden="true" />
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-success">Coupon Applied!</p>
-              <p className="text-xs text-text-secondary">{state.couponCode} · {appliedMsg}</p>
+          <motion.div
+            key="applied"
+            initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 220, damping: 16 }}
+            className="relative flex items-center gap-4 overflow-hidden rounded-3xl bg-[linear-gradient(135deg,#32105f,#6b2398_60%,#d946ef)] p-5 text-white shadow-[0_18px_44px_rgba(107,35,152,0.35)]"
+          >
+            <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
+            <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/20">
+              <Check size={24} strokeWidth={3} />
+            </span>
+            <div className="relative min-w-0 flex-1">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/75">Coupon applied</p>
+              <p className="font-mono text-2xl font-bold tracking-[0.18em]">{state.couponCode}</p>
+              {appliedMsg && <p className="text-sm text-[#f5d7a1]">{appliedMsg}</p>}
             </div>
             <button
+              type="button"
               onClick={handleRemove}
-              className="text-text-muted hover:text-danger transition-colors"
               aria-label="Remove coupon"
+              className="relative flex h-9 w-9 items-center justify-center rounded-full bg-white/15 transition-colors hover:bg-white/30"
             >
               <X size={16} />
             </button>
-          </div>
+          </motion.div>
         ) : (
-          <>
-            <div className="flex gap-2">
-              <Input
+          <motion.div key="form" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+            <div className="flex items-center gap-2 rounded-full border border-dashed border-[#d9b8e0] bg-[#fdf6ff] p-2 pl-5 focus-within:border-[#c026d3]">
+              <Tag size={18} className="shrink-0 text-[#8e39c7]" aria-hidden="true" />
+              <input
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
-                placeholder="Enter coupon code"
-                error={errorMsg}
-                leftIcon={<Tag size={15} />}
+                placeholder="ENTER CODE"
                 aria-label="Coupon code"
                 onKeyDown={(e) => e.key === 'Enter' && handleApply()}
-                className="font-mono tracking-widest"
+                className="min-w-0 flex-1 bg-transparent font-mono text-lg font-bold tracking-[0.2em] text-[#32105f] outline-none placeholder:text-[#c9b3d3]"
               />
-              <Button
+              <button
+                type="button"
                 onClick={handleApply}
-                loading={isPending}
-                disabled={!code.trim()}
-                size="md"
-                className="shrink-0"
+                disabled={!code.trim() || isPending}
+                className="flex h-11 shrink-0 items-center gap-2 rounded-full bg-[#32105f] px-6 text-sm font-semibold text-white transition-opacity disabled:opacity-40"
               >
-                Apply
-              </Button>
+                {isPending ? <Loader2 size={16} className="animate-spin" /> : 'Apply'}
+              </button>
             </div>
+            {errorMsg && <p className="mt-2 pl-5 text-sm text-[#c2255c]">{errorMsg}</p>}
 
-            {/* Suggested coupons */}
-            <div className="mt-4">
-              <p className="text-xs text-text-muted mb-2">Popular codes:</p>
-              <div className="flex gap-2 flex-wrap">
-                {SUGGESTED_COUPONS.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => { setCode(c); validate(c) }}
-                    className="px-3 py-1.5 rounded-pill border border-border-subtle text-xs text-text-secondary hover:border-gold-500/40 hover:text-gold-400 transition-colors font-mono"
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
+            <p className="mb-2 mt-6 text-xs font-bold uppercase tracking-[0.18em] text-[#7d7094]">Popular codes</p>
+            <div className="flex flex-wrap gap-3">
+              {SUGGESTED_COUPONS.map((c, i) => (
+                <motion.button
+                  key={c}
+                  type="button"
+                  onClick={() => { setCode(c); validate(c) }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 16, delay: 0.1 + i * 0.1 }}
+                  whileHover={{ y: -3 }}
+                  className="rounded-2xl border border-dashed border-[#d9b8e0] bg-white px-4 py-2.5 font-mono text-sm font-bold tracking-widest text-[#6b2398] shadow-sm"
+                >
+                  {c}
+                </motion.button>
+              ))}
             </div>
-          </>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
 
-      <p className="text-xs text-text-muted mt-6">
+      <p className="mt-8 text-xs text-[#7d7094]">
         Skipping this step? No worries — you can always add a coupon on the next screen before confirming.
       </p>
     </div>
