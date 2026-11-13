@@ -67,9 +67,6 @@ export function TheatreStrip({ theatres }: { theatres: Theatre[] }) {
               />
               <div className="px-1 pb-1 pt-2 text-left">
                 <p className="font-body text-[13px] font-bold leading-tight text-[#1a1a1a]">{it.theatre.name}</p>
-                <p className="mt-0.5 line-clamp-1 font-body text-[9px] leading-snug text-[#8a8a94]">
-                  {it.theatre.capacityMin}–{it.theatre.capacityMax} guests · {it.theatre.screenSize}
-                </p>
               </div>
             </Link>
           </li>
