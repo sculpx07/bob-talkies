@@ -7,8 +7,6 @@ const OCCASIONS: Array<{ slug: string; label: string; emoji: string }> = [
   { slug: 'anniversary', label: 'Anniversary', emoji: '💑' },
   { slug: 'date-night', label: 'Date Night', emoji: '🌹' },
   { slug: 'proposal', label: 'Proposal', emoji: '💍' },
-  { slug: 'bride-to-be', label: 'Bride To Be', emoji: '👰' },
-  { slug: 'baby-shower', label: 'Baby Shower', emoji: '🍼' },
   { slug: 'family', label: 'Family', emoji: '👨‍👩‍👧‍👦' },
   { slug: 'friends', label: 'Friends', emoji: '🥳' },
   { slug: 'sports-screening', label: 'Sports Screening', emoji: '⚽' },

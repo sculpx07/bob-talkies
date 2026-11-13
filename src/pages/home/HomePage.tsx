@@ -25,7 +25,7 @@ import type { Offer } from '@/schemas/offer'
 
 const OCCASION_QUICK = OCCASIONS.map((o) => ({ label: o.label, slug: o.slug, emoji: o.emoji }))
 
-const HERO_WORDS = ['Celebration', 'Birthday', 'Anniversary', 'Proposal', 'Date Night', 'Baby Shower', 'Movie Night']
+const HERO_WORDS = ['Celebration', 'Birthday', 'Anniversary', 'Proposal', 'Date Night', 'Movie Night', 'Sports Night']
 
 const GUEST_STORIES = [
   {
@@ -432,18 +432,51 @@ export default function HomePage() {
       {/* Choose Your Celebration */}
       <Section bg="base">
         <SectionHeader eyebrow="Every Occasion" title="Choose Your Celebration" centered />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
-          {OCCASIONS.map((o) => (
-            <Link
-              key={o.slug}
-              to={`/celebrations/${o.slug}`}
-              className="group flex flex-col items-center gap-2 p-4 rounded-card border border-border-subtle bg-bg-surface hover:border-gold-500/50 hover:bg-bg-elevated transition-all duration-200"
-            >
-              <span className="text-3xl group-hover:scale-110 transition-transform duration-200">{o.emoji}</span>
-              <span className="text-sm font-medium text-text-secondary group-hover:text-gold-400 transition-colors text-center">{o.label}</span>
-            </Link>
-          ))}
-        </div>
+        {(() => {
+          const cards = [
+            { slug: 'birthday',         label: 'Birthday',         emoji: '🎂', grad: 'linear-gradient(135deg,#f472b6,#a855f7)', glow: '#d946ef' },
+            { slug: 'anniversary',      label: 'Anniversary',      emoji: '💑', grad: 'linear-gradient(135deg,#ef4444,#ec4899)', glow: '#f43f5e' },
+            { slug: 'date-night',       label: 'Date Night',       emoji: '🌹', grad: 'linear-gradient(135deg,#7c3aed,#db2777)', glow: '#a21caf' },
+            { slug: 'proposal',         label: 'Proposal',         emoji: '💍', grad: 'linear-gradient(135deg,#e879f9,#9333ea)', glow: '#d946ef' },
+            { slug: 'family',           label: 'Family',           emoji: '👨‍👩‍👧‍👦', grad: 'linear-gradient(135deg,#f97316,#eab308)', glow: '#f59e0b' },
+            { slug: 'friends',          label: 'Friends',          emoji: '🥳', grad: 'linear-gradient(135deg,#8b5cf6,#6366f1)', glow: '#818cf8' },
+            { slug: 'sports-screening', label: 'Sports Screening', emoji: '⚽', grad: 'linear-gradient(135deg,#0ea5e9,#2563eb)', glow: '#38bdf8' },
+            { slug: 'corporate',        label: 'Corporate',        emoji: '💼', grad: 'linear-gradient(135deg,#334155,#1e293b)',  glow: '#64748b' },
+          ]
+          return (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-5xl mx-auto">
+              {cards.map((c, i) => (
+                <Link
+                  key={c.slug}
+                  to={`/celebrations/${c.slug}`}
+                  className="group relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
+                  style={{ background: c.grad, '--glow': c.glow, minHeight: i < 2 ? 180 : 150 } as React.CSSProperties}
+                >
+                  {/* subtle noise texture */}
+                  <span className="pointer-events-none absolute inset-0 rounded-2xl opacity-[0.08]"
+                    style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }}
+                    aria-hidden="true" />
+                  {/* glow on hover */}
+                  <span className="pointer-events-none absolute -bottom-6 -right-6 h-28 w-28 rounded-full opacity-0 blur-2xl transition-opacity duration-400 group-hover:opacity-60"
+                    style={{ background: c.glow }} aria-hidden="true" />
+                  {/* emoji */}
+                  <span className="relative z-10 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 text-2xl backdrop-blur-sm ring-1 ring-white/30 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 shadow-md">
+                    {c.emoji}
+                  </span>
+                  {/* label */}
+                  <div className="relative z-10 mt-auto">
+                    <p className="text-[13px] font-black uppercase tracking-widest text-white/60 leading-none mb-1">{i === 0 ? 'celebrate' : 'book for'}</p>
+                    <p className="text-base font-bold text-white leading-tight">{c.label}</p>
+                  </div>
+                  {/* arrow */}
+                  <span className="absolute right-4 top-4 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:bg-white/25">
+                    <ArrowRight size={13} className="text-white" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )
+        })()}
       </Section>
 
       {/* Guest Stories Slider */}
