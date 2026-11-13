@@ -5,7 +5,11 @@ import { useQuery } from '@tanstack/react-query'
 import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck } from 'lucide-react'
 import { SAVED_KEY, SAVED_EVENT } from '@/features/booking/useSavedPlan'
 import { useToast } from '@/components/ui/Toast'
-import { theatreKeys } from '@/lib/api/queryKeys'
+import { addonKeys, packageKeys, theatreKeys } from '@/lib/api/queryKeys'
+import { useSlots } from '@/features/booking/hooks/useAvailability'
+import { formatTime } from '@/lib/utils/date'
+import type { Package } from '@/schemas/package'
+import type { Addon } from '@/schemas/addon'
 import { api } from '@/lib/api/client'
 import { formatINR } from '@/lib/utils/currency'
 import type { Theatre } from '@/schemas/theatre'
@@ -13,11 +17,10 @@ import { OCCASIONS } from '@/content/occasions'
 import { Stepper } from '@/components/ui/Stepper'
 import { Seo } from '@/components/seo/Seo'
 import { useBooking } from '@/features/booking/state/booking.context'
-import { StickyPriceBar } from '@/features/booking/components/StickyPriceBar'
+import { StickyPriceBar, type Selection } from '@/features/booking/components/StickyPriceBar'
 import { TheatreSlotStep } from '@/features/booking/components/steps/TheatreSlotStep'
 import { PackageStep } from '@/features/booking/components/steps/PackageStep'
 import { AddonsStep } from '@/features/booking/components/steps/AddonsStep'
-import { CouponStep } from '@/features/booking/components/steps/CouponStep'
 import { PriceSummary } from '@/features/booking/components/PriceSummary'
 import { CustomerDetailsStep } from '@/features/booking/components/steps/CustomerDetailsStep'
 import { PaymentStep } from '@/features/booking/components/steps/PaymentStep'
@@ -32,11 +35,11 @@ const STEP_HEADINGS: Record<number, { kicker: string; title: string }> = {
   3: { kicker: 'Almost there', title: 'Pick your theatre' },
   4: { kicker: 'Great choice', title: 'Choose your package' },
   5: { kicker: 'Make it yours', title: 'Add the finishing touches' },
-  6: { kicker: 'Save more', title: 'Apply a coupon' },
-  7: { kicker: 'Looking good', title: 'Review your booking' },
-  8: { kicker: 'Just a few details', title: 'Tell us about you' },
-  9: { kicker: 'Last step', title: 'Confirm and pay' },
+  6: { kicker: 'Looking good', title: 'Review your booking' },
+  7: { kicker: 'Just a few details', title: 'Tell us about you' },
+  8: { kicker: 'Last step', title: 'Confirm and pay' },
 }
+const LAST_STEP = 8
 
 const STEPS = [
   { id: 'occasion', label: 'Occasion' },
@@ -45,7 +48,6 @@ const STEPS = [
   { id: 'theatre', label: 'Theatre' },
   { id: 'package', label: 'Package' },
   { id: 'addons', label: 'Add-ons' },
-  { id: 'coupon', label: 'Coupon' },
   { id: 'summary', label: 'Summary' },
   { id: 'details', label: 'Details' },
   { id: 'payment', label: 'Payment' },
@@ -59,10 +61,9 @@ function canProceed(step: number, state: ReturnType<typeof useBooking>['state'])
     case 3: return Boolean(state.theatreId && state.slotId)
     case 4: return Boolean(state.packageId)
     case 5: return true // addons optional
-    case 6: return true // coupon optional
-    case 7: return Boolean(state.serverQuote)
-    case 8: return Boolean(state.customerName && state.customerMobile && state.consentTnC)
-    case 9: return true
+    case 6: return Boolean(state.serverQuote)
+    case 7: return Boolean(state.customerName && state.customerMobile && state.consentTnC)
+    case 8: return true
     default: return false
   }
 }
@@ -99,9 +100,59 @@ export default function BookPage() {
   })
   const chosenTheatre = allTheatres.find((t) => t.id === state.theatreId) ?? null
 
+  // data for the "what you picked" summary shown in the bottom bar
+  const { data: pkgList = [] } = useQuery({
+    queryKey: packageKeys.list(state.theatreId ?? undefined),
+    queryFn: () => api.get<Package[]>(`/packages${state.theatreId ? `?theatreId=${state.theatreId}` : ''}`),
+    enabled: Boolean(state.theatreId),
+  })
+  const { data: addonList = [] } = useQuery({
+    queryKey: addonKeys.list(state.theatreId ?? undefined),
+    queryFn: () => api.get<Addon[]>(`/addons${state.theatreId ? `?theatreId=${state.theatreId}` : ''}`),
+    enabled: Boolean(state.theatreId),
+  })
+  const { data: slotList = [] } = useSlots(state.theatreId, state.date)
+  const chosenSlot = slotList.find((sl) => sl.id === state.slotId) ?? null
+  const chosenPkg = pkgList.find((pk) => pk.id === state.packageId) ?? null
+  const chosenAddons = addonList.filter((ad) => state.addonIds.includes(ad.id))
+  const addonsTotal = chosenAddons.reduce((sum, ad) => sum + ad.pricePaise, 0)
+
+  // everything picked so far, shown as chips in the bottom bar
+  const curStep = Math.min(Math.max(state.step, FIRST_STEP), LAST_STEP)
+  const selections: Selection[] = []
+  if (chosenTheatre) {
+    selections.push({
+      id: 'theatre',
+      title: chosenTheatre.name,
+      sub: chosenSlot ? formatTime(chosenSlot.start) : 'Pick a time slot',
+      image: chosenTheatre.images[0],
+    })
+  }
+  if (chosenPkg && curStep >= 4) {
+    selections.push({ id: 'package', title: `${chosenPkg.name} package`, sub: formatINR(chosenPkg.pricePaise) })
+  }
+  if (curStep >= 5 && chosenAddons.length > 0) {
+    selections.push({
+      id: 'addons',
+      title: `${chosenAddons.length} add-on${chosenAddons.length > 1 ? 's' : ''}`,
+      sub: formatINR(addonsTotal),
+    })
+  }
+  if (curStep >= 5 && state.customRequest.trim()) {
+    selections.push({ id: 'custom', title: 'Custom request', sub: 'Added' })
+  }
+
+  function clearSelections() {
+    dispatch({ type: 'SET_THEATRE_SLOT', theatreId: '', theatreSlug: '', slotId: '' })
+    dispatch({ type: 'SET_PACKAGE', packageId: '' })
+    dispatch({ type: 'SET_ADDONS', addonIds: [] })
+    dispatch({ type: 'SET_CUSTOM_REQUEST', text: '' })
+    dispatch({ type: 'GO_STEP', step: FIRST_STEP })
+  }
+
   if (!occasion || !date) return <Navigate to="/" state={{ highlightPlan: true }} replace />
 
-  const step = Math.max(state.step, FIRST_STEP)
+  const step = Math.min(Math.max(state.step, FIRST_STEP), LAST_STEP)
   const visibleSteps = STEPS.slice(FIRST_STEP)
   const occasionData = OCCASIONS.find((o) => o.slug === occasion)
   const prettyDate = new Date(`${date}T00:00:00`).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
@@ -113,7 +164,6 @@ export default function BookPage() {
     <TheatreSlotStep key="theatre" />,
     <PackageStep key="package" />,
     <AddonsStep key="addons" />,
-    <CouponStep key="coupon" />,
     <div key="summary">
       <h2 className="font-display text-3xl md:text-4xl font-bold text-[#2a0e4f] mb-6">Review your booking</h2>
       <PriceSummary />
@@ -163,7 +213,7 @@ export default function BookPage() {
 
   function handleNext() {
     if (!canProceed(step, state)) return
-    if (step === 8) return // CustomerDetailsStep calls onVerified itself
+    if (step === 7) return // CustomerDetailsStep calls onVerified itself
     trackEvent('select_occasion', { step, stepName: STEPS[step]?.id })
     dispatch({ type: 'NEXT_STEP' })
   }
@@ -310,15 +360,17 @@ export default function BookPage() {
       </div>
 
       {/* Not showing sticky bar on payment step (it has its own CTA) */}
-      {step < 9 && (
+      {step < LAST_STEP && (
         <StickyPriceBar
           onNext={handleNext}
           onBack={handleBack}
           canProceed={canProceed(step, state)}
           stepIndex={step - FIRST_STEP}
           totalSteps={visibleSteps.length}
-          nextLabel={step === 8 ? 'Verify & Continue' : step === 7 ? 'Proceed to Payment' : 'Continue'}
-          showTotal={step >= 7}
+          nextLabel={step === 7 ? 'Verify & Continue' : step === 6 ? 'Proceed to Payment' : 'Continue'}
+          showTotal={step >= 6}
+          selections={selections}
+          onClear={clearSelections}
         />
       )}
     </>

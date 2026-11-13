@@ -275,7 +275,7 @@ export default function HomePage() {
         </video>
         <div className="film-grain absolute inset-0 pointer-events-none" aria-hidden="true" />
 
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-24">
+        <div className="relative z-10 w-full min-w-0 text-center px-4 max-w-5xl mx-auto pt-24">
           <Badge variant="gold" className="mb-6 !border-0 !text-lg md:!text-xl !font-medium !text-gold-600 px-5 py-2 font-['Jost',sans-serif]">
             <Sparkles size={12} />
             Hyderabad's #1 Private Celebrations Venue
@@ -472,7 +472,7 @@ export default function HomePage() {
       )}
 
       {/* Our Theatres */}
-      <Section bg="surface">
+      <Section bg="surface" className="bg-[linear-gradient(to_bottom,transparent_0,#fffaf4_140px,#fffaf4_calc(100%-140px),transparent_100%)]">
         <SectionHeader
           eyebrow="5 Premium Theatres"
           title="Explore Our Theatres"

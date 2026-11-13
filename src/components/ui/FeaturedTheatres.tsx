@@ -84,7 +84,7 @@ export function FeaturedTheatres() {
       className="py-14 md:py-20"
       aria-labelledby="featured-theatres-heading"
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-6 grid gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-12 items-center">
         {/* Left copy */}
         <div ref={copyRef}>
           <p className="flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#32105f]">

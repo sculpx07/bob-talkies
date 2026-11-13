@@ -7,7 +7,7 @@ import { Check, X, Tag, Loader2 } from 'lucide-react'
 
 const SUGGESTED_COUPONS = ['BOB500', 'WEEKDAY200']
 
-export function CouponStep() {
+export function CouponStep({ embedded = false }: { embedded?: boolean }) {
   const { state, dispatch } = useBooking()
   const [code, setCode] = useState(state.couponCode ?? '')
   const [errorMsg, setErrorMsg] = useState('')
@@ -45,9 +45,15 @@ export function CouponStep() {
   }
 
   return (
-    <div>
-      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Have a coupon?</h2>
-      <p className="mb-7 text-sm text-[#5b4578]">Apply a discount code to save on your booking. You can skip this step.</p>
+    <div className={embedded ? 'mb-6 rounded-3xl bg-white/85 p-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] ring-1 ring-[#ecd9ec] sm:p-5' : undefined}>
+      {embedded ? (
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#6b2398]">Have a coupon?</p>
+      ) : (
+        <>
+          <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Have a coupon?</h2>
+          <p className="mb-7 text-sm text-[#5b4578]">Apply a discount code to save on your booking. You can skip this step.</p>
+        </>
+      )}
 
       <AnimatePresence mode="wait">
         {state.couponCode ? (
@@ -87,13 +93,13 @@ export function CouponStep() {
                 placeholder="ENTER CODE"
                 aria-label="Coupon code"
                 onKeyDown={(e) => e.key === 'Enter' && handleApply()}
-                className="min-w-0 flex-1 bg-transparent font-mono text-lg font-bold tracking-[0.2em] text-[#32105f] outline-none placeholder:text-[#c9b3d3]"
+                className="min-w-0 flex-1 bg-transparent font-mono text-base font-bold tracking-[0.15em] text-[#32105f] outline-none placeholder:text-[#c9b3d3] sm:text-lg sm:tracking-[0.2em]"
               />
               <button
                 type="button"
                 onClick={handleApply}
                 disabled={!code.trim() || isPending}
-                className="flex h-11 shrink-0 items-center gap-2 rounded-full bg-[#32105f] px-6 text-sm font-semibold text-white transition-opacity disabled:opacity-40"
+                className="flex h-11 shrink-0 items-center gap-2 rounded-full bg-[#32105f] px-5 text-sm font-semibold text-white transition-opacity disabled:opacity-40 sm:px-6"
               >
                 {isPending ? <Loader2 size={16} className="animate-spin" /> : 'Apply'}
               </button>
@@ -121,9 +127,11 @@ export function CouponStep() {
         )}
       </AnimatePresence>
 
-      <p className="mt-8 text-xs text-[#7d7094]">
-        Skipping this step? No worries — you can always add a coupon on the next screen before confirming.
-      </p>
+      {!embedded && (
+        <p className="mt-8 text-xs text-[#7d7094]">
+          Skipping this step? No worries — you can always add a coupon on the next screen before confirming.
+        </p>
+      )}
     </div>
   )
 }

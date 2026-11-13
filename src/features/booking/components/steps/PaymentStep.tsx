@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../../state/booking.context'
 import { bookingApi } from '../../api'
 import { PriceSummary } from '../PriceSummary'
+import { CouponStep } from './CouponStep'
 import { motion } from 'framer-motion'
 import { formatINR } from '@/lib/utils/currency'
 import { Check, CreditCard, Shield } from 'lucide-react'
@@ -35,7 +36,7 @@ export function PaymentStep() {
         customerName: state.customerName,
         customerMobile: state.customerMobile,
         customerEmail: state.customerEmail || undefined,
-        specialInstructions: state.specialInstructions || undefined,
+        specialInstructions: [state.customRequest && `Custom request: ${state.customRequest}`, state.specialInstructions].filter(Boolean).join('\n') || undefined,
         consentTnC: state.consentTnC,
         consentWhatsapp: state.consentWhatsapp,
       }),
@@ -110,6 +111,8 @@ export function PaymentStep() {
       <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Confirm and Pay</h2>
       <p className="mb-7 text-sm text-[#5b4578]">Review your booking and choose how much to pay.</p>
 
+      <CouponStep embedded />
+
       <PriceSummary />
 
       {/* Payment choice */}
@@ -163,7 +166,7 @@ export function PaymentStep() {
         disabled={isLoading}
         whileHover={{ y: -2 }}
         whileTap={{ scale: 0.98 }}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#6b2398,#d946ef)] px-8 py-4 text-base font-semibold text-white shadow-[0_14px_34px_rgba(107,35,152,0.4)] disabled:opacity-60"
+        className="mt-6 mb-24 flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#6b2398,#d946ef)] px-6 py-4 text-base font-semibold text-white shadow-[0_14px_34px_rgba(107,35,152,0.4)] disabled:opacity-60"
       >
         <CreditCard size={18} aria-hidden="true" />
         {isLoading ? 'Processing…' : `Pay ${formatINR(payAmount)} Securely`}

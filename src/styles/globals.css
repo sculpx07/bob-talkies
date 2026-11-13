@@ -29,6 +29,10 @@
     }
   }
 
+  html, body {
+    overflow-x: clip; /* never let a stray element create sideways scrolling */
+  }
+
   body {
     background-color: var(--bg-base);
     background-image: url('/bg.png');
