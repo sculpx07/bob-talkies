@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft } from 'lucide-react'
+import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft, Clapperboard, ArrowRight } from 'lucide-react'
 import { Seo } from '@/components/seo/Seo'
 import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
 import { PartySelect } from '@/components/ui/PartySelect'
+import { PartyCounter } from '@/components/ui/PartyCounter'
 import { FeaturedTheatres } from '@/components/ui/FeaturedTheatres'
 import { TheatreStrip } from '@/components/ui/TheatreStrip'
 import { Button } from '@/components/ui/Button'
@@ -16,13 +17,14 @@ import { Skeleton, TheatreCardSkeleton } from '@/components/ui/Skeleton'
 import { Section, SectionHeader } from '@/components/layout/PageShell'
 import { api } from '@/lib/api/client'
 import { theatreKeys, offerKeys } from '@/lib/api/queryKeys'
-import { GUEST_OPTIONS } from '@/lib/constants'
 import { OCCASIONS } from '@/content/occasions'
 import { config } from '@/lib/config'
 import type { Theatre } from '@/schemas/theatre'
 import type { Offer } from '@/schemas/offer'
 
 const OCCASION_QUICK = OCCASIONS.map((o) => ({ label: o.label, slug: o.slug, emoji: o.emoji }))
+
+const HERO_WORDS = ['Celebration', 'Birthday', 'Anniversary', 'Proposal', 'Date Night', 'Baby Shower', 'Movie Night']
 
 const GUEST_STORIES = [
   {
@@ -100,10 +102,24 @@ export default function HomePage() {
     return () => { clearTimeout(start); clearTimeout(stop) }
   }, [location.key, location.state])
   const [selectedOccasion, setSelectedOccasion] = useState('')
-  const [guests, setGuests] = useState(2)
+  const [guests, setGuests] = useState('2')
   const [date, setDate] = useState('')
   const [storyIndex, setStoryIndex] = useState(0)
   const storyTimer = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const [heroWordIndex, setHeroWordIndex] = useState(0)
+  const [heroVisible, setHeroVisible] = useState(true)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroVisible(false)
+      setTimeout(() => {
+        setHeroWordIndex((i) => (i + 1) % HERO_WORDS.length)
+        setHeroVisible(true)
+      }, 400)
+    }, 2800)
+    return () => clearInterval(interval)
+  }, [])
 
   const { data: theatres, isLoading: theatresLoading } = useQuery({
     queryKey: theatreKeys.list(),
@@ -140,7 +156,7 @@ export default function HomePage() {
   function handleQuickBook() {
     const params = new URLSearchParams()
     if (selectedOccasion) params.set('occasion', selectedOccasion)
-    params.set('guests', String(guests))
+    params.set('guests', guests || '2')
     if (date) params.set('date', date)
     navigate(`/book?${params.toString()}`)
   }
@@ -178,71 +194,146 @@ export default function HomePage() {
             <Sparkles size={12} />
             Hyderabad's #1 Private Celebrations Venue
           </Badge>
-          <h1 className="sr-only">Your Celebration. Your Theatre. Your Memories.</h1>
+          <h1 className="mb-8 font-display text-4xl font-bold leading-tight tracking-tight text-[#2a0e4f] sm:text-5xl md:text-6xl">
+            Your{' '}
+            <span
+              className="inline-block text-[#8e39c7] transition-all duration-400"
+              style={{
+                opacity: heroVisible ? 1 : 0,
+                transform: heroVisible ? 'translateY(0)' : 'translateY(-10px)',
+                transition: 'opacity 0.4s ease, transform 0.4s ease',
+              }}
+            >
+              {HERO_WORDS[heroWordIndex]}
+            </span>{' '}
+            Your
+            <br />
+            <span className="text-[#2a0e4f]">Theatre</span>
+            <span className="text-[#8e39c7]"> Your Memories</span>
+          </h1>
 
-          {/* Plan your party — occasion, date, guests */}
-          <div id="plan" className="relative mx-auto w-full max-w-5xl scroll-mt-28">
-            <div className="pointer-events-none absolute -inset-5 rounded-[3rem] bg-[radial-gradient(ellipse_at_top_left,rgba(217,70,239,0.18),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgba(245,189,97,0.30),transparent_55%)] blur-2xl" aria-hidden="true" />
-            <span className="pointer-events-none absolute -top-2.5 left-12 h-3 w-3 rounded-full bg-[#f472b6]" aria-hidden="true" />
-            <span className="pointer-events-none absolute -top-1 right-20 h-2.5 w-2.5 rotate-45 bg-[#f5bd61]" aria-hidden="true" />
-            <span className="pointer-events-none absolute -bottom-2 left-24 h-2.5 w-5 -rotate-12 rounded-full bg-[#8e39c7]" aria-hidden="true" />
-            <span className="pointer-events-none absolute -right-2 bottom-8 h-3 w-3 rounded-full bg-[#f5bd61]" aria-hidden="true" />
+          {/* Plan your party — desktop pill (matches design) */}
+          <div id="plan" className="relative mx-auto w-full max-w-4xl scroll-mt-28 font-['Jost',sans-serif]">
+            {/* Left rays */}
+            <div className="pointer-events-none absolute left-0 top-1/2 hidden -translate-x-9 -translate-y-1/2 flex-col items-center gap-[9px] md:flex" aria-hidden="true">
+              <span className="block h-[2.5px] w-6 rotate-[30deg] rounded-full bg-[#d4a94a]" />
+              <span className="block h-[2.5px] w-7 rounded-full bg-[#d4a94a]" />
+              <span className="block h-[2.5px] w-6 -rotate-[30deg] rounded-full bg-[#d4a94a]" />
+            </div>
+            {/* Right rays (mirrored) */}
+            <div className="pointer-events-none absolute right-0 top-1/2 hidden translate-x-9 -translate-y-1/2 flex-col items-center gap-[9px] md:flex" aria-hidden="true">
+              <span className="block h-[2.5px] w-6 -rotate-[30deg] rounded-full bg-[#d4a94a]" />
+              <span className="block h-[2.5px] w-7 rounded-full bg-[#d4a94a]" />
+              <span className="block h-[2.5px] w-6 rotate-[30deg] rounded-full bg-[#d4a94a]" />
+            </div>
 
-            <div className={`relative rounded-[2rem] bg-[linear-gradient(135deg,#8e39c7,#f472b6_50%,#f5bd61)] p-[2px] shadow-[0_24px_60px_rgba(107,35,152,0.22)] ${planHighlight ? 'animate-plan-pulse' : ''}`}>
-              <div className="rounded-[calc(2rem-2px)] bg-white/95 p-5 text-left backdrop-blur-xl md:p-7">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
-                  {/* Occasion */}
-                  <div>
-                    <label htmlFor="plan-occasion" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.14em] text-[#32105f]">
-                      Occasion <span className="text-[#d946ef]">*</span>
-                    </label>
-                    <PartySelect
-                      id="plan-occasion"
-                      value={selectedOccasion}
-                      onValueChange={setSelectedOccasion}
-                      placeholder="Select occasion"
-                      icon={<PartyPopper size={18} />}
-                      options={OCCASION_QUICK.map((o) => ({ value: o.slug, label: o.label }))}
-                    />
-                  </div>
+            {/* Gold border shell */}
+            <div
+              className={`hidden rounded-full p-[1.5px] md:flex
+                bg-[linear-gradient(135deg,#e8d48a,#f6e9b8_35%,#c9a84c_65%,#ecd98f)]
+                shadow-[0_12px_32px_rgba(201,168,76,0.28),0_2px_8px_rgba(120,80,40,0.10)]
+                ${planHighlight ? 'animate-plan-pulse' : ''}`}
+            >
+              {/* Soft cream inner surface */}
+              <div className="flex w-full items-center rounded-full bg-[linear-gradient(180deg,#fffefd_0%,#fcf5ee_100%)] pl-2 pr-[10px] shadow-[inset_0_2px_6px_rgba(255,255,255,0.9),inset_0_-2px_6px_rgba(201,168,76,0.10)]">
 
-                  {/* Date */}
-                  <div>
-                    <label htmlFor="plan-date" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.14em] text-[#32105f]">
-                      Date <span className="text-[#d946ef]">*</span>
-                    </label>
-                    <PartyDatePicker
-                      id="plan-date"
-                      value={date}
-                      onChange={setDate}
-                      min={today}
-                      icon={<CalendarDays size={18} />}
-                    />
-                  </div>
+                {/* Occasion */}
+                <div className="min-w-0 flex-1">
+                  <PartySelect
+                    id="plan-occasion"
+                    value={selectedOccasion}
+                    onValueChange={setSelectedOccasion}
+                    placeholder="Select Occasion"
+                    label="Occasion"
+                    icon={<Clapperboard size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
+                    options={OCCASION_QUICK.map((o) => ({ value: o.slug, label: o.label }))}
+                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-10 text-[#3b1278] transition-colors hover:bg-white/50"
+                  />
+                </div>
 
-                  {/* Guests */}
-                  <div>
-                    <label htmlFor="plan-guests" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.14em] text-[#32105f]">
-                      Guests
-                    </label>
-                    <PartySelect
-                      id="plan-guests"
-                      value={String(guests)}
-                      onValueChange={(v) => setGuests(Number(v))}
-                      placeholder="Guests"
-                      icon={<Users size={18} />}
-                      options={GUEST_OPTIONS.map((n) => ({ value: String(n), label: `${n}${n === 30 ? '+' : ''} Guests` }))}
-                    />
-                  </div>
+                <div className="h-12 w-px shrink-0 bg-[#e6d9c6]" />
 
-                  {/* CTA */}
+                {/* Guests */}
+                <div className="min-w-0 flex-1">
+                  <PartyCounter
+                    id="plan-guests"
+                    value={guests}
+                    onValueChange={setGuests}
+                    min={1}
+                    max={30}
+                    label="Guests"
+                    icon={<Users size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
+                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-4 text-[#3b1278] transition-colors hover:bg-white/50"
+                  />
+                </div>
+
+                <div className="h-12 w-px shrink-0 bg-[#e6d9c6]" />
+
+                {/* Date */}
+                <div className="min-w-0 flex-1">
+                  <PartyDatePicker
+                    id="plan-date"
+                    value={date}
+                    onChange={setDate}
+                    min={today}
+                    placeholder="Select Date"
+                    label="Date"
+                    icon={<CalendarDays size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
+                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-10 text-[#3b1278] transition-colors hover:bg-white/50"
+                  />
+                </div>
+
+                <div className="h-12 w-px shrink-0 bg-[#e6d9c6]" />
+
+                {/* CTA */}
+                <button
+                  type="button"
+                  onClick={handleQuickBook}
+                  disabled={!selectedOccasion || !date}
+                  className="ml-2 flex h-[56px] shrink-0 items-center gap-2 whitespace-nowrap rounded-full
+                    bg-[linear-gradient(135deg,#3b1278_0%,#5b1fa3_100%)] px-6 text-[15px] font-semibold text-white
+                    shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_8px_18px_rgba(59,18,120,0.35)]
+                    transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Book Your Theatre <ArrowRight size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile: stacked card */}
+            <div className={`md:hidden relative rounded-[2rem] bg-[linear-gradient(135deg,#8e39c7,#f472b6_50%,#f5bd61)] p-[2px] shadow-[0_24px_60px_rgba(107,35,152,0.22)] ${planHighlight ? 'animate-plan-pulse' : ''}`}>
+              <div className="rounded-[calc(2rem-2px)] bg-white/95 p-5 text-left backdrop-blur-xl">
+                <div className="grid gap-4">
+                  <PartySelect
+                    id="plan-occasion-m"
+                    value={selectedOccasion}
+                    onValueChange={setSelectedOccasion}
+                    placeholder="Select occasion"
+                    icon={<PartyPopper size={18} />}
+                    options={OCCASION_QUICK.map((o) => ({ value: o.slug, label: o.label }))}
+                  />
+                  <PartyCounter
+                    id="plan-guests-m"
+                    value={guests}
+                    onValueChange={setGuests}
+                    min={1}
+                    max={30}
+                    icon={<Users size={18} />}
+                  />
+                  <PartyDatePicker
+                    id="plan-date-m"
+                    value={date}
+                    onChange={setDate}
+                    min={today}
+                    icon={<CalendarDays size={18} />}
+                  />
                   <button
                     type="button"
                     onClick={handleQuickBook}
                     disabled={!selectedOccasion || !date}
-                    className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#6b2398,#d946ef)] px-7 text-sm font-medium  text-white shadow-[0_12px_26px_rgba(107,35,152,0.35)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(107,35,152,0.45)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 md:col-span-2 lg:col-span-1"
+                    className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-[#2a0e4f] px-7 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(42,14,79,0.30)] transition-all hover:bg-[#3d1575] disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    Show Available Options <ChevronRight size={18} />
+                    Book Your Theatre <ChevronRight size={18} />
                   </button>
                 </div>
                 {(!selectedOccasion || !date) && (

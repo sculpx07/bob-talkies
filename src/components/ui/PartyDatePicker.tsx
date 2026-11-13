@@ -16,12 +16,15 @@ interface PartyDatePickerProps {
   min?: string
   placeholder?: string
   icon: ReactNode
+  /** When set, renders a small label above the value (compact bar mode) */
+  label?: string
+  className?: string
 }
 
 const WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
 /** Custom calendar dropdown — same look as PartySelect, replaces the browser's native date popup. */
-export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Select date', icon }: PartyDatePickerProps) {
+export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Select date', icon, label, className }: PartyDatePickerProps) {
   const selected = value ? parseISO(value) : null
   const minDate = min ? startOfDay(parseISO(min)) : null
   const today = startOfDay(new Date())
@@ -48,17 +51,26 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
       <Popover.Trigger
         id={id}
         className={cn(
-          'group relative flex h-14 w-full items-center rounded-2xl border border-[#ecd9ec] bg-[#fff7f0] pl-11 pr-10 text-left text-base font-medium outline-none',
-          selected ? 'text-[#2a0e4f]' : 'text-[#7d7094]',
+          'group relative flex h-14 w-full items-center rounded-2xl border pl-11 pr-10 text-left text-base outline-none transition-colors',
+          label && 'flex-col items-start justify-center gap-px',
+          selected ? 'bg-[#ede8ff] border-[#c4b5fd] font-semibold text-[#160730]' : 'bg-[#fff7f0] border-[#ecd9ec] font-medium text-[#b0a0c8]',
+          className,
         )}
       >
         <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#8e39c7]" aria-hidden="true">
           {icon}
         </span>
-        {selected ? format(selected, 'EEE, d MMM yyyy') : placeholder}
+        {label && (
+          <span className="pointer-events-none text-[11px] font-bold uppercase tracking-[0.12em] text-black leading-none">
+            {label}
+          </span>
+        )}
+        <span className={cn('truncate', selected ? 'text-[#160730]' : 'text-[#b0a0c8]')}>
+          {selected ? format(selected, 'EEE, d MMM yyyy') : placeholder}
+        </span>
         <ChevronDown
-          size={18}
-          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#7d7094] transition-transform group-data-[state=open]:rotate-180"
+          size={15}
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#7d7094] transition-transform group-data-[state=open]:rotate-180"
           aria-hidden="true"
         />
       </Popover.Trigger>
@@ -67,7 +79,10 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
         <Popover.Content
           sideOffset={8}
           align="start"
-          className="z-[60] w-[272px] rounded-2xl border border-[#ecd9ec] bg-white p-3 shadow-[0_24px_50px_rgba(107,35,152,0.22)] data-[state=open]:animate-fade-in"
+          side="top"
+          avoidCollisions
+          collisionPadding={{ top: 80 }}
+          className="z-[200] w-[272px] rounded-2xl border border-[#ecd9ec] bg-white p-3 shadow-[0_24px_50px_rgba(107,35,152,0.22)] data-[state=open]:animate-fade-in"
         >
           {/* month header */}
           <div className="mb-2 flex items-center justify-between">
@@ -120,7 +135,7 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
                     isSel
                       ? 'bg-[linear-gradient(135deg,#6b2398,#d946ef)] font-bold text-white shadow-[0_6px_14px_rgba(107,35,152,0.35)]'
                       : disabled
-                      ? 'cursor-not-allowed text-[#cfc4d6]'
+                      ? 'cursor-not-allowed text-[#d8cfe8] line-through'
                       : 'text-[#32105f] hover:bg-[#f6e6ef]',
                     isToday && !isSel && 'ring-1 ring-[#d946ef]',
                   )}
