@@ -45,13 +45,12 @@ export function Header() {
     setMegaOpen(false)
   }, [location.pathname])
 
-  const isHero = location.pathname === '/'
 
   return (
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-        scrolled || !isHero
+        scrolled
           ? 'bg-[#fffaf4]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(50,16,95,0.08)]'
           : 'bg-transparent',
       )}

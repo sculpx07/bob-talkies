@@ -28,6 +28,7 @@ const config: Config = {
       fontFamily: {
         display: ['DM Sans', 'sans-serif'],
         body: ['Jost', 'Manrope', 'sans-serif'],
+        cursive: ['Dancing Script', 'cursive'],
       },
       borderRadius: {
         card: '12px',

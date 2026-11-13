@@ -46,19 +46,21 @@ interface SectionHeaderProps {
   subtitle?: string
   centered?: boolean
   className?: string
+  titleClassName?: string
+  eyebrowClassName?: string
 }
 
-export function SectionHeader({ eyebrow, title, subtitle, centered, className }: SectionHeaderProps) {
+export function SectionHeader({ eyebrow, title, subtitle, centered, className, titleClassName, eyebrowClassName }: SectionHeaderProps) {
   return (
     <div className={cn('mb-10 md:mb-14', centered && 'text-center', className)}>
       {eyebrow && (
-        <p className="text-gold-500 text-sm font-medium tracking-widest uppercase mb-3">{eyebrow}</p>
+        <p className={cn('text-gold-500 text-sm font-medium tracking-widest uppercase mb-3', eyebrowClassName)}>{eyebrow}</p>
       )}
-      <h2 className="font-display text-3xl md:text-4xl text-text-primary leading-tight">
+      <h2 className={cn('font-display text-3xl md:text-4xl text-text-primary leading-tight', titleClassName)}>
         {title}
       </h2>
       {subtitle && (
-        <p className="text-text-secondary mt-3 text-base md:text-lg max-w-2xl leading-relaxed">
+        <p className={cn('text-text-secondary mt-3 text-base md:text-lg max-w-2xl leading-relaxed whitespace-pre-line', centered && 'mx-auto')}>
           {subtitle}
         </p>
       )}

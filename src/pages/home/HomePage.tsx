@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft, Clapperboard, ArrowRight } from 'lucide-react'
 import { Seo } from '@/components/seo/Seo'
+import { OfferTicket } from '@/components/ui/OfferTicket'
 import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
 import { PartySelect } from '@/components/ui/PartySelect'
 import { PartyCounter } from '@/components/ui/PartyCounter'
@@ -348,32 +349,26 @@ export default function HomePage() {
       {/* Live Offers */}
       {(offersLoading || (offers && offers.length > 0)) && (
         <Section bg="base">
-          <SectionHeader eyebrow="Limited Time" title="Current Offers" subtitle="Exclusive deals for your next celebration." />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <SectionHeader
+            eyebrow="Limited Time"
+            eyebrowClassName="font-cursive normal-case tracking-normal text-3xl md:text-4xl font-semibold text-[#6b2398]"
+            title="Current Offers"
+            titleClassName="text-4xl md:text-5xl font-bold"
+            subtitle="Exclusive deals for your next celebration."
+            centered
+          />
+          <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
             {offersLoading
-              ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-40" />)
-              : offers?.map((offer) => (
-                  <Card key={offer.id} hover className="border-gold-500/30 overflow-hidden">
-                    <CardBody>
-                      {offer.badge && <Badge variant="champagne" className="mb-3">{offer.badge}</Badge>}
-                      <h3 className="font-semibold text-text-primary mb-1">{offer.title}</h3>
-                      <p className="text-sm text-text-secondary mb-4 leading-relaxed">{offer.description}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-gold-400 bg-gold-500/10 px-2 py-1 rounded-lg text-sm tracking-wider">
-                          {offer.code}
-                        </span>
-                        <Button asChild size="sm" variant="secondary">
-                          <Link to={`/book?coupon=${offer.code}`}>Book</Link>
-                        </Button>
-                      </div>
-                    </CardBody>
-                  </Card>
-                ))}
+              ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-52" rounded="lg" />)
+              : offers?.map((offer, i) => <OfferTicket key={offer.id} offer={offer} index={i} />)}
           </div>
-          <div className="text-center mt-6">
-            <Button asChild variant="ghost">
-              <Link to="/offers">View All Offers <ChevronRight size={16} /></Link>
-            </Button>
+          <div className="mt-10 text-center">
+            <Link
+              to="/offers"
+              className="inline-flex items-center gap-2 rounded-full border border-[#32105f]/50 px-6 py-2.5 text-sm font-semibold text-[#32105f]"
+            >
+              View All Offers <ChevronRight size={16} />
+            </Link>
           </div>
         </Section>
       )}
