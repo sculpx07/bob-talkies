@@ -14,36 +14,40 @@ interface StepperProps {
 
 export function Stepper({ steps, currentStep, className }: StepperProps) {
   return (
-    <nav aria-label="Booking progress" className={cn('flex items-center gap-0', className)}>
+    <nav aria-label="Booking progress" className={cn('flex min-w-max items-start', className)}>
       {steps.map((step, i) => {
         const done = i < currentStep
         const active = i === currentStep
         return (
-          <div key={step.id} className="flex items-center flex-1 last:flex-none">
-            <div className="flex flex-col items-center gap-1">
+          <div key={step.id} className="flex flex-1 items-start last:flex-none">
+            <div className="flex w-16 flex-col items-center gap-1.5">
               <div
                 className={cn(
-                  'w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold border-2 transition-all duration-200',
-                  done && 'bg-gold-500 border-gold-500 text-bg-base',
-                  active && 'border-gold-500 text-gold-400 bg-gold-500/10',
-                  !done && !active && 'border-border-subtle text-text-muted bg-bg-surface',
+                  'flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold transition-all duration-300',
+                  done && 'bg-[#32105f] text-white',
+                  active && 'bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_8px_20px_rgba(107,35,152,0.4)] scale-110',
+                  !done && !active && 'bg-white text-[#7d7094] border border-[#ecd9ec]',
                 )}
                 aria-current={active ? 'step' : undefined}
               >
-                {done ? <Check size={14} /> : i + 1}
+                {done ? <Check size={15} /> : i + 1}
               </div>
               <span className={cn(
-                'text-xs hidden sm:block',
-                active ? 'text-gold-400 font-medium' : done ? 'text-text-secondary' : 'text-text-muted',
+                'text-[11px] font-medium',
+                active ? 'text-[#6b2398] font-semibold' : done ? 'text-[#32105f]' : 'text-[#7d7094]',
               )}>
                 {step.label}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={cn(
-                'flex-1 h-0.5 mx-1 transition-all duration-200',
-                i < currentStep ? 'bg-gold-500' : 'bg-border-subtle',
-              )} />
+              <div className="mt-[17px] h-1 min-w-3 flex-1 overflow-hidden rounded-full bg-[#ecd9ec]">
+                <div
+                  className={cn(
+                    'h-full rounded-full bg-[linear-gradient(90deg,#6b2398,#d946ef)] transition-all duration-500',
+                    i < currentStep ? 'w-full' : 'w-0',
+                  )}
+                />
+              </div>
             )}
           </div>
         )

@@ -41,7 +41,7 @@ export function StickyPriceBar({
   const holdWarning = holdSeconds !== null && holdSeconds < 120
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-bg-elevated/95 backdrop-blur-md border-t border-border-subtle px-4 py-3 safe-area-bottom">
+    <div className="fixed bottom-0 left-0 right-0 z-30 rounded-t-3xl bg-white/90 backdrop-blur-xl shadow-[0_-10px_30px_rgba(107,35,152,0.12)] px-4 py-3 safe-area-bottom">
       {holdSeconds !== null && (
         <div className={cn(
           'flex items-center justify-center gap-1.5 text-xs mb-2',
@@ -55,14 +55,14 @@ export function StickyPriceBar({
       )}
       <div className="max-w-2xl mx-auto flex items-center gap-3">
         {stepIndex > 0 && (
-          <Button variant="ghost" size="md" onClick={onBack} className="shrink-0">
+          <Button variant="ghost" size="md" onClick={onBack} className="shrink-0 !rounded-full !text-[#32105f]">
             Back
           </Button>
         )}
         <div className="flex-1">
           {showTotal && displayTotal ? (
             <div className="text-xs text-text-muted">
-              Total: <span className="text-gold-400 font-semibold">{formatINR(displayTotal)}</span>
+              Total: <span className="text-[#6b2398] font-bold">{formatINR(displayTotal)}</span>
             </div>
           ) : (
             <div className="text-xs text-text-muted">
@@ -75,7 +75,7 @@ export function StickyPriceBar({
           onClick={onNext}
           disabled={!canProceed}
           loading={loading}
-          className="shrink-0 gap-1"
+          className="shrink-0 gap-1 !rounded-full !bg-none !bg-[linear-gradient(135deg,#6b2398,#d946ef)] !text-white !shadow-[0_10px_24px_rgba(107,35,152,0.3)] hover:!shadow-[0_14px_30px_rgba(107,35,152,0.4)]"
         >
           {nextLabel} <ChevronRight size={16} aria-hidden="true" />
         </Button>

@@ -11,6 +11,11 @@
 
   html {
     scroll-behavior: smooth;
+    /* hide the page scrollbar (scrolling still works) */
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
   }
 
   @media (prefers-reduced-motion: reduce) {

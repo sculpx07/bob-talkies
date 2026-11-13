@@ -43,11 +43,17 @@ const config: Config = {
       },
       animation: {
         shimmer: 'shimmer 2s linear infinite',
-        marquee: 'marquee 45s linear infinite',
+        marquee: 'marquee 60s linear infinite',
+        'plan-pulse': 'planPulse 1.1s ease-out 2',
         'fade-in': 'fadeIn 0.3s ease-out',
         'slide-up': 'slideUp 0.3s ease-out',
       },
       keyframes: {
+        planPulse: {
+          '0%': { boxShadow: '0 0 0 0 rgba(217,70,239,0.55), 0 24px 60px rgba(107,35,152,0.22)', transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.025)' },
+          '100%': { boxShadow: '0 0 0 26px rgba(217,70,239,0), 0 24px 60px rgba(107,35,152,0.22)', transform: 'scale(1)' },
+        },
         marquee: {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(var(--marquee-distance))' },

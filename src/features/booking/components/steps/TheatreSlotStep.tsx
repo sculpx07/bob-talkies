@@ -34,7 +34,7 @@ export function TheatreSlotStep() {
 
   return (
     <div>
-      <h2 className="font-display text-2xl md:text-3xl text-text-primary mb-2">
+      <h2 className="font-display text-3xl md:text-4xl font-bold text-[#2a0e4f] mb-2">
         Choose your theatre
       </h2>
       <p className="text-text-secondary mb-6">
@@ -79,34 +79,36 @@ function TheatreWithSlots({
 
   return (
     <div className={cn(
-      'border rounded-card overflow-hidden transition-all duration-200',
-      isTheatreSelected ? 'border-gold-500 shadow-gold-glow' : 'border-border-subtle bg-bg-surface',
+      'rounded-3xl overflow-hidden bg-white transition-all duration-200',
+      isTheatreSelected
+        ? 'ring-2 ring-[#c026d3] shadow-[0_16px_40px_rgba(107,35,152,0.25)]'
+        : 'shadow-[0_8px_24px_rgba(107,35,152,0.1)] hover:shadow-[0_14px_34px_rgba(107,35,152,0.18)] hover:-translate-y-0.5',
     )}>
       <div className="flex gap-4 p-4">
         <img
           src={theatre.images[0]}
           alt={theatre.name}
-          className="w-24 h-20 object-cover rounded-lg shrink-0"
+          className="w-28 h-24 object-cover rounded-2xl shrink-0"
           loading="lazy"
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-start gap-2 flex-wrap">
-            <h3 className="font-semibold text-text-primary">{theatre.name}</h3>
-            {isRecommended && <Badge variant="gold">Recommended</Badge>}
-            {theatre.currentOffer && <Badge variant="champagne">{theatre.currentOffer}</Badge>}
+            <h3 className="text-lg font-bold text-[#2a0e4f]">{theatre.name}</h3>
+            {isRecommended && <Badge variant="gold" className="!border-0 !bg-[#f3e1ff] !text-[#6b2398] font-semibold">Recommended</Badge>}
+            {theatre.currentOffer && <Badge variant="champagne" className="!border-0 !bg-[#ffe9f1] !text-[#c2255c] font-semibold">{theatre.currentOffer}</Badge>}
           </div>
           <div className="flex flex-wrap gap-3 mt-1 text-xs text-text-muted">
             <span className="flex items-center gap-1"><Users size={11} />{theatre.capacityMin}–{theatre.capacityMax}</span>
             <span className="flex items-center gap-1"><Monitor size={11} />{theatre.screenSize}</span>
             <span className="flex items-center gap-1"><Volume2 size={11} />{theatre.soundSystem}</span>
           </div>
-          <p className="text-xs text-gold-400 mt-1 font-medium">
+          <p className="mt-1.5 inline-block rounded-full bg-[#fff1d6] px-2.5 py-0.5 text-xs font-semibold text-[#8f6420]">
             {formatINR(theatre.startingPricePaise)} onwards
           </p>
         </div>
       </div>
 
-      <div className="border-t border-border-subtle px-4 py-3">
+      <div className="bg-[#faf3fb] px-4 py-3.5">
         <p className="text-xs text-text-muted mb-2 flex items-center gap-1.5">
           <Clock size={12} aria-hidden="true" /> Available slots for {date}
         </p>
@@ -129,14 +131,14 @@ function TheatreWithSlots({
                   disabled={booked}
                   aria-pressed={isSelected}
                   className={cn(
-                    'px-3 py-1.5 rounded-pill border text-xs font-medium transition-all duration-150',
-                    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500',
+                    'px-3.5 py-1.5 rounded-full border text-xs font-semibold transition-all duration-150',
+                    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#c026d3]',
                     booked && 'opacity-30 cursor-not-allowed line-through',
                     isSelected
-                      ? 'bg-gold-500 border-gold-500 text-bg-base'
+                      ? 'border-transparent bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_6px_16px_rgba(107,35,152,0.35)]'
                       : slot.status === 'high_demand'
-                      ? 'border-crimson-500/40 text-crimson-500 hover:bg-crimson-500/10'
-                      : 'border-border-subtle text-text-secondary hover:border-gold-500/40 hover:text-gold-400',
+                      ? 'border-[#f5a3c4] bg-white text-[#c2255c] hover:bg-[#fff0f5]'
+                      : 'border-[#e6cfe9] bg-white text-[#32105f] hover:border-[#c026d3] hover:text-[#6b2398]',
                   )}
                 >
                   {formatTime(slot.start)}

@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft } from 'lucide-react'
+import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft } from 'lucide-react'
 import { Seo } from '@/components/seo/Seo'
-import { FeaturedEvents } from '@/components/ui/FeaturedEvents'
-import { PolaroidMarquee } from '@/components/ui/PolaroidMarquee'
-import { FlowButton } from '@/components/ui/flow-button'
+import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
+import { PartySelect } from '@/components/ui/PartySelect'
+import { FeaturedTheatres } from '@/components/ui/FeaturedTheatres'
+import { TheatreStrip } from '@/components/ui/TheatreStrip'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Card, CardBody } from '@/components/ui/Card'
@@ -88,6 +89,16 @@ const GUEST_STORIES = [
 
 export default function HomePage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [planHighlight, setPlanHighlight] = useState(false)
+
+  // "Book Now" links here: make the planner pulse (no scrolling)
+  useEffect(() => {
+    if (!(location.state as { highlightPlan?: boolean } | null)?.highlightPlan) return
+    const start = setTimeout(() => setPlanHighlight(true), 150)
+    const stop = setTimeout(() => setPlanHighlight(false), 2600)
+    return () => { clearTimeout(start); clearTimeout(stop) }
+  }, [location.key, location.state])
   const [selectedOccasion, setSelectedOccasion] = useState('')
   const [guests, setGuests] = useState(2)
   const [date, setDate] = useState('')
@@ -162,82 +173,90 @@ export default function HomePage() {
         </video>
         <div className="film-grain absolute inset-0 pointer-events-none" aria-hidden="true" />
 
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto pt-24">
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-24">
           <Badge variant="gold" className="mb-6 !border-0 !text-lg md:!text-xl !font-medium !text-gold-600 px-5 py-2 font-['Jost',sans-serif]">
             <Sparkles size={12} />
-            Hyderabad's #1 Private Celebrations venue
+            Hyderabad's #1 Private Celebrations Venue
           </Badge>
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-[#2a0e4f] font-bold leading-[1.1] mb-6">
-            Your Celebration
-            <span className="bg-gradient-to-r from-[#6b2398] to-[#8e39c7] bg-clip-text text-transparent">Your Theatre</span>
-            <span className="bg-gradient-to-r from-[#6b2398] to-[#8e39c7] bg-clip-text text-transparent">Your Memories</span>
-          </h1>
-          <p className="text-text-secondary text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            Hyderabad's most loved private cinema for birthdays, anniversaries, proposals and every celebration worth remembering 4K,Dolby Atmos,Fully Private.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <FlowButton to="/book" text="Book Your Theatre" variant="solid" />
-            <FlowButton to="/theatres" text="Explore Theatres" />
+          <h1 className="sr-only">Your Celebration. Your Theatre. Your Memories.</h1>
+
+          {/* Plan your party — occasion, date, guests */}
+          <div id="plan" className="relative mx-auto w-full max-w-5xl scroll-mt-28">
+            <div className="pointer-events-none absolute -inset-5 rounded-[3rem] bg-[radial-gradient(ellipse_at_top_left,rgba(217,70,239,0.18),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgba(245,189,97,0.30),transparent_55%)] blur-2xl" aria-hidden="true" />
+            <span className="pointer-events-none absolute -top-2.5 left-12 h-3 w-3 rounded-full bg-[#f472b6]" aria-hidden="true" />
+            <span className="pointer-events-none absolute -top-1 right-20 h-2.5 w-2.5 rotate-45 bg-[#f5bd61]" aria-hidden="true" />
+            <span className="pointer-events-none absolute -bottom-2 left-24 h-2.5 w-5 -rotate-12 rounded-full bg-[#8e39c7]" aria-hidden="true" />
+            <span className="pointer-events-none absolute -right-2 bottom-8 h-3 w-3 rounded-full bg-[#f5bd61]" aria-hidden="true" />
+
+            <div className={`relative rounded-[2rem] bg-[linear-gradient(135deg,#8e39c7,#f472b6_50%,#f5bd61)] p-[2px] shadow-[0_24px_60px_rgba(107,35,152,0.22)] ${planHighlight ? 'animate-plan-pulse' : ''}`}>
+              <div className="rounded-[calc(2rem-2px)] bg-white/95 p-5 text-left backdrop-blur-xl md:p-7">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
+                  {/* Occasion */}
+                  <div>
+                    <label htmlFor="plan-occasion" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.14em] text-[#32105f]">
+                      Occasion <span className="text-[#d946ef]">*</span>
+                    </label>
+                    <PartySelect
+                      id="plan-occasion"
+                      value={selectedOccasion}
+                      onValueChange={setSelectedOccasion}
+                      placeholder="Select occasion"
+                      icon={<PartyPopper size={18} />}
+                      options={OCCASION_QUICK.map((o) => ({ value: o.slug, label: o.label }))}
+                    />
+                  </div>
+
+                  {/* Date */}
+                  <div>
+                    <label htmlFor="plan-date" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.14em] text-[#32105f]">
+                      Date <span className="text-[#d946ef]">*</span>
+                    </label>
+                    <PartyDatePicker
+                      id="plan-date"
+                      value={date}
+                      onChange={setDate}
+                      min={today}
+                      icon={<CalendarDays size={18} />}
+                    />
+                  </div>
+
+                  {/* Guests */}
+                  <div>
+                    <label htmlFor="plan-guests" className="mb-2 block text-[11px] font-bold uppercase tracking-[0.14em] text-[#32105f]">
+                      Guests
+                    </label>
+                    <PartySelect
+                      id="plan-guests"
+                      value={String(guests)}
+                      onValueChange={(v) => setGuests(Number(v))}
+                      placeholder="Guests"
+                      icon={<Users size={18} />}
+                      options={GUEST_OPTIONS.map((n) => ({ value: String(n), label: `${n}${n === 30 ? '+' : ''} Guests` }))}
+                    />
+                  </div>
+
+                  {/* CTA */}
+                  <button
+                    type="button"
+                    onClick={handleQuickBook}
+                    disabled={!selectedOccasion || !date}
+                    className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#6b2398,#d946ef)] px-7 text-sm font-medium  text-white shadow-[0_12px_26px_rgba(107,35,152,0.35)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(107,35,152,0.45)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 md:col-span-2 lg:col-span-1"
+                  >
+                    Show Available Options <ChevronRight size={18} />
+                  </button>
+                </div>
+                {(!selectedOccasion || !date) && (
+                  <p className="mt-3 text-xs text-[#7d7094]">Choose an occasion and a date to see available theatres.</p>
+                )}
+              </div>
+            </div>
           </div>
-          <PolaroidMarquee />
+
+          <TheatreStrip theatres={theatres ?? []} />
         </div>
       </section>
 
-      <FeaturedEvents />
-
-      {/* Quick Booking Widget */}
-      <Section bg="navy">
-        <div className="max-w-3xl mx-auto bg-bg-elevated border border-border-subtle rounded-card p-6 md:p-8 shadow-2xl">
-          <h2 className="font-display text-2xl text-text-primary mb-1 text-center">Find Your Perfect Theatre</h2>
-          <p className="text-sm text-text-muted text-center mb-6">Tell us about your celebration — we'll show you available options instantly.</p>
-          <div className="mb-5">
-            <p className="text-sm font-medium text-text-secondary mb-3">What are you celebrating?</p>
-            <div className="flex flex-wrap gap-2">
-              {OCCASION_QUICK.map((o) => (
-                <button
-                  key={o.slug}
-                  onClick={() => setSelectedOccasion(selectedOccasion === o.slug ? '' : o.slug)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-sm border transition-all ${
-                    selectedOccasion === o.slug
-                      ? 'bg-gold-500/20 border-gold-500 text-gold-400'
-                      : 'border-border-subtle text-text-secondary hover:border-gold-500/40'
-                  }`}
-                >
-                  <span>{o.emoji}</span>
-                  {o.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-5">
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">Guests</label>
-              <select
-                value={guests}
-                onChange={(e) => setGuests(Number(e.target.value))}
-                className="w-full bg-bg-surface border border-border-subtle rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-gold-500"
-              >
-                {GUEST_OPTIONS.map((n) => (
-                  <option key={n} value={n}>{n}{n === 30 ? '+' : ''} Guests</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">Date</label>
-              <input
-                type="date"
-                min={today}
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-bg-surface border border-border-subtle rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-gold-500"
-              />
-            </div>
-          </div>
-          <Button fullWidth size="lg" onClick={handleQuickBook}>
-            Show Available Options <ChevronRight size={18} />
-          </Button>
-        </div>
-      </Section>
+      <FeaturedTheatres />
 
       {/* Live Offers */}
       {(offersLoading || (offers && offers.length > 0)) && (

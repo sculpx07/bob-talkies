@@ -57,18 +57,10 @@ export function Header() {
       )}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] h-16 md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex flex-col items-center shrink-0 leading-none" aria-label="BOB Talkies home">
-            <span className="flex items-center font-extrabold text-[#32105f] text-3xl md:text-4xl tracking-tight font-body">
-              B
-              <svg viewBox="0 0 40 40" className="w-7 h-7 md:w-9 md:h-9 mx-0.5" aria-hidden="true">
-                <circle cx="20" cy="20" r="19" fill="#f08a1c" />
-                <path d="M15 11.5 L29 20 L15 28.5Z" fill="#fffaf4" />
-              </svg>
-              B
-            </span>
-            <span className="font-body font-bold text-[#32105f] text-sm md:text-base tracking-wide -mt-0.5">Talkies</span>
+          <Link to="/" className="shrink-0 justify-self-start" aria-label="BOB Talkies home">
+            <img src="/logo.png" alt="BOB Talkies" className="h-12 md:h-16 w-auto" />
           </Link>
 
           {/* Desktop nav */}
@@ -78,8 +70,8 @@ export function Header() {
                 <div key={link.label} className="relative">
                   <button
                     className={cn(
-                      'flex items-center gap-1 px-3 py-2 text-base font-medium leading-6 transition-colors border-b-2 border-transparent',
-                      'text-[#32105f] hover:text-[#6b2398]',
+                      'flex items-center gap-1 px-3 py-2 text-base font-medium leading-6 text-[#32105f]',
+                      'relative after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[2px] after:rounded-full after:bg-[#32105f] after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
                     )}
                     onClick={() => setMegaOpen(!megaOpen)}
                     aria-expanded={megaOpen}
@@ -109,10 +101,9 @@ export function Header() {
                   to={link.to}
                   className={({ isActive }) =>
                     cn(
-                      'px-3 py-2 text-base font-medium leading-6 transition-colors border-b-2',
-                      isActive
-                        ? 'text-[#4a1a8a] border-[#4a1a8a]'
-                        : 'text-[#32105f] border-transparent hover:text-[#6b2398]',
+                      'px-3 py-2 text-base font-medium leading-6 text-[#32105f]',
+                      'relative after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[2px] after:rounded-full after:bg-[#32105f] after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
+                      isActive && 'after:scale-x-100 after:origin-left',
                     )
                   }
                 >
@@ -123,10 +114,10 @@ export function Header() {
           </nav>
 
           {/* CTA + Mobile toggle */}
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex items-center gap-2 md:gap-3 justify-self-end">
             <a
               href={`tel:+${config.whatsappNumber}`}
-              className="hidden md:flex items-center gap-1.5 py-2 leading-6 border-b-2 border-transparent text-[#32105f] hover:text-[#6b2398] transition-colors text-base font-medium"
+              className="hidden md:flex items-center gap-1.5 px-3 py-2 leading-6 text-[#32105f] text-base font-medium"
               aria-label="Call us"
             >
               <Phone size={15} />
@@ -135,9 +126,9 @@ export function Header() {
             <Button
               asChild
               size="md"
-              className="hidden sm:inline-flex !bg-none !bg-[#32105f] !text-white hover:!bg-[#32105f] !rounded-full !shadow-none"
+              className="hidden sm:inline-flex !px-6 !bg-none !bg-[#32105f] !text-white hover:!bg-[#32105f] !rounded-full !shadow-none"
             >
-              <Link to="/book">Book Now <ArrowRight size={14} className="ml-1" /></Link>
+              <Link to="/" state={{ highlightPlan: true }}>Book Now <ArrowRight size={14} /></Link>
             </Button>
             <button
               className="lg:hidden p-2 text-[#32105f] hover:text-[#6b2398] transition-colors"
@@ -171,7 +162,7 @@ export function Header() {
             ))}
             <div className="pt-3 border-t border-border-subtle">
               <Button asChild fullWidth>
-                <Link to="/book">Book Your Theatre</Link>
+                <Link to="/" state={{ highlightPlan: true }}>Book Your Theatre</Link>
               </Button>
             </div>
           </nav>
