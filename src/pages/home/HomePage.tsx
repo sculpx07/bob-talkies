@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft, Clapperboard, ArrowRight } from 'lucide-react'
@@ -27,6 +28,19 @@ import type { Offer } from '@/schemas/offer'
 const OCCASION_QUICK = OCCASIONS.map((o) => ({ label: o.label, slug: o.slug, emoji: o.emoji }))
 
 const HERO_WORDS = ['Celebration', 'Birthday', 'Anniversary', 'Proposal', 'Date Night', 'Movie Night', 'Sports Night']
+
+const CEL_ROW1 = [
+  { slug: 'birthday',    label: 'Birthday',    sub: 'Celebrate',  img: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=600&q=80', overlay: 'from-[#a855f7]/80' },
+  { slug: 'anniversary', label: 'Anniversary', sub: 'Book for',   img: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&q=80', overlay: 'from-[#ec4899]/80' },
+  { slug: 'date-night',  label: 'Date Night',  sub: 'Book for',   img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80', overlay: 'from-[#7c3aed]/80' },
+  { slug: 'proposal',    label: 'Proposal',    sub: 'Book for',   img: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&q=80', overlay: 'from-[#db2777]/80' },
+]
+const CEL_ROW2 = [
+  { slug: 'family',           label: 'Family',           sub: 'Book for', img: 'https://images.unsplash.com/photo-1511895426328-dc8714191011?w=600&q=80', overlay: 'from-[#f97316]/80' },
+  { slug: 'friends',          label: 'Friends',          sub: 'Book for', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80', overlay: 'from-[#6366f1]/80' },
+  { slug: 'sports-screening', label: 'Sports Screening', sub: 'Book for', img: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=600&q=80', overlay: 'from-[#0ea5e9]/80' },
+  { slug: 'corporate',        label: 'Corporate',        sub: 'Book for', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80', overlay: 'from-[#334155]/80' },
+]
 
 const GUEST_STORIES = [
   {
@@ -111,6 +125,10 @@ export default function HomePage() {
   const [storyIndex, setStoryIndex] = useState(0)
   const storyTimer = useRef<ReturnType<typeof setInterval> | null>(null)
 
+  const offersScrollRef = useRef<HTMLDivElement>(null)
+  const [offersActiveIndex, setOffersActiveIndex] = useState(0)
+  const celRow1Ref = useRef<HTMLDivElement>(null)
+  const celRow2Ref = useRef<HTMLDivElement>(null)
   const [heroWordIndex, setHeroWordIndex] = useState(0)
   const [heroKey, setHeroKey] = useState(0)
 
@@ -122,6 +140,42 @@ export default function HomePage() {
     return () => clearInterval(interval)
   }, [])
 
+  useEffect(() => {
+    function makeScroller(ref: React.RefObject<HTMLDivElement | null>, dir: 1 | -1) {
+      const el = ref.current
+      if (!el) return () => {}
+      const node = el
+      let frameId: number
+      let paused = false
+      let initialized = false
+      function step() {
+        if (!initialized) {
+          if (dir === -1) node.scrollLeft = node.scrollWidth / 3
+          initialized = true
+        }
+        if (!paused) {
+          node.scrollLeft += 0.55 * dir
+          if (dir === 1 && node.scrollLeft >= node.scrollWidth / 3) node.scrollLeft = 0
+          if (dir === -1 && node.scrollLeft <= 0) node.scrollLeft = node.scrollWidth / 3
+        }
+        frameId = requestAnimationFrame(step)
+      }
+      const pause = () => { paused = true }
+      const resume = () => { paused = false }
+      el.addEventListener('mouseenter', pause)
+      el.addEventListener('mouseleave', resume)
+      frameId = requestAnimationFrame(step)
+      return () => {
+        cancelAnimationFrame(frameId)
+        el.removeEventListener('mouseenter', pause)
+        el.removeEventListener('mouseleave', resume)
+      }
+    }
+    const c1 = makeScroller(celRow1Ref, 1)
+    const c2 = makeScroller(celRow2Ref, -1)
+    return () => { c1(); c2() }
+  }, [])
+
   const { data: theatres, isLoading: theatresLoading } = useQuery({
     queryKey: theatreKeys.list(),
     queryFn: () => api.get<Theatre[]>('/theatres'),
@@ -131,6 +185,35 @@ export default function HomePage() {
     queryKey: offerKeys.list(),
     queryFn: () => api.get<Offer[]>('/offers'),
   })
+
+  useEffect(() => {
+    const el = offersScrollRef.current
+    if (!el) return
+    let frameId: number
+    let paused = false
+    function step() {
+      if (!paused && el) {
+        el.scrollLeft += 0.6
+        if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 1) el.scrollLeft = 0
+      }
+      frameId = requestAnimationFrame(step)
+    }
+    const pause = () => { paused = true }
+    const resume = () => { paused = false }
+    el.addEventListener('mouseenter', pause)
+    el.addEventListener('mouseleave', resume)
+    el.addEventListener('touchstart', pause, { passive: true })
+    el.addEventListener('touchend', resume)
+    const startId = setTimeout(() => { frameId = requestAnimationFrame(step) }, 2500)
+    return () => {
+      clearTimeout(startId)
+      cancelAnimationFrame(frameId)
+      el.removeEventListener('mouseenter', pause)
+      el.removeEventListener('mouseleave', resume)
+      el.removeEventListener('touchstart', pause)
+      el.removeEventListener('touchend', resume)
+    }
+  }, [offers])
 
   function resetTimer() {
     if (storyTimer.current) clearInterval(storyTimer.current)
@@ -354,26 +437,36 @@ export default function HomePage() {
       {/* Live Offers */}
       {(offersLoading || (offers && offers.length > 0)) && (
         <Section bg="base">
-          <SectionHeader
-            eyebrow="Limited Time"
-            eyebrowClassName="font-cursive normal-case tracking-normal text-3xl md:text-4xl font-semibold text-[#6b2398]"
-            title="Current Offers"
-            titleClassName="text-4xl md:text-5xl font-bold"
-            subtitle="Exclusive deals for your next celebration."
-            centered
-          />
-          <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
-            {offersLoading
-              ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-52" rounded="lg" />)
-              : offers?.map((offer, i) => <OfferTicket key={offer.id} offer={offer} index={i} />)}
-          </div>
-          <div className="mt-10 text-center">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="relative">
+                  <Clapperboard size={28} className="text-[#6b2398]" strokeWidth={1.8} />
+                  <Sparkles size={11} className="text-[#d4a94a] absolute -top-1.5 -right-1.5" />
+                </div>
+                <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Limited Time</p>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-black leading-tight">
+                <span className="text-[#2a0e4f]">Current </span>
+                <span className="text-[#7c3aed]">Offers</span>
+              </h2>
+              <div className="mt-2 h-[3px] w-10 rounded-full bg-[#d4a94a]" />
+            </div>
             <Link
               to="/offers"
-              className="inline-flex items-center gap-2 rounded-full border border-[#32105f]/50 px-6 py-2.5 text-sm font-semibold text-[#32105f]"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#32105f]/50 px-4 py-2 text-xs font-semibold text-[#32105f] hover:bg-[#32105f]/5 transition-colors mt-1"
             >
-              View All Offers <ChevronRight size={16} />
+              View All <ChevronRight size={14} />
             </Link>
+          </div>
+          <div ref={offersScrollRef} className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4 md:-mx-6 md:px-6 [&::-webkit-scrollbar]:hidden">
+            {offersLoading
+              ? Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="w-[320px] h-44 shrink-0" rounded="lg" />)
+              : offers?.map((offer, i) => (
+                  <div key={offer.id} className="w-[320px] sm:w-[360px] shrink-0 snap-start">
+                    <OfferTicket offer={offer} index={i} />
+                  </div>
+                ))}
           </div>
         </Section>
       )}
@@ -436,52 +529,111 @@ export default function HomePage() {
 
       {/* Choose Your Celebration */}
       <Section bg="base">
-        <SectionHeader eyebrow="Every Occasion" title="Choose Your Celebration" centered />
-        {(() => {
-          const cards = [
-            { slug: 'birthday',         label: 'Birthday',         emoji: '🎂', grad: 'linear-gradient(135deg,#f472b6,#a855f7)', glow: '#d946ef' },
-            { slug: 'anniversary',      label: 'Anniversary',      emoji: '💑', grad: 'linear-gradient(135deg,#ef4444,#ec4899)', glow: '#f43f5e' },
-            { slug: 'date-night',       label: 'Date Night',       emoji: '🌹', grad: 'linear-gradient(135deg,#7c3aed,#db2777)', glow: '#a21caf' },
-            { slug: 'proposal',         label: 'Proposal',         emoji: '💍', grad: 'linear-gradient(135deg,#e879f9,#9333ea)', glow: '#d946ef' },
-            { slug: 'family',           label: 'Family',           emoji: '👨‍👩‍👧‍👦', grad: 'linear-gradient(135deg,#f97316,#eab308)', glow: '#f59e0b' },
-            { slug: 'friends',          label: 'Friends',          emoji: '🥳', grad: 'linear-gradient(135deg,#8b5cf6,#6366f1)', glow: '#818cf8' },
-            { slug: 'sports-screening', label: 'Sports Screening', emoji: '⚽', grad: 'linear-gradient(135deg,#0ea5e9,#2563eb)', glow: '#38bdf8' },
-            { slug: 'corporate',        label: 'Corporate',        emoji: '💼', grad: 'linear-gradient(135deg,#334155,#1e293b)',  glow: '#64748b' },
-          ]
-          return (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-5xl mx-auto">
-              {cards.map((c, i) => (
-                <Link
-                  key={c.slug}
-                  to={`/celebrations/${c.slug}`}
-                  className="group relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
-                  style={{ background: c.grad, '--glow': c.glow, minHeight: i < 2 ? 180 : 150 } as React.CSSProperties}
-                >
-                  {/* subtle noise texture */}
-                  <span className="pointer-events-none absolute inset-0 rounded-2xl opacity-[0.08]"
-                    style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }}
-                    aria-hidden="true" />
-                  {/* glow on hover */}
-                  <span className="pointer-events-none absolute -bottom-6 -right-6 h-28 w-28 rounded-full opacity-0 blur-2xl transition-opacity duration-400 group-hover:opacity-60"
-                    style={{ background: c.glow }} aria-hidden="true" />
-                  {/* emoji */}
-                  <span className="relative z-10 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 text-2xl backdrop-blur-sm ring-1 ring-white/30 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 shadow-md">
-                    {c.emoji}
-                  </span>
-                  {/* label */}
-                  <div className="relative z-10 mt-auto">
-                    <p className="text-[13px] font-black uppercase tracking-widest text-white/60 leading-none mb-1">{i === 0 ? 'celebrate' : 'book for'}</p>
-                    <p className="text-base font-bold text-white leading-tight">{c.label}</p>
-                  </div>
-                  {/* arrow */}
-                  <span className="absolute right-4 top-4 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:bg-white/25">
-                    <ArrowRight size={13} className="text-white" />
-                  </span>
-                </Link>
-              ))}
+        {/* Section header */}
+        <div className="flex flex-col items-center text-center mb-10 md:mb-14">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="relative">
+              <PartyPopper size={26} className="text-[#6b2398]" strokeWidth={1.8} />
+              <Sparkles size={10} className="text-[#d4a94a] absolute -top-1.5 -right-1.5" />
             </div>
-          )
-        })()}
+            <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Every Occasion</p>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-black leading-tight">
+            <span className="text-[#2a0e4f]">Choose Your </span>
+            <span className="text-[#7c3aed]">Celebration</span>
+          </h2>
+          <div className="mt-2 h-[3px] w-10 rounded-full bg-[#d4a94a]" />
+        </div>
+
+        {/* Row 1 — scrolls left */}
+        <div
+          ref={celRow1Ref}
+          className="overflow-x-scroll [&::-webkit-scrollbar]:hidden mb-4"
+          style={{
+            scrollbarWidth: 'none',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)',
+            maskImage: 'linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)',
+          }}
+        >
+          <div className="flex gap-4 w-max">
+            {[...CEL_ROW1, ...CEL_ROW1, ...CEL_ROW1].map((c, i) => (
+              <motion.div
+                key={`r1-${i}`}
+                whileHover={{ y: -6, scale: 1.03 }}
+                transition={{ duration: 0.25 }}
+                className="shrink-0 w-[220px] sm:w-[250px]"
+              >
+                <Link
+                  to={`/celebrations/${c.slug}`}
+                  className="group relative block overflow-hidden rounded-2xl"
+                  style={{ height: 300 }}
+                >
+                  <img
+                    src={c.img}
+                    alt={c.label}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${c.overlay} via-black/20 to-transparent`} />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+                    <p className="text-[9px] font-black uppercase tracking-[0.28em] text-white/60 mb-0.5">{c.sub}</p>
+                    <p className="font-display text-lg font-bold text-white leading-tight">{c.label}</p>
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#2a0e4f] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
+                      Book Now <ArrowRight size={9} />
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 rounded-2xl ring-1 ring-white/0 group-hover:ring-white/20 transition-all duration-300" />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2 — scrolls right */}
+        <div
+          ref={celRow2Ref}
+          className="overflow-x-scroll [&::-webkit-scrollbar]:hidden"
+          style={{
+            scrollbarWidth: 'none',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)',
+            maskImage: 'linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)',
+          }}
+        >
+          <div className="flex gap-4 w-max">
+            {[...CEL_ROW2, ...CEL_ROW2, ...CEL_ROW2].map((c, i) => (
+              <motion.div
+                key={`r2-${i}`}
+                whileHover={{ y: -6, scale: 1.03 }}
+                transition={{ duration: 0.25 }}
+                className="shrink-0 w-[220px] sm:w-[250px]"
+              >
+                <Link
+                  to={`/celebrations/${c.slug}`}
+                  className="group relative block overflow-hidden rounded-2xl"
+                  style={{ height: 300 }}
+                >
+                  <img
+                    src={c.img}
+                    alt={c.label}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${c.overlay} via-black/20 to-transparent`} />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+                    <p className="text-[9px] font-black uppercase tracking-[0.28em] text-white/60 mb-0.5">{c.sub}</p>
+                    <p className="font-display text-lg font-bold text-white leading-tight">{c.label}</p>
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#2a0e4f] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
+                      Book Now <ArrowRight size={9} />
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 rounded-2xl ring-1 ring-white/0 group-hover:ring-white/20 transition-all duration-300" />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </Section>
 
       {/* Guest Stories Slider */}
