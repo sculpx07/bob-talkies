@@ -585,60 +585,7 @@ export default function HomePage() {
       )}
 
       {/* Our Theatres */}
-      <Section bg="surface" className="bg-[linear-gradient(to_bottom,transparent_0,#fffaf4_140px,#fffaf4_calc(100%-140px),transparent_100%)]">
-        <SectionHeader
-          eyebrow="5 Premium Theatres"
-          title="Explore Our Theatres"
-          subtitle="Every theatre is a world of its own — pick the one that matches your celebration."
-        />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {theatresLoading
-            ? Array.from({ length: 3 }, (_, i) => <TheatreCardSkeleton key={i} />)
-            : theatres?.slice(0, 3).map((theatre) => (
-                <Card key={theatre.id} hover className="flex flex-col overflow-hidden">
-                  <div className="relative h-52 overflow-hidden">
-                    <img
-                      src={theatre.images[0]}
-                      alt={`${theatre.name} private theatre`}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-bg-base/80 to-transparent" />
-                    {theatre.currentOffer && (
-                      <Badge variant="crimson" className="absolute top-3 right-3">Offer</Badge>
-                    )}
-                    <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
-                      <span className="text-xs text-white bg-black/50 px-2 py-0.5 rounded-pill">
-                        {theatre.capacityMin}–{theatre.capacityMax} guests
-                      </span>
-                      <PriceTag paise={theatre.startingPricePaise} className="text-white text-xs" />
-                    </div>
-                  </div>
-                  <CardBody className="flex-1 flex flex-col">
-                    <h3 className="font-display text-xl text-text-primary mb-1">{theatre.name}</h3>
-                    <p className="text-sm text-text-secondary mb-3 flex-1 line-clamp-2">{theatre.tagline}</p>
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      <Badge variant="muted">{theatre.resolution}</Badge>
-                      <Badge variant="muted">{theatre.soundSystem.split(' ').slice(0, 2).join(' ')}</Badge>
-                    </div>
-                    <div className="flex gap-2 mt-auto">
-                      <Button asChild variant="secondary" size="sm" className="flex-1">
-                        <Link to={`/theatres/${theatre.slug}`}>View</Link>
-                      </Button>
-                      <Button asChild size="sm" className="flex-1">
-                        <Link to={`/book?theatre=${theatre.id}`}>Book Now</Link>
-                      </Button>
-                    </div>
-                  </CardBody>
-                </Card>
-              ))}
-        </div>
-        <div className="text-center mt-8">
-          <Button asChild variant="secondary" size="lg">
-            <Link to="/theatres">View All Theatres <ChevronRight size={18} /></Link>
-          </Button>
-        </div>
-      </Section>
+  
 
       {/* Choose Your Celebration */}
       <Section bg="base">
