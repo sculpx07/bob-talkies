@@ -588,7 +588,7 @@ export default function HomePage() {
   
 
       {/* Choose Your Celebration */}
-      <Section bg="base">
+      <Section bg="base" className="bg-[#fffaf4]">
         {/* Section header */}
         <div className="flex flex-col items-center text-center mb-10 md:mb-14">
           <div className="flex items-center gap-2 mb-1">
