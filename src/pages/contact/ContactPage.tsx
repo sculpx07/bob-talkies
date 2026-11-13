@@ -16,8 +16,8 @@ import { config } from '@/lib/config'
 import { useState } from 'react'
 
 const OCCASION_OPTIONS = [
-  'Birthday', 'Anniversary', 'Proposal', 'Date Night', 'Bride To Be',
-  'Baby Shower', 'Family', 'Friends', 'Sports Screening', 'Corporate', 'Other',
+  'Birthday', 'Anniversary', 'Proposal', 'Date Night',
+  'Family', 'Friends', 'Sports Screening', 'Corporate', 'Other',
 ]
 
 export default function ContactPage() {

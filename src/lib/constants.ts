@@ -2,8 +2,8 @@ export const THEATRE_SLUGS = ['delight', 'heavens', 'filmdom', 'cosmos', 'vibe-h
 export type TheatreSlug = (typeof THEATRE_SLUGS)[number]
 
 export const OCCASION_SLUGS = [
-  'birthday', 'anniversary', 'date-night', 'proposal', 'bride-to-be',
-  'baby-shower', 'family', 'friends', 'sports-screening', 'corporate',
+  'birthday', 'anniversary', 'date-night', 'proposal',
+  'family', 'friends', 'sports-screening', 'corporate',
 ] as const
 export type OccasionSlug = (typeof OCCASION_SLUGS)[number]
 

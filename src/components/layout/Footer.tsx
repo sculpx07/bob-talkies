@@ -23,7 +23,7 @@ const OCCASION_LINKS = [
   { label: 'Anniversary', to: '/celebrations/anniversary' },
   { label: 'Proposal', to: '/celebrations/proposal' },
   { label: 'Date Night', to: '/celebrations/date-night' },
-  { label: 'Baby Shower', to: '/celebrations/baby-shower' },
+  { label: 'Friends', to: '/celebrations/friends' },
 ]
 
 const SUPPORT_LINKS = [

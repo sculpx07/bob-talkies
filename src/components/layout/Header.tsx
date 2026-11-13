@@ -20,8 +20,6 @@ const OCCASION_LINKS = [
   { label: 'Anniversary', to: '/celebrations/anniversary', emoji: '💑' },
   { label: 'Date Night', to: '/celebrations/date-night', emoji: '🌹' },
   { label: 'Proposal', to: '/celebrations/proposal', emoji: '💍' },
-  { label: 'Bride To Be', to: '/celebrations/bride-to-be', emoji: '👰' },
-  { label: 'Baby Shower', to: '/celebrations/baby-shower', emoji: '🍼' },
   { label: 'Family', to: '/celebrations/family', emoji: '👨‍👩‍👧‍👦' },
   { label: 'Friends', to: '/celebrations/friends', emoji: '🥳' },
   { label: 'Sports Screening', to: '/celebrations/sports-screening', emoji: '⚽' },
