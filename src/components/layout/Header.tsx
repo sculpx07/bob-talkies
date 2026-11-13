@@ -8,6 +8,7 @@ import { useSavedPlan } from '@/features/booking/useSavedPlan'
 import { OPEN_SAVED_EVENT } from '@/components/layout/SavedDrawer'
 
 const NAV_LINKS = [
+  { label: 'Home', to: '/' },
   { label: 'Our Theatres', to: '/theatres' },
   { label: 'Celebrations', to: '/celebrations', hasMega: true },
   { label: 'Packages', to: '/packages' },

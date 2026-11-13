@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft, Clapperboard, ArrowRight } from 'lucide-react'
@@ -188,30 +188,47 @@ export default function HomePage() {
 
   useEffect(() => {
     const el = offersScrollRef.current
-    if (!el) return
-    let frameId: number
+    if (!el || !offers?.length) return
+    const node = el
+    const count = offers.length
     let paused = false
-    function step() {
-      if (!paused && el) {
-        el.scrollLeft += 0.6
-        if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 1) el.scrollLeft = 0
-      }
-      frameId = requestAnimationFrame(step)
+    let currentIdx = 0
+    const cardW = 336
+    const gap = 16
+    const stepSize = cardW + gap
+
+    function scrollToIdx(idx: number) {
+      currentIdx = idx
+      setOffersActiveIndex(idx)
+      node.scrollTo({ left: idx * stepSize, behavior: 'smooth' })
     }
+
+    let timerId: ReturnType<typeof setTimeout>
+    function scheduleNext() {
+      timerId = setTimeout(() => {
+        if (!paused) {
+          const next = (currentIdx + 1) % count
+          scrollToIdx(next)
+        }
+        scheduleNext()
+      }, 2000)
+    }
+
     const pause = () => { paused = true }
     const resume = () => { paused = false }
-    el.addEventListener('mouseenter', pause)
-    el.addEventListener('mouseleave', resume)
-    el.addEventListener('touchstart', pause, { passive: true })
-    el.addEventListener('touchend', resume)
-    const startId = setTimeout(() => { frameId = requestAnimationFrame(step) }, 2500)
+    node.addEventListener('mouseenter', pause)
+    node.addEventListener('mouseleave', resume)
+    node.addEventListener('touchstart', pause, { passive: true })
+    node.addEventListener('touchend', resume)
+
+    const startId = setTimeout(() => scheduleNext(), 2500)
     return () => {
       clearTimeout(startId)
-      cancelAnimationFrame(frameId)
-      el.removeEventListener('mouseenter', pause)
-      el.removeEventListener('mouseleave', resume)
-      el.removeEventListener('touchstart', pause)
-      el.removeEventListener('touchend', resume)
+      clearTimeout(timerId)
+      node.removeEventListener('mouseenter', pause)
+      node.removeEventListener('mouseleave', resume)
+      node.removeEventListener('touchstart', pause)
+      node.removeEventListener('touchend', resume)
     }
   }, [offers])
 
@@ -436,7 +453,76 @@ export default function HomePage() {
 
       {/* Live Offers */}
       {(offersLoading || (offers && offers.length > 0)) && (
-        <Section bg="base">
+        <Section bg="base" className="relative overflow-hidden">
+          {/* ── Celebration background ── */}
+          {/* Floating balloons */}
+          {[
+            { left: '5%',  color: '#f472b6', w: 22, h: 28, delay: 0,   dur: 7 },
+            { left: '15%', color: '#c9a84c', w: 18, h: 24, delay: 1.5, dur: 8 },
+            { left: '30%', color: '#a78bfa', w: 20, h: 26, delay: 3,   dur: 6.5 },
+            { left: '55%', color: '#fb923c', w: 16, h: 22, delay: 0.8, dur: 7.5 },
+            { left: '70%', color: '#f472b6', w: 22, h: 28, delay: 2.2, dur: 7 },
+            { left: '82%', color: '#c9a84c', w: 18, h: 24, delay: 4,   dur: 6 },
+            { left: '92%', color: '#a78bfa', w: 20, h: 26, delay: 1,   dur: 8.5 },
+          ].map((b, i) => (
+            <motion.div
+              key={`bal-${i}`}
+              className="pointer-events-none absolute flex flex-col items-center"
+              style={{ left: b.left, bottom: '-10%' }}
+              animate={{ y: [0, -420], opacity: [0, 0.45, 0.45, 0] }}
+              transition={{ duration: b.dur, repeat: Infinity, delay: b.delay, ease: 'easeOut', times: [0, 0.1, 0.85, 1] }}
+              aria-hidden
+            >
+              <div style={{ width: b.w, height: b.h, background: b.color, borderRadius: '50% 50% 45% 45%', filter: 'blur(0.5px)' }} />
+              <div style={{ width: 1, height: 14, background: b.color, opacity: 0.6, marginTop: 1 }} />
+            </motion.div>
+          ))}
+
+          {/* Confetti ribbons */}
+          {[
+            { left: '8%',  top: '10%', color: '#fbbf24', w: 8,  h: 3,  delay: 0,   dur: 4.5, rot: 20  },
+            { left: '20%', top: '65%', color: '#a78bfa', w: 10, h: 3,  delay: 1.1, dur: 3.8, rot: -35 },
+            { left: '38%', top: '20%', color: '#f472b6', w: 7,  h: 3,  delay: 2.3, dur: 5,   rot: 50  },
+            { left: '52%', top: '75%', color: '#34d399', w: 9,  h: 3,  delay: 0.6, dur: 4.2, rot: -20 },
+            { left: '65%', top: '15%', color: '#fbbf24', w: 8,  h: 3,  delay: 1.8, dur: 3.6, rot: 40  },
+            { left: '78%', top: '55%', color: '#f472b6', w: 10, h: 3,  delay: 3,   dur: 4.8, rot: -55 },
+            { left: '88%', top: '25%', color: '#a78bfa', w: 7,  h: 3,  delay: 0.4, dur: 5.2, rot: 15  },
+            { left: '44%', top: '45%', color: '#34d399', w: 8,  h: 3,  delay: 2.7, dur: 4,   rot: -30 },
+          ].map((c, i) => (
+            <motion.div
+              key={`conf-${i}`}
+              className="pointer-events-none absolute rounded-sm"
+              style={{ left: c.left, top: c.top, width: c.w, height: c.h, background: c.color }}
+              animate={{ rotate: [c.rot, c.rot + 360], y: [-8, 14, -8], opacity: [0.15, 0.5, 0.15] }}
+              transition={{ duration: c.dur, repeat: Infinity, delay: c.delay, ease: 'easeInOut' }}
+              aria-hidden
+            />
+          ))}
+
+          {/* Popper burst sparkles */}
+          {[
+            { cx: '3%',  cy: '30%', color: '#fbbf24' },
+            { cx: '95%', cy: '60%', color: '#f472b6' },
+            { cx: '50%', cy: '5%',  color: '#a78bfa' },
+          ].map((pp, pi) => (
+            <motion.div key={`pp-${pi}`} className="pointer-events-none absolute" style={{ left: pp.cx, top: pp.cy }} aria-hidden>
+              {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, si) => (
+                <motion.div
+                  key={si}
+                  className="absolute rounded-full"
+                  style={{ width: 4, height: 4, background: pp.color, left: 0, top: 0 }}
+                  animate={{
+                    x: [0, Math.cos(angle * Math.PI / 180) * 28, Math.cos(angle * Math.PI / 180) * 42],
+                    y: [0, Math.sin(angle * Math.PI / 180) * 28, Math.sin(angle * Math.PI / 180) * 42],
+                    opacity: [0, 0.5, 0],
+                    scale: [0, 1, 0],
+                  }}
+                  transition={{ duration: 2.4, repeat: Infinity, delay: pi * 1.6 + si * 0.05, ease: 'easeOut' }}
+                />
+              ))}
+            </motion.div>
+          ))}
+
           <div className="flex items-start justify-between mb-6">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -459,7 +545,8 @@ export default function HomePage() {
               View All <ChevronRight size={14} />
             </Link>
           </div>
-          <div ref={offersScrollRef} className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4 md:-mx-6 md:px-6 [&::-webkit-scrollbar]:hidden">
+
+          <div ref={offersScrollRef} className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4 md:-mx-6 md:px-6 [&::-webkit-scrollbar]:hidden scroll-smooth snap-x snap-mandatory">
             {offersLoading
               ? Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="w-[320px] h-44 shrink-0" rounded="lg" />)
               : offers?.map((offer, i) => (
@@ -468,6 +555,32 @@ export default function HomePage() {
                   </div>
                 ))}
           </div>
+
+          {/* Centered bubble pagination dots */}
+          {!offersLoading && offers && offers.length > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-5">
+              {offers.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Go to offer ${i + 1}`}
+                  onClick={() => {
+                    const el = offersScrollRef.current
+                    if (el) { el.scrollLeft = i * 336; setOffersActiveIndex(i) }
+                  }}
+                  className="transition-all duration-300 rounded-full"
+                  style={{
+                    width: i === offersActiveIndex ? 24 : 8,
+                    height: 8,
+                    background: i === offersActiveIndex
+                      ? 'linear-gradient(90deg,#c9a84c,#eed98a)'
+                      : '#d4a94a40',
+                    boxShadow: i === offersActiveIndex ? '0 0 8px rgba(201,168,76,0.5)' : 'none',
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </Section>
       )}
 
@@ -638,84 +751,119 @@ export default function HomePage() {
 
       {/* Guest Stories Slider */}
       <Section bg="navy">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-          <SectionHeader
-            eyebrow="Real Stories"
-            title="What Our Guests Lived"
-            subtitle="Every booking is a story. Here are a few we'll never forget."
-            className="mb-0"
-          />
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="text-center">
-              <span className="font-display text-5xl text-gold-400 font-bold">4.9</span>
-              <span className="block text-xs text-text-muted">out of 5</span>
-            </div>
+        {/* Header row */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+          <div>
+            <p className="text-gold-500 text-xs font-semibold uppercase tracking-widest mb-1">Real Stories</p>
+            <h2 className="font-display text-3xl md:text-4xl text-text-primary leading-tight">What Our Guests Lived</h2>
+          </div>
+          <div className="flex items-center gap-3 shrink-0 bg-bg-surface/60 border border-border-subtle rounded-2xl px-4 py-3">
+            <span className="font-display text-4xl text-gold-400 font-bold leading-none">4.9</span>
             <div>
-              <Rating value={4.9} size="lg" />
-              <p className="text-sm text-text-secondary mt-1">847+ Google reviews</p>
+              <Rating value={4.9} size="sm" />
+              <p className="text-xs text-text-muted mt-0.5">847+ Google reviews</p>
             </div>
           </div>
         </div>
 
-        {/* Slider */}
-        <div className="relative">
-          <div className="grid md:grid-cols-3 gap-5">
-            {visibleStories.map((story, i) => (
-              <Card
-                key={story.id + i}
-                className={`flex flex-col transition-all duration-300 ${i === 0 ? 'opacity-100' : i === 1 ? 'opacity-100' : 'opacity-70 hidden md:flex'}`}
-              >
-                <CardBody>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-11 h-11 rounded-full bg-gold-500/20 flex items-center justify-center font-bold text-gold-400 text-lg shrink-0">
-                      {story.avatar}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-text-primary text-sm">{story.name}</p>
-                      <p className="text-xs text-text-muted">{story.theatre} · {story.date}</p>
-                    </div>
-                    <Rating value={story.rating} size="sm" className="ml-auto" />
-                  </div>
-                  <p className="text-sm text-text-secondary leading-relaxed line-clamp-5 italic">"{story.text}"</p>
-                  <Badge variant="gold" className="mt-4">{story.occasion}</Badge>
-                </CardBody>
-              </Card>
-            ))}
-          </div>
+        {/* Spotlight layout */}
+        <div className="grid lg:grid-cols-3 gap-6 items-start">
 
-          {/* Controls */}
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <button
-              onClick={prevStory}
-              className="w-10 h-10 rounded-full border border-border-subtle bg-bg-surface hover:border-gold-500 hover:text-gold-400 text-text-muted flex items-center justify-center transition-all"
-              aria-label="Previous story"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <div className="flex gap-2">
+          {/* Featured story */}
+          <div className="lg:col-span-2">
+            {/* Progress strips */}
+            <div className="flex gap-1.5 mb-5">
               {GUEST_STORIES.map((_, i) => (
                 <button
                   key={i}
+                  type="button"
                   onClick={() => { setStoryIndex(i); resetTimer() }}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${i === storyIndex ? 'bg-gold-400 w-6' : 'bg-border-subtle'}`}
                   aria-label={`Story ${i + 1}`}
-                />
+                  className="flex-1 h-[3px] rounded-full bg-border-subtle overflow-hidden relative"
+                >
+                  <motion.div
+                    className="absolute inset-y-0 left-0 rounded-full bg-gold-400"
+                    animate={{ width: i === storyIndex ? '100%' : i < storyIndex ? '100%' : '0%' }}
+                    transition={i === storyIndex ? { duration: 5, ease: 'linear' } : { duration: 0.2 }}
+                  />
+                </button>
               ))}
             </div>
-            <button
-              onClick={nextStory}
-              className="w-10 h-10 rounded-full border border-border-subtle bg-bg-surface hover:border-gold-500 hover:text-gold-400 text-text-muted flex items-center justify-center transition-all"
-              aria-label="Next story"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </div>
-        </div>
 
-        <div className="text-center mt-8">
-          <Button asChild variant="ghost">
-            <Link to="/reviews">Read All Reviews <ChevronRight size={16} /></Link>
-          </Button>
+            {/* Story card */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={storyIndex}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="bg-bg-surface border border-border-subtle rounded-3xl p-7 md:p-9 relative overflow-hidden"
+              >
+                {/* Decorative quote mark */}
+                <span className="absolute top-5 right-7 font-display text-[96px] leading-none text-gold-500/10 select-none pointer-events-none" aria-hidden>"</span>
+
+                <p className="text-text-primary text-lg md:text-xl leading-relaxed italic font-light mb-7">
+                  "{GUEST_STORIES[storyIndex].text}"
+                </p>
+
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-500/30 to-gold-500/10 border border-gold-500/30 flex items-center justify-center font-bold text-gold-400 text-lg">
+                      {GUEST_STORIES[storyIndex].avatar}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-text-primary text-sm">{GUEST_STORIES[storyIndex].name}</p>
+                      <p className="text-xs text-text-muted">{GUEST_STORIES[storyIndex].theatre} · {GUEST_STORIES[storyIndex].date}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Rating value={GUEST_STORIES[storyIndex].rating} size="sm" />
+                    <span className="text-xs font-semibold text-gold-500 border border-gold-500/30 bg-gold-500/10 rounded-full px-3 py-1">
+                      {GUEST_STORIES[storyIndex].occasion}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Prev / Next */}
+            <div className="flex items-center gap-3 mt-4">
+              <button onClick={prevStory} className="w-9 h-9 rounded-full border border-border-subtle bg-bg-surface hover:border-gold-500 hover:text-gold-400 text-text-muted flex items-center justify-center transition-all" aria-label="Previous"><ChevronLeft size={16} /></button>
+              <button onClick={nextStory} className="w-9 h-9 rounded-full border border-border-subtle bg-bg-surface hover:border-gold-500 hover:text-gold-400 text-text-muted flex items-center justify-center transition-all" aria-label="Next"><ChevronRight size={16} /></button>
+              <Link to="/reviews" className="ml-auto text-xs font-semibold text-gold-400 hover:text-gold-300 transition-colors flex items-center gap-1">
+                All Reviews <ChevronRight size={12} />
+              </Link>
+            </div>
+          </div>
+
+          {/* Reviewer roster — all stories visible, tap to switch */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3">
+            {GUEST_STORIES.map((story, i) => (
+              <button
+                key={story.id}
+                type="button"
+                onClick={() => { setStoryIndex(i); resetTimer() }}
+                className={`group relative flex flex-col items-center text-center p-4 rounded-2xl border transition-all duration-300 ${
+                  i === storyIndex
+                    ? 'border-gold-500/60 bg-gold-500/8 shadow-[0_0_16px_rgba(201,168,76,0.15)]'
+                    : 'border-border-subtle bg-bg-surface/50 hover:border-gold-500/30 hover:bg-bg-surface'
+                }`}
+              >
+                {/* Active glow ring */}
+                {i === storyIndex && (
+                  <motion.div layoutId="roster-ring" className="absolute inset-0 rounded-2xl border-2 border-gold-500/50 pointer-events-none" transition={{ duration: 0.3 }} />
+                )}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-base mb-2 transition-all ${i === storyIndex ? 'bg-gold-500 text-bg-base' : 'bg-bg-elevated text-gold-400 border border-border-subtle'}`}>
+                  {story.avatar}
+                </div>
+                <p className="text-xs font-semibold text-text-primary leading-tight mb-1">{story.name}</p>
+                <p className={`text-[10px] font-medium rounded-full px-2 py-0.5 ${i === storyIndex ? 'bg-gold-500/20 text-gold-400' : 'bg-bg-elevated text-text-muted'}`}>
+                  {story.occasion}
+                </p>
+              </button>
+            ))}
+          </div>
         </div>
       </Section>
 
