@@ -188,34 +188,47 @@ export default function HomePage() {
 
   useEffect(() => {
     const el = offersScrollRef.current
-    if (!el) return
-    let frameId: number
+    if (!el || !offers?.length) return
+    const node = el
+    const count = offers.length
     let paused = false
-    let prevIdx = -1
+    let currentIdx = 0
     const cardW = 336
-    function step() {
-      if (!paused && el) {
-        el.scrollLeft += 0.3
-        const idx = Math.round(el.scrollLeft / cardW) % Math.max(offers?.length ?? 1, 1)
-        if (idx !== prevIdx) { prevIdx = idx; setOffersActiveIndex(idx) }
-        if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 1) el.scrollLeft = 0
-      }
-      frameId = requestAnimationFrame(step)
+    const gap = 16
+    const stepSize = cardW + gap
+
+    function scrollToIdx(idx: number) {
+      currentIdx = idx
+      setOffersActiveIndex(idx)
+      node.scrollTo({ left: idx * stepSize, behavior: 'smooth' })
     }
+
+    let timerId: ReturnType<typeof setTimeout>
+    function scheduleNext() {
+      timerId = setTimeout(() => {
+        if (!paused) {
+          const next = (currentIdx + 1) % count
+          scrollToIdx(next)
+        }
+        scheduleNext()
+      }, 2000)
+    }
+
     const pause = () => { paused = true }
     const resume = () => { paused = false }
-    el.addEventListener('mouseenter', pause)
-    el.addEventListener('mouseleave', resume)
-    el.addEventListener('touchstart', pause, { passive: true })
-    el.addEventListener('touchend', resume)
-    const startId = setTimeout(() => { frameId = requestAnimationFrame(step) }, 2500)
+    node.addEventListener('mouseenter', pause)
+    node.addEventListener('mouseleave', resume)
+    node.addEventListener('touchstart', pause, { passive: true })
+    node.addEventListener('touchend', resume)
+
+    const startId = setTimeout(() => scheduleNext(), 2500)
     return () => {
       clearTimeout(startId)
-      cancelAnimationFrame(frameId)
-      el.removeEventListener('mouseenter', pause)
-      el.removeEventListener('mouseleave', resume)
-      el.removeEventListener('touchstart', pause)
-      el.removeEventListener('touchend', resume)
+      clearTimeout(timerId)
+      node.removeEventListener('mouseenter', pause)
+      node.removeEventListener('mouseleave', resume)
+      node.removeEventListener('touchstart', pause)
+      node.removeEventListener('touchend', resume)
     }
   }, [offers])
 
@@ -533,7 +546,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div ref={offersScrollRef} className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4 md:-mx-6 md:px-6 [&::-webkit-scrollbar]:hidden">
+          <div ref={offersScrollRef} className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4 md:-mx-6 md:px-6 [&::-webkit-scrollbar]:hidden scroll-smooth snap-x snap-mandatory">
             {offersLoading
               ? Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="w-[320px] h-44 shrink-0" rounded="lg" />)
               : offers?.map((offer, i) => (
