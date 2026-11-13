@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft, Clapperboard, ArrowRight } from 'lucide-react'
@@ -108,15 +108,12 @@ export default function HomePage() {
   const storyTimer = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const [heroWordIndex, setHeroWordIndex] = useState(0)
-  const [heroVisible, setHeroVisible] = useState(true)
+  const [heroKey, setHeroKey] = useState(0)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setHeroVisible(false)
-      setTimeout(() => {
-        setHeroWordIndex((i) => (i + 1) % HERO_WORDS.length)
-        setHeroVisible(true)
-      }, 400)
+      setHeroWordIndex((i) => (i + 1) % HERO_WORDS.length)
+      setHeroKey((k) => k + 1)
     }, 2800)
     return () => clearInterval(interval)
   }, [])
@@ -195,21 +192,20 @@ export default function HomePage() {
             Hyderabad's #1 Private Celebrations Venue
           </Badge>
           <h1 className="mb-8 font-display text-4xl font-bold leading-tight tracking-tight text-[#2a0e4f] sm:text-5xl md:text-6xl">
-            Your{' '}
-            <span
-              className="inline-block text-[#8e39c7] transition-all duration-400"
-              style={{
-                opacity: heroVisible ? 1 : 0,
-                transform: heroVisible ? 'translateY(0)' : 'translateY(-10px)',
-                transition: 'opacity 0.4s ease, transform 0.4s ease',
-              }}
-            >
-              {HERO_WORDS[heroWordIndex]}
-            </span>{' '}
-            Your
-            <br />
-            <span className="text-[#2a0e4f]">Theatre</span>
-            <span className="text-[#8e39c7]"> Your Memories</span>
+            <span className="block">
+              Your{' '}
+              <span key={heroKey} className="relative inline-block whitespace-nowrap">
+                <span className="hero-shine-text">{HERO_WORDS[heroWordIndex]}</span>
+                <span className="hero-sparkle sp1" aria-hidden="true">✦</span>
+                <span className="hero-sparkle sp2" aria-hidden="true">✦</span>
+                <span className="hero-sparkle sp3" aria-hidden="true">✦</span>
+                <span className="hero-sparkle sp4" aria-hidden="true">✦</span>
+              </span>
+            </span>
+            <span className="block">
+              <span className="text-[#2a0e4f]">Your Theatre</span>
+              <span className="text-[#8e39c7]"> Your Memories</span>
+            </span>
           </h1>
 
           {/* Plan your party — desktop pill (matches design) */}
