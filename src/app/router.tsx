@@ -53,15 +53,38 @@ const BlogPost = lazy_(() => import('@/pages/blog-post/BlogPostPage'))
 const Legal = lazy_(() => import('@/pages/legal/LegalPage'))
 const NotFound = lazy_(() => import('@/pages/not-found/NotFoundPage'))
 
+/* Desktop background: bg.png repeated down the page, every other copy flipped
+   vertically so neighbouring copies join seamlessly. */
+function PageBackground() {
+  return (
+    <div className="hidden md:block absolute inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
+      {Array.from({ length: 10 }, (_, i) => (
+        <div
+          key={i}
+          style={{
+            aspectRatio: '1024 / 1536',
+            backgroundImage: "url('/bg.png')",
+            backgroundSize: '100% 100%',
+            transform: i % 2 ? 'scaleY(-1)' : undefined,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 function RootLayout() {
   return (
     <ErrorBoundary>
-      <Header />
-      <Outlet />
-      <Footer />
-      <MobileBottomBar />
-      <WhatsAppFab />
-      <ScrollRestoration />
+      <div className="relative isolate">
+        <PageBackground />
+        <Header />
+        <Outlet />
+        <Footer />
+        <MobileBottomBar />
+        <WhatsAppFab />
+        <ScrollRestoration />
+      </div>
     </ErrorBoundary>
   )
 }

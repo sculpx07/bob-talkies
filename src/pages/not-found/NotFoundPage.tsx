@@ -11,7 +11,7 @@ export default function NotFoundPage() {
         description="The page you are looking for doesn't exist."
         noindex
       />
-      <main className="min-h-screen bg-bg-base flex items-center justify-center px-4 pt-20">
+      <main className="min-h-screen flex items-center justify-center px-4 pt-20">
         <div className="text-center max-w-md">
           <div className="relative inline-block mb-8">
             <Film size={80} className="text-gold-500 opacity-20 mx-auto" />

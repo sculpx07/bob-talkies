@@ -27,9 +27,9 @@ interface SectionProps {
 
 export function Section({ children, className, bg = 'base' }: SectionProps) {
   const bgs = {
-    base: 'bg-bg-base',
-    surface: 'bg-bg-surface',
-    navy: 'bg-bg-navy',
+    base: 'bg-transparent',
+    surface: 'bg-transparent',
+    navy: 'bg-transparent',
   }
   return (
     <section className={cn(bgs[bg], 'py-16 md:py-24', className)}>

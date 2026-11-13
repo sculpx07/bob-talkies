@@ -26,8 +26,8 @@ const config: Config = {
         danger: 'var(--danger)',
       },
       fontFamily: {
-        display: ['Playfair Display', 'Cormorant Garamond', 'serif'],
-        body: ['Inter', 'Manrope', 'sans-serif'],
+        display: ['DM Sans', 'sans-serif'],
+        body: ['Jost', 'Manrope', 'sans-serif'],
       },
       borderRadius: {
         card: '12px',
@@ -43,10 +43,15 @@ const config: Config = {
       },
       animation: {
         shimmer: 'shimmer 2s linear infinite',
+        marquee: 'marquee 45s linear infinite',
         'fade-in': 'fadeIn 0.3s ease-out',
         'slide-up': 'slideUp 0.3s ease-out',
       },
       keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(var(--marquee-distance))' },
+        },
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },

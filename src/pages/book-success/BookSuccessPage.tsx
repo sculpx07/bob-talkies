@@ -20,7 +20,7 @@ export default function BookSuccessPage() {
   return (
     <>
       <Seo title="Booking Confirmed" description="Your private theatre booking is confirmed." noindex />
-      <div className="min-h-screen bg-bg-base pt-16 md:pt-20 pb-16 flex items-center justify-center px-4">
+      <div className="min-h-screen pt-16 md:pt-20 pb-16 flex items-center justify-center px-4">
         <div className="max-w-lg w-full">
           {isLoading ? (
             <div className="space-y-4">

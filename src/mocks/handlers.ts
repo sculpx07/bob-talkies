@@ -2,7 +2,7 @@ import { http, HttpResponse, delay } from 'msw'
 import { THEATRES, PACKAGES, ADDONS, OFFERS } from './seed'
 import { addDays, format, parseISO, getDay } from 'date-fns'
 
-const BASE = '/api/v1'
+const BASE = '*/api/v1'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ok(data: any) {

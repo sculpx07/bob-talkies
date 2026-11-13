@@ -11,7 +11,7 @@ export default function BookFailedPage() {
   return (
     <>
       <Seo title="Payment Failed" description="Your payment could not be processed." noindex />
-      <div className="min-h-screen bg-bg-base pt-16 md:pt-20 flex items-center justify-center px-4">
+      <div className="min-h-screen pt-16 md:pt-20 flex items-center justify-center px-4">
         <div className="max-w-sm w-full text-center">
           <div className="w-20 h-20 rounded-full bg-danger/15 border-2 border-danger flex items-center justify-center mx-auto mb-4">
             <XCircle size={36} className="text-danger" aria-hidden="true" />

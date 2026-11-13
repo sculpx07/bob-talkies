@@ -96,7 +96,7 @@ export default function BookPage() {
         canonical="/book"
         noindex
       />
-      <div className="min-h-screen bg-bg-base pt-16 md:pt-20 pb-32">
+      <div className="min-h-screen pt-16 md:pt-20 pb-32">
         <div className="max-w-2xl mx-auto px-4 md:px-6 py-8">
           {/* Stepper */}
           <div className="mb-8 overflow-x-auto">

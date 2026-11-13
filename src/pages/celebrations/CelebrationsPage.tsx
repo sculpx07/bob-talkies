@@ -14,7 +14,7 @@ export default function CelebrationsPage() {
         canonical="/celebrations"
       />
       <PageShell fullWidth>
-        <div className="bg-bg-navy border-b border-border-subtle pt-28 pb-16 px-4 md:px-6">
+        <div className="border-b border-border-subtle pt-28 pb-16 px-4 md:px-6">
           <div className="max-w-7xl mx-auto text-center">
             <p className="text-gold-500 text-sm font-medium tracking-widest uppercase mb-3">Every Occasion</p>
             <h1 className="font-display text-4xl md:text-5xl text-text-primary mb-4">Choose Your Celebration</h1>

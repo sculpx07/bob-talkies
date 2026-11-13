@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Phone, ChevronDown } from 'lucide-react'
+import { Menu, X, Phone, ChevronDown, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
 import { config } from '@/lib/config'
@@ -52,32 +52,34 @@ export function Header() {
       className={cn(
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
         scrolled || !isHero
-          ? 'bg-bg-base/95 backdrop-blur-md border-b border-border-subtle shadow-lg'
+          ? 'bg-[#fffaf4]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(50,16,95,0.08)]'
           : 'bg-transparent',
       )}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-gold-gradient rounded-lg flex items-center justify-center">
-              <span className="text-bg-base font-bold text-sm md:text-base font-display">B</span>
-            </div>
-            <div>
-              <span className="font-display font-bold text-gold-400 text-lg md:text-xl leading-none">BOB</span>
-              <span className="block text-text-muted text-[10px] tracking-widest uppercase">Talkies</span>
-            </div>
+          <Link to="/" className="flex flex-col items-center shrink-0 leading-none" aria-label="BOB Talkies home">
+            <span className="flex items-center font-extrabold text-[#32105f] text-3xl md:text-4xl tracking-tight font-body">
+              B
+              <svg viewBox="0 0 40 40" className="w-7 h-7 md:w-9 md:h-9 mx-0.5" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" fill="#f08a1c" />
+                <path d="M15 11.5 L29 20 L15 28.5Z" fill="#fffaf4" />
+              </svg>
+              B
+            </span>
+            <span className="font-body font-bold text-[#32105f] text-sm md:text-base tracking-wide -mt-0.5">Talkies</span>
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-2" aria-label="Main navigation">
             {NAV_LINKS.map((link) =>
               link.hasMega ? (
                 <div key={link.label} className="relative">
                   <button
                     className={cn(
-                      'flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                      'text-text-secondary hover:text-gold-400 hover:bg-bg-elevated',
+                      'flex items-center gap-1 px-3 py-2 text-base font-medium leading-6 transition-colors border-b-2 border-transparent',
+                      'text-[#32105f] hover:text-[#6b2398]',
                     )}
                     onClick={() => setMegaOpen(!megaOpen)}
                     aria-expanded={megaOpen}
@@ -107,10 +109,10 @@ export function Header() {
                   to={link.to}
                   className={({ isActive }) =>
                     cn(
-                      'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                      'px-3 py-2 text-base font-medium leading-6 transition-colors border-b-2',
                       isActive
-                        ? 'text-gold-400 bg-gold-500/10'
-                        : 'text-text-secondary hover:text-gold-400 hover:bg-bg-elevated',
+                        ? 'text-[#4a1a8a] border-[#4a1a8a]'
+                        : 'text-[#32105f] border-transparent hover:text-[#6b2398]',
                     )
                   }
                 >
@@ -124,7 +126,7 @@ export function Header() {
           <div className="flex items-center gap-2 md:gap-3">
             <a
               href={`tel:+${config.whatsappNumber}`}
-              className="hidden md:flex items-center gap-1.5 text-text-secondary hover:text-gold-400 transition-colors text-sm"
+              className="hidden md:flex items-center gap-1.5 py-2 leading-6 border-b-2 border-transparent text-[#32105f] hover:text-[#6b2398] transition-colors text-base font-medium"
               aria-label="Call us"
             >
               <Phone size={15} />
@@ -133,12 +135,12 @@ export function Header() {
             <Button
               asChild
               size="md"
-              className="hidden sm:inline-flex"
+              className="hidden sm:inline-flex !bg-none !bg-[#32105f] !text-white hover:!bg-[#32105f] !rounded-full !shadow-none"
             >
-              <Link to="/book">Book Now</Link>
+              <Link to="/book">Book Now <ArrowRight size={14} className="ml-1" /></Link>
             </Button>
             <button
-              className="lg:hidden p-2 text-text-secondary hover:text-gold-400 transition-colors"
+              className="lg:hidden p-2 text-[#32105f] hover:text-[#6b2398] transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-expanded={mobileOpen}
               aria-label="Toggle mobile menu"

@@ -1,22 +1,22 @@
 :root {
   /* Backgrounds */
-  --bg-base: #0A0A0F;
-  --bg-surface: #12121A;
-  --bg-elevated: #1A1A26;
-  --bg-navy: #0E1530;
+  --bg-base: #fffaf4;
+  --bg-surface: #fff4e9;
+  --bg-elevated: #ffffff;
+  --bg-navy: #f6e6ef;
 
   /* Borders */
-  --border-subtle: #2A2A3A;
+  --border-subtle: #e6d3e4;
 
   /* Text */
-  --text-primary: #F5F1E8;
-  --text-secondary: #B8B3A7;
-  --text-muted: #7C7A85;
+  --text-primary: #32105f;
+  --text-secondary: #5b4578;
+  --text-muted: #7d7094;
 
   /* Gold palette */
-  --gold-400: #D8B867;
-  --gold-500: #C9A24B;
-  --gold-600: #A8832F;
+  --gold-400: #d9a24a;
+  --gold-500: #b8872f;
+  --gold-600: #8f6420;
 
   /* Accents */
   --champagne-200: #F1E3B8;

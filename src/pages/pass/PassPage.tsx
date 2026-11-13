@@ -25,7 +25,7 @@ export default function PassPage() {
   return (
     <>
       <Seo title="Your Booking Pass" description="Digital pass for your BOB Talkies booking." noindex />
-      <div className="min-h-screen bg-bg-base pt-16 md:pt-20 flex items-center justify-center px-4 py-8">
+      <div className="min-h-screen pt-16 md:pt-20 flex items-center justify-center px-4 py-8">
         {isLoading ? (
           <div className="max-w-sm w-full space-y-4">
             <Skeleton className="h-56 w-full" rounded="lg" />

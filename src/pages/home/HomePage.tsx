@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronRight, Star, MapPin, Phone, MessageCircle, Play, Sparkles, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft } from 'lucide-react'
+import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft } from 'lucide-react'
 import { Seo } from '@/components/seo/Seo'
+import { FeaturedEvents } from '@/components/ui/FeaturedEvents'
+import { PolaroidMarquee } from '@/components/ui/PolaroidMarquee'
+import { FlowButton } from '@/components/ui/flow-button'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Card, CardBody } from '@/components/ui/Card'
@@ -148,54 +151,39 @@ export default function HomePage() {
       />
 
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-bg-base">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <video
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          className="hidden"
           autoPlay muted loop playsInline
           poster="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600"
           aria-hidden="true"
         >
           <source src="" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-bg-base/60 via-transparent to-bg-base" />
         <div className="film-grain absolute inset-0 pointer-events-none" aria-hidden="true" />
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto pt-24">
-          <Badge variant="gold" className="mb-6 text-sm px-4 py-1.5">
+          <Badge variant="gold" className="mb-6 !border-0 !text-lg md:!text-xl !font-medium !text-gold-600 px-5 py-2 font-['Jost',sans-serif]">
             <Sparkles size={12} />
-            Hyderabad's Premium Private Theatres
+            Hyderabad's #1 Private Celebrations venue
           </Badge>
-          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl text-text-primary leading-tight mb-6">
-            Your Celebration.<br />
-            <span className="text-gold-400">Your Theatre.</span><br />
-            Your Memories.
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-[#2a0e4f] font-bold leading-[1.1] mb-6">
+            Your Celebration
+            <span className="bg-gradient-to-r from-[#6b2398] to-[#8e39c7] bg-clip-text text-transparent">Your Theatre</span>
+            <span className="bg-gradient-to-r from-[#6b2398] to-[#8e39c7] bg-clip-text text-transparent">Your Memories</span>
           </h1>
           <p className="text-text-secondary text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            Hyderabad's most loved private cinema for birthdays, anniversaries, proposals and every celebration worth remembering. 4K · Dolby Atmos · Fully Private.
+            Hyderabad's most loved private cinema for birthdays, anniversaries, proposals and every celebration worth remembering 4K,Dolby Atmos,Fully Private.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="xl">
-              <Link to="/book">Book Your Theatre</Link>
-            </Button>
-            <Button asChild variant="secondary" size="xl">
-              <Link to="/theatres">
-                <Play size={18} /> Explore Theatres
-              </Link>
-            </Button>
+            <FlowButton to="/book" text="Book Your Theatre" variant="solid" />
+            <FlowButton to="/theatres" text="Explore Theatres" />
           </div>
-          <div className="flex items-center justify-center gap-6 mt-10 text-sm text-text-muted">
-            <span className="flex items-center gap-1.5"><Star size={14} className="text-gold-500 fill-gold-500" /> 4.9/5 Google</span>
-            <span className="hidden sm:block">•</span>
-            <span>847+ Celebrations</span>
-            <span className="hidden sm:block">•</span>
-            <span>5 Private Theatres</span>
-          </div>
-        </div>
-
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce" aria-hidden="true">
-          <ChevronRight size={24} className="text-gold-500 rotate-90" />
+          <PolaroidMarquee />
         </div>
       </section>
+
+      <FeaturedEvents />
 
       {/* Quick Booking Widget */}
       <Section bg="navy">
