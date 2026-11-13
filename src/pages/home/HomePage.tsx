@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft, Clapperboard, ArrowRight } from 'lucide-react'
@@ -14,7 +14,6 @@ import { TheatreStrip } from '@/components/ui/TheatreStrip'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Card, CardBody } from '@/components/ui/Card'
-import { Rating } from '@/components/ui/Rating'
 import { PriceTag } from '@/components/ui/PriceTag'
 import { Skeleton, TheatreCardSkeleton } from '@/components/ui/Skeleton'
 import { Section, SectionHeader } from '@/components/layout/PageShell'
@@ -43,66 +42,12 @@ const CEL_ROW2 = [
 ]
 
 const GUEST_STORIES = [
-  {
-    id: '1',
-    name: 'Priya & Rohit',
-    avatar: 'P',
-    rating: 5,
-    occasion: 'Anniversary',
-    theatre: 'The Delight',
-    text: 'We booked The Delight for our 5th anniversary and it was absolutely magical. The team had decorated with rose petals, fairy lights, and even a custom "5 Years" banner. When my husband walked in, he was in tears. The screen was huge, the sound was incredible, and we had the whole place to ourselves. Best anniversary ever!',
-    date: 'October 2024',
-  },
-  {
-    id: '2',
-    name: 'Karthik S.',
-    avatar: 'K',
-    rating: 5,
-    occasion: 'Birthday Surprise',
-    theatre: 'Heavens',
-    text: 'Planned a birthday surprise for my best friend and BOB Talkies made it effortless. I described what I wanted over WhatsApp and they handled EVERYTHING — balloons, a photo wall with our old pictures, the cake, everything. When she walked in and saw 12 of her friends sitting there, she burst out crying. I\'ve never seen her so happy.',
-    date: 'September 2024',
-  },
-  {
-    id: '3',
-    name: 'Meera & Arjun',
-    avatar: 'M',
-    rating: 5,
-    occasion: 'Proposal',
-    theatre: 'The Delight',
-    text: 'I proposed here and she said YES! I was so nervous but the team at BOB Talkies kept me calm. They set up a beautiful arrangement with roses and candles, played our favourite song before I got down on one knee. The entire theatre was ours, completely private. I could not have asked for a better moment.',
-    date: 'August 2024',
-  },
-  {
-    id: '4',
-    name: 'Vikram & Team',
-    avatar: 'V',
-    rating: 5,
-    occasion: 'Farewell',
-    theatre: 'Filmdom',
-    text: 'Organised a farewell for our manager at Filmdom and the entire team was blown away. We played a surprise video compilation of his 8 years with us on the big screen — there wasn\'t a dry eye in the room. The décor was elegant, the food was great and the staff made sure everything ran perfectly. It was the best send-off we could have given him.',
-    date: 'November 2024',
-  },
-  {
-    id: '5',
-    name: 'Rahul M.',
-    avatar: 'R',
-    rating: 5,
-    occasion: 'Sports Screening',
-    theatre: 'Cosmos',
-    text: 'Watched the IPL final with 20 friends at Cosmos and it was an absolute blast. The 250" screen and Atmos surround made every boundary feel like we were in the stadium. No rowdy strangers, no queue for the bar — just us, our snacks and the best cricket experience of our lives. BOB Talkies totally nailed it.',
-    date: 'May 2024',
-  },
-  {
-    id: '6',
-    name: 'Divya & Suresh',
-    avatar: 'D',
-    rating: 5,
-    occasion: 'Date Night',
-    theatre: 'The Delight',
-    text: 'Celebrated our first date anniversary here. It was intimate, romantic, and absolutely perfect. We had champagne, our favourite comfort food, and watched a movie cuddled up in those amazing recliners. The team even added a small surprise message on screen before the movie. Pure bliss!',
-    date: 'December 2024',
-  },
+  { id: '1', name: 'Priya & Rohit', avatar: 'P', role: 'Anniversary Couple', rating: 5, occasion: 'Anniversary', theatre: 'The Delight', text: 'We booked The Delight for our 5th anniversary and it was absolutely magical. Rose petals, fairy lights, a custom "5 Years" banner — when my husband walked in, he was in tears. Best anniversary ever!', date: 'Oct 2024' },
+  { id: '2', name: 'Karthik S.', avatar: 'K', role: 'Birthday Planner', rating: 5, occasion: 'Birthday Surprise', theatre: 'Heavens', text: 'BOB Talkies made it effortless. Balloons, a photo wall, the cake — everything. When she walked in and saw 12 friends sitting there, she burst out crying. I\'ve never seen her so happy.', date: 'Sep 2024' },
+  { id: '3', name: 'Meera & Arjun', avatar: 'M', role: 'Engaged Couple', rating: 5, occasion: 'Proposal', theatre: 'The Delight', text: 'I proposed here and she said YES! Roses, candles, our favourite song playing — the entire theatre was ours. The team kept me calm and made the moment absolutely perfect.', date: 'Aug 2024' },
+  { id: '4', name: 'Vikram & Team', avatar: 'V', role: 'Team Organiser', rating: 5, occasion: 'Farewell', theatre: 'Filmdom', text: 'An unforgettable farewell! We played a surprise video compilation on the big screen — there wasn\'t a dry eye in the room. The décor was elegant and staff made everything flawless.', date: 'Nov 2024' },
+  { id: '5', name: 'Rahul M.', avatar: 'R', role: 'Sports Fan', rating: 5, occasion: 'Sports Screening', theatre: 'Cosmos', text: 'Watched the IPL final with 20 friends at Cosmos — absolute blast! The 250" screen and Atmos surround made every boundary feel like we were in the stadium. BOB Talkies totally nailed it.', date: 'May 2024' },
+  { id: '6', name: 'Divya & Suresh', avatar: 'D', role: 'Date Night Couple', rating: 5, occasion: 'Date Night', theatre: 'The Delight', text: 'Intimate, romantic, absolutely perfect. Champagne, comfort food, recliners, and a surprise message on screen before the movie. The team thought of everything. Pure bliss!', date: 'Dec 2024' },
 ]
 
 export default function HomePage() {
@@ -129,6 +74,18 @@ export default function HomePage() {
   const [offersActiveIndex, setOffersActiveIndex] = useState(0)
   const celRow1Ref = useRef<HTMLDivElement>(null)
   const celRow2Ref = useRef<HTMLDivElement>(null)
+
+  // Section scroll-reveal refs
+  const offersRevealRef = useRef(null)
+  const offersInView = useInView(offersRevealRef, { once: true, margin: '-80px' })
+  const celRevealRef = useRef(null)
+  const celInView = useInView(celRevealRef, { once: true, margin: '-80px' })
+  const reviewsRevealRef = useRef(null)
+  const reviewsInView = useInView(reviewsRevealRef, { once: true, margin: '-80px' })
+  const expRevealRef = useRef(null)
+  const expInView = useInView(expRevealRef, { once: true, margin: '-80px' })
+  const locationRevealRef = useRef(null)
+  const locationInView = useInView(locationRevealRef, { once: true, margin: '-80px' })
   const [heroWordIndex, setHeroWordIndex] = useState(0)
   const [heroKey, setHeroKey] = useState(0)
 
@@ -293,11 +250,11 @@ export default function HomePage() {
         <div className="film-grain absolute inset-0 pointer-events-none" aria-hidden="true" />
 
         <div className="relative z-10 w-full min-w-0 text-center px-4 max-w-5xl mx-auto pt-24">
-          <Badge variant="gold" className="mb-6 !border-0 !text-lg md:!text-xl !font-medium !text-gold-600 px-5 py-2 font-['Jost',sans-serif]">
+          <Badge variant="gold" className="mb-6 !border-0 !text-sm md:!text-lg !font-medium !text-gold-600 px-4 py-1.5 md:px-5 md:py-2 font-['Jost',sans-serif]">
             <Sparkles size={12} />
             Hyderabad's #1 Private Celebrations Venue
           </Badge>
-          <h1 className="mb-8 font-display text-4xl font-bold leading-tight tracking-tight text-[#2a0e4f] sm:text-5xl md:text-6xl">
+          <h1 className="mb-8 font-display text-3xl font-bold leading-tight tracking-tight text-[#2a0e4f] sm:text-4xl md:text-5xl lg:text-6xl">
             <span className="block">
               Your{' '}
               <span key={heroKey} className="relative inline-block whitespace-nowrap">
@@ -523,7 +480,13 @@ export default function HomePage() {
             </motion.div>
           ))}
 
-          <div className="flex items-start justify-between mb-6">
+          <motion.div
+            ref={offersRevealRef}
+            className="flex items-start justify-between mb-6"
+            initial={{ opacity: 0, y: 36, scale: 0.97 }}
+            animate={offersInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          >
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <div className="relative">
@@ -532,7 +495,7 @@ export default function HomePage() {
                 </div>
                 <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Limited Time</p>
               </div>
-              <h2 className="text-3xl md:text-4xl font-black leading-tight">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight">
                 <span className="text-[#2a0e4f]">Current </span>
                 <span className="text-[#7c3aed]">Offers</span>
               </h2>
@@ -544,15 +507,21 @@ export default function HomePage() {
             >
               View All <ChevronRight size={14} />
             </Link>
-          </div>
+          </motion.div>
 
           <div ref={offersScrollRef} className="flex gap-4 overflow-x-auto pb-3 -mx-4 px-4 md:-mx-6 md:px-6 [&::-webkit-scrollbar]:hidden scroll-smooth snap-x snap-mandatory">
             {offersLoading
               ? Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="w-[320px] h-44 shrink-0" rounded="lg" />)
               : offers?.map((offer, i) => (
-                  <div key={offer.id} className="w-[320px] sm:w-[360px] shrink-0 snap-start">
+                  <motion.div
+                    key={offer.id}
+                    className="w-[82vw] max-w-[320px] sm:w-[320px] sm:max-w-none md:w-[360px] shrink-0 snap-start"
+                    initial={{ opacity: 0, y: 48, rotate: i % 2 === 0 ? -2 : 2 }}
+                    animate={offersInView ? { opacity: 1, y: 0, rotate: 0 } : {}}
+                    transition={{ delay: i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  >
                     <OfferTicket offer={offer} index={i} />
-                  </div>
+                  </motion.div>
                 ))}
           </div>
 
@@ -590,20 +559,35 @@ export default function HomePage() {
       {/* Choose Your Celebration */}
       <Section bg="base" className="bg-[#fffaf4]">
         {/* Section header */}
-        <div className="flex flex-col items-center text-center mb-10 md:mb-14">
+        <motion.div
+          ref={celRevealRef}
+          className="flex flex-col items-center text-center mb-10 md:mb-14"
+          initial={{ opacity: 0, scale: 0.88, y: 24 }}
+          animate={celInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+          transition={{ type: 'spring', stiffness: 160, damping: 18 }}
+        >
           <div className="flex items-center gap-2 mb-1">
-            <div className="relative">
+            <motion.div
+              className="relative"
+              animate={celInView ? { rotate: [0, -15, 15, -10, 10, 0] } : {}}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
               <PartyPopper size={26} className="text-[#6b2398]" strokeWidth={1.8} />
               <Sparkles size={10} className="text-[#d4a94a] absolute -top-1.5 -right-1.5" />
-            </div>
+            </motion.div>
             <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Every Occasion</p>
           </div>
-          <h2 className="text-3xl md:text-4xl font-black leading-tight">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight">
             <span className="text-[#2a0e4f]">Choose Your </span>
             <span className="text-[#7c3aed]">Celebration</span>
           </h2>
-          <div className="mt-2 h-[3px] w-10 rounded-full bg-[#d4a94a]" />
-        </div>
+          <motion.div
+            className="mt-2 h-[3px] rounded-full bg-[#d4a94a]"
+            initial={{ width: 0 }}
+            animate={celInView ? { width: 40 } : {}}
+            transition={{ delay: 0.3, duration: 0.5, ease: 'easeOut' }}
+          />
+        </motion.div>
 
         {/* Row 1 — scrolls left */}
         <div
@@ -696,209 +680,277 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Guest Stories Slider */}
-      <Section bg="navy">
-        {/* Header row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-          <div>
-            <p className="text-gold-500 text-xs font-semibold uppercase tracking-widest mb-1">Real Stories</p>
-            <h2 className="font-display text-3xl md:text-4xl text-text-primary leading-tight">What Our Guests Lived</h2>
-          </div>
-          <div className="flex items-center gap-3 shrink-0 bg-bg-surface/60 border border-border-subtle rounded-2xl px-4 py-3">
-            <span className="font-display text-4xl text-gold-400 font-bold leading-none">4.9</span>
-            <div>
-              <Rating value={4.9} size="sm" />
-              <p className="text-xs text-text-muted mt-0.5">847+ Google reviews</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Spotlight layout */}
-        <div className="grid lg:grid-cols-3 gap-6 items-start">
-
-          {/* Featured story */}
-          <div className="lg:col-span-2">
-            {/* Progress strips */}
-            <div className="flex gap-1.5 mb-5">
-              {GUEST_STORIES.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => { setStoryIndex(i); resetTimer() }}
-                  aria-label={`Story ${i + 1}`}
-                  className="flex-1 h-[3px] rounded-full bg-border-subtle overflow-hidden relative"
-                >
-                  <motion.div
-                    className="absolute inset-y-0 left-0 rounded-full bg-gold-400"
-                    animate={{ width: i === storyIndex ? '100%' : i < storyIndex ? '100%' : '0%' }}
-                    transition={i === storyIndex ? { duration: 5, ease: 'linear' } : { duration: 0.2 }}
-                  />
-                </button>
-              ))}
-            </div>
-
-            {/* Story card */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={storyIndex}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="bg-bg-surface border border-border-subtle rounded-3xl p-7 md:p-9 relative overflow-hidden"
-              >
-                {/* Decorative quote mark */}
-                <span className="absolute top-5 right-7 font-display text-[96px] leading-none text-gold-500/10 select-none pointer-events-none" aria-hidden>"</span>
-
-                <p className="text-text-primary text-lg md:text-xl leading-relaxed italic font-light mb-7">
-                  "{GUEST_STORIES[storyIndex].text}"
-                </p>
-
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-500/30 to-gold-500/10 border border-gold-500/30 flex items-center justify-center font-bold text-gold-400 text-lg">
-                      {GUEST_STORIES[storyIndex].avatar}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-text-primary text-sm">{GUEST_STORIES[storyIndex].name}</p>
-                      <p className="text-xs text-text-muted">{GUEST_STORIES[storyIndex].theatre} · {GUEST_STORIES[storyIndex].date}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Rating value={GUEST_STORIES[storyIndex].rating} size="sm" />
-                    <span className="text-xs font-semibold text-gold-500 border border-gold-500/30 bg-gold-500/10 rounded-full px-3 py-1">
-                      {GUEST_STORIES[storyIndex].occasion}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Prev / Next */}
-            <div className="flex items-center gap-3 mt-4">
-              <button onClick={prevStory} className="w-9 h-9 rounded-full border border-border-subtle bg-bg-surface hover:border-gold-500 hover:text-gold-400 text-text-muted flex items-center justify-center transition-all" aria-label="Previous"><ChevronLeft size={16} /></button>
-              <button onClick={nextStory} className="w-9 h-9 rounded-full border border-border-subtle bg-bg-surface hover:border-gold-500 hover:text-gold-400 text-text-muted flex items-center justify-center transition-all" aria-label="Next"><ChevronRight size={16} /></button>
-              <Link to="/reviews" className="ml-auto text-xs font-semibold text-gold-400 hover:text-gold-300 transition-colors flex items-center gap-1">
-                All Reviews <ChevronRight size={12} />
-              </Link>
-            </div>
-          </div>
-
-          {/* Reviewer roster — all stories visible, tap to switch */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3">
-            {GUEST_STORIES.map((story, i) => (
-              <button
-                key={story.id}
-                type="button"
-                onClick={() => { setStoryIndex(i); resetTimer() }}
-                className={`group relative flex flex-col items-center text-center p-4 rounded-2xl border transition-all duration-300 ${
-                  i === storyIndex
-                    ? 'border-gold-500/60 bg-gold-500/8 shadow-[0_0_16px_rgba(201,168,76,0.15)]'
-                    : 'border-border-subtle bg-bg-surface/50 hover:border-gold-500/30 hover:bg-bg-surface'
-                }`}
-              >
-                {/* Active glow ring */}
-                {i === storyIndex && (
-                  <motion.div layoutId="roster-ring" className="absolute inset-0 rounded-2xl border-2 border-gold-500/50 pointer-events-none" transition={{ duration: 0.3 }} />
-                )}
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-base mb-2 transition-all ${i === storyIndex ? 'bg-gold-500 text-bg-base' : 'bg-bg-elevated text-gold-400 border border-border-subtle'}`}>
-                  {story.avatar}
-                </div>
-                <p className="text-xs font-semibold text-text-primary leading-tight mb-1">{story.name}</p>
-                <p className={`text-[10px] font-medium rounded-full px-2 py-0.5 ${i === storyIndex ? 'bg-gold-500/20 text-gold-400' : 'bg-bg-elevated text-text-muted'}`}>
-                  {story.occasion}
-                </p>
-              </button>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      {/* The Experience */}
-      <Section bg="surface">
-        <SectionHeader eyebrow="The BOB Experience" title="More Than a Movie" centered />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: <Tv size={24} />, title: 'Private 4K Cinema', desc: 'Your own massive screen, no strangers.' },
-            { icon: <Sparkles size={24} />, title: 'Premium Decoration', desc: 'Florals, LED boards, cold fire entry.' },
-            { icon: <Cake size={24} />, title: 'Custom Cakes', desc: 'Freshly baked for your occasion.' },
-            { icon: <Camera size={24} />, title: 'Photography', desc: 'Every smile, every surprise, captured.' },
-            { icon: <Music size={24} />, title: 'Dolby Atmos', desc: 'Immersive surround sound.' },
-            { icon: <Shield size={24} />, title: 'Complete Privacy', desc: 'Your space, fully secured.' },
-            { icon: <Users size={24} />, title: 'Groups 2–40', desc: 'Intimate or grand — we have it.' },
-            { icon: <Star size={24} />, title: '4.9★ Rated', desc: '847+ happy celebrations hosted.' },
-          ].map((f) => (
-            <div key={f.title} className="flex flex-col items-center text-center p-5 rounded-card bg-bg-elevated border border-border-subtle hover:border-gold-500/30 transition-colors group">
-              <div className="text-gold-500 mb-3 group-hover:scale-110 transition-transform duration-200">{f.icon}</div>
-              <h3 className="font-semibold text-text-primary text-sm mb-1">{f.title}</h3>
-              <p className="text-xs text-text-muted leading-relaxed">{f.desc}</p>
+      {/* Guest Stories — Fan Carousel */}
+      <section className="py-16 md:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fdf5e8 0%, #fffaf4 55%, #fdf5e8 100%)' }}>
+        <style>{`
+          @keyframes floatEmoji {
+            0%   { transform: translateY(0px) rotate(0deg) scale(1); opacity: 0; }
+            10%  { opacity: 1; }
+            80%  { opacity: 0.8; }
+            100% { transform: translateY(-120px) rotate(20deg) scale(0.6); opacity: 0; }
+          }
+          @keyframes glowPulse {
+            0%, 100% { opacity: 0.55; transform: scale(1); }
+            50%       { opacity: 0.85; transform: scale(1.08); }
+          }
+          @keyframes glowRing {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.0), 0 0 60px 20px rgba(201,168,76,0.18); }
+            50%       { box-shadow: 0 0 0 8px rgba(201,168,76,0.08), 0 0 80px 30px rgba(201,168,76,0.28); }
+          }
+        `}</style>
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full bg-[#c9a84c]/7 blur-3xl" />
+          {/* Ambient glow orbs */}
+          <div className="absolute top-1/4 left-1/3 w-64 h-64 rounded-full bg-[#c9a84c]/10 blur-3xl" style={{ animation: 'glowPulse 4s ease-in-out infinite' }} />
+          <div className="absolute bottom-1/4 right-1/3 w-56 h-56 rounded-full bg-[#8b5cf6]/8 blur-3xl" style={{ animation: 'glowPulse 5s ease-in-out infinite 1.5s' }} />
+          {/* Floating emoji particles */}
+          {(['🎉','🌟','❤️','🥳','🎊','⭐','✨','💫'] as const).map((emoji, i) => (
+            <div key={i} style={{
+              position: 'absolute',
+              left: `${8 + i * 12}%`,
+              bottom: `${10 + (i % 3) * 15}%`,
+              fontSize: i % 2 === 0 ? '20px' : '16px',
+              animation: `floatEmoji ${3.5 + i * 0.6}s ease-in-out ${i * 0.8}s infinite`,
+              pointerEvents: 'none',
+              userSelect: 'none',
+            }}>
+              {emoji}
             </div>
           ))}
         </div>
-      </Section>
+
+        <div className="max-w-7xl mx-auto px-4 md:px-6 relative">
+
+          {/* Header */}
+          <div ref={reviewsRevealRef} className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 32 }}
+              animate={reviewsInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <p className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.22em] mb-1.5">Real Stories</p>
+              <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-black text-[#2a0e4f] leading-tight">What Our Guests Lived</h2>
+              <motion.div
+                className="mt-2 h-[3px] rounded-full bg-gradient-to-r from-[#c9a84c] to-[#eed98a]"
+                initial={{ width: 0 }}
+                animate={reviewsInView ? { width: 40 } : {}}
+                transition={{ delay: 0.35, duration: 0.5 }}
+              />
+            </motion.div>
+            {/* Rating badge */}
+            <motion.div
+              className="flex items-center gap-3 bg-white border border-[#f0e6cc] rounded-2xl px-5 py-3 shadow-sm shrink-0"
+              initial={{ opacity: 0, scale: 0.75, x: 20 }}
+              animate={reviewsInView ? { opacity: 1, scale: 1, x: 0 } : {}}
+              transition={{ delay: 0.2, type: 'spring', stiffness: 220, damping: 18 }}
+            >
+              <span className="font-display text-4xl font-black text-[#c9a84c] leading-none">4.9</span>
+              <div>
+                <div className="flex gap-0.5">
+                  {[1,2,3,4,5].map(s => (
+                    <svg key={s} width="14" height="14" viewBox="0 0 24 24" fill={s <= 4 ? '#c9a84c' : 'none'} stroke="#c9a84c" strokeWidth="1.5">
+                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-[11px] text-[#5b4578]/50 mt-0.5">847+ Google reviews</p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Fan carousel */}
+          <div className="relative flex items-center">
+            <button onClick={prevStory}
+              className="relative z-20 shrink-0 w-10 h-10 rounded-full bg-white border border-[#f0e6cc] shadow-md hover:border-[#c9a84c] hover:text-[#c9a84c] text-[#5b4578]/50 flex items-center justify-center transition-all"
+              aria-label="Previous">
+              <ChevronLeft size={18} />
+            </button>
+
+            {/* Cards stage */}
+            <div className="relative flex-1 h-[320px] sm:h-[290px] md:h-[260px] overflow-hidden mx-1 sm:mx-2">
+              {GUEST_STORIES.map((story, i) => {
+                let pos = i - storyIndex
+                if (pos > GUEST_STORIES.length / 2) pos -= GUEST_STORIES.length
+                if (pos < -GUEST_STORIES.length / 2) pos += GUEST_STORIES.length
+                const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
+                if (Math.abs(pos) > (isMobile ? 1 : 2)) return null
+                const isCenter = pos === 0
+                const absPos = Math.abs(pos)
+                const scale = isCenter ? 1 : absPos === 1 ? 0.86 : 0.72
+                const opacity = isCenter ? 1 : absPos === 1 ? 0.78 : 0.45
+                const zIndex = isCenter ? 10 : absPos === 1 ? 6 : 3
+                const spread = isMobile ? 44 : 48
+                return (
+                  <motion.div
+                    key={story.id}
+                    animate={{
+                      x: `calc(-50% + ${pos * spread}%)`,
+                      scale,
+                      rotate: pos * -4,
+                      opacity,
+                      zIndex,
+                    }}
+                    transition={{ type: 'spring', stiffness: 240, damping: 28 }}
+                    style={{ position: 'absolute', left: '50%', top: 0, width: '100%', maxWidth: 440, cursor: !isCenter ? 'pointer' : 'default' }}
+                    onClick={() => { if (!isCenter) { pos < 0 ? prevStory() : nextStory() } }}
+                  >
+                    <div className={`bg-white rounded-3xl p-5 md:p-6 h-full transition-shadow duration-300 ${
+                      isCenter
+                        ? 'border-2 border-[#c9a84c]'
+                        : absPos === 1
+                        ? 'border border-[#f0e6cc] shadow-[0_4px_16px_rgba(0,0,0,0.06)]'
+                        : 'border border-[#f5efe3] shadow-sm'
+                    }`} style={isCenter ? { animation: 'glowRing 2.8s ease-in-out infinite' } : undefined}>
+                      {/* Top: avatar + name + stars */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className={`w-11 h-11 rounded-full shrink-0 flex items-center justify-center font-bold text-base border-2 ${isCenter ? 'bg-[#c9a84c] text-white border-[#c9a84c]' : 'bg-[#f9f4ec] text-[#c9a84c] border-[#f0e6cc]'}`}>
+                          {story.avatar}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-[#2a0e4f] text-sm truncate">{story.name}</p>
+                          <p className="text-xs text-[#5b4578]/50 truncate">{story.role}</p>
+                        </div>
+                        {isCenter && (
+                          <div className="flex gap-0.5 shrink-0">
+                            {Array.from({ length: 5 }).map((_, s) => (
+                              <motion.svg key={s} width="13" height="13" viewBox="0 0 24 24" fill="#c9a84c" stroke="none"
+                                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                                transition={{ delay: s * 0.06, type: 'spring', stiffness: 320 }}>
+                                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                              </motion.svg>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      {/* Quote */}
+                      <div className="relative mb-3">
+                        <span className="text-[#c9a84c] font-display text-4xl leading-none absolute -top-1 -left-0.5 select-none opacity-55">"</span>
+                        <p className={`pl-5 leading-relaxed italic font-light line-clamp-3 ${isCenter ? 'text-[#2a0e4f] text-[15px]' : 'text-[#5b4578]/60 text-sm'}`}>
+                          {story.text}
+                        </p>
+                      </div>
+                      {/* Footer */}
+                      <div className="flex items-center justify-between pt-3 border-t border-[#f8f0e0]">
+                        <span className="text-[10px] text-[#5b4578]/40 font-medium">{story.date} · {story.theatre}</span>
+                        {isCenter && (
+                          <span className="text-[9px] font-black uppercase tracking-widest text-[#7a5500] border border-[#c9a84c]/40 bg-[#c9a84c]/10 rounded-full px-2.5 py-0.5">
+                            {story.occasion}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </div>
+
+            <button onClick={nextStory}
+              className="relative z-20 shrink-0 w-10 h-10 rounded-full bg-white border border-[#f0e6cc] shadow-md hover:border-[#c9a84c] hover:text-[#c9a84c] text-[#5b4578]/50 flex items-center justify-center transition-all"
+              aria-label="Next">
+              <ChevronRight size={18} />
+            </button>
+          </div>
+
+          {/* Dots + all reviews */}
+          <div className="flex items-center justify-center gap-4 mt-6">
+            <div className="flex gap-1.5">
+              {GUEST_STORIES.map((_, i) => (
+                <button key={i} onClick={() => { setStoryIndex(i); resetTimer() }}
+                  className={`rounded-full transition-all duration-300 ${i === storyIndex ? 'bg-[#c9a84c] w-5 h-1.5' : 'bg-[#c9a84c]/25 w-1.5 h-1.5 hover:bg-[#c9a84c]/50'}`}
+                  aria-label={`Story ${i + 1}`} />
+              ))}
+            </div>
+            <Link to="/reviews" className="text-xs font-bold text-[#c9a84c] hover:text-[#a07830] transition-colors flex items-center gap-1">
+              All Reviews <ChevronRight size={12} />
+            </Link>
+          </div>
+
+        </div>
+      </section>
 
       {/* Location */}
-      <Section bg="base">
-        <SectionHeader eyebrow="Find Us" title="Visit BOB Talkies" centered />
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            <div className="space-y-5">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-gold-500/20 rounded-xl flex items-center justify-center shrink-0">
-                  <MapPin size={20} className="text-gold-400" />
-                </div>
-                <div>
-                  <p className="font-semibold text-text-primary mb-0.5">Address</p>
-                  <p className="text-text-secondary text-sm leading-relaxed">
-                    BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072
-                  </p>
-                </div>
+      <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fdf5e8 0%, #fffaf4 55%, #fdf5e8 100%)' }}>
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-[#c9a84c]/8 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-[#8b5cf6]/8 blur-3xl" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 md:px-6 relative">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 28 }}
+            animate={locationInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.28em] mb-3">Find Us</p>
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-black text-[#2a0e4f] leading-tight mb-4">Visit BOB Talkies</h2>
+            <motion.div className="mx-auto h-[3px] rounded-full bg-gradient-to-r from-[#c9a84c] to-[#eed98a]"
+              initial={{ width: 0 }} animate={locationInView ? { width: 64 } : {}} transition={{ delay: 0.3, duration: 0.5 }} />
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-5 md:gap-8 items-stretch">
+            {/* Info panel */}
+            <motion.div
+              className="rounded-3xl p-5 md:p-8 flex flex-col justify-between"
+              style={{ background: 'linear-gradient(135deg, #2a0e4f 0%, #32105f 60%, #4a1a8a 100%)', border: '1px solid rgba(201,168,76,0.2)' }}
+              initial={{ opacity: 0, x: -40 }}
+              animate={locationInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: 0.15, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="space-y-6">
+                {[
+                  { icon: <MapPin size={22} className="text-[#c9a84c]" />, label: 'Address', content: <p className="text-white/60 text-sm leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
+                  { icon: <Phone size={22} className="text-[#c9a84c]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${config.whatsappNumber}`} className="text-[#c9a84c] hover:text-[#eed98a] text-sm transition-colors">+91 {config.whatsappNumber.slice(2)}</a> },
+                  { icon: <CalendarDays size={22} className="text-[#c9a84c]" />, label: 'Operating Hours', content: <><p className="text-white/60 text-sm">10:00 AM – 1:00 AM</p><p className="text-[#c9a84c] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
+                ].map((item, i) => (
+                  <motion.div key={item.label} className="flex items-start gap-4"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={locationInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.3 + i * 0.1, duration: 0.45 }}
+                  >
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+                      style={{ background: 'rgba(201,168,76,0.18)', boxShadow: '0 0 20px rgba(201,168,76,0.22)' }}>
+                      {item.icon}
+                    </div>
+                    <div>
+                      <p className="font-bold text-white mb-1">{item.label}</p>
+                      {item.content}
+                    </div>
+                  </motion.div>
+                ))}
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-gold-500/20 rounded-xl flex items-center justify-center shrink-0">
-                  <Phone size={20} className="text-gold-400" />
-                </div>
-                <div>
-                  <p className="font-semibold text-text-primary mb-0.5">Phone & WhatsApp</p>
-                  <a href={`tel:+${config.whatsappNumber}`} className="text-gold-400 hover:text-gold-500 text-sm">
-                    +91 {config.whatsappNumber.slice(2)}
+              <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                <Button asChild size="lg" className="w-full sm:w-auto">
+                  <Link to="/book">Book a Theatre</Link>
+                </Button>
+                <Button asChild variant="whatsapp" size="lg" className="w-full sm:w-auto">
+                  <a href={`https://wa.me/${config.whatsappNumber}`} target="_blank" rel="noopener noreferrer">
+                    <MessageCircle size={18} /> WhatsApp
                   </a>
-                </div>
+                </Button>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-gold-500/20 rounded-xl flex items-center justify-center shrink-0">
-                  <span className="text-gold-400 text-xs font-bold">hrs</span>
-                </div>
-                <div>
-                  <p className="font-semibold text-text-primary mb-0.5">Operating Hours</p>
-                  <p className="text-text-secondary text-sm">10:00 AM – 1:00 AM · 365 Days</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-3 mt-8">
-              <Button asChild size="lg">
-                <Link to="/book">Book a Theatre</Link>
-              </Button>
-              <Button asChild variant="whatsapp" size="lg">
-                <a href={`https://wa.me/${config.whatsappNumber}`} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle size={18} /> WhatsApp
-                </a>
-              </Button>
-            </div>
-          </div>
-          <div className="rounded-card overflow-hidden border border-border-subtle h-72">
-            <iframe
-              title="BOB Talkies Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30449.63!2d78.3980!3d17.4849!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb93dc8c5d69df%3A0x19688381b30a1!2sKukatpally%2C+Hyderabad!5e0!3m2!1sen!2sin!4v1!5m2!1sen!2sin"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+            </motion.div>
+
+            {/* Map */}
+            <motion.div
+              className="rounded-3xl overflow-hidden relative h-72 md:h-auto"
+              style={{ border: '1px solid rgba(201,168,76,0.25)', minHeight: 320 }}
+              initial={{ opacity: 0, x: 40 }}
+              animate={locationInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: 0.2, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <iframe
+                title="BOB Talkies Location"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30449.63!2d78.3980!3d17.4849!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb93dc8c5d69df%3A0x19688381b30a1!2sKukatpally%2C+Hyderabad!5e0!3m2!1sen!2sin!4v1!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </motion.div>
           </div>
         </div>
-      </Section>
+      </section>
     </>
   )
 }
