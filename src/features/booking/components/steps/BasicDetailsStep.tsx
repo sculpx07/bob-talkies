@@ -83,8 +83,14 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
       dispatch({ type: 'SET_VERIFIED_MOBILE', mobile: getValues('mobile') })
       onDone()
     },
-    onError: (e: Error) => setOtpError(e.message),
+    // a wrong code clears the box so it can simply be retyped
+    onError: (e: Error) => { setOtpError(e.message); setOtp('') },
   })
+
+  // no Verify button: the code is checked as soon as the 6th digit is entered
+  useEffect(() => {
+    if (otpSent && otp.length === 6 && !verifying) verifyOtp({ mobile: getValues('mobile'), code: otp })
+  }, [otp]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function save(d: DetailsForm) {
     dispatch({
@@ -176,21 +182,18 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
             className="space-y-3 rounded-3xl bg-[linear-gradient(135deg,#32105f,#6b2398_60%,#d946ef)] p-5 text-white"
           >
             <p className="flex items-center gap-2 text-sm text-white/90"><MessageSquare size={16} /> Enter the 6-digit OTP sent to your mobile</p>
-            <div className="flex items-center gap-2 rounded-full bg-white p-1.5">
+            <div className="rounded-full bg-white p-1.5">
               <input
-                value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                inputMode="numeric" maxLength={6} placeholder="------" aria-label="OTP"
-                className="min-w-0 flex-1 bg-transparent px-4 text-center font-mono text-xl font-bold tracking-[0.5rem] text-[#32105f] outline-none placeholder:text-[#d6c5de]"
+                autoFocus
+                value={otp} onChange={(e) => { setOtpError(''); setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)) }}
+                readOnly={verifying}
+                inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="------" aria-label="OTP"
+                className="h-11 w-full bg-transparent px-4 text-center font-mono text-xl font-bold tracking-[0.5rem] text-[#32105f] outline-none placeholder:text-[#d6c5de] read-only:opacity-60"
               />
-              <button
-                type="button" disabled={otp.length < 6 || verifying}
-                onClick={() => verifyOtp({ mobile: getValues('mobile'), code: otp })}
-                className="h-11 shrink-0 rounded-full bg-[#32105f] px-6 text-sm font-semibold text-white disabled:opacity-40"
-              >
-                {verifying ? 'Checking…' : 'Verify'}
-              </button>
             </div>
-            <p className="text-xs text-white/70">Use OTP 123456 in test mode</p>
+            <p className="text-xs text-white/70" aria-live="polite">
+              {verifying ? 'Verifying…' : 'It is verified automatically once you enter all 6 digits. Use OTP 123456 in test mode.'}
+            </p>
           </motion.div>
         )}
         {otpError && <p role="alert" className="text-sm text-[#c2255c]">{otpError}</p>}

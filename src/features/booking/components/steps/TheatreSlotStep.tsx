@@ -83,7 +83,6 @@ function TheatreListingCard({
   const dow = getDay(parseISO(date))
   const isWeekend = dow === 0 || dow === 6
   const price = isWeekend ? theatre.weekendPricePaise : theatre.weekdayPricePaise // price for the chosen date
-  const hasWeekdayDeal = theatre.weekdayPricePaise < theatre.weekendPricePaise
   const extraGuests = Math.max(0, guests - (info?.includedGuests ?? 0))
   const selected = selectedSlotId !== null
   // advance to reserve the slot: ADVANCE_PAYMENT_PERCENT of theatre price + extra guests (before tax and add-ons)

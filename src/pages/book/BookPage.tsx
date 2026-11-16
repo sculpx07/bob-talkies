@@ -16,10 +16,9 @@ import { OCCASIONS } from '@/content/occasions'
 import { Stepper } from '@/components/ui/Stepper'
 import { Seo } from '@/components/seo/Seo'
 import { useBooking } from '@/features/booking/state/booking.context'
-import { StickyPriceBar, type Selection } from '@/features/booking/components/StickyPriceBar'
+import { StickyPriceBar } from '@/features/booking/components/StickyPriceBar'
 import { TheatreSlotStep } from '@/features/booking/components/steps/TheatreSlotStep'
 import { AddonsStep } from '@/features/booking/components/steps/AddonsStep'
-import { PriceSummary } from '@/features/booking/components/PriceSummary'
 import { BasicDetailsStep } from '@/features/booking/components/steps/BasicDetailsStep'
 import { CakeStep } from '@/features/booking/components/steps/CakeStep'
 import { BookingSummaryCard } from '@/features/booking/components/BookingSummaryCard'
@@ -109,37 +108,6 @@ export default function BookPage() {
   const { data: slotList = [] } = useSlots(state.theatreId, state.date)
   const chosenSlot = slotList.find((sl) => sl.id === state.slotId) ?? null
   const chosenAddons = addonList.filter((ad) => state.addonIds.includes(ad.id))
-  const addonsTotal = chosenAddons.reduce((sum, ad) => sum + ad.pricePaise, 0)
-
-  // everything picked so far, shown as chips in the bottom bar
-  const curStep = Math.min(Math.max(state.step, FIRST_STEP), LAST_STEP)
-  const selections: Selection[] = []
-  if (chosenTheatre) {
-    selections.push({
-      id: 'theatre',
-      title: chosenTheatre.name,
-      sub: chosenSlot ? formatTime(chosenSlot.start) : 'Pick a time slot',
-      image: chosenTheatre.images[0],
-    })
-  }
-  if (curStep >= 6 && chosenAddons.length > 0) {
-    selections.push({
-      id: 'addons',
-      title: `${chosenAddons.length} add-on${chosenAddons.length > 1 ? 's' : ''}`,
-      sub: formatINR(addonsTotal),
-    })
-  }
-  if (curStep >= 6 && (state.customRequest.trim() || state.addonRequest.trim())) {
-    selections.push({ id: 'custom', title: 'Custom request', sub: 'Added' })
-  }
-
-  function clearSelections() {
-    dispatch({ type: 'SET_THEATRE_SLOT', theatreId: '', theatreSlug: '', slotId: '' })
-    dispatch({ type: 'SET_ADDONS', addonIds: [] })
-    dispatch({ type: 'SET_CUSTOM_REQUEST', text: '' })
-    dispatch({ type: 'SET_ADDON_REQUEST', text: '' })
-    dispatch({ type: 'GO_STEP', step: FIRST_STEP })
-  }
 
   if (!occasion || !date) return <Navigate to="/" state={{ highlightPlan: true }} replace />
 
@@ -380,12 +348,7 @@ export default function BookPage() {
           onNext={handleNext}
           onBack={handleBack}
           canProceed={canProceed(step, state)}
-          stepIndex={step - FIRST_STEP}
-          totalSteps={visibleSteps.length}
           nextLabel={step === 7 ? 'Review and pay' : 'Continue'}
-          showTotal={step >= 6}
-          selections={selections}
-          onClear={clearSelections}
         />
       )}
     </>
