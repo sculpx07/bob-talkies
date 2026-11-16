@@ -3,7 +3,7 @@ import { bookingApi, type QuoteRequest } from '../api'
 
 export function usePriceQuote(request: Partial<QuoteRequest>) {
   const isReady = Boolean(
-    request.theatreId && request.packageId && request.date && request.slotId,
+    request.theatreId && request.date && request.slotId,
   )
   return useQuery({
     queryKey: ['booking', 'quote', request],

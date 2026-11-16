@@ -4,21 +4,21 @@ import type { ServerQuote } from './state/booking.reducer'
 
 export interface QuoteRequest {
   theatreId: string
-  packageId: string
   date: string
   slotId: string
   guests: number
+  decoration?: boolean
   addonIds: string[]
   couponCode?: string
 }
 
 export interface BookingCreateRequest {
   theatreId: string
-  packageId: string
   date: string
   slotId: string
   occasion: string
   guests: number
+  decoration?: boolean
   addonIds: string[]
   couponCode?: string
   customerName: string

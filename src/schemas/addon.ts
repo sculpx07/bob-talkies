@@ -15,6 +15,9 @@ export const AddonSchema = z.object({
   isAvailable: z.boolean(),
   isOutOfStock: z.boolean(),
   theatreIds: z.array(z.string()).optional(),
+  /** cakes only: the cake this size belongs to, and the size label (e.g. "500 gm") */
+  cakeName: z.string().optional(),
+  sizeLabel: z.string().optional(),
 })
 
 export type Addon = z.infer<typeof AddonSchema>

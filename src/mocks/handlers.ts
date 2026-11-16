@@ -1,5 +1,6 @@
 import { http, HttpResponse, delay } from 'msw'
 import { THEATRES, PACKAGES, ADDONS, OFFERS } from './seed'
+import { THEATRE_LISTING, DECOR_PRICE_INR } from '@/content/theatreListing'
 import { addDays, format, parseISO, getDay } from 'date-fns'
 
 const BASE = '*/api/v1'
@@ -58,7 +59,7 @@ function generateCalendar(theatreId: string, month: string) {
 let heldSlots: Record<string, { bookingId: string; expiresAt: string }> = {}
 let bookings: Record<string, {
   id: string; status: string; theatreId: string; theatreName: string;
-  packageId: string; packageName: string; date: string; slotId: string;
+  date: string; slotId: string;
   slotStart: string; slotEnd: string; occasion: string; guests: number;
   addonIds: string[]; couponCode?: string; customerName: string;
   customerMobile: string; customerEmail?: string; totalPaise: number;
@@ -67,20 +68,23 @@ let bookings: Record<string, {
 }> = {}
 
 type QuoteBody = {
-  theatreId: string; packageId: string; date: string; slotId: string;
-  guests: number; addonIds: string[]; couponCode?: string;
+  theatreId: string; date: string; slotId: string;
+  guests: number; decoration?: boolean; addonIds: string[]; couponCode?: string;
 }
 
 // shared by POST /pricing/quote and POST /bookings so the booking total always matches the quote
 function computeQuote(body: QuoteBody) {
     const theatre = THEATRES.find((t) => t.id === body.theatreId)
-    const pkg = PACKAGES.find((p) => p.id === body.packageId)
-    if (!theatre || !pkg) return null
+    if (!theatre) return null
 
     const dow = getDay(parseISO(body.date))
     const isWeekend = dow === 0 || dow === 6
-    const basePrise = isWeekend ? pkg.weekendPricePaise : pkg.pricePaise
-    const extraGuests = Math.max(0, body.guests - pkg.includedGuests)
+    // theatre price and included guests follow https://bobtalkies.com/private-theatre-in-hyderabad/
+    const theatrePrice = isWeekend ? theatre.weekendPricePaise : theatre.weekdayPricePaise
+    const extraGuests = Math.max(0, body.guests - (THEATRE_LISTING[theatre.slug]?.includedGuests ?? 0))
+    // decoration is a flat charge shown on the BOB Talkies listing page
+    const decorationPrice = body.decoration ? DECOR_PRICE_INR * 100 : 0
+    const basePrise = theatrePrice + decorationPrice
     const extraGuestCharge = extraGuests * theatre.extraGuestPricePaise
     const addonTotal = body.addonIds.reduce((sum, id) => {
       const addon = ADDONS.find((a) => a.id === id)
@@ -116,7 +120,8 @@ function computeQuote(body: QuoteBody) {
 
     return {
       lineItems: [
-        { label: `${pkg.name} Package`, paise: basePrise },
+        { label: `${theatre.name} theatre`, paise: theatrePrice },
+        ...(decorationPrice > 0 ? [{ label: 'Decoration', paise: decorationPrice }] : []),
         ...(extraGuests > 0 ? [{ label: `Extra Guests (${extraGuests} × ₹${theatre.extraGuestPricePaise / 100})`, paise: extraGuestCharge }] : []),
         ...body.addonIds.map((id) => {
           const addon = ADDONS.find((a) => a.id === id)
@@ -214,13 +219,12 @@ export const handlers = [
   http.post(`${BASE}/bookings`, async ({ request }) => {
     await delay(600)
     const body = await request.json() as {
-      theatreId: string; packageId: string; date: string; slotId: string;
-      occasion: string; guests: number; addonIds: string[]; couponCode?: string;
+      theatreId: string; date: string; slotId: string;
+      occasion: string; guests: number; decoration?: boolean; addonIds: string[]; couponCode?: string;
       customerName: string; customerMobile: string; customerEmail?: string;
     }
     const theatre = THEATRES.find((t) => t.id === body.theatreId)
-    const pkg = PACKAGES.find((p) => p.id === body.packageId)
-    if (!theatre || !pkg) return err('NOT_FOUND', 'Theatre or package not found', 404)
+    if (!theatre) return err('NOT_FOUND', 'Theatre not found', 404)
 
     const quote = computeQuote(body)
     if (!quote) return err('NOT_FOUND', 'Theatre or package not found', 404)
@@ -237,7 +241,7 @@ export const handlers = [
 
     bookings[id] = {
       id, status: 'SLOT_HELD', theatreId: body.theatreId, theatreName: theatre.name,
-      packageId: body.packageId, packageName: pkg.name, date: body.date,
+      date: body.date,
       slotId: body.slotId, slotStart, slotEnd, occasion: body.occasion,
       guests: body.guests, addonIds: body.addonIds, couponCode: body.couponCode,
       customerName: body.customerName, customerMobile: body.customerMobile,

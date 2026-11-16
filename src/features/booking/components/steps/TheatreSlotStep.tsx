@@ -1,240 +1,252 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { AnimatePresence, motion } from 'framer-motion'
+import { getDay, parseISO } from 'date-fns'
+import {
+  ChevronLeft, ChevronRight, Users, Monitor, Volume2, BadgeCheck, Sparkles, Zap, Palette,
+} from 'lucide-react'
 import { theatreKeys } from '@/lib/api/queryKeys'
 import { api } from '@/lib/api/client'
 import type { Theatre } from '@/schemas/theatre'
 import { useBooking } from '../../state/booking.context'
 import { useSlots } from '../../hooks/useAvailability'
+import { OCCASIONS } from '@/content/occasions'
+import { THEATRE_LISTING, DECOR_PRICE_INR } from '@/content/theatreListing'
 import { formatINR } from '@/lib/utils/currency'
 import { formatTime } from '@/lib/utils/date'
+import { ADVANCE_PAYMENT_PERCENT } from '@/lib/constants'
 import { cn } from '@/lib/utils/cn'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { motion } from 'framer-motion'
-import { Users, Monitor, Clock, Zap, CheckCircle2, Sparkles } from 'lucide-react'
+
+const EASE = [0.22, 1, 0.36, 1] as const
 
 export function TheatreSlotStep() {
   const { state, dispatch } = useBooking()
 
-  const { data: theatres = [], isLoading: loadingTheatres } = useQuery({
+  const { data: theatres = [], isLoading } = useQuery({
     queryKey: theatreKeys.list(),
     queryFn: () => api.get<Theatre[]>('/theatres'),
   })
 
-  const eligibleTheatres = theatres.filter(
-    (t) => t.capacityMin <= state.guests && t.capacityMax >= state.guests,
-  )
+  const occasion = OCCASIONS.find((o) => o.slug === state.occasion)
+  const fitting = theatres.filter((t) => t.capacityMin <= state.guests && t.capacityMax >= state.guests)
+  // list theatres that suit the chosen occasion; fall back to everything that fits the group
+  const forOccasion = occasion ? fitting.filter((t) => occasion.recommendedTheatres.includes(t.id)) : fitting
+  const listed = forOccasion.length > 0 ? forOccasion : fitting
+  const showingFallback = Boolean(occasion) && forOccasion.length === 0 && fitting.length > 0
 
-  const selectedTheatre = eligibleTheatres.find((t) => t.id === state.theatreId) ?? null
-
-  if (loadingTheatres) {
+  // the date arrives from the URL on first load; wait for it before rendering date-dependent cards
+  if (isLoading || !state.date) {
     return (
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-2/3" />
-        <div className="flex gap-4 overflow-hidden">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-52 w-44 shrink-0 rounded-2xl" />)}
-        </div>
-        <Skeleton className="h-32 w-full rounded-2xl" />
+      <div className="grid gap-5 sm:grid-cols-2">
+        {[1, 2].map((i) => <Skeleton key={i} className="h-[520px] w-full rounded-3xl" />)}
       </div>
     )
   }
 
   return (
     <div>
-      <h2 className="font-display text-3xl md:text-4xl font-bold text-[#2a0e4f] mb-1">
-        Choose your theatre
-      </h2>
-      <p className="text-sm text-text-secondary mb-6">
-        Showing theatres for <strong className="text-text-primary">{state.guests} guests</strong> on{' '}
-        <strong className="text-text-primary">{state.date}</strong>
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Choose your theatre</h2>
+      <p className="mb-5 text-sm text-[#5b4578]">
+        {occasion ? <><strong className="text-[#2a0e4f]">{occasion.emoji} {occasion.label}</strong> · </> : null}
+        <strong className="text-[#2a0e4f]">{state.guests === 30 ? '30+' : state.guests} guests</strong> · <strong className="text-[#2a0e4f]">{state.date}</strong>
       </p>
 
-      {eligibleTheatres.length === 0 ? (
-        <p className="text-text-muted">No theatres available for this guest count. Please go back and adjust.</p>
+      {showingFallback && (
+        <p className="mb-5 rounded-2xl bg-[#fff6e0] px-4 py-3 text-sm text-[#7a5200]">
+          No theatre is specially listed for this occasion at your group size, so these are all the theatres that fit {state.guests} guests.
+        </p>
+      )}
+
+      {listed.length === 0 ? (
+        <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d7094]">
+          No theatre fits this guest count. Please go back and adjust it.
+        </p>
       ) : (
-        <>
-          {/* Theatre picker */}
-          <div className="grid gap-5 sm:grid-cols-2">
-            {eligibleTheatres.map((theatre, i) => (
-              <TheatreCard
-                key={theatre.id}
-                index={i}
-                theatre={theatre}
-                isSelected={state.theatreId === theatre.id}
-                occasion={state.occasion}
-                onSelect={() =>
-                  dispatch({ type: 'SET_THEATRE_SLOT', theatreId: theatre.id, theatreSlug: theatre.slug, slotId: state.slotId ?? '' })
-                }
-              />
-            ))}
-          </div>
-
-          {/* Slot picker for selected theatre */}
-          {selectedTheatre && (
-            <SlotPicker
-              theatre={selectedTheatre}
+        <div className="grid gap-5 sm:grid-cols-2">
+          {listed.map((t, i) => (
+            <TheatreListingCard
+              key={t.id}
+              index={i}
+              theatre={t}
+              recommended={Boolean(occasion) && occasion!.recommendedTheatres.includes(t.id)}
+              occasionLabel={occasion?.label}
+              guests={state.guests}
               date={state.date!}
-              selectedSlotId={state.slotId}
-              onSelect={(slotId) =>
-                dispatch({ type: 'SET_THEATRE_SLOT', theatreId: selectedTheatre.id, theatreSlug: selectedTheatre.slug, slotId })
-              }
+              selectedSlotId={state.theatreId === t.id ? state.slotId : null}
+              onPickSlot={(slotId) => dispatch({ type: 'SET_THEATRE_SLOT', theatreId: t.id, theatreSlug: t.slug, slotId })}
+              onContinue={() => dispatch({ type: 'GO_STEP', step: 4 })}
             />
-          )}
-
-          {!selectedTheatre && (
-            <p className="mt-6 text-center text-sm text-text-muted py-8 rounded-2xl border border-dashed border-[#ddd0f5]">
-              Select a theatre above to see available time slots
-            </p>
-          )}
-        </>
+          ))}
+        </div>
       )}
     </div>
   )
 }
 
-function TheatreCard({
-  theatre, isSelected, occasion, onSelect, index,
+function TheatreListingCard({
+  theatre, index, recommended, occasionLabel, guests, date, selectedSlotId, onPickSlot, onContinue,
 }: {
-  theatre: Theatre; isSelected: boolean; occasion: string | null; onSelect: () => void; index: number
+  theatre: Theatre; index: number; recommended: boolean; occasionLabel?: string
+  guests: number; date: string; selectedSlotId: string | null; onPickSlot: (slotId: string) => void; onContinue: () => void
 }) {
-  const isRecommended =
-    theatre.capacityMin <= 4 && (occasion === 'anniversary' || occasion === 'date-night' || occasion === 'proposal')
-      ? theatre.id === 'th-delight'
-      : false
-
-  return (
-    <motion.button
-      type="button"
-      onClick={onSelect}
-      aria-pressed={isSelected}
-      initial={{ opacity: 0, y: 40, scale: 0.94 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.7, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -6 }}
-      whileTap={{ scale: 0.98 }}
-      className={cn(
-        'group relative aspect-[4/3] w-full overflow-hidden rounded-3xl text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c026d3]/40',
-        isSelected
-          ? 'shadow-[0_22px_50px_rgba(192,38,211,0.4)] ring-[3px] ring-[#c026d3]'
-          : 'shadow-[0_14px_34px_rgba(107,35,152,0.18)]',
-      )}
-    >
-      <img
-        src={theatre.images[0]}
-        alt={theatre.name}
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-        loading="lazy"
-      />
-      <span className="absolute inset-0 bg-gradient-to-t from-[#1b0b3a]/90 via-[#1b0b3a]/25 to-transparent" />
-
-      {/* badges */}
-      <div className="absolute left-3 top-3 flex flex-wrap gap-1.5 pr-14">
-        {isRecommended && (
-          <span className="flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-[#6b2398] backdrop-blur">
-            <Sparkles size={11} /> Recommended
-          </span>
-        )}
-        {theatre.currentOffer && (
-          <span className="rounded-full bg-[#ffe9f1]/95 px-2.5 py-1 text-[11px] font-bold text-[#c2255c]">
-            {theatre.currentOffer}
-          </span>
-        )}
-      </div>
-
-      {/* selected tick */}
-      <span
-        className={cn(
-          'absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300',
-          isSelected ? 'scale-100 bg-[#c026d3] text-white' : 'scale-90 border border-white/60 bg-white/20 text-transparent backdrop-blur',
-        )}
-        aria-hidden="true"
-      >
-        <CheckCircle2 size={20} />
-      </span>
-
-      {/* info */}
-      <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-        <p className="font-display text-2xl font-bold leading-tight">{theatre.name}</p>
-        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-          <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 backdrop-blur"><Users size={12} />{theatre.capacityMin}–{theatre.capacityMax} guests</span>
-          <span className="flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 backdrop-blur"><Monitor size={12} />{theatre.screenSize}</span>
-          <span className="ml-auto rounded-full bg-[#f5d7a1] px-3 py-1 text-xs font-bold text-[#4a2a00]">
-            from {formatINR(theatre.startingPricePaise)}
-          </span>
-        </div>
-      </div>
-    </motion.button>
-  )
-}
-
-function SlotPicker({
-  theatre, date, selectedSlotId, onSelect,
-}: {
-  theatre: Theatre; date: string; selectedSlotId: string | null; onSelect: (slotId: string) => void
-}) {
+  const [img, setImg] = useState(0)
   const { data: slots = [], isLoading } = useSlots(theatre.id, date)
+  const info = THEATRE_LISTING[theatre.slug]
+  const dow = getDay(parseISO(date))
+  const isWeekend = dow === 0 || dow === 6
+  const price = isWeekend ? theatre.weekendPricePaise : theatre.weekdayPricePaise
+  const hasWeekdayDeal = theatre.weekdayPricePaise < theatre.weekendPricePaise
+  const extraGuests = Math.max(0, guests - (info?.includedGuests ?? 0))
+  const selected = selectedSlotId !== null
+  // advance to reserve the slot: ADVANCE_PAYMENT_PERCENT of theatre price + extra guests (before tax and add-ons)
+  const reservePaise = Math.round(((price + extraGuests * theatre.extraGuestPricePaise) * ADVANCE_PAYMENT_PERCENT) / 100)
+  const n = theatre.images.length
+  const go = (d: number) => setImg((i) => (i + d + n) % n)
 
   return (
-    <motion.div
-      key={theatre.id}
-      initial={{ opacity: 0, y: 30 }}
+    <motion.article
+      initial={{ opacity: 0, y: 36 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="mt-6 rounded-3xl border border-[#ecd9ec] bg-white/80 p-5 shadow-[0_10px_30px_rgba(107,35,152,0.08)] md:p-6"
+      transition={{ duration: 0.6, delay: index * 0.1, ease: EASE }}
+      className={cn(
+        'flex flex-col overflow-hidden rounded-[1.75rem] bg-white transition-shadow',
+        selected
+          ? 'shadow-[0_22px_50px_rgba(192,38,211,0.3)] ring-[3px] ring-[#c026d3]'
+          : 'shadow-[0_14px_34px_rgba(107,35,152,0.14)] ring-1 ring-[#ecd9ec]',
+      )}
     >
-      <div className="mb-4 flex items-center gap-3">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#f6e6ef] text-[#6b2398]">
-          <Clock size={20} />
-        </span>
-        <div>
-          <p className="text-base font-bold text-[#2a0e4f]">Pick a time slot</p>
-          <p className="text-xs text-[#7d7094]">{theatre.name} · {date}</p>
-        </div>
+      {/* Photo carousel */}
+      <div className="group relative aspect-[16/10] overflow-hidden bg-[#1b0b3a]">
+        <AnimatePresence initial={false} mode="popLayout">
+          <motion.img
+            key={img}
+            src={theatre.images[img]}
+            alt={`${theatre.name} theatre`}
+            initial={{ opacity: 0, scale: 1.06 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.45 }}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+        </AnimatePresence>
+        <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#1b0b3a]/55 via-transparent to-transparent" />
+
+        {recommended && occasionLabel && (
+          <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold text-[#6b2398] backdrop-blur">
+            <Sparkles size={11} /> Great for {occasionLabel.toLowerCase()}
+          </span>
+        )}
+
+        {n > 1 && (
+          <>
+            <button type="button" onClick={() => go(-1)} aria-label="Previous photo" className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white opacity-90 backdrop-blur transition hover:bg-black/60 sm:opacity-0 sm:group-hover:opacity-100">
+              <ChevronLeft size={18} />
+            </button>
+            <button type="button" onClick={() => go(1)} aria-label="Next photo" className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white opacity-90 backdrop-blur transition hover:bg-black/60 sm:opacity-0 sm:group-hover:opacity-100">
+              <ChevronRight size={18} />
+            </button>
+            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+              {theatre.images.map((_, i) => (
+                <span key={i} className={cn('h-1.5 rounded-full transition-all', i === img ? 'w-5 bg-white' : 'w-1.5 bg-white/55')} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {[1, 2, 3, 4, 5, 6].map((i) => <Skeleton key={i} className="h-14 w-full" rounded="lg" />)}
+      {/* Details */}
+      <div className="flex flex-1 flex-col px-4 pb-4 pt-3.5">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="font-display text-xl font-bold leading-tight text-[#2a0e4f]">{theatre.name}</h3>
+          <span className="flex shrink-0 items-center gap-1 rounded-full bg-[#f3e6ff] px-2.5 py-1 text-[11px] font-bold text-[#6b2398]">
+            <Users size={12} /> Max {theatre.capacityMax}
+          </span>
         </div>
-      ) : slots.length === 0 ? (
-        <p className="py-2 text-sm text-[#7d7094]">No slots available on this date.</p>
-      ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {slots.map((slot, i) => {
-            const isSelected = selectedSlotId === slot.id
-            const booked = slot.status === 'booked' || slot.status === 'held'
-            const hot = slot.status === 'high_demand'
-            return (
-              <motion.button
-                key={slot.id}
-                type="button"
-                onClick={() => !booked && onSelect(slot.id)}
-                disabled={booked}
-                aria-pressed={isSelected}
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 260, damping: 18, delay: 0.1 + i * 0.05 }}
-                whileHover={booked ? undefined : { y: -3 }}
-                whileTap={booked ? undefined : { scale: 0.96 }}
-                className={cn(
-                  'relative flex h-14 flex-col items-center justify-center rounded-2xl border text-sm font-semibold transition-colors',
-                  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#c026d3]',
-                  booked && 'cursor-not-allowed opacity-40',
-                  isSelected
-                    ? 'border-transparent bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_10px_24px_rgba(107,35,152,0.4)]'
-                    : hot
-                    ? 'border-[#f5a3c4] bg-[#fff6f9] text-[#c2255c]'
-                    : 'border-[#e6cfe9] bg-white text-[#32105f] hover:border-[#c026d3]',
-                )}
+
+        <ul className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11.5px] leading-snug text-[#5b4578]">
+          <li className="flex items-center gap-1.5"><Monitor size={13} className="shrink-0 text-[#8e39c7]" />{theatre.screenSize}</li>
+          <li className="flex items-center gap-1.5"><Volume2 size={13} className="shrink-0 text-[#8e39c7]" />{theatre.soundSystem}</li>
+          <li className="flex items-center gap-1.5"><Palette size={13} className="shrink-0 text-[#8e39c7]" />Decor ₹{DECOR_PRICE_INR} extra</li>
+          <li className="flex items-center gap-1.5"><BadgeCheck size={13} className="shrink-0 text-[#8e39c7]" />72 hr free cancellation</li>
+        </ul>
+
+        {/* Time slots */}
+        <p className="mb-1.5 mt-3 text-[13px] font-bold text-[#2a0e4f]">Select time slot</p>
+        {isLoading ? (
+          <div className="flex gap-1.5">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-10 w-20" rounded="lg" />)}</div>
+        ) : slots.length === 0 ? (
+          <p className="text-xs text-[#7d7094]">No slots on this date.</p>
+        ) : (
+          <div className="flex flex-wrap gap-1.5">
+            {slots.map((slot) => {
+              const booked = slot.status === 'booked' || slot.status === 'held'
+              const hot = slot.status === 'high_demand'
+              const active = selectedSlotId === slot.id
+              return (
+                <button
+                  key={slot.id}
+                  type="button"
+                  disabled={booked}
+                  aria-pressed={active}
+                  title={hot && !booked ? 'Filling fast' : undefined}
+                  onClick={() => onPickSlot(slot.id)}
+                  className={cn(
+                    'relative w-[4.6rem] rounded-lg border px-1 py-1 text-center text-[10px] font-semibold leading-tight transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c026d3]',
+                    booked && 'cursor-not-allowed border-[#eee6f1] bg-[#faf6fb] text-[#b9aac9] line-through',
+                    !booked && !active && (hot ? 'border-[#f5a3c4] bg-[#fff6f9] text-[#c2255c] hover:border-[#c2255c]' : 'border-[#d9c4e3] bg-white text-[#32105f] hover:border-[#c026d3]'),
+                    active && 'border-transparent bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_6px_14px_rgba(107,35,152,0.35)]',
+                  )}
+                >
+                  {formatTime(slot.start)} -<br />{formatTime(slot.end)}
+                  {hot && !active && !booked && <Zap size={9} className="absolute -right-1 -top-1 rounded-full bg-white text-[#c2255c]" />}
+                </button>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Price */}
+        <div className="mt-auto pt-3.5">
+          <p className="flex flex-wrap items-baseline gap-x-2">
+            <span className="text-[1.65rem] font-bold leading-none tabular-nums text-[#32105f]">{formatINR(price)}</span>
+            <span className="text-xs text-[#7d7094]">for up to {info?.includedGuests ?? '—'} people{info?.durationNote ? ` · ${info.durationNote}` : ''}</span>
+            {hasWeekdayDeal && !isWeekend && (
+              <span className="text-[11px] font-semibold text-emerald-700"><s className="opacity-60">{formatINR(theatre.weekendPricePaise)}</s> weekday deal</span>
+            )}
+          </p>
+          <p className="mt-1 text-[11px] text-[#7d7094]">
+            + {formatINR(theatre.extraGuestPricePaise)}/person after {info?.includedGuests ?? '—'} people
+            {extraGuests > 0 && <> · you have <strong>{extraGuests}</strong> extra</>} · incl. taxes
+          </p>
+          <AnimatePresence initial={false}>
+            {selected && (
+              <motion.div
+                key="reserve"
+                initial={{ opacity: 0, height: 0, y: 10 }}
+                animate={{ opacity: 1, height: 'auto', y: 0 }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: EASE }}
+                className="overflow-hidden"
               >
-                <span className={booked ? 'line-through' : ''}>{formatTime(slot.start)}</span>
-                {hot && !isSelected && !booked && (
-                  <span className="flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wide"><Zap size={9} /> Filling fast</span>
-                )}
-                {booked && <span className="text-[10px] font-bold uppercase tracking-wide">Booked</span>}
-              </motion.button>
-            )
-          })}
+                <div className="mt-3 rounded-2xl bg-[#f3ecf8] p-2.5">
+                  <p className="mb-2 text-center text-[11.5px] text-[#5b4578]">
+                    You pay only <strong className="text-[#32105f]">{formatINR(reservePaise)}</strong> ({ADVANCE_PAYMENT_PERCENT}%) to reserve the slot
+                  </p>
+                  <button
+                    type="button"
+                    onClick={onContinue}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,#32105f,#4a1a8a)] px-4 py-3 text-[15px] font-bold text-white shadow-[0_10px_22px_rgba(50,16,95,0.35)] transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
+                  >
+                    Add details, cakes, add-ons <ChevronRight size={16} />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      )}
-    </motion.div>
+      </div>
+    </motion.article>
   )
 }
