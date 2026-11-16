@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
-import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck } from 'lucide-react'
+import { Pencil, MapPin, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck } from 'lucide-react'
 import { SAVED_KEY, SAVED_EVENT } from '@/features/booking/useSavedPlan'
 import { useToast } from '@/components/ui/Toast'
 import { addonKeys, packageKeys, theatreKeys } from '@/lib/api/queryKeys'
@@ -14,6 +14,7 @@ import { api } from '@/lib/api/client'
 import { formatINR } from '@/lib/utils/currency'
 import type { Theatre } from '@/schemas/theatre'
 import { OCCASIONS } from '@/content/occasions'
+import { formatLocation } from '@/content/cities'
 import { Stepper } from '@/components/ui/Stepper'
 import { Seo } from '@/components/seo/Seo'
 import { useBooking } from '@/features/booking/state/booking.context'
@@ -96,11 +97,13 @@ export default function BookPage() {
     const qOccasion = searchParams.get('occasion')
     const qGuests = parseInt(searchParams.get('guests') ?? '')
     const qDate = searchParams.get('date')
+    const qLocation = searchParams.get('location')
+    if (qLocation && qLocation !== state.locationId) dispatch({ type: 'SET_LOCATION', locationId: qLocation })
     if (qOccasion && qOccasion !== state.occasion) dispatch({ type: 'SET_OCCASION', occasion: qOccasion })
     if (qGuests && qGuests !== state.guests) dispatch({ type: 'SET_GUESTS', guests: qGuests })
     if (qDate && qDate !== state.date) dispatch({ type: 'SET_DATE', date: qDate })
     // coming from the home page finder: open at the first step that still needs an answer
-    if (qOccasion || qGuests || qDate) {
+    if (qOccasion || qGuests || qDate || qLocation) {
       dispatch({ type: 'GO_STEP', step: !qOccasion ? 0 : !qGuests ? 1 : !qDate ? 2 : 3 })
     }
   }, []) // only on mount
@@ -325,6 +328,12 @@ export default function BookPage() {
                 </p>
               </div>
               <ul className="space-y-3.5 p-5 text-sm">
+                {state.locationId && formatLocation(state.locationId) && (
+                  <li className="flex items-center gap-3 text-[#2a0e4f]">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><MapPin size={16} /></span>
+                    <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Location</span>{formatLocation(state.locationId)}</span>
+                  </li>
+                )}
                 <li className="flex items-center gap-3 text-[#2a0e4f]">
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><Users size={16} /></span>
                   <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Guests</span>{guests}</span>

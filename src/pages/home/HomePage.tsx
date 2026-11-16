@@ -14,7 +14,7 @@ import { useBooking } from '@/features/booking/state/booking.context'
 import { OfferTicket } from '@/components/ui/OfferTicket'
 import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
 import { PartySelect } from '@/components/ui/PartySelect'
-import { PartyCounter } from '@/components/ui/PartyCounter'
+import { CITIES } from '@/content/cities'
 import { FeaturedTheatres } from '@/components/ui/FeaturedTheatres'
 import { TheatreStrip } from '@/components/ui/TheatreStrip'
 import { Button } from '@/components/ui/Button'
@@ -67,8 +67,11 @@ export default function HomePage() {
     const stop = setTimeout(() => setPlanHighlight(false), 2600)
     return () => { clearTimeout(start); clearTimeout(stop) }
   }, [location.key, location.state])
-  const [selectedOccasion, setSelectedOccasion] = useState('')
-  const [guests, setGuests] = useState('2')
+  const [selectedCity, setSelectedCity] = useState('')
+  const [selectedLocation, setSelectedLocation] = useState('')
+  const locationOptions = (CITIES.find((c) => c.slug === selectedCity)?.locations ?? []).map((l) => ({ value: l.slug, label: l.name }))
+  const cityOptions = CITIES.map((c) => ({ value: c.slug, label: c.name }))
+  const changeCity = (c: string) => { setSelectedCity(c); setSelectedLocation('') }
   const [date, setDate] = useState('')
   const offersScrollRef = useRef<HTMLDivElement>(null)
   const [offersActiveIndex, setOffersActiveIndex] = useState(0)
@@ -187,8 +190,7 @@ export default function HomePage() {
 
   function handleQuickBook() {
     const params = new URLSearchParams()
-    if (selectedOccasion) params.set('occasion', selectedOccasion)
-    params.set('guests', guests || '2')
+    if (selectedCity && selectedLocation) params.set('location', `${selectedCity}/${selectedLocation}`)
     if (date) params.set('date', date)
     // every new booking starts fresh, at the theatre step
     resetBooking()
@@ -264,33 +266,34 @@ export default function HomePage() {
               {/* Soft cream inner surface */}
               <div className="flex w-full items-center rounded-full bg-[linear-gradient(180deg,#fffefd_0%,#fcf5ee_100%)] pl-2 pr-[10px] shadow-[inset_0_2px_6px_rgba(255,255,255,0.9),inset_0_-2px_6px_rgba(201,168,76,0.10)]">
 
-                {/* Occasion */}
+                {/* City */}
                 <div className="min-w-0 flex-1">
                   <PartySelect
-                    id="plan-occasion"
-                    value={selectedOccasion}
-                    onValueChange={setSelectedOccasion}
-                    placeholder="Select Occasion"
-                    label="Occasion"
-                    icon={<Clapperboard size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
-                    options={OCCASION_QUICK.map((o) => ({ value: o.slug, label: o.label }))}
+                    id="plan-city"
+                    value={selectedCity}
+                    onValueChange={changeCity}
+                    options={cityOptions}
+                    placeholder="Select City"
+                    label="City"
+                    icon={<MapPin size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
                     className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-10 text-[#3b1278] transition-colors hover:bg-white/50"
                   />
                 </div>
 
                 <div className="h-12 w-px shrink-0 bg-[#e6d9c6]" />
 
-                {/* Guests */}
+                {/* Location */}
                 <div className="min-w-0 flex-1">
-                  <PartyCounter
-                    id="plan-guests"
-                    value={guests}
-                    onValueChange={setGuests}
-                    min={1}
-                    max={30}
-                    label="Guests"
-                    icon={<Users size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
-                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-4 text-[#3b1278] transition-colors hover:bg-white/50"
+                  <PartySelect
+                    id="plan-location"
+                    value={selectedLocation}
+                    onValueChange={setSelectedLocation}
+                    options={locationOptions}
+                    disabled={!selectedCity}
+                    placeholder={selectedCity ? 'Select Location' : 'Pick a city first'}
+                    label="Location"
+                    icon={<MapPin size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
+                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-10 text-[#3b1278] transition-colors hover:bg-white/50"
                   />
                 </div>
 
@@ -316,13 +319,13 @@ export default function HomePage() {
                 <button
                   type="button"
                   onClick={handleQuickBook}
-                  disabled={!selectedOccasion || !date}
+                  disabled={!selectedCity || !selectedLocation || !date}
                   className="ml-2 flex h-[56px] shrink-0 items-center gap-2 whitespace-nowrap rounded-full
                     bg-[linear-gradient(135deg,#3b1278_0%,#5b1fa3_100%)] px-6 text-[15px] font-semibold text-white
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_8px_18px_rgba(59,18,120,0.35)]
                     transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Book Your Theatre <ArrowRight size={16} />
+                  Book Now <ArrowRight size={16} />
                 </button>
               </div>
             </div>
@@ -332,20 +335,21 @@ export default function HomePage() {
               <div className="rounded-[calc(2rem-2px)] bg-white/95 p-5 text-left backdrop-blur-xl">
                 <div className="grid gap-4">
                   <PartySelect
-                    id="plan-occasion-m"
-                    value={selectedOccasion}
-                    onValueChange={setSelectedOccasion}
-                    placeholder="Select occasion"
-                    icon={<PartyPopper size={18} />}
-                    options={OCCASION_QUICK.map((o) => ({ value: o.slug, label: o.label }))}
+                    id="plan-city-m"
+                    value={selectedCity}
+                    onValueChange={changeCity}
+                    options={cityOptions}
+                    placeholder="Select city"
+                    icon={<MapPin size={18} />}
                   />
-                  <PartyCounter
-                    id="plan-guests-m"
-                    value={guests}
-                    onValueChange={setGuests}
-                    min={1}
-                    max={30}
-                    icon={<Users size={18} />}
+                  <PartySelect
+                    id="plan-location-m"
+                    value={selectedLocation}
+                    onValueChange={setSelectedLocation}
+                    options={locationOptions}
+                    disabled={!selectedCity}
+                    placeholder={selectedCity ? 'Select location' : 'Pick a city first'}
+                    icon={<MapPin size={18} />}
                   />
                   <PartyDatePicker
                     id="plan-date-m"
@@ -357,14 +361,14 @@ export default function HomePage() {
                   <button
                     type="button"
                     onClick={handleQuickBook}
-                    disabled={!selectedOccasion || !date}
+                    disabled={!selectedCity || !selectedLocation || !date}
                     className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-[#2a0e4f] px-7 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(42,14,79,0.30)] transition-all hover:bg-[#3d1575] disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    Book Your Theatre <ChevronRight size={18} />
+                    Book Now <ChevronRight size={18} />
                   </button>
                 </div>
-                {(!selectedOccasion || !date) && (
-                  <p className="mt-3 text-xs text-[#7d7094]">Choose an occasion and a date to see available theatres.</p>
+                {(!selectedCity || !selectedLocation || !date) && (
+                  <p className="mt-3 text-xs text-[#7d7094]">Choose a city, a location and a date to see available theatres.</p>
                 )}
               </div>
             </div>
