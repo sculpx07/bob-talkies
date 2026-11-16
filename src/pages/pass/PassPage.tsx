@@ -10,7 +10,7 @@ import { Calendar, MapPin, Users, CheckCircle } from 'lucide-react'
 
 interface PassData {
   id: string; theatreName: string; date: string; slotStart: string; slotEnd: string;
-  guests: number; customerName: string; packageName: string; totalPaise: number;
+  guests: number; customerName: string; packageName?: string; totalPaise: number;
   balancePaise: number; status: string; qrCode: string;
 }
 
@@ -80,7 +80,7 @@ export default function PassPage() {
                 <div className="border-t border-border-subtle pt-4 flex justify-between text-sm">
                   <div>
                     <p className="text-text-muted text-xs">Package</p>
-                    <p className="text-text-primary font-medium">{pass.packageName}</p>
+                    <p className="text-text-primary font-medium">{pass.packageName ?? '—'}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-text-muted text-xs">Balance Due</p>

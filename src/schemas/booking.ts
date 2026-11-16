@@ -8,7 +8,7 @@ export type BookingStatus = z.infer<typeof BookingStatusSchema>
 
 export const BookingRequestSchema = z.object({
   theatreId: z.string(),
-  packageId: z.string(),
+  packageId: z.string().optional(),
   date: z.string(), // YYYY-MM-DD
   slotId: z.string(),
   occasion: z.string(),
@@ -29,8 +29,8 @@ export const BookingSchema = z.object({
   status: BookingStatusSchema,
   theatreId: z.string(),
   theatreName: z.string(),
-  packageId: z.string(),
-  packageName: z.string(),
+  packageId: z.string().optional(),
+  packageName: z.string().optional(),
   date: z.string(),
   slotId: z.string(),
   slotStart: z.string(),

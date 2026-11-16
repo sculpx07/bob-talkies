@@ -123,7 +123,7 @@ export default function BookSuccessPage() {
                   {[
                     { icon: MapPin, title: booking.theatreName, sub: 'Kukatpally, Hyderabad' },
                     { icon: Calendar, title: formatDate(booking.date), sub: `${formatTime(booking.slotStart)} – ${formatTime(booking.slotEnd)}` },
-                    { icon: Users, title: `${booking.guests} Guests`, sub: booking.packageName },
+                    { icon: Users, title: `${booking.guests} Guests`, sub: booking.packageName ?? booking.theatreName },
                   ].map((row, i) => (
                     <motion.div
                       key={row.title}

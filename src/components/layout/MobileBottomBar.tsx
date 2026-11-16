@@ -21,7 +21,7 @@ export function MobileBottomBar() {
     <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-bg-elevated/95 backdrop-blur-md border-t border-border-subtle px-4 py-3 safe-area-bottom">
       <div className="flex gap-3 max-w-sm mx-auto">
         <Button asChild fullWidth size="lg">
-          <Link to="/book" onClick={() => trackEvent('begin_checkout', { source: 'mobile_bottom_bar' })}>
+          <Link to="/" state={{ highlightPlan: true }} onClick={() => trackEvent('begin_checkout', { source: 'mobile_bottom_bar' })}>
             Book Now
           </Link>
         </Button>

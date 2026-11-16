@@ -7,7 +7,7 @@ import { useBooking } from '../../state/booking.context'
 import { formatINR } from '@/lib/utils/currency'
 import { cn } from '@/lib/utils/cn'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { Check, Clock, PenLine, Plus } from 'lucide-react'
+import { Check, Clock, Plus } from 'lucide-react'
 
 const CATEGORY_LABELS: Record<AddonCategory, string> = {
   decoration: 'Decoration',
@@ -20,7 +20,7 @@ const CATEGORY_LABELS: Record<AddonCategory, string> = {
   signage: 'Signage',
 }
 
-export function AddonsStep() {
+export function AddonsStep({ mode }: { mode: 'cake' | 'other' }) {
   const { state, dispatch } = useBooking()
 
   const { data: addons = [], isLoading } = useQuery({
@@ -28,7 +28,9 @@ export function AddonsStep() {
     queryFn: () => api.get<Addon[]>(`/addons${state.theatreId ? `?theatreId=${state.theatreId}` : ''}`),
   })
 
-  const categories = [...new Set(addons.map((a) => a.category))] as AddonCategory[]
+  // cake has its own step; decoration is chosen with the booking details
+  const shown = addons.filter((a) => (mode === 'cake' ? a.category === 'cake' : a.category !== 'cake' && a.category !== 'decoration'))
+  const categories = [...new Set(shown.map((a) => a.category))] as AddonCategory[]
 
   if (isLoading) {
     return (
@@ -41,33 +43,12 @@ export function AddonsStep() {
 
   return (
     <div>
-      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Add the finishing touches</h2>
-      <p className="mb-6 text-sm text-[#5b4578]">Make it extra special with decorations, cake, photography and more.</p>
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">{mode === 'cake' ? 'Pick your cake' : 'Add the finishing touches'}</h2>
+      <p className="mb-6 text-sm text-[#5b4578]">
+        {mode === 'cake' ? 'Optional: order a cake to be ready when you arrive. You can skip this step.' : 'Optional: photography, flowers, food, effects and surprises. You can skip this step.'}
+      </p>
+      {shown.length === 0 && <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d7094]">Nothing to add here. Continue to the next step.</p>}
 
-      {/* Customise: free-text request, kept right at the top where it is easy to see */}
-      <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-8 rounded-3xl bg-[linear-gradient(135deg,#faf0ff,#fff7f0)] p-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] ring-1 ring-[#e3cbe6] sm:p-5"
-      >
-        <label htmlFor="custom-request" className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#32105f] text-white"><PenLine size={18} /></span>
-          <span>
-            <span className="block text-base font-bold text-[#2a0e4f]">Want something custom?</span>
-            <span className="block text-xs text-[#5b4578]">Tell us your theme, colours, names or any special request.</span>
-          </span>
-        </label>
-        <textarea
-          id="custom-request"
-          value={state.customRequest}
-          onChange={(e) => dispatch({ type: 'SET_CUSTOM_REQUEST', text: e.target.value.slice(0, 400) })}
-          rows={3}
-          placeholder="e.g. Pink and gold theme, name board 'Happy 25th Priya', rose petals on the entry path…"
-          className="mt-3 w-full resize-none rounded-2xl border border-[#ecd9ec] bg-white px-4 py-3 text-sm text-[#2a0e4f] outline-none transition-shadow placeholder:text-[#b0a0c8] focus:border-[#c026d3] focus:ring-2 focus:ring-[#c026d3]/25"
-        />
-        <p className="mt-1 text-right text-[11px] text-[#7d7094]">{state.customRequest.length}/400</p>
-      </motion.div>
       <div className="space-y-8">
         {categories.map((category) => (
           <section key={category}>
@@ -76,7 +57,7 @@ export function AddonsStep() {
               <span className="h-px flex-1 bg-gradient-to-r from-[#e3cbe6] to-transparent" />
             </h3>
             <div className="grid gap-3 sm:grid-cols-2">
-              {addons.filter((a) => a.category === category).map((addon, i) => (
+              {shown.filter((a) => a.category === category).map((addon, i) => (
                 <AddonCard
                   key={addon.id}
                   index={i}

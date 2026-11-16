@@ -25,6 +25,9 @@ export interface BookingState {
   slotHoldExpiresAt: string | null
   serverQuote: ServerQuote | null
   payFull: boolean
+  kids: number
+  decoration: boolean
+  verifiedMobile: string | null
 }
 
 export interface ServerQuote {
@@ -50,6 +53,10 @@ export type BookingAction =
   | { type: 'SET_BOOKING_ID'; bookingId: string; expiresAt: string }
   | { type: 'SET_SERVER_QUOTE'; quote: ServerQuote }
   | { type: 'SET_PAY_FULL'; payFull: boolean }
+  | { type: 'SET_PEOPLE'; guests: number }
+  | { type: 'SET_KIDS'; kids: number }
+  | { type: 'SET_DECORATION'; decoration: boolean }
+  | { type: 'SET_VERIFIED_MOBILE'; mobile: string | null }
   | { type: 'GO_STEP'; step: number }
   | { type: 'NEXT_STEP' }
   | { type: 'PREV_STEP' }
@@ -78,6 +85,9 @@ export const initialBookingState: BookingState = {
   slotHoldExpiresAt: null,
   serverQuote: null,
   payFull: false,
+  kids: 0,
+  decoration: true,
+  verifiedMobile: null,
 }
 
 const downstreamReset = {
@@ -109,6 +119,11 @@ export function bookingReducer(state: BookingState, action: BookingAction): Book
     }
     case 'SET_BOOKING_ID': return { ...state, bookingId: action.bookingId, slotHoldExpiresAt: action.expiresAt }
     case 'SET_SERVER_QUOTE': return { ...state, serverQuote: action.quote }
+    // editing the head-count after a theatre is chosen keeps the theatre (the form clamps it to capacity)
+    case 'SET_PEOPLE': return { ...state, guests: action.guests, serverQuote: null }
+    case 'SET_KIDS': return { ...state, kids: action.kids, serverQuote: null }
+    case 'SET_DECORATION': return { ...state, decoration: action.decoration, serverQuote: null }
+    case 'SET_VERIFIED_MOBILE': return { ...state, verifiedMobile: action.mobile }
     case 'SET_PAY_FULL': return { ...state, payFull: action.payFull }
     case 'GO_STEP': return { ...state, step: action.step }
     case 'NEXT_STEP': return { ...state, step: state.step + 1 }

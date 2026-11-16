@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck } from 'lucide-react'
 import { SAVED_KEY, SAVED_EVENT } from '@/features/booking/useSavedPlan'
 import { useToast } from '@/components/ui/Toast'
-import { addonKeys, packageKeys, theatreKeys } from '@/lib/api/queryKeys'
+import { addonKeys, theatreKeys } from '@/lib/api/queryKeys'
 import { useSlots } from '@/features/booking/hooks/useAvailability'
 import { formatTime } from '@/lib/utils/date'
-import type { Package } from '@/schemas/package'
 import type { Addon } from '@/schemas/addon'
 import { api } from '@/lib/api/client'
 import { formatINR } from '@/lib/utils/currency'
@@ -18,62 +17,48 @@ import { Stepper } from '@/components/ui/Stepper'
 import { Seo } from '@/components/seo/Seo'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { StickyPriceBar, type Selection } from '@/features/booking/components/StickyPriceBar'
-import { OccasionStep } from '@/features/booking/components/steps/OccasionStep'
-import { GuestsStep } from '@/features/booking/components/steps/GuestsStep'
-import { DateStep } from '@/features/booking/components/steps/DateStep'
 import { TheatreSlotStep } from '@/features/booking/components/steps/TheatreSlotStep'
-import { PackageStep } from '@/features/booking/components/steps/PackageStep'
 import { AddonsStep } from '@/features/booking/components/steps/AddonsStep'
 import { PriceSummary } from '@/features/booking/components/PriceSummary'
-import { CustomerDetailsStep } from '@/features/booking/components/steps/CustomerDetailsStep'
+import { BasicDetailsStep } from '@/features/booking/components/steps/BasicDetailsStep'
+import { CakeStep } from '@/features/booking/components/steps/CakeStep'
+import { BookingSummaryCard } from '@/features/booking/components/BookingSummaryCard'
 import { PaymentStep } from '@/features/booking/components/steps/PaymentStep'
 import { trackEvent } from '@/features/tracking/events'
 
-/* The journey has 8 stages: occasion, guests, date, theatre, package, customise,
-   review and pay (details + payment are two screens inside the last stage).
-   Anything already picked in the home page finder is carried in through query
-   params, so the flow then opens at the first step that still needs an answer. */
-const FIRST_STEP = 0
+/* Occasion, guests and date are chosen on the home page finder, so this booking
+   flow starts at the theatre step (index 3). Stages: theatre, basic details,
+   cake, add-ons, payment. Step index 5 (celebration details) is retired and skipped,
+   so the indexes are 3, 4, 6, 7, 8. There are no packages. */
+const FIRST_STEP = 3
 
 // Heading shown above the progress bar for each step
 const STEP_HEADINGS: Record<number, { kicker: string; title: string }> = {
-  0: { kicker: "Let's begin", title: 'What are you celebrating?' },
-  1: { kicker: 'Your guest list', title: 'How many guests?' },
-  2: { kicker: 'Pick the day', title: 'Select date and availability' },
   3: { kicker: 'Almost there', title: 'Pick your theatre' },
-  4: { kicker: 'Great choice', title: 'Choose your package' },
-  5: { kicker: 'Make it yours', title: 'Add the finishing touches' },
-  6: { kicker: 'Looking good', title: 'Review your booking' },
-  7: { kicker: 'Just a few details', title: 'Tell us about you' },
-  8: { kicker: 'Last step', title: 'Confirm and pay' },
+  4: { kicker: 'Just a few details', title: 'Basic details' },
+  6: { kicker: 'Something sweet', title: 'Pick your cake' },
+  7: { kicker: 'Make it yours', title: 'Add the finishing touches' },
+  8: { kicker: 'Last step', title: 'Review and pay' },
 }
 const LAST_STEP = 8
 
 const STEPS = [
-  { id: 'occasion', label: 'Occasion' },
-  { id: 'guests', label: 'Guests' },
-  { id: 'date', label: 'Date' },
   { id: 'theatre', label: 'Theatre' },
-  { id: 'package', label: 'Package' },
-  { id: 'addons', label: 'Customise' },
-  { id: 'summary', label: 'Review' },
-  { id: 'payment', label: 'Pay' },
+  { id: 'details', label: 'Basic Details' },
+  { id: 'cake', label: 'Cake' },
+  { id: 'addons', label: 'Add-ons' },
+  { id: 'payment', label: 'Payment' },
 ]
-// details (index 7) and payment (index 8) are both the final "Pay" stage
-const stageOf = (step: number) => Math.min(step, STEPS.length - 1)
+// internal step index for each stage
+const STAGE_STEP = [3, 4, 6, 7, 8]
+const stageOf = (step: number) => (step <= 4 ? step - FIRST_STEP : step - FIRST_STEP - 1)
 
 function canProceed(step: number, state: ReturnType<typeof useBooking>['state']): boolean {
   switch (step) {
-    case 0: return Boolean(state.occasion)
-    case 1: return state.guests > 0
-    case 2: return Boolean(state.date)
     case 3: return Boolean(state.theatreId && state.slotId)
-    case 4: return Boolean(state.packageId)
-    case 5: return true // addons optional
-    case 6: return Boolean(state.serverQuote)
-    case 7: return Boolean(state.customerName && state.customerMobile && state.consentTnC)
+    case 6: case 7: return true // cake and add-ons are optional
     case 8: return true
-    default: return false
+    default: return false // step 4 has its own Next step button
   }
 }
 
@@ -99,12 +84,15 @@ export default function BookPage() {
     if (qOccasion && qOccasion !== state.occasion) dispatch({ type: 'SET_OCCASION', occasion: qOccasion })
     if (qGuests && qGuests !== state.guests) dispatch({ type: 'SET_GUESTS', guests: qGuests })
     if (qDate && qDate !== state.date) dispatch({ type: 'SET_DATE', date: qDate })
-    // coming from the home page finder: open at the first step that still needs an answer
-    if (qOccasion || qGuests || qDate) {
-      dispatch({ type: 'GO_STEP', step: !qOccasion ? 0 : !qGuests ? 1 : !qDate ? 2 : 3 })
-    }
+    // a booking always starts at the theatre step; the home page finder already collected the rest
+    if (state.step < FIRST_STEP || qOccasion || qGuests || qDate) dispatch({ type: 'GO_STEP', step: FIRST_STEP })
   }, []) // only on mount
 
+
+  // every step starts at the top of the page (the details form is long, so the old scroll position would land near the footer)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [state.step])
 
   const { data: allTheatres = [] } = useQuery({
     queryKey: theatreKeys.list(),
@@ -113,11 +101,6 @@ export default function BookPage() {
   const chosenTheatre = allTheatres.find((t) => t.id === state.theatreId) ?? null
 
   // data for the "what you picked" summary shown in the bottom bar
-  const { data: pkgList = [] } = useQuery({
-    queryKey: packageKeys.list(state.theatreId ?? undefined),
-    queryFn: () => api.get<Package[]>(`/packages${state.theatreId ? `?theatreId=${state.theatreId}` : ''}`),
-    enabled: Boolean(state.theatreId),
-  })
   const { data: addonList = [] } = useQuery({
     queryKey: addonKeys.list(state.theatreId ?? undefined),
     queryFn: () => api.get<Addon[]>(`/addons${state.theatreId ? `?theatreId=${state.theatreId}` : ''}`),
@@ -125,7 +108,6 @@ export default function BookPage() {
   })
   const { data: slotList = [] } = useSlots(state.theatreId, state.date)
   const chosenSlot = slotList.find((sl) => sl.id === state.slotId) ?? null
-  const chosenPkg = pkgList.find((pk) => pk.id === state.packageId) ?? null
   const chosenAddons = addonList.filter((ad) => state.addonIds.includes(ad.id))
   const addonsTotal = chosenAddons.reduce((sum, ad) => sum + ad.pricePaise, 0)
 
@@ -140,10 +122,7 @@ export default function BookPage() {
       image: chosenTheatre.images[0],
     })
   }
-  if (chosenPkg && curStep >= 4) {
-    selections.push({ id: 'package', title: `${chosenPkg.name} package`, sub: formatINR(chosenPkg.pricePaise) })
-  }
-  if (curStep >= 5 && chosenAddons.length > 0) {
+  if (curStep >= 6 && chosenAddons.length > 0) {
     selections.push({
       id: 'addons',
       title: `${chosenAddons.length} add-on${chosenAddons.length > 1 ? 's' : ''}`,
@@ -156,11 +135,12 @@ export default function BookPage() {
 
   function clearSelections() {
     dispatch({ type: 'SET_THEATRE_SLOT', theatreId: '', theatreSlug: '', slotId: '' })
-    dispatch({ type: 'SET_PACKAGE', packageId: '' })
     dispatch({ type: 'SET_ADDONS', addonIds: [] })
     dispatch({ type: 'SET_CUSTOM_REQUEST', text: '' })
     dispatch({ type: 'GO_STEP', step: FIRST_STEP })
   }
+
+  if (!occasion || !date) return <Navigate to="/" state={{ highlightPlan: true }} replace />
 
   const step = Math.min(Math.max(state.step, FIRST_STEP), LAST_STEP)
   const visibleSteps = STEPS
@@ -170,38 +150,44 @@ export default function BookPage() {
   const chosenOccasionLabel = occasionData ? `${occasionData.emoji} ${occasionData.label}` : '—'
   const reviewRows: Array<{ label: string; value: string; step: number }> = [
     { label: 'Occasion', value: chosenOccasionLabel, step: 0 },
-    { label: 'Guests', value: String(guests), step: 1 },
+    { label: 'Guests', value: state.kids > 0 ? `${state.guests} + ${state.kids} kids` : String(state.guests), step: 1 },
     { label: 'Date', value: prettyDate ?? '—', step: 2 },
     { label: 'Theatre & time', value: chosenTheatre ? `${chosenTheatre.name}${chosenSlot ? ` · ${formatTime(chosenSlot.start)}` : ''}` : '—', step: 3 },
-    { label: 'Package', value: chosenPkg ? chosenPkg.name : '—', step: 4 },
-    { label: 'Add-ons', value: chosenAddons.length ? chosenAddons.map((a) => a.name).join(', ') : 'None', step: 5 },
+    { label: 'Booked by', value: state.customerName || '—', step: 4 },
+    { label: 'Decoration', value: state.decoration ? 'Yes' : 'No', step: 4 },
+    { label: 'Add-ons & cake', value: chosenAddons.length ? chosenAddons.map((a) => a.name).join(', ') : 'None', step: 6 },
   ]
 
-  const stepContent = [
-    <OccasionStep key="occasion" />,
-    <GuestsStep key="guests" />,
-    <DateStep key="date" />,
+  const stepContent: Array<React.ReactNode> = [
+    null,
+    null,
+    null,
     <TheatreSlotStep key="theatre" />,
-    <PackageStep key="package" />,
-    <AddonsStep key="addons" />,
-    <div key="summary">
-      <h2 className="font-display text-3xl md:text-4xl font-bold text-[#2a0e4f] mb-6">Review your booking</h2>
+    <BasicDetailsStep
+      key="details"
+      onBack={() => dispatch({ type: 'GO_STEP', step: 3 })}
+      onDone={() => dispatch({ type: 'GO_STEP', step: 6 })}
+    />,
+    null,
+    <CakeStep
+      key="cake"
+      onBack={() => dispatch({ type: 'GO_STEP', step: 4 })}
+      onSkip={() => dispatch({ type: 'GO_STEP', step: 7 })}
+    />,
+    <AddonsStep key="addons" mode="other" />,
+    <div key="payment">
+      <h2 className="mb-5 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Review your booking</h2>
       <dl className="mb-6 divide-y divide-[#f1e2f0] overflow-hidden rounded-3xl bg-white ring-1 ring-[#ecd9ec]">
         {reviewRows.map((r) => (
           <div key={r.label} className="flex items-center gap-3 px-5 py-3 text-sm">
             <dt className="w-28 shrink-0 text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">{r.label}</dt>
             <dd className="min-w-0 flex-1 truncate font-semibold text-[#2a0e4f]">{r.value}</dd>
-            <button type="button" onClick={() => dispatch({ type: 'GO_STEP', step: r.step })} className="shrink-0 rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-semibold text-[#6b2398] hover:bg-[#efd3e6]">Edit</button>
+            <button type="button" onClick={() => (r.step < FIRST_STEP ? navigate('/', { state: { highlightPlan: true } }) : dispatch({ type: 'GO_STEP', step: r.step }))} className="shrink-0 rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-semibold text-[#6b2398] hover:bg-[#efd3e6]">Edit</button>
           </div>
         ))}
       </dl>
-      <PriceSummary />
+      <PaymentStep />
     </div>,
-    <CustomerDetailsStep
-      key="details"
-      onVerified={() => dispatch({ type: 'NEXT_STEP' })}
-    />,
-    <PaymentStep key="payment" />,
   ]
 
   async function sharePlan() {
@@ -230,7 +216,7 @@ export default function BookPage() {
       } else {
         localStorage.setItem(SAVED_KEY, JSON.stringify({
           occasion, guests, date, theatreId: state.theatreId, slotId: state.slotId,
-          packageId: state.packageId, addonIds: state.addonIds, savedAt: Date.now(),
+          addonIds: state.addonIds, savedAt: Date.now(),
         }))
         setSaved(true)
         window.dispatchEvent(new Event(SAVED_EVENT))
@@ -243,14 +229,13 @@ export default function BookPage() {
 
   function handleNext() {
     if (!canProceed(step, state)) return
-    if (step === 7) return // CustomerDetailsStep calls onVerified itself
     trackEvent('select_occasion', { step, stepName: STEPS[step]?.id })
     dispatch({ type: 'NEXT_STEP' })
   }
 
   function handleBack() {
     if (step <= FIRST_STEP) navigate('/', { state: { highlightPlan: true } })
-    else dispatch({ type: 'PREV_STEP' })
+    else dispatch(step === 6 ? { type: 'GO_STEP', step: 4 } : { type: 'PREV_STEP' })
   }
 
   return (
@@ -289,9 +274,13 @@ export default function BookPage() {
             <Stepper
               steps={visibleSteps}
               currentStep={stageOf(step)}
-              onStepClick={(i) => dispatch({ type: 'GO_STEP', step: i })}
+              onStepClick={(i) => dispatch({ type: 'GO_STEP', step: STAGE_STEP[i] })}
             />
           </div>
+
+          {step >= 4 && step < LAST_STEP && state.serverQuote && (
+            <p className="-mt-5 mb-6 text-center text-xs text-[#5b4578]">Note: pay only <strong className="text-[#6b2398]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve</p>
+          )}
 
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
             {/* Step content */}
@@ -349,13 +338,8 @@ export default function BookPage() {
                     </button>
                   )}
                 </li>
-                {state.serverQuote && (
-                  <li className="flex items-center justify-between rounded-2xl bg-[#fdf6ff] px-4 py-3 text-[#32105f]">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#7d7094]">Total</span>
-                    <span className="text-lg font-bold">{formatINR(state.serverQuote.totalPaise)}</span>
-                  </li>
-                )}
               </ul>
+              {step >= 4 && step < LAST_STEP && <div className="px-4 pb-4"><BookingSummaryCard /></div>}
               <div className="space-y-2.5 border-t border-[#f1e2f0] p-4">
                 <div className="grid grid-cols-2 gap-2.5">
                   <button
@@ -376,28 +360,28 @@ export default function BookPage() {
                     {saved ? <><BookmarkCheck size={15} /> Saved</> : <><Bookmark size={15} /> Save</>}
                   </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => dispatch({ type: 'GO_STEP', step: 0 })}
-                  className="flex w-full items-center justify-center gap-1.5 rounded-full bg-[#f6e6ef] px-4 py-2.5 text-sm font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
+                <Link
+                  to="/"
+                  state={{ highlightPlan: true }}
+                  className="flex items-center justify-center gap-1.5 rounded-full bg-[#f6e6ef] px-4 py-2.5 text-sm font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
                 >
                   <Pencil size={14} /> Edit details
-                </button>
+                </Link>
               </div>
             </motion.aside>
           </div>
         </div>
       </div>
 
-      {/* Not showing sticky bar on payment step (it has its own CTA) */}
-      {step < LAST_STEP && (
+      {/* Sticky bar only on the optional steps; theatre, details and payment steps have their own buttons */}
+      {step >= 6 && step < LAST_STEP && (
         <StickyPriceBar
           onNext={handleNext}
           onBack={handleBack}
           canProceed={canProceed(step, state)}
-          stepIndex={stageOf(step)}
+          stepIndex={step - FIRST_STEP}
           totalSteps={visibleSteps.length}
-          nextLabel={step === 7 ? 'Verify & Continue' : step === 6 ? 'Proceed to Payment' : 'Continue'}
+          nextLabel={step === 7 ? 'Review and pay' : 'Continue'}
           showTotal={step >= 6}
           selections={selections}
           onClear={clearSelections}

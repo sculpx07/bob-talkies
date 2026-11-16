@@ -130,7 +130,7 @@ export function Header() {
               size="md"
               className="hidden sm:inline-flex whitespace-nowrap !px-6 !bg-none !bg-[#32105f] !text-white hover:!bg-[#32105f] !rounded-full !shadow-none"
             >
-              <Link to="/book">Book Now <ArrowRight size={14} /></Link>
+              <Link to="/" state={{ highlightPlan: true }}>Book Now <ArrowRight size={14} /></Link>
             </Button>
             <button
               className="lg:hidden p-2 text-[#32105f] hover:text-[#6b2398] transition-colors"
@@ -164,7 +164,7 @@ export function Header() {
             ))}
             <div className="pt-3 border-t border-border-subtle">
               <Button asChild fullWidth>
-                <Link to="/book">Book Now </Link>
+                <Link to="/" state={{ highlightPlan: true }}>Book Now </Link>
               </Button>
             </div>
           </nav>
