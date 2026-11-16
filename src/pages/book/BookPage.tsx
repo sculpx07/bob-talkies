@@ -129,7 +129,7 @@ export default function BookPage() {
       sub: formatINR(addonsTotal),
     })
   }
-  if (curStep >= 5 && state.customRequest.trim()) {
+  if (curStep >= 6 && (state.customRequest.trim() || state.addonRequest.trim())) {
     selections.push({ id: 'custom', title: 'Custom request', sub: 'Added' })
   }
 
@@ -137,6 +137,7 @@ export default function BookPage() {
     dispatch({ type: 'SET_THEATRE_SLOT', theatreId: '', theatreSlug: '', slotId: '' })
     dispatch({ type: 'SET_ADDONS', addonIds: [] })
     dispatch({ type: 'SET_CUSTOM_REQUEST', text: '' })
+    dispatch({ type: 'SET_ADDON_REQUEST', text: '' })
     dispatch({ type: 'GO_STEP', step: FIRST_STEP })
   }
 

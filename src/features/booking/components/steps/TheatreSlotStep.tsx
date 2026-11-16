@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { getDay, parseISO } from 'date-fns'
 import {
-  ChevronLeft, ChevronRight, Users, Monitor, Volume2, BadgeCheck, Sparkles, Zap, Palette,
+  ChevronLeft, ChevronRight, Users, Monitor, BadgeCheck, Sparkles, Zap, Palette, UserPlus, Cake,
 } from 'lucide-react'
 import { theatreKeys } from '@/lib/api/queryKeys'
 import { api } from '@/lib/api/client'
@@ -11,7 +11,7 @@ import type { Theatre } from '@/schemas/theatre'
 import { useBooking } from '../../state/booking.context'
 import { useSlots } from '../../hooks/useAvailability'
 import { OCCASIONS } from '@/content/occasions'
-import { THEATRE_LISTING, DECOR_PRICE_INR } from '@/content/theatreListing'
+import { THEATRE_LISTING, DECOR_PRICE_INR, LISTING_NOTES } from '@/content/theatreListing'
 import { formatINR } from '@/lib/utils/currency'
 import { formatTime } from '@/lib/utils/date'
 import { ADVANCE_PAYMENT_PERCENT } from '@/lib/constants'
@@ -29,11 +29,8 @@ export function TheatreSlotStep() {
   })
 
   const occasion = OCCASIONS.find((o) => o.slug === state.occasion)
-  const fitting = theatres.filter((t) => t.capacityMin <= state.guests && t.capacityMax >= state.guests)
-  // list theatres that suit the chosen occasion; fall back to everything that fits the group
-  const forOccasion = occasion ? fitting.filter((t) => occasion.recommendedTheatres.includes(t.id)) : fitting
-  const listed = forOccasion.length > 0 ? forOccasion : fitting
-  const showingFallback = Boolean(occasion) && forOccasion.length === 0 && fitting.length > 0
+  // every theatre is listed, whatever occasion, guests or date was chosen on the home page
+  const listed = theatres
 
   // the date arrives from the URL on first load; wait for it before rendering date-dependent cards
   if (isLoading || !state.date) {
@@ -52,16 +49,8 @@ export function TheatreSlotStep() {
         <strong className="text-[#2a0e4f]">{state.guests === 30 ? '30+' : state.guests} guests</strong> · <strong className="text-[#2a0e4f]">{state.date}</strong>
       </p>
 
-      {showingFallback && (
-        <p className="mb-5 rounded-2xl bg-[#fff6e0] px-4 py-3 text-sm text-[#7a5200]">
-          No theatre is specially listed for this occasion at your group size, so these are all the theatres that fit {state.guests} guests.
-        </p>
-      )}
-
       {listed.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d7094]">
-          No theatre fits this guest count. Please go back and adjust it.
-        </p>
+        <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d7094]">No theatres are available right now.</p>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2">
           {listed.map((t, i) => (
@@ -95,7 +84,7 @@ function TheatreListingCard({
   const info = THEATRE_LISTING[theatre.slug]
   const dow = getDay(parseISO(date))
   const isWeekend = dow === 0 || dow === 6
-  const price = isWeekend ? theatre.weekendPricePaise : theatre.weekdayPricePaise
+  const price = isWeekend ? theatre.weekendPricePaise : theatre.weekdayPricePaise // price for the chosen date
   const hasWeekdayDeal = theatre.weekdayPricePaise < theatre.weekendPricePaise
   const extraGuests = Math.max(0, guests - (info?.includedGuests ?? 0))
   const selected = selectedSlotId !== null
@@ -158,18 +147,31 @@ function TheatreListingCard({
 
       {/* Details */}
       <div className="flex flex-1 flex-col px-4 pb-4 pt-3.5">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="font-display text-xl font-bold leading-tight text-[#2a0e4f]">{theatre.name}</h3>
-          <span className="flex shrink-0 items-center gap-1 rounded-full bg-[#f3e6ff] px-2.5 py-1 text-[11px] font-bold text-[#6b2398]">
-            <Users size={12} /> Max {theatre.capacityMax}
+        <h3 className="font-display text-xl font-bold leading-tight text-[#2a0e4f]">{info?.displayName ?? theatre.name}</h3>
+
+        <p className="mt-2 text-[15px] text-[#2a0e4f]">
+          <strong>{formatINR(theatre.weekendPricePaise)} for {info?.includedGuests ?? '—'} people</strong> <span className="text-[#5b4578]">(including taxes)</span>
+          {isWeekend && <span className="ml-2 rounded-full bg-[#e7f7ee] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">Your date</span>}
+        </p>
+        <p className="text-sm text-[#5b4578]">
+          Weekday Offer: <s className="font-semibold opacity-70">{formatINR(theatre.weekendPricePaise)}</s> <strong className="text-[#c2255c]">{formatINR(theatre.weekdayPricePaise)}</strong>
+          {!isWeekend && <span className="ml-2 rounded-full bg-[#e7f7ee] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">Your date</span>}
+        </p>
+
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <span className="flex items-center gap-1.5 rounded-full bg-[#f3e6ff] px-3.5 py-1.5 text-xs font-bold text-[#6b2398]">
+            <Users size={13} /> Max {theatre.capacityMax} People
+          </span>
+          <span className="flex items-center gap-1.5 rounded-full bg-[#fff1d6] px-3.5 py-1.5 text-xs font-bold text-[#8f6420]">
+            <Palette size={13} /> Decoration : ₹{DECOR_PRICE_INR}
           </span>
         </div>
 
-        <ul className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11.5px] leading-snug text-[#5b4578]">
-          <li className="flex items-center gap-1.5"><Monitor size={13} className="shrink-0 text-[#8e39c7]" />{theatre.screenSize}</li>
-          <li className="flex items-center gap-1.5"><Volume2 size={13} className="shrink-0 text-[#8e39c7]" />{theatre.soundSystem}</li>
-          <li className="flex items-center gap-1.5"><Palette size={13} className="shrink-0 text-[#8e39c7]" />Decor ₹{DECOR_PRICE_INR} extra</li>
-          <li className="flex items-center gap-1.5"><BadgeCheck size={13} className="shrink-0 text-[#8e39c7]" />72 hr free cancellation</li>
+        <ul className="mt-3 space-y-1.5 text-[12.5px] leading-snug text-[#5b4578]">
+          <li className="flex items-start gap-2.5"><UserPlus size={14} className="mt-0.5 shrink-0 text-[#8e39c7]" />{formatINR(theatre.extraGuestPricePaise)} per extra person{guests > theatre.capacityMax && <strong className="text-[#c2255c]"> · fits up to {theatre.capacityMax} guests</strong>}</li>
+          <li className="flex items-start gap-2.5"><Monitor size={14} className="mt-0.5 shrink-0 text-[#8e39c7]" />{info?.spec ?? `${theatre.screenSize} ${theatre.resolution} screen, ${theatre.soundSystem}`}</li>
+          <li className="flex items-start gap-2.5"><Cake size={14} className="mt-0.5 shrink-0 text-[#8e39c7]" />{LISTING_NOTES.addOns}</li>
+          <li className="flex items-start gap-2.5"><BadgeCheck size={14} className="mt-0.5 shrink-0 text-[#8e39c7]" />{LISTING_NOTES.cancellation}</li>
         </ul>
 
         {/* Time slots */}
@@ -207,19 +209,7 @@ function TheatreListingCard({
           </div>
         )}
 
-        {/* Price */}
-        <div className="mt-auto pt-3.5">
-          <p className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-[1.65rem] font-bold leading-none tabular-nums text-[#32105f]">{formatINR(price)}</span>
-            <span className="text-xs text-[#7d7094]">for up to {info?.includedGuests ?? '—'} people{info?.durationNote ? ` · ${info.durationNote}` : ''}</span>
-            {hasWeekdayDeal && !isWeekend && (
-              <span className="text-[11px] font-semibold text-emerald-700"><s className="opacity-60">{formatINR(theatre.weekendPricePaise)}</s> weekday deal</span>
-            )}
-          </p>
-          <p className="mt-1 text-[11px] text-[#7d7094]">
-            + {formatINR(theatre.extraGuestPricePaise)}/person after {info?.includedGuests ?? '—'} people
-            {extraGuests > 0 && <> · you have <strong>{extraGuests}</strong> extra</>} · incl. taxes
-          </p>
+        <div className="mt-auto">
           <AnimatePresence initial={false}>
             {selected && (
               <motion.div

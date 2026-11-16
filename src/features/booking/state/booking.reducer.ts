@@ -14,6 +14,7 @@ export interface BookingState {
   packageId: string | null
   addonIds: string[]
   customRequest: string
+  addonRequest: string
   couponCode: string | null
   customerName: string
   customerMobile: string
@@ -48,6 +49,7 @@ export type BookingAction =
   | { type: 'TOGGLE_ADDON'; addonId: string }
   | { type: 'SET_ADDONS'; addonIds: string[] }
   | { type: 'SET_CUSTOM_REQUEST'; text: string }
+  | { type: 'SET_ADDON_REQUEST'; text: string }
   | { type: 'SET_COUPON'; couponCode: string | null }
   | { type: 'SET_CUSTOMER'; name: string; mobile: string; email: string; instructions: string; consentTnC: boolean; consentWhatsapp: boolean }
   | { type: 'SET_BOOKING_ID'; bookingId: string; expiresAt: string }
@@ -74,6 +76,7 @@ export const initialBookingState: BookingState = {
   packageId: null,
   addonIds: [],
   customRequest: '',
+  addonRequest: '',
   couponCode: null,
   customerName: '',
   customerMobile: '',
@@ -109,6 +112,7 @@ export function bookingReducer(state: BookingState, action: BookingAction): Book
       return { ...state, addonIds: has ? state.addonIds.filter((id) => id !== action.addonId) : [...state.addonIds, action.addonId] }
     }
     case 'SET_ADDONS': return { ...state, addonIds: action.addonIds }
+    case 'SET_ADDON_REQUEST': return { ...state, addonRequest: action.text }
     case 'SET_CUSTOM_REQUEST': return { ...state, customRequest: action.text }
     case 'SET_COUPON': return { ...state, couponCode: action.couponCode }
     case 'SET_CUSTOMER': return {

@@ -265,7 +265,7 @@ export default function HomePage() {
                 ${planHighlight ? 'animate-plan-pulse' : ''}`}
             >
               {/* Soft cream inner surface */}
-              <div className="flex w-full items-center rounded-full bg-[linear-gradient(180deg,#fffefd_0%,#fcf5ee_100%)] pl-2 pr-[10px] shadow-[inset_0_2px_6px_rgba(255,255,255,0.9),inset_0_-2px_6px_rgba(201,168,76,0.10)]">
+              <div className="flex w-full items-center rounded-full bg-[linear-gradient(180deg,#fffefd_0%,#fcf5ee_100%)] pl-2 pr-[12px] shadow-[inset_0_2px_6px_rgba(255,255,255,0.9),inset_0_-2px_6px_rgba(201,168,76,0.10)]">
 
                 {/* Occasion */}
                 <div className="min-w-0 flex-1">

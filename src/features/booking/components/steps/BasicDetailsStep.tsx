@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -55,6 +55,17 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
   const { data: slots = [] } = useSlots(state.theatreId, state.date)
   const slot = slots.find((s) => s.id === state.slotId)
   const capacity = theatre?.capacityMax ?? 40
+
+  // every theatre is listed on the previous page, so a larger group may have picked a smaller room: trim to fit
+  useEffect(() => {
+    if (!theatre) return
+    if (state.guests > theatre.capacityMax) {
+      dispatch({ type: 'SET_PEOPLE', guests: theatre.capacityMax })
+      if (state.kids > 0) dispatch({ type: 'SET_KIDS', kids: 0 })
+    } else if (state.guests + state.kids > theatre.capacityMax) {
+      dispatch({ type: 'SET_KIDS', kids: Math.max(0, theatre.capacityMax - state.guests) })
+    }
+  }, [theatre?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { register, handleSubmit, getValues, formState: { errors } } = useForm<DetailsForm>({
     resolver: zodResolver(DetailsSchema),

@@ -47,6 +47,18 @@ export function AddonsStep({ mode }: { mode: 'cake' | 'other' }) {
       <p className="mb-6 text-sm text-[#5b4578]">
         {mode === 'cake' ? 'Optional: order a cake to be ready when you arrive. You can skip this step.' : 'Optional: photography, flowers, food, effects and surprises. You can skip this step.'}
       </p>
+      {mode === 'other' && (
+        <div className="mb-7 rounded-2xl bg-[#fdf6ff] p-4 ring-1 ring-[#ecd9ec]">
+          <label htmlFor="addon-request" className="mb-1.5 block text-sm font-semibold text-[#2a0e4f]">Customize as per your requirement</label>
+          <textarea
+            id="addon-request" rows={3} value={state.addonRequest}
+            onChange={(e) => dispatch({ type: 'SET_ADDON_REQUEST', text: e.target.value.slice(0, 400) })}
+            placeholder="Photography style, flowers, food, effects, anything special"
+            className="w-full resize-none rounded-xl border border-[#ecd9ec] bg-white px-4 py-3 text-sm text-[#2a0e4f] outline-none placeholder:text-[#b0a0c8] focus:border-[#c026d3] focus:ring-2 focus:ring-[#c026d3]/25"
+          />
+          <p className="mt-1 text-right text-[11px] text-[#7d7094]">{state.addonRequest.length}/400. Our team will confirm custom requests with you.</p>
+        </div>
+      )}
       {shown.length === 0 && <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d7094]">Nothing to add here. Continue to the next step.</p>}
 
       <div className="space-y-8">

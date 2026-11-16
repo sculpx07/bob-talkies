@@ -37,7 +37,8 @@ export function PaymentStep() {
         customerEmail: state.customerEmail || undefined,
         specialInstructions: [
           state.kids > 0 && `Kids (3-10 yrs): ${state.kids}`,
-          state.customRequest && `Custom request: ${state.customRequest}`,
+          state.customRequest && `Cake request: ${state.customRequest}`,
+          state.addonRequest && `Add-on request: ${state.addonRequest}`,
           state.specialInstructions,
         ].filter(Boolean).join('\n') || undefined,
         consentTnC: state.consentTnC,
