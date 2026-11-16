@@ -175,7 +175,7 @@ export default function BookPage() {
       onBack={() => dispatch({ type: 'GO_STEP', step: 4 })}
       onSkip={() => dispatch({ type: 'GO_STEP', step: 7 })}
     />,
-    <AddonsStep key="addons" mode="other" />,
+    <AddonsStep key="addons" />,
     <div key="payment">
       <h2 className="mb-5 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Review your booking</h2>
       <dl className="mb-6 divide-y divide-[#f1e2f0] overflow-hidden rounded-3xl bg-white ring-1 ring-[#ecd9ec]">
@@ -248,7 +248,7 @@ export default function BookPage() {
         noindex
       />
       <div className="min-h-screen pt-20 md:pt-28 pb-40">
-        <div className="mx-auto max-w-6xl px-4 md:px-6">
+        <div className="mx-auto max-w-[1440px] px-4 md:px-8">
           {/* Heading */}
           <motion.div
             initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
@@ -283,9 +283,9 @@ export default function BookPage() {
             <p className="-mt-5 mb-6 text-center text-xs text-[#5b4578]">Note: pay only <strong className="text-[#6b2398]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve</p>
           )}
 
-          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
             {/* Step content */}
-            <div className="rounded-[2rem] border border-white/70 bg-white/65 p-5 shadow-[0_20px_60px_rgba(107,35,152,0.12)] backdrop-blur-xl md:p-8">
+            <div className="rounded-[2rem] border border-white/70 bg-white/65 p-5 shadow-[0_20px_60px_rgba(107,35,152,0.12)] backdrop-blur-xl md:p-10">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={step}

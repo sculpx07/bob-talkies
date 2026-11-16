@@ -528,7 +528,7 @@ export default function HomePage() {
   
 
       {/* Choose Your Celebration */}
-      <Section bg="base" className="bg-[#fffaf4]">
+      <Section bg="base">
         {/* Section header */}
         <motion.div
           ref={celRevealRef}

@@ -5,6 +5,7 @@ import { SavedDrawer } from '@/components/layout/SavedDrawer'
 import { Footer } from '@/components/layout/Footer'
 import { MobileBottomBar } from '@/components/layout/MobileBottomBar'
 import { WhatsAppFab } from '@/components/layout/WhatsAppFab'
+import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorBoundary } from './error-boundary'
 
@@ -56,17 +57,30 @@ const Personalise = lazy_(() => import('@/pages/personalise/PersonalisePage'))
 const NotFound = lazy_(() => import('@/pages/not-found/NotFoundPage'))
 
 /* Desktop background: bg.png repeated down the page, every other copy flipped
-   vertically so neighbouring copies join seamlessly. */
+   vertically so neighbouring copies join seamlessly.
+   bg.png (1024x1536) has coloured wave artwork along its top edge (rows 0-30%) and
+   bottom edge (rows 86-100%). Mirroring those edges at every join made large
+   purple/orange blob shapes mid-page, so only the top of the first copy keeps its
+   artwork (the hero) and every join uses the calm rows 30%-86% instead:
+     copy 0   : rows 0-86%      (hero artwork on top, cream at the bottom)
+     copy 1+  : rows 30%-86%    (alternately flipped, so every join is plain cream) */
+const BG_ROWS_END = 0.86
+const BG_ROWS_START = 0.3
 function PageBackground() {
+  const firstH = 1536 * BG_ROWS_END
+  const bandH = 1536 * (BG_ROWS_END - BG_ROWS_START)
+  // vertical background-position (%) that puts row BG_ROWS_START of the image at the top of a band
+  const bandPosY = ((1536 * BG_ROWS_START) / (1536 - bandH)) * 100
   return (
     <div className="hidden md:block absolute inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
-      {Array.from({ length: 10 }, (_, i) => (
+      {Array.from({ length: 24 }, (_, i) => (
         <div
           key={i}
           style={{
-            aspectRatio: '1024 / 1536',
+            aspectRatio: i === 0 ? `1024 / ${firstH}` : `1024 / ${bandH}`,
             backgroundImage: "url('/bg.png')",
-            backgroundSize: '100% 100%',
+            backgroundSize: '100% auto',
+            backgroundPosition: i === 0 ? 'center top' : `center ${bandPosY}%`,
             transform: i % 2 ? 'scaleY(-1)' : undefined,
           }}
         />
@@ -86,6 +100,7 @@ function RootLayout() {
         <Footer />
         <MobileBottomBar />
         <WhatsAppFab />
+        <ScrollToTop />
         <ScrollRestoration />
       </div>
     </ErrorBoundary>

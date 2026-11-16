@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const AddonCategorySchema = z.enum([
-  'decoration', 'cake', 'flowers', 'photography', 'food', 'surprise', 'effects', 'signage',
+  'decoration', 'cake', 'flowers', 'photography', 'food', 'surprise', 'effects', 'signage', 'decor', 'gifts', 'videography',
 ])
 
 export const AddonSchema = z.object({
@@ -10,6 +10,8 @@ export const AddonSchema = z.object({
   description: z.string(),
   category: AddonCategorySchema,
   pricePaise: z.number().int(),
+  /** shown struck through when the item is on offer (pricePaise is what is charged) */
+  originalPricePaise: z.number().int().optional(),
   image: z.string().optional(),
   leadTimeHours: z.number().int(),
   isAvailable: z.boolean(),

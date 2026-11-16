@@ -11,7 +11,7 @@ import { formatINR } from '@/lib/utils/currency'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
 
-/** Cakes whose smallest size is at or above this price are listed under "Premium Cakes". */
+/** Cakes whose largest size is at or above this price are listed under "Premium Cakes". */
 const PREMIUM_FROM_PAISE = 99900
 
 const TILES = [
@@ -57,7 +57,7 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
     return [...byName.values()].map((c) => ({ ...c, sizes: c.sizes.sort((a, b) => a.pricePaise - b.pricePaise) }))
   }, [addons])
   const allCakeIds = useMemo(() => new Set(cakes.flatMap((c) => c.sizes.map((s) => s.id))), [cakes])
-  const shown = cakes.filter((c) => (tab === 'premium') === (c.sizes[0].pricePaise >= PREMIUM_FROM_PAISE))
+  const shown = cakes.filter((c) => (tab === 'premium') === (c.sizes[c.sizes.length - 1].pricePaise >= PREMIUM_FROM_PAISE))
 
   const chosenSize = (cake: Cake) => cake.sizes.find((s) => state.addonIds.includes(s.id))
 

@@ -196,33 +196,38 @@ export const PACKAGES: Package[] = [
 ]
 
 /**
- * Cake menu (PLACEHOLDER names, sizes and prices until the real BOB Talkies cake menu is supplied).
- * Every cake is sold in two sizes and each size is its own add-on so it flows through the normal quote.
+ * Cakes and add-ons from https://bobtalkies.com/add-on/ (names, prices and photos as listed there).
+ * Cakes are sold in half-kg and 1 kg sizes and each size is its own add-on so it flows through the normal quote.
+ * Where the page shows two prices the lower one is charged and the higher one is shown struck through.
  */
-const CAKE_MENU: Array<{ key: string; name: string; image?: string; sizes: Array<[string, number]> }> = [
-  { key: 'pinata', name: 'Pinata Cake', sizes: [['500 gm', 84900], ['1000 gm', 144900]] },
-  { key: 'chocolate', image: 'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=600&q=80', name: 'Chocolate Cake', sizes: [['500 gm', 54900], ['1000 gm', 94900]] },
-  { key: 'blackforest', image: 'https://images.unsplash.com/photo-1779282312464-d556d852daa4?w=600&q=80', name: 'Black Forest Cake', sizes: [['500 gm', 59900], ['1000 gm', 99900]] },
-  { key: 'butterscotch', image: 'https://images.unsplash.com/photo-1789776373177-4bdab6672444?w=600&q=80', name: 'Butterscotch Cake', sizes: [['500 gm', 57900], ['1000 gm', 97900]] },
-  { key: 'pineapple', image: 'https://images.unsplash.com/photo-1643910509872-78bc24a2bc53?w=600&q=80', name: 'Pineapple Cake', sizes: [['500 gm', 49900], ['1000 gm', 89900]] },
-  { key: 'redvelvet-round', image: 'https://images.unsplash.com/photo-1687877858381-e98c32796861?w=600&q=80', name: 'Red Velvet Round Cake', sizes: [['500 gm', 64900], ['1000 gm', 109900]] },
-  { key: 'irish-coffee', image: 'https://images.unsplash.com/photo-1685956801990-57ef97b17d45?w=600&q=80', name: 'Irish Coffee Cake', sizes: [['500 gm', 67900], ['1000 gm', 114900]] },
-  { key: 'redvelvet-heart', image: 'https://images.unsplash.com/photo-1708443164652-e15f83e87f15?w=600&q=80', name: 'Red Velvet Heart Cake', sizes: [['500 gm', 79900], ['1000 gm', 134900]] },
-  { key: 'ferrero', image: 'https://images.unsplash.com/photo-1793383192684-006e687fa534?w=600&q=80', name: 'Ferrero Rocher Cake', sizes: [['500 gm', 109900], ['1000 gm', 189900]] },
-  { key: 'rasmalai', image: 'https://images.pexels.com/photos/16826149/pexels-photo-16826149.jpeg?auto=compress&cs=tinysrgb&w=600', name: 'Rasmalai Cake', sizes: [['500 gm', 99900], ['1000 gm', 179900]] },
-  { key: 'blueberry-cheese', image: 'https://images.unsplash.com/photo-1695088957420-c3b97d1f1138?w=600&q=80', name: 'Blueberry Cheesecake', sizes: [['500 gm', 119900], ['1000 gm', 199900]] },
-  { key: 'photo', image: 'https://images.unsplash.com/photo-1673417284575-cb29c8631125?w=600&q=80', name: 'Designer Photo Cake', sizes: [['500 gm', 129900], ['1000 gm', 219900]] },
+const UP = 'https://bobtalkies.com/wp-content/uploads/'
+const CAKE_MENU: Array<{ key: string; name: string; image: string; sizes: Array<[string, number]> }> = [
+  { key: 'vanilla', name: 'Vanilla Cake', image: UP + '2026/01/vanillacake-1-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8-1.jpg', sizes: [['500 gm', 40000], ['1000 gm', 65000]] },
+  { key: 'strawberry', name: 'Strawberry Cake', image: UP + '2026/01/strawberrycake-1-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpg', sizes: [['500 gm', 40000], ['1000 gm', 75000]] },
+  { key: 'butterscotch', name: 'Butterscotch Cake', image: UP + '2026/01/butterscotchcake-1-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpg', sizes: [['500 gm', 40000], ['1000 gm', 75000]] },
+  { key: 'pineapple', name: 'Pineapple Cake', image: UP + '2026/01/pineapplecake-1-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpg', sizes: [['500 gm', 40000], ['1000 gm', 75000]] },
+  { key: 'blackforest', name: 'Black Forest Cake', image: UP + '2026/01/blackforestcake-1-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpg', sizes: [['500 gm', 45000], ['1000 gm', 80000]] },
+  { key: 'mango', name: 'Mango Crush Cake', image: UP + '2026/01/mangocrushcake-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.png', sizes: [['500 gm', 50000], ['1000 gm', 90000]] },
+  { key: 'chocolate', name: 'Chocolate Cake', image: UP + '2026/01/chocolatecake-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpg', sizes: [['500 gm', 55000], ['1000 gm', 90000]] },
+  { key: 'blueberry', name: 'Blueberry Cake', image: UP + '2026/01/blueberrycake-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpg', sizes: [['500 gm', 50000], ['1000 gm', 100000]] },
+  { key: 'litchi', name: 'Litchi Cake', image: UP + '2026/01/images-re0flvy09c21eu3xbszt46e5959x0ki9d5ajsrwb9k.jpeg', sizes: [['500 gm', 50000], ['1000 gm', 100000]] },
+  { key: 'honey-almond', name: 'Honey Almond Cake', image: UP + '2026/01/almondcrunchcake-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpeg', sizes: [['500 gm', 55000], ['1000 gm', 110000]] },
+  { key: 'choco-almond', name: 'Choco Almond Cake', image: UP + '2026/01/images-1-re0flvy09c21eu3xbszt46e5959x0ki9d5ajsrwb9k.jpeg', sizes: [['500 gm', 55000], ['1000 gm', 110000]] },
+  { key: 'redvelvet', name: 'Red Velvet Cake', image: UP + '2026/01/679906d29abceb2bbceb06b3_6799062816366d61273c52b4_IMG_1560-scaled-re0flvy09c21eu3xbszt46e5959x0ki9d5ajsrwb9k.jpeg', sizes: [['500 gm', 55000], ['1000 gm', 110000]] },
+  { key: 'truffle', name: 'Chocolate Truffle Cake', image: UP + '2026/01/chocolatetrufflecake-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.png', sizes: [['500 gm', 55000], ['1000 gm', 120000]] },
+  // listed once, with no size label
+  { key: 'heart-pinata', name: 'Heart Pinata Cake', image: UP + '2025/08/images-2.jpeg', sizes: [['Heart pinata', 100000]] },
 ]
 
 const CAKE_ADDONS: Addon[] = CAKE_MENU.flatMap((c) =>
   c.sizes.map(([sizeLabel, pricePaise]) => ({
-    id: `add-cake-${c.key}-${sizeLabel.replace(/\D/g, '')}`,
-    name: `${c.name} (${sizeLabel})`,
-    description: 'Freshly baked, ready on arrival',
+    id: `add-cake-${c.key}-${sizeLabel.replace(/\D/g, '') || 'one'}`,
+    name: c.sizes.length > 1 ? `${c.name} (${sizeLabel})` : c.name,
+    description: '',
     category: 'cake' as const,
     pricePaise,
     image: c.image,
-    leadTimeHours: 24,
+    leadTimeHours: 0,
     isAvailable: true,
     isOutOfStock: false,
     cakeName: c.name,
@@ -230,22 +235,46 @@ const CAKE_ADDONS: Addon[] = CAKE_MENU.flatMap((c) =>
   })),
 )
 
-export const ADDONS: Addon[] = [
-  ...CAKE_ADDONS,
-  { id: 'add-deco-basic', name: 'Basic Decoration', description: 'Balloon and ribbon decoration setup', category: 'decoration', pricePaise: 49900, leadTimeHours: 2, isAvailable: true, isOutOfStock: false },
-  { id: 'add-deco-premium', name: 'Premium Decoration', description: 'Floral + balloon arch with LED accents', category: 'decoration', pricePaise: 99900, leadTimeHours: 4, isAvailable: true, isOutOfStock: false },
-  { id: 'add-deco-grand', name: 'Grand Decoration', description: 'Full floral setup with theme-based decorations', category: 'decoration', pricePaise: 149900, leadTimeHours: 6, isAvailable: true, isOutOfStock: false },
-  { id: 'add-flowers-bouquet', name: 'Flower Bouquet', description: 'Fresh flower bouquet', category: 'flowers', pricePaise: 29900, leadTimeHours: 2, isAvailable: true, isOutOfStock: false },
-  { id: 'add-flowers-petals', name: 'Rose Petal Shower', description: 'Premium rose petals decoration', category: 'flowers', pricePaise: 24900, leadTimeHours: 1, isAvailable: true, isOutOfStock: false },
-  { id: 'add-photo-30', name: 'Photography (30 min)', description: 'Professional photography session', category: 'photography', pricePaise: 79900, leadTimeHours: 2, isAvailable: true, isOutOfStock: false },
-  { id: 'add-photo-60', name: 'Photography + Video (1 hr)', description: 'Professional photo + video coverage', category: 'photography', pricePaise: 149900, leadTimeHours: 2, isAvailable: true, isOutOfStock: false },
-  { id: 'add-led-name', name: 'LED Name Board', description: 'Personalised LED name board', category: 'signage', pricePaise: 34900, leadTimeHours: 4, isAvailable: true, isOutOfStock: false },
-  { id: 'add-cold-fire', name: 'Cold Fire Effect', description: 'Sparkler cold fire effect for cake cutting', category: 'effects', pricePaise: 24900, leadTimeHours: 1, isAvailable: true, isOutOfStock: false },
-  { id: 'add-fog-entry', name: 'Fog Entry Effect', description: 'Dramatic fog machine entry effect', category: 'effects', pricePaise: 34900, leadTimeHours: 1, isAvailable: true, isOutOfStock: false },
-  { id: 'add-food-platter', name: 'Snack Platter', description: 'Veg/Non-veg snack platter (serves 2)', category: 'food', pricePaise: 59900, leadTimeHours: 2, isAvailable: true, isOutOfStock: false },
-  { id: 'add-food-combo', name: 'Couple Combo Meal', description: 'Full meal combo for 2', category: 'food', pricePaise: 89900, leadTimeHours: 2, isAvailable: true, isOutOfStock: false },
-  { id: 'add-surprise-gift', name: 'Surprise Gift Hamper', description: 'Curated surprise gift hamper', category: 'surprise', pricePaise: 79900, leadTimeHours: 24, isAvailable: true, isOutOfStock: false },
+// [name, category, original price (rupees), charged price (rupees), image path]; page order
+type Row = [string, Addon['category'], number | null, number, string]
+const ADDON_ROWS: Row[] = [
+  ['Fog Effects', 'effects', 599, 499, '2026/01/fogeffect-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.png'],
+  ['Bubble Entry', 'effects', 300, 250, '2026/01/images-5-re0flv062i0r385ahal6jomonrejsvej10n2bhxpfs-1.jpeg'],
+  ['Cold Fire Entry', 'effects', 550, 499, '2026/01/b9a1ecc6-8e12-4a0a-9e1d-ad4b5d1c4bfa.jpg'],
+  ['Candle Path', 'effects', 300, 250, '2026/01/97f25a39-90e6-4996-b297-5eabaed87ded.jpg'],
+  ['Photo Clippings (10 Pics)', 'decor', 500, 399, '2026/01/photoclippings-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpg'],
+  ['Party Props', 'decor', 220, 199, '2026/01/images-6-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpeg'],
+  ['LED Numbers', 'decor', 199, 99, '2026/01/lednumbers-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpg'],
+  ['HBD Letters', 'decor', 120, 99, '2026/01/hbdletters-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpg'],
+  ['Neon Hand band Props', 'decor', 220, 199, '2026/01/download-7-re0flv062i0r385ahal6jomonrejsvej10n2bhxpfs.jpeg'],
+  ['Chocolate Bouquet', 'flowers', 650, 550, '2026/01/a849ee62-e5f9-49a2-b59f-ef856da3126b.jpg'],
+  ['Single Rose', 'flowers', 60, 50, '2026/01/singleflower-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8-1.jpg'],
+  ['Rose Bouquet', 'flowers', 400, 350, '2026/01/rosebouquet-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.png'],
+  ['Rose Heart', 'flowers', 250, 199, '2026/01/IMG_4088-re0flvy09c21eu3xbszt46e5959x0ki9d5ajsrwb9k.jpg'],
+  ['Heart Pillow', 'gifts', 300, 200, '2026/01/IMG_4087-re0flvy09c21eu3xbszt46e5959x0ki9d5ajsrwb9k.jpg'],
+  ['Teddy', 'gifts', 400, 300, '2026/01/414924b1-de35-42e0-8117-47e72ef91c7a.jpg'],
+  ['Photography - 20 pics', 'photography', 320, 299, '2026/01/photo20-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpeg'],
+  ['Photography - 50 pics', 'photography', 520, 499, '2026/01/photo50-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpeg'],
+  ['Photography - 75 pics', 'photography', 720, 699, '2026/01/photo75-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpeg'],
+  ['Photography - 100 pics', 'photography', 1020, 999, '2026/01/photo100-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpeg'],
+  ['Photography - 1 Hour Unlimited Photos', 'photography', 1799, 1499, '2026/01/photo100-re0flt4hoty6g080s9rxep3rgzntdh72crc3cy0hs8.jpeg'],
+  ['Professional Videography', 'videography', null, 5000, '2026/01/download-8-re0flvy09c21eu3xbszt46e5959x0ki9d5ajsrwb9k.jpeg'],
 ]
+
+const OTHER_ADDONS: Addon[] = ADDON_ROWS.map(([name, category, original, price, img]) => ({
+  id: 'add-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+  name,
+  description: '',
+  category,
+  pricePaise: price * 100,
+  originalPricePaise: original ? original * 100 : undefined,
+  image: UP + img,
+  leadTimeHours: 0,
+  isAvailable: true,
+  isOutOfStock: false,
+}))
+
+export const ADDONS: Addon[] = [...CAKE_ADDONS, ...OTHER_ADDONS]
 
 export const OFFERS: Offer[] = [
   {
