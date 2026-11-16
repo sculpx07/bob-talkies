@@ -14,7 +14,6 @@ const NAV_LINKS = [
   { label: 'Celebrations', to: '/celebrations', hasMega: true },
   { label: 'Personalise', to: '/personalise' },
   { label: 'Gallery', to: '/gallery' },
-  { label: 'Blog', to: '/blog' },
   { label: 'Refund Policy', to: '/refund-policy' },
 ]
 
