@@ -18,12 +18,13 @@ interface PartySelectProps {
   className?: string
   /** When set, renders a small label above the value (compact bar mode) */
   label?: string
+  disabled?: boolean
 }
 
 /** Custom dropdown with the same look everywhere (replaces the browser's native <select> list). */
-export function PartySelect({ id, value, onValueChange, options, placeholder, icon, className, label }: PartySelectProps) {
+export function PartySelect({ id, value, onValueChange, options, placeholder, icon, className, label, disabled }: PartySelectProps) {
   return (
-    <Select.Root value={value} onValueChange={onValueChange}>
+    <Select.Root value={value} onValueChange={onValueChange} disabled={disabled}>
       <Select.Trigger
         id={id}
         className={cn(
@@ -31,6 +32,7 @@ export function PartySelect({ id, value, onValueChange, options, placeholder, ic
           label && 'flex-col items-start justify-center gap-px',
           'data-[placeholder]:text-[#7d7094]',
           value ? 'bg-[#ede8ff] border-[#c4b5fd]' : 'bg-[#fff7f0]',
+          disabled && 'cursor-not-allowed opacity-50',
           className,
         )}
       >

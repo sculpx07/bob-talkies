@@ -164,7 +164,7 @@ export function Header() {
             ))}
             <div className="pt-3 border-t border-border-subtle">
               <Button asChild fullWidth>
-                <Link to="/book">Book Your Theatre</Link>
+                <Link to="/book">Book Now </Link>
               </Button>
             </div>
           </nav>
