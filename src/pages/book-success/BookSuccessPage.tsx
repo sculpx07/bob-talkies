@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { useBooking } from '@/features/booking/state/booking.context'
 import { motion } from 'framer-motion'
 import { useBookingStatus } from '@/features/booking/hooks/useBookingStatus'
 import { Seo } from '@/components/seo/Seo'
@@ -17,6 +19,9 @@ const CONFETTI = [
 
 export default function BookSuccessPage() {
   const { bookingId } = useParams()
+  const { dispatch } = useBooking()
+  // booking is done: wipe the in-memory journey so the next Book Now starts at step 1
+  useEffect(() => { dispatch({ type: 'RESET' }) }, [dispatch])
   const { data: booking, isLoading } = useBookingStatus(bookingId ?? null)
 
   const waLink = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(`Hi! I just booked a private theatre (Booking ID: ${bookingId}). Need help with my booking.`)}`

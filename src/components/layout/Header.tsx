@@ -1,3 +1,4 @@
+import { OCCASIONS } from '@/content/occasions'
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Menu, X, Phone, ChevronDown, ArrowRight } from 'lucide-react'
@@ -16,16 +17,7 @@ const NAV_LINKS = [
   { label: 'Locations', to: '/locations' },
 ]
 
-const OCCASION_LINKS = [
-  { label: 'Birthday', to: '/celebrations/birthday', emoji: '🎂' },
-  { label: 'Anniversary', to: '/celebrations/anniversary', emoji: '💑' },
-  { label: 'Date Night', to: '/celebrations/date-night', emoji: '🌹' },
-  { label: 'Proposal', to: '/celebrations/proposal', emoji: '💍' },
-  { label: 'Family', to: '/celebrations/family', emoji: '👨‍👩‍👧‍👦' },
-  { label: 'Friends', to: '/celebrations/friends', emoji: '🥳' },
-  { label: 'Sports Screening', to: '/celebrations/sports-screening', emoji: '⚽' },
-  { label: 'Corporate', to: '/celebrations/corporate', emoji: '💼' },
-]
+const OCCASION_LINKS = OCCASIONS.map((o) => ({ label: o.label, to: `/celebrations/${o.slug}`, emoji: o.emoji }))
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false)
@@ -80,7 +72,7 @@ export function Header() {
                     <ChevronDown size={14} className={cn('transition-transform', megaOpen && 'rotate-180')} />
                   </button>
                   {megaOpen && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[480px] bg-bg-elevated border border-border-subtle rounded-card shadow-2xl p-4 grid grid-cols-2 gap-1">
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[480px] bg-bg-elevated border border-border-subtle rounded-card shadow-2xl p-4 grid grid-flow-col grid-cols-2 grid-rows-9 gap-1">
                       {OCCASION_LINKS.map((o) => (
                         <Link
                           key={o.to}
@@ -138,7 +130,7 @@ export function Header() {
               size="md"
               className="hidden sm:inline-flex whitespace-nowrap !px-6 !bg-none !bg-[#32105f] !text-white hover:!bg-[#32105f] !rounded-full !shadow-none"
             >
-              <Link to="/" state={{ highlightPlan: true }}>Book Now <ArrowRight size={14} /></Link>
+              <Link to="/book">Book Now <ArrowRight size={14} /></Link>
             </Button>
             <button
               className="lg:hidden p-2 text-[#32105f] hover:text-[#6b2398] transition-colors"
@@ -172,7 +164,7 @@ export function Header() {
             ))}
             <div className="pt-3 border-t border-border-subtle">
               <Button asChild fullWidth>
-                <Link to="/" state={{ highlightPlan: true }}>Book Your Theatre</Link>
+                <Link to="/book">Book Your Theatre</Link>
               </Button>
             </div>
           </nav>

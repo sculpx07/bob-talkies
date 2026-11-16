@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
 import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck } from 'lucide-react'
@@ -18,6 +18,9 @@ import { Stepper } from '@/components/ui/Stepper'
 import { Seo } from '@/components/seo/Seo'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { StickyPriceBar, type Selection } from '@/features/booking/components/StickyPriceBar'
+import { OccasionStep } from '@/features/booking/components/steps/OccasionStep'
+import { GuestsStep } from '@/features/booking/components/steps/GuestsStep'
+import { DateStep } from '@/features/booking/components/steps/DateStep'
 import { TheatreSlotStep } from '@/features/booking/components/steps/TheatreSlotStep'
 import { PackageStep } from '@/features/booking/components/steps/PackageStep'
 import { AddonsStep } from '@/features/booking/components/steps/AddonsStep'
@@ -26,12 +29,17 @@ import { CustomerDetailsStep } from '@/features/booking/components/steps/Custome
 import { PaymentStep } from '@/features/booking/components/steps/PaymentStep'
 import { trackEvent } from '@/features/tracking/events'
 
-/* Occasion, guests and date are collected on the home page ("Find Your Perfect
-   Theatre"), so the booking flow starts at the theatre step (index 3). */
-const FIRST_STEP = 3
+/* The journey has 8 stages: occasion, guests, date, theatre, package, customise,
+   review and pay (details + payment are two screens inside the last stage).
+   Anything already picked in the home page finder is carried in through query
+   params, so the flow then opens at the first step that still needs an answer. */
+const FIRST_STEP = 0
 
 // Heading shown above the progress bar for each step
 const STEP_HEADINGS: Record<number, { kicker: string; title: string }> = {
+  0: { kicker: "Let's begin", title: 'What are you celebrating?' },
+  1: { kicker: 'Your guest list', title: 'How many guests?' },
+  2: { kicker: 'Pick the day', title: 'Select date and availability' },
   3: { kicker: 'Almost there', title: 'Pick your theatre' },
   4: { kicker: 'Great choice', title: 'Choose your package' },
   5: { kicker: 'Make it yours', title: 'Add the finishing touches' },
@@ -47,11 +55,12 @@ const STEPS = [
   { id: 'date', label: 'Date' },
   { id: 'theatre', label: 'Theatre' },
   { id: 'package', label: 'Package' },
-  { id: 'addons', label: 'Add-ons' },
-  { id: 'summary', label: 'Summary' },
-  { id: 'details', label: 'Details' },
-  { id: 'payment', label: 'Payment' },
+  { id: 'addons', label: 'Customise' },
+  { id: 'summary', label: 'Review' },
+  { id: 'payment', label: 'Pay' },
 ]
+// details (index 7) and payment (index 8) are both the final "Pay" stage
+const stageOf = (step: number) => Math.min(step, STEPS.length - 1)
 
 function canProceed(step: number, state: ReturnType<typeof useBooking>['state']): boolean {
   switch (step) {
@@ -90,7 +99,10 @@ export default function BookPage() {
     if (qOccasion && qOccasion !== state.occasion) dispatch({ type: 'SET_OCCASION', occasion: qOccasion })
     if (qGuests && qGuests !== state.guests) dispatch({ type: 'SET_GUESTS', guests: qGuests })
     if (qDate && qDate !== state.date) dispatch({ type: 'SET_DATE', date: qDate })
-    if (state.step < FIRST_STEP) dispatch({ type: 'GO_STEP', step: FIRST_STEP })
+    // coming from the home page finder: open at the first step that still needs an answer
+    if (qOccasion || qGuests || qDate) {
+      dispatch({ type: 'GO_STEP', step: !qOccasion ? 0 : !qGuests ? 1 : !qDate ? 2 : 3 })
+    }
   }, []) // only on mount
 
 
@@ -150,22 +162,39 @@ export default function BookPage() {
     dispatch({ type: 'GO_STEP', step: FIRST_STEP })
   }
 
-  if (!occasion || !date) return <Navigate to="/" state={{ highlightPlan: true }} replace />
-
   const step = Math.min(Math.max(state.step, FIRST_STEP), LAST_STEP)
-  const visibleSteps = STEPS.slice(FIRST_STEP)
+  const visibleSteps = STEPS
   const occasionData = OCCASIONS.find((o) => o.slug === occasion)
-  const prettyDate = new Date(`${date}T00:00:00`).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
+  const prettyDate = date ? new Date(`${date}T00:00:00`).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }) : null
+
+  const chosenOccasionLabel = occasionData ? `${occasionData.emoji} ${occasionData.label}` : '—'
+  const reviewRows: Array<{ label: string; value: string; step: number }> = [
+    { label: 'Occasion', value: chosenOccasionLabel, step: 0 },
+    { label: 'Guests', value: String(guests), step: 1 },
+    { label: 'Date', value: prettyDate ?? '—', step: 2 },
+    { label: 'Theatre & time', value: chosenTheatre ? `${chosenTheatre.name}${chosenSlot ? ` · ${formatTime(chosenSlot.start)}` : ''}` : '—', step: 3 },
+    { label: 'Package', value: chosenPkg ? chosenPkg.name : '—', step: 4 },
+    { label: 'Add-ons', value: chosenAddons.length ? chosenAddons.map((a) => a.name).join(', ') : 'None', step: 5 },
+  ]
 
   const stepContent = [
-    null,
-    null,
-    null,
+    <OccasionStep key="occasion" />,
+    <GuestsStep key="guests" />,
+    <DateStep key="date" />,
     <TheatreSlotStep key="theatre" />,
     <PackageStep key="package" />,
     <AddonsStep key="addons" />,
     <div key="summary">
       <h2 className="font-display text-3xl md:text-4xl font-bold text-[#2a0e4f] mb-6">Review your booking</h2>
+      <dl className="mb-6 divide-y divide-[#f1e2f0] overflow-hidden rounded-3xl bg-white ring-1 ring-[#ecd9ec]">
+        {reviewRows.map((r) => (
+          <div key={r.label} className="flex items-center gap-3 px-5 py-3 text-sm">
+            <dt className="w-28 shrink-0 text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">{r.label}</dt>
+            <dd className="min-w-0 flex-1 truncate font-semibold text-[#2a0e4f]">{r.value}</dd>
+            <button type="button" onClick={() => dispatch({ type: 'GO_STEP', step: r.step })} className="shrink-0 rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-semibold text-[#6b2398] hover:bg-[#efd3e6]">Edit</button>
+          </div>
+        ))}
+      </dl>
       <PriceSummary />
     </div>,
     <CustomerDetailsStep
@@ -176,6 +205,7 @@ export default function BookPage() {
   ]
 
   async function sharePlan() {
+    if (!occasion || !date) { toast('info', 'Pick an occasion and date first'); return }
     const url = `${window.location.origin}/book?occasion=${occasion}&guests=${guests}&date=${date}`
     const text = `My ${occasionData?.label ?? 'celebration'} plan at BOB Talkies — ${guests} guests on ${prettyDate}`
     try {
@@ -258,8 +288,8 @@ export default function BookPage() {
           <div className="mx-auto mb-8 max-w-3xl overflow-x-auto rounded-3xl border border-white/70 bg-white/60 px-4 py-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] backdrop-blur-xl">
             <Stepper
               steps={visibleSteps}
-              currentStep={step - FIRST_STEP}
-              onStepClick={(i) => dispatch({ type: 'GO_STEP', step: FIRST_STEP + i })}
+              currentStep={stageOf(step)}
+              onStepClick={(i) => dispatch({ type: 'GO_STEP', step: i })}
             />
           </div>
 
@@ -291,7 +321,7 @@ export default function BookPage() {
                 <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">Your celebration</p>
                 <p className="mt-1 font-display text-2xl font-bold">
-                  {occasionData?.emoji} {occasionData?.label ?? occasion}
+                  {occasionData ? `${occasionData.emoji} ${occasionData.label}` : 'Your booking'}
                 </p>
               </div>
               <ul className="space-y-3.5 p-5 text-sm">
@@ -301,7 +331,7 @@ export default function BookPage() {
                 </li>
                 <li className="flex items-center gap-3 text-[#2a0e4f]">
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><CalendarDays size={16} /></span>
-                  <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Date</span>{prettyDate}</span>
+                  <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Date</span>{prettyDate ?? <span className="text-[#7d7094]">Not chosen yet</span>}</span>
                 </li>
                 <li className="flex items-center gap-3 text-[#2a0e4f]">
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><Clapperboard size={16} /></span>
@@ -309,10 +339,10 @@ export default function BookPage() {
                     <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Theatre</span>
                     {chosenTheatre ? chosenTheatre.name : <span className="text-[#7d7094]">Not chosen yet</span>}
                   </span>
-                  {step > FIRST_STEP && (
+                  {step > 3 && (
                     <button
                       type="button"
-                      onClick={() => dispatch({ type: 'GO_STEP', step: FIRST_STEP })}
+                      onClick={() => dispatch({ type: 'GO_STEP', step: 3 })}
                       className="ml-auto rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
                     >
                       Change
@@ -346,13 +376,13 @@ export default function BookPage() {
                     {saved ? <><BookmarkCheck size={15} /> Saved</> : <><Bookmark size={15} /> Save</>}
                   </button>
                 </div>
-                <Link
-                  to="/"
-                  state={{ highlightPlan: true }}
-                  className="flex items-center justify-center gap-1.5 rounded-full bg-[#f6e6ef] px-4 py-2.5 text-sm font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
+                <button
+                  type="button"
+                  onClick={() => dispatch({ type: 'GO_STEP', step: 0 })}
+                  className="flex w-full items-center justify-center gap-1.5 rounded-full bg-[#f6e6ef] px-4 py-2.5 text-sm font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
                 >
                   <Pencil size={14} /> Edit details
-                </Link>
+                </button>
               </div>
             </motion.aside>
           </div>
@@ -365,7 +395,7 @@ export default function BookPage() {
           onNext={handleNext}
           onBack={handleBack}
           canProceed={canProceed(step, state)}
-          stepIndex={step - FIRST_STEP}
+          stepIndex={stageOf(step)}
           totalSteps={visibleSteps.length}
           nextLabel={step === 7 ? 'Verify & Continue' : step === 6 ? 'Proceed to Payment' : 'Continue'}
           showTotal={step >= 6}

@@ -66,6 +66,72 @@ let bookings: Record<string, {
   createdAt: string; slotHoldExpiresAt?: string;
 }> = {}
 
+type QuoteBody = {
+  theatreId: string; packageId: string; date: string; slotId: string;
+  guests: number; addonIds: string[]; couponCode?: string;
+}
+
+// shared by POST /pricing/quote and POST /bookings so the booking total always matches the quote
+function computeQuote(body: QuoteBody) {
+    const theatre = THEATRES.find((t) => t.id === body.theatreId)
+    const pkg = PACKAGES.find((p) => p.id === body.packageId)
+    if (!theatre || !pkg) return null
+
+    const dow = getDay(parseISO(body.date))
+    const isWeekend = dow === 0 || dow === 6
+    const basePrise = isWeekend ? pkg.weekendPricePaise : pkg.pricePaise
+    const extraGuests = Math.max(0, body.guests - pkg.includedGuests)
+    const extraGuestCharge = extraGuests * theatre.extraGuestPricePaise
+    const addonTotal = body.addonIds.reduce((sum, id) => {
+      const addon = ADDONS.find((a) => a.id === id)
+      return sum + (addon?.pricePaise ?? 0)
+    }, 0)
+
+    let discountPaise = 0
+    let couponApplied: string | undefined
+    if (body.couponCode) {
+      const offer = OFFERS.find(
+        (o) => o.code === body.couponCode && o.isActive,
+      )
+      if (offer) {
+        const subtotal = basePrise + extraGuestCharge + addonTotal
+        if (!offer.minOrderPaise || subtotal >= offer.minOrderPaise) {
+          if (offer.discountType === 'flat') {
+            discountPaise = offer.discountValue
+          } else {
+            discountPaise = Math.round((subtotal * offer.discountValue) / 100)
+            if (offer.maxDiscountPaise) {
+              discountPaise = Math.min(discountPaise, offer.maxDiscountPaise)
+            }
+          }
+          couponApplied = body.couponCode
+        }
+      }
+    }
+
+    const subtotalPaise = basePrise + extraGuestCharge + addonTotal
+    const taxPaise = Math.round((subtotalPaise - discountPaise) * 0.18)
+    const totalPaise = subtotalPaise - discountPaise + taxPaise
+    const advancePaise = Math.round(totalPaise * 0.3)
+
+    return {
+      lineItems: [
+        { label: `${pkg.name} Package`, paise: basePrise },
+        ...(extraGuests > 0 ? [{ label: `Extra Guests (${extraGuests} × ₹${theatre.extraGuestPricePaise / 100})`, paise: extraGuestCharge }] : []),
+        ...body.addonIds.map((id) => {
+          const addon = ADDONS.find((a) => a.id === id)
+          return { label: addon?.name ?? id, paise: addon?.pricePaise ?? 0 }
+        }),
+        ...(discountPaise > 0 ? [{ label: `Coupon (${couponApplied})`, paise: -discountPaise }] : []),
+        { label: 'GST (18%)', paise: taxPaise },
+      ],
+      totalPaise,
+      advancePaise,
+      balancePaise: totalPaise - advancePaise,
+      couponApplied,
+    }
+}
+
 export const handlers = [
   // GET /theatres
   http.get(`${BASE}/theatres`, async () => {
@@ -127,67 +193,9 @@ export const handlers = [
   // POST /pricing/quote
   http.post(`${BASE}/pricing/quote`, async ({ request }) => {
     await delay(300)
-    const body = await request.json() as {
-      theatreId: string; packageId: string; date: string; slotId: string;
-      guests: number; addonIds: string[]; couponCode?: string;
-    }
-    const theatre = THEATRES.find((t) => t.id === body.theatreId)
-    const pkg = PACKAGES.find((p) => p.id === body.packageId)
-    if (!theatre || !pkg) return err('NOT_FOUND', 'Theatre or package not found')
-
-    const dow = getDay(parseISO(body.date))
-    const isWeekend = dow === 0 || dow === 6
-    const basePrise = isWeekend ? pkg.weekendPricePaise : pkg.pricePaise
-    const extraGuests = Math.max(0, body.guests - pkg.includedGuests)
-    const extraGuestCharge = extraGuests * theatre.extraGuestPricePaise
-    const addonTotal = body.addonIds.reduce((sum, id) => {
-      const addon = ADDONS.find((a) => a.id === id)
-      return sum + (addon?.pricePaise ?? 0)
-    }, 0)
-
-    let discountPaise = 0
-    let couponApplied: string | undefined
-    if (body.couponCode) {
-      const offer = OFFERS.find(
-        (o) => o.code === body.couponCode && o.isActive,
-      )
-      if (offer) {
-        const subtotal = basePrise + extraGuestCharge + addonTotal
-        if (!offer.minOrderPaise || subtotal >= offer.minOrderPaise) {
-          if (offer.discountType === 'flat') {
-            discountPaise = offer.discountValue
-          } else {
-            discountPaise = Math.round((subtotal * offer.discountValue) / 100)
-            if (offer.maxDiscountPaise) {
-              discountPaise = Math.min(discountPaise, offer.maxDiscountPaise)
-            }
-          }
-          couponApplied = body.couponCode
-        }
-      }
-    }
-
-    const subtotalPaise = basePrise + extraGuestCharge + addonTotal
-    const taxPaise = Math.round((subtotalPaise - discountPaise) * 0.18)
-    const totalPaise = subtotalPaise - discountPaise + taxPaise
-    const advancePaise = Math.round(totalPaise * 0.3)
-
-    return ok({
-      lineItems: [
-        { label: `${pkg.name} Package`, paise: basePrise },
-        ...(extraGuests > 0 ? [{ label: `Extra Guests (${extraGuests} × ₹${theatre.extraGuestPricePaise / 100})`, paise: extraGuestCharge }] : []),
-        ...body.addonIds.map((id) => {
-          const addon = ADDONS.find((a) => a.id === id)
-          return { label: addon?.name ?? id, paise: addon?.pricePaise ?? 0 }
-        }),
-        ...(discountPaise > 0 ? [{ label: `Coupon (${couponApplied})`, paise: -discountPaise }] : []),
-        { label: 'GST (18%)', paise: taxPaise },
-      ],
-      totalPaise,
-      advancePaise,
-      balancePaise: totalPaise - advancePaise,
-      couponApplied,
-    })
+    const quote = computeQuote(await request.json() as QuoteBody)
+    if (!quote) return err('NOT_FOUND', 'Theatre or package not found')
+    return ok(quote)
   }),
 
   // POST /coupons/validate
@@ -214,6 +222,8 @@ export const handlers = [
     const pkg = PACKAGES.find((p) => p.id === body.packageId)
     if (!theatre || !pkg) return err('NOT_FOUND', 'Theatre or package not found', 404)
 
+    const quote = computeQuote(body)
+    if (!quote) return err('NOT_FOUND', 'Theatre or package not found', 404)
     const id = `BT${Date.now()}`
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString()
     const slotParts = body.slotId.split('-')
@@ -221,8 +231,9 @@ export const handlers = [
     const h = parseInt(slotTime.slice(0, 2))
     const m = slotTime.slice(2)
     const slotStart = `${String(h).padStart(2, '0')}:${m}`
-    const endH = (h + 2) % 24
-    const slotEnd = `${String(endH).padStart(2, '0')}:${m}`
+    // slots run 2.5 hours (see the availability handler)
+    const endMin = (h * 60 + parseInt(m) + 150) % 1440
+    const slotEnd = `${String(Math.floor(endMin / 60)).padStart(2, '0')}:${String(endMin % 60).padStart(2, '0')}`
 
     bookings[id] = {
       id, status: 'SLOT_HELD', theatreId: body.theatreId, theatreName: theatre.name,
@@ -230,8 +241,8 @@ export const handlers = [
       slotId: body.slotId, slotStart, slotEnd, occasion: body.occasion,
       guests: body.guests, addonIds: body.addonIds, couponCode: body.couponCode,
       customerName: body.customerName, customerMobile: body.customerMobile,
-      customerEmail: body.customerEmail, totalPaise: theatre.startingPricePaise,
-      advancePaidPaise: 0, balancePaise: theatre.startingPricePaise,
+      customerEmail: body.customerEmail, totalPaise: quote.totalPaise,
+      advancePaidPaise: 0, balancePaise: quote.totalPaise,
       createdAt: new Date().toISOString(), slotHoldExpiresAt: expiresAt,
     }
     return ok(bookings[id])

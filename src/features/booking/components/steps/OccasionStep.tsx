@@ -1,76 +1,58 @@
+import { motion } from 'framer-motion'
+import { Check } from 'lucide-react'
 import { useBooking } from '../../state/booking.context'
+import { OCCASIONS } from '@/content/occasions'
 import { cn } from '@/lib/utils/cn'
 
-const OCCASIONS = [
-  { slug: 'birthday',         label: 'Birthday',         img: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=400&q=75', overlay: '#a855f7' },
-  { slug: 'anniversary',      label: 'Anniversary',      img: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&q=75', overlay: '#ec4899' },
-  { slug: 'date-night',       label: 'Date Night',       img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=75', overlay: '#7c3aed' },
-  { slug: 'proposal',         label: 'Proposal',         img: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=400&q=75', overlay: '#db2777' },
-  { slug: 'family',           label: 'Family',           img: 'https://images.unsplash.com/photo-1511895426328-dc8714191011?w=400&q=75', overlay: '#f97316' },
-  { slug: 'friends',          label: 'Friends',          img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=75', overlay: '#6366f1' },
-  { slug: 'sports-screening', label: 'Sports Screening', img: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=400&q=75', overlay: '#0ea5e9' },
-  { slug: 'corporate',        label: 'Corporate',        img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&q=75', overlay: '#334155' },
-]
+const IMAGES: Record<string, string> = {
+  birthday: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=500&q=75',
+  anniversary: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=500&q=75',
+  'date-night': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=75',
+  proposal: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=500&q=75',
+  family: 'https://images.unsplash.com/photo-1511895426328-dc8714191011?w=500&q=75',
+  friends: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=75',
+  'sports-screening': 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=500&q=75',
+  corporate: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=75',
+}
 
 export function OccasionStep() {
   const { state, dispatch } = useBooking()
   return (
     <div>
-      <h2 className="font-display text-2xl md:text-3xl text-text-primary mb-2">
-        What are you celebrating?
-      </h2>
-      <p className="text-text-secondary mb-8">Choose your occasion to get personalised recommendations.</p>
-      <div
-        role="radiogroup"
-        aria-label="Select occasion"
-        className="grid grid-cols-2 sm:grid-cols-4 gap-3"
-      >
-        {OCCASIONS.map((o) => {
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">What are you celebrating?</h2>
+      <p className="mb-6 text-sm text-[#5b4578]">Pick the occasion and we will tailor the rest of your booking.</p>
+      <div role="radiogroup" aria-label="Select occasion" className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {OCCASIONS.map((o, i) => {
           const active = state.occasion === o.slug
           return (
-            <button
+            <motion.button
               key={o.slug}
               type="button"
               role="radio"
               aria-checked={active}
               onClick={() => dispatch({ type: 'SET_OCCASION', occasion: o.slug })}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4 }}
+              whileTap={{ scale: 0.97 }}
               className={cn(
-                'group relative overflow-hidden rounded-2xl transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500',
-                active ? 'ring-2 ring-gold-500 shadow-gold-glow scale-[1.03]' : 'hover:scale-[1.02] hover:shadow-lg',
+                'group relative aspect-[4/5] overflow-hidden rounded-3xl text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c026d3]/40',
+                active ? 'ring-[3px] ring-[#c026d3] shadow-[0_18px_40px_rgba(192,38,211,0.35)]' : 'shadow-[0_10px_26px_rgba(107,35,152,0.16)]',
               )}
-              style={{ height: 130 }}
             >
-              {/* Image */}
-              <img
-                src={o.img}
-                alt={o.label}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                loading="lazy"
-              />
-              {/* Gradient overlay */}
-              <div
-                className="absolute inset-0 transition-opacity duration-200"
-                style={{
-                  background: `linear-gradient(to top, ${o.overlay}dd 0%, ${o.overlay}66 50%, transparent 100%)`,
-                  opacity: active ? 1 : 0.85,
-                }}
-              />
-              {/* Active checkmark */}
+              <img src={IMAGES[o.slug] ?? o.heroImage} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <span className={cn('absolute inset-0 bg-gradient-to-t', active ? 'from-[#32105f] via-[#32105f]/40' : 'from-[#1d0a38]/90 via-[#1d0a38]/20', 'to-transparent')} />
               {active && (
-                <span className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full bg-gold-500 text-white text-[10px] font-bold shadow">
-                  ✓
+                <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-[#c026d3] text-white shadow">
+                  <Check size={15} strokeWidth={3} />
                 </span>
               )}
-              {/* Label */}
-              <span className="absolute bottom-0 left-0 right-0 p-3 text-left">
-                <span className={cn(
-                  'block text-[11px] font-bold leading-tight text-white',
-                  active ? 'opacity-100' : 'opacity-90',
-                )}>
-                  {o.label}
-                </span>
+              <span className="absolute inset-x-0 bottom-0 p-4">
+                <span className="block text-2xl" aria-hidden="true">{o.emoji}</span>
+                <span className="block font-display text-lg font-bold text-white">{o.label}</span>
               </span>
-            </button>
+            </motion.button>
           )
         })}
       </div>

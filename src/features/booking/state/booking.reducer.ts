@@ -80,12 +80,18 @@ export const initialBookingState: BookingState = {
   payFull: false,
 }
 
+const downstreamReset = {
+  theatreId: null, theatreSlug: null, slotId: null, packageId: null,
+  addonIds: [] as string[], serverQuote: null, bookingId: null, slotHoldExpiresAt: null,
+}
+
 export function bookingReducer(state: BookingState, action: BookingAction): BookingState {
   switch (action.type) {
     case 'SET_OCCASION': return { ...state, occasion: action.occasion }
-    case 'SET_GUESTS': return { ...state, guests: action.guests }
+    // changing guests / date invalidates everything chosen downstream of them
+    case 'SET_GUESTS': return action.guests === state.guests ? state : { ...state, guests: action.guests, ...downstreamReset }
     case 'SET_LOCATION': return { ...state, locationId: action.locationId }
-    case 'SET_DATE': return { ...state, date: action.date }
+    case 'SET_DATE': return action.date === state.date ? state : { ...state, date: action.date, ...downstreamReset }
     case 'SET_THEATRE_SLOT': return { ...state, theatreId: action.theatreId, theatreSlug: action.theatreSlug, slotId: action.slotId }
     case 'SET_PACKAGE': return { ...state, packageId: action.packageId }
     case 'TOGGLE_ADDON': {

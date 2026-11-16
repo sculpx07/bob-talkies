@@ -887,36 +887,38 @@ export default function HomePage() {
               initial={{ width: 0 }} animate={locationInView ? { width: 64 } : {}} transition={{ delay: 0.3, duration: 0.5 }} />
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-5 md:gap-8 items-stretch">
+          <motion.div
+            className="grid md:grid-cols-2 overflow-hidden rounded-[2rem] bg-white/80 backdrop-blur-sm"
+            style={{ border: '1px solid rgba(236,217,236,0.9)', boxShadow: '0 20px 60px rgba(107,35,152,0.1)' }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={locationInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.15, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          >
             {/* Info panel */}
-            <motion.div
-              className="rounded-3xl p-5 md:p-8 flex flex-col justify-between"
-              style={{ background: 'linear-gradient(135deg, #2a0e4f 0%, #32105f 60%, #4a1a8a 100%)', border: '1px solid rgba(201,168,76,0.2)' }}
-              initial={{ opacity: 0, x: -40 }}
-              animate={locationInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.15, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="space-y-6">
-                {[
-                  { icon: <MapPin size={22} className="text-[#c9a84c]" />, label: 'Address', content: <p className="text-white/60 text-sm leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
-                  { icon: <Phone size={22} className="text-[#c9a84c]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${config.whatsappNumber}`} className="text-[#c9a84c] hover:text-[#eed98a] text-sm transition-colors">+91 {config.whatsappNumber.slice(2)}</a> },
-                  { icon: <CalendarDays size={22} className="text-[#c9a84c]" />, label: 'Operating Hours', content: <><p className="text-white/60 text-sm">10:00 AM – 1:00 AM</p><p className="text-[#c9a84c] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
-                ].map((item, i) => (
-                  <motion.div key={item.label} className="flex items-start gap-4"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={locationInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ delay: 0.3 + i * 0.1, duration: 0.45 }}
-                  >
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-                      style={{ background: 'rgba(201,168,76,0.18)', boxShadow: '0 0 20px rgba(201,168,76,0.22)' }}>
-                      {item.icon}
-                    </div>
-                    <div>
-                      <p className="font-bold text-white mb-1">{item.label}</p>
-                      {item.content}
-                    </div>
-                  </motion.div>
-                ))}
+            <div className="flex flex-col justify-between p-6 md:p-10">
+              <div>
+                <h3 className="font-display text-3xl md:text-4xl font-bold text-[#2a0e4f] mb-7">BOB Talkies — Kukatpally</h3>
+                <div className="space-y-5">
+                  {[
+                    { icon: <MapPin size={20} className="text-[#6b2398]" />, label: 'Address', content: <p className="text-[#2a0e4f] leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
+                    { icon: <Phone size={20} className="text-[#6b2398]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${config.whatsappNumber}`} className="text-[#2a0e4f] hover:text-[#6b2398] transition-colors">+91 {config.whatsappNumber.slice(2)}</a> },
+                    { icon: <CalendarDays size={20} className="text-[#6b2398]" />, label: 'Operating Hours', content: <><p className="text-[#2a0e4f]">10:00 AM – 1:00 AM</p><p className="text-[#8f6420] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
+                  ].map((item, i) => (
+                    <motion.div key={item.label} className="flex items-start gap-4"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={locationInView ? { opacity: 1, x: 0 } : {}}
+                      transition={{ delay: 0.3 + i * 0.1, duration: 0.45 }}
+                    >
+                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-[#f6e6ef]">
+                        {item.icon}
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7d7094] mb-0.5">{item.label}</p>
+                        {item.content}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 mt-8">
                 <Button asChild size="lg" className="w-full sm:w-auto">
@@ -928,27 +930,20 @@ export default function HomePage() {
                   </a>
                 </Button>
               </div>
-            </motion.div>
+            </div>
 
             {/* Map */}
-            <motion.div
-              className="rounded-3xl overflow-hidden relative h-72 md:h-auto"
-              style={{ border: '1px solid rgba(201,168,76,0.25)', minHeight: 320 }}
-              initial={{ opacity: 0, x: 40 }}
-              animate={locationInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.2, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            >
+            <div className="relative h-72 md:h-auto" style={{ minHeight: 360 }}>
               <iframe
                 title="BOB Talkies Location"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30449.63!2d78.3980!3d17.4849!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb93dc8c5d69df%3A0x19688381b30a1!2sKukatpally%2C+Hyderabad!5e0!3m2!1sen!2sin!4v1!5m2!1sen!2sin"
-                width="100%"
-                height="100%"
+                className="absolute inset-0 h-full w-full"
                 style={{ border: 0 }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </section>
     </>

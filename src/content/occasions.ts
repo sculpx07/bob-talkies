@@ -11,7 +11,7 @@ export interface OccasionData {
   faqs: Array<{ question: string; answer: string }>
 }
 
-export const OCCASIONS: OccasionData[] = [
+const BASE_OCCASIONS: OccasionData[] = [
   {
     slug: 'birthday',
     label: 'Birthday',
@@ -129,6 +129,67 @@ export const OCCASIONS: OccasionData[] = [
       { question: 'Can you accommodate presentations?', answer: 'Yes! You can connect your laptop via HDMI for presentations on our massive screens.' },
     ],
   },
+]
+
+const base = (slug: string) => BASE_OCCASIONS.find((o) => o.slug === slug)!
+
+/** Builds a page entry for an event type. Copy stays general: no prices or specs are promised. */
+function event(
+  slug: string, label: string, emoji: string, heading: string, subheading: string,
+  description: string, like: string, features: string[], recommendedTheatres: string[],
+): OccasionData {
+  return {
+    slug, label, emoji, heading, subheading, description,
+    heroImage: base(like).heroImage,
+    features, recommendedTheatres,
+    faqs: [
+      { question: `How do I book a private theatre for ${label.toLowerCase()}?`, answer: 'Choose your occasion, guest count and date, pick a theatre and time slot, then select a package and add-ons and pay online.' },
+      { question: 'Can I customise the setup?', answer: 'Yes. Decoration, cake, photography, food and other add-ons can be selected while booking, subject to availability.' },
+    ],
+  }
+}
+
+const ALL = ['th-delight', 'th-heavens', 'th-filmdom', 'th-cosmos', 'th-vibe-hall']
+
+/** The BOB Talkies event list, in display order. */
+export const OCCASIONS: OccasionData[] = [
+  { ...base('birthday'), label: 'Birthday Parties' },
+  { ...base('sports-screening'), label: 'Sports Nights' },
+  event('movie-premieres', 'Movie Premieres', '🎬', 'Premiere Night, Your Way', 'Roll out the red carpet in your own private cinema.',
+    'Host a premiere screening for your crowd on a big screen with theatre-grade sound, completely private to your group.', 'friends',
+    ['Fully private screening for your guests', 'Big screen and theatre sound', 'Group decoration add-ons'], ['th-filmdom', 'th-cosmos', 'th-vibe-hall']),
+  event('fan-screenings', 'Fan Screenings', '⭐', 'Fan Screenings, Fan Energy', 'Watch the first-day show with fellow fans.',
+    'Gather your fan club for a first-day or favourite-film screening where the cheering is welcome.', 'friends',
+    ['A private room for your fan group', 'Big screen and sound', 'Group setup and add-ons'], ['th-filmdom', 'th-cosmos', 'th-vibe-hall']),
+  event('teaser-launches', 'Teaser Launches', '🎞️', 'Launch It on the Big Screen', 'Teasers and trailers deserve a theatre.',
+    'Unveil a teaser, trailer or short film to your team and guests on a real cinema screen.', 'corporate',
+    ['Private screening space', 'Big screen playback', 'Room for guests and press'], ['th-cosmos', 'th-vibe-hall']),
+  event('movie-marathons', 'Movie Marathons', '🍿', 'Back-to-Back, All Yours', 'One film is never enough.',
+    'Line up your favourite films and watch them back to back in comfortable seating with no strangers around.', 'friends',
+    ['Private theatre for your whole group', 'Choose what you watch', 'Food add-ons available'], ['th-heavens', 'th-filmdom', 'th-cosmos']),
+  { ...base('family'), label: 'Family Movie Nights' },
+  event('gaming-nights', 'Gaming Nights', '🎮', 'Game on the Big Screen', 'Your console, a cinema-size screen.',
+    'Bring your friends for a gaming session on a big screen with cinema sound.', 'friends',
+    ['Big screen gaming', 'Private space for your group', 'Snack add-ons available'], ['th-heavens', 'th-filmdom', 'th-cosmos']),
+  event('karaoke-nights', 'Karaoke Nights', '🎤', 'Sing It Loud', 'Friends and family, one mic.',
+    'Turn the theatre into your own karaoke room with the big screen and sound system.', 'friends',
+    ['Private room to sing freely', 'Big screen lyrics and sound', 'Food add-ons available'], ['th-heavens', 'th-filmdom', 'th-cosmos', 'th-vibe-hall']),
+  { ...base('date-night'), label: 'Date Nights' },
+  { ...base('proposal'), label: 'Proposal Moments' },
+  { ...base('friends'), label: "Friends' Reunions" },
+  { ...base('corporate'), label: 'Corporate Events' },
+  event('private-screenings', 'Private Screenings', '🎟️', 'Your Screening, Your Guest List', 'A film, a room, and only your people.',
+    'Book a theatre exclusively for your group and watch what you like.', 'family',
+    ['Exclusive use of the theatre', 'Choose your own content', 'Decoration and food add-ons'], ALL),
+  event('music-experiences', 'Music Experiences', '🎵', 'Music, Sound and Screen', 'Concerts and playlists in cinema sound.',
+    'Enjoy concert films, live performances or your own playlist with theatre-grade sound.', 'friends',
+    ['Cinema sound for music', 'Private group space', 'Add-ons available'], ['th-heavens', 'th-filmdom', 'th-cosmos', 'th-vibe-hall']),
+  event('grand-gatherings', 'Grand Gatherings', '🥂', 'Gather Everyone', 'For the biggest guest lists.',
+    'Bring a large group together for a celebration or event in our largest space.', 'family',
+    ['Space for large groups', 'Big screen and sound', 'Catering and decoration add-ons'], ['th-cosmos', 'th-vibe-hall']),
+  event('vibe-hall-events', 'Vibe Hall Events', '🏛️', 'Events at Vibe Hall', 'Large celebrations, screenings, seminars and private events.',
+    'Vibe Hall is our largest space for big celebrations, sports screenings, seminars and private events.', 'corporate',
+    ['Our largest space', 'Large celebrations and sports screenings', 'Seminars and private events'], ['th-vibe-hall']),
 ]
 
 export function getOccasionBySlug(slug: string): OccasionData | undefined {
