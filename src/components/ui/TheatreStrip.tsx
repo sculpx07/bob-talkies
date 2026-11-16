@@ -50,7 +50,7 @@ export function TheatreStrip({ theatres }: { theatres: Theatre[] }) {
             <Link
               to={`/theatres/${it.theatre.slug}`}
               tabIndex={k >= items.length ? -1 : undefined}
-              className="absolute left-1/2 top-[34px] block origin-top rounded-[18px] bg-white p-2 shadow-[0_6px_20px_rgba(50,16,95,0.12)] transition-transform duration-300 hover:scale-105"
+              className="group/card absolute left-1/2 top-[34px] block origin-top rounded-[18px] bg-white p-2 shadow-[0_6px_20px_rgba(50,16,95,0.12)] transition-transform duration-300 hover:scale-105"
               style={{ width: CARD_W, transform: `translateX(-50%) rotate(${TILTS[k % TILTS.length]}deg)` }}
               aria-label={it.theatre.name}
             >
@@ -58,13 +58,26 @@ export function TheatreStrip({ theatres }: { theatres: Theatre[] }) {
               <span className="absolute -top-[13px] left-1/2 h-[22px] w-3 -translate-x-1/2 rounded-b-[2px] rounded-t-[6px] bg-[#22b24c]" aria-hidden="true">
                 <span className="absolute left-1/2 top-1.5 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-white/80" />
               </span>
-              <img
-                src={it.src}
-                alt={`${it.theatre.name} private theatre`}
-                loading="lazy"
-                draggable={false}
-                className="h-[150px] w-full rounded-[12px] object-cover"
-              />
+              {/* photo by default; the hero video plays over it only while this card is hovered */}
+              <div
+                className="relative h-[150px] w-full overflow-hidden rounded-[12px]"
+                onMouseEnter={(e) => { const v = e.currentTarget.querySelector('video'); if (v) { v.currentTime = 0; v.play().catch(() => {}) } }}
+                onMouseLeave={(e) => { const v = e.currentTarget.querySelector('video'); if (v) v.pause() }}
+              >
+                <img
+                  src={it.src}
+                  alt={`${it.theatre.name} private theatre`}
+                  loading="lazy"
+                  draggable={false}
+                  className="h-full w-full object-cover"
+                />
+                <video
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+                  src="/Hero%20section.mp4"
+                  muted loop playsInline preload="none"
+                  aria-hidden="true"
+                />
+              </div>
               <div className="px-1 pb-1 pt-2 text-left">
                 <p className="font-body text-[13px] font-bold leading-tight text-[#1a1a1a]">{it.theatre.name}</p>
               </div>

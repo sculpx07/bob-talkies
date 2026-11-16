@@ -47,7 +47,7 @@ export function ExperienceHighlights() {
   return (
     <section
       ref={ref}
-      className="py-14 md:py-20"
+      className="pb-16 pt-6 md:pb-24 md:pt-10"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6">
 
@@ -67,104 +67,84 @@ export function ExperienceHighlights() {
           </div>
         </motion.div>
 
-        {/* ── Desktop: horizontal expandable cards ── */}
+        {/* ── Desktop: editorial list + photo with an overlapping text card ── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="hidden md:flex gap-2.5"
-          style={{ height: 460 }}
+          className="hidden md:grid md:h-[480px] md:grid-cols-[300px_1fr] gap-10"
         >
-          {HIGHLIGHTS.map(h => {
-            const isActive = active === h.id
-            return (
-              <motion.div
-                key={h.id}
-                animate={{ flexGrow: isActive ? 2.4 : 0.6 }}
-                transition={{ type: 'spring', stiffness: 200, damping: 26 }}
-                className="relative overflow-hidden rounded-3xl cursor-pointer flex-shrink-0"
-                style={{ flexBasis: 0, minWidth: 64 }}
-                onClick={() => setActive(h.id)}
-              >
-                {/* Background */}
-                <img
-                  src={h.img}
-                  alt={h.eyebrow}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  loading="lazy"
-                />
-                <div
+          {/* list: huge outlined numbers, no boxes */}
+          <ul className="relative flex h-full flex-col justify-between" role="tablist" aria-label="Experiences">
+            <span className="pointer-events-none absolute bottom-3 left-[7px] top-3 w-px bg-[#e3d3ee]" aria-hidden="true" />
+            {HIGHLIGHTS.map((h, i) => {
+              const isActive = active === h.id
+              return (
+                <li key={h.id} className="relative">
+                  <button
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setActive(h.id)}
+                    className="group flex w-full items-center gap-6 pl-6 text-left"
+                  >
+                    <span
+                      className={`absolute left-0 top-1/2 h-[15px] w-[15px] -translate-y-1/2 rounded-full border-2 bg-[#fffaf4] transition-all duration-300 ${isActive ? 'scale-125' : 'border-[#d9c9e6]'}`}
+                      style={isActive ? { borderColor: h.accent, background: h.accent } : undefined}
+                      aria-hidden="true"
+                    />
+                    <span
+                      className="font-display text-[5.5rem] font-bold leading-none transition-all duration-300"
+                      style={isActive ? { color: h.accent } : { color: 'transparent', WebkitTextStroke: '1.5px #d4bfe6' }}
+                    >
+                      {i + 1}
+                    </span>
+                    <span className="min-w-0">
+                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? 'text-[#2a0e4f]' : 'text-[#9a8cae] group-hover:text-[#5b4578]'}`}>{h.eyebrow}</span>
+                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-[#7d7094]' : 'text-transparent'}`}>{h.tagline}</span>
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+
+          {/* photo with an overlapping white card */}
+          <div className="relative h-full">
+            <AnimatePresence mode="wait">
+              {HIGHLIGHTS.filter(h => h.id === active).map(h => (
+                <motion.div
+                  key={h.id}
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.45 }}
                   className="absolute inset-0"
-                  style={{ background: 'linear-gradient(to top, rgba(10,2,22,0.88) 0%, rgba(10,2,22,0.3) 50%, rgba(10,2,22,0.1) 100%)' }}
-                />
+                >
+                  <div className="absolute inset-y-0 left-0 w-[72%] overflow-hidden rounded-[2rem] shadow-[0_24px_60px_rgba(42,14,79,0.28)]">
+                    <img src={h.img} alt={h.eyebrow} className="h-full w-full object-cover" loading="lazy" />
+                    <span className="absolute inset-0 bg-gradient-to-t from-[#140930]/40 to-transparent" />
+                    <span className="absolute left-5 top-5 rounded-full px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#2a0e4f]" style={{ background: h.accent }}>{h.eyebrow}</span>
+                  </div>
 
-                {/* Compressed: vertical label */}
-                <AnimatePresence>
-                  {!isActive && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                  <div className="absolute bottom-8 right-0 w-[48%] rounded-[1.75rem] bg-white p-7 shadow-[0_26px_60px_rgba(107,35,152,0.25)] ring-1 ring-[#f0e1f3]">
+                    <h3 className="font-display text-2xl font-bold leading-snug text-[#2a0e4f]">{h.tagline}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#7d7094]">{h.desc}</p>
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {h.items.map(item => (
+                        <span key={item} className="rounded-full bg-[#f6eefb] px-2.5 py-1 text-[11px] font-medium text-[#5b4578]">{item}</span>
+                      ))}
+                    </div>
+                    <Link
+                      to={h.link}
+                      className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#6b2398] transition-all hover:gap-3"
                     >
-                      <span
-                        className="text-white font-black text-sm tracking-wider uppercase select-none"
-                        style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
-                      >
-                        {h.eyebrow}
-                      </span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Expanded: full content */}
-                <AnimatePresence>
-                  {isActive && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
-                      className="absolute inset-0 flex flex-col justify-end p-7 pointer-events-none"
-                    >
-                      <span
-                        className="inline-flex self-start items-center rounded-full text-[9px] font-black uppercase tracking-widest px-2.5 py-1 mb-3"
-                        style={{ background: `${h.accent}25`, border: `1px solid ${h.accent}50`, color: h.accent }}
-                      >
-                        {h.eyebrow}
-                      </span>
-                      <h3 className="text-white font-black text-xl md:text-2xl leading-snug mb-2">{h.tagline}</h3>
-                      <p className="text-white/60 text-sm leading-relaxed mb-4 max-w-xs">{h.desc}</p>
-
-                      <div className="flex flex-wrap gap-1.5 mb-5">
-                        {h.items.map(item => (
-                          <span key={item} className="text-white/70 text-[11px] font-medium">{item}</span>
-                        ))}
-                      </div>
-
-                      <Link
-                        to={h.link}
-                        className="pointer-events-auto self-start inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-black transition-all hover:brightness-110 hover:scale-105"
-                        style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)', color: '#2a0e4f' }}
-                      >
-                        {h.cta} <ArrowRight size={12} />
-                      </Link>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                {/* Active indicator dot */}
-                <div className="absolute top-4 right-4">
-                  <motion.div
-                    animate={{ scale: isActive ? 1 : 0 }}
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ background: h.accent }}
-                  />
-                </div>
-              </motion.div>
-            )
-          })}
+                      {h.cta} <ArrowRight size={15} />
+                    </Link>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         </motion.div>
 
         {/* ── Mobile: vertical accordion ── */}

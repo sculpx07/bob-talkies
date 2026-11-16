@@ -34,7 +34,7 @@ export function Header() {
   }, [])
 
   // over the dark hero video (home page, before scrolling) the menu turns white so it stays readable
-  const heroDark = location.pathname === '/' && !scrolled
+  const heroDark = false // the hero no longer has a dark video behind the menu
   const navText = heroDark ? 'text-white' : 'text-[#32105f]'
   const navLine = heroDark ? 'after:bg-white' : 'after:bg-[#32105f]'
 
