@@ -7,12 +7,9 @@ import { Seo } from '@/components/seo/Seo'
 import { ReviewsSection } from '@/components/home/ReviewsSection'
 import { CelebrationGallery } from '@/components/home/CelebrationGallery'
 import { TheatreFinder } from '@/components/home/TheatreFinder'
-import { BobClub } from '@/components/home/BobClub'
-import { BobPromise } from '@/components/home/BobPromise'
+import { BobPerks } from '@/components/home/BobPerks'
 import { ExperienceCategories } from '@/components/home/ExperienceCategories'
-import { SportsNightHighlight } from '@/components/home/SportsNightHighlight'
-import { MovieFanHighlight } from '@/components/home/MovieFanHighlight'
-import { VibeHallSpotlight } from '@/components/home/VibeHallSpotlight'
+import { ExperienceHighlights } from '@/components/home/ExperienceHighlights'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { OfferTicket } from '@/components/ui/OfferTicket'
 import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
@@ -655,14 +652,11 @@ export default function HomePage() {
         <CelebrationGallery />
       </Section>
 
-      <SportsNightHighlight />
-      <MovieFanHighlight />
-      <VibeHallSpotlight />
+      <ExperienceHighlights />
 
       <ReviewsSection />
       <TheatreFinder />
-      <BobClub />
-      <BobPromise />
+      <BobPerks />
 
       {/* Location */}
       <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fdf5e8 0%, #fffaf4 55%, #fdf5e8 100%)' }}>
