@@ -108,7 +108,7 @@ export function ExperienceCategories() {
   return (
     <section
       ref={ref}
-      className="py-16 md:py-24"
+      className="py-10 md:py-14"
       style={{ background: 'linear-gradient(180deg,#fffaf4 0%,#fdf5e8 100%)' }}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6">

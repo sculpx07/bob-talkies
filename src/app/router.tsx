@@ -52,6 +52,7 @@ const Faq = lazy_(() => import('@/pages/faq/FaqPage'))
 const Blog = lazy_(() => import('@/pages/blog/BlogPage'))
 const BlogPost = lazy_(() => import('@/pages/blog-post/BlogPostPage'))
 const Legal = lazy_(() => import('@/pages/legal/LegalPage'))
+const Personalise = lazy_(() => import('@/pages/personalise/PersonalisePage'))
 const NotFound = lazy_(() => import('@/pages/not-found/NotFoundPage'))
 
 /* Desktop background: bg.png repeated down the page, every other copy flipped
@@ -118,6 +119,7 @@ export const router = createBrowserRouter([
       { path: 'faq', element: <Faq /> },
       { path: 'blog', element: <Blog /> },
       { path: 'blog/:slug', element: <BlogPost /> },
+      { path: 'personalise', element: <Personalise /> },
       { path: 'terms', element: <Legal /> },
       { path: 'privacy', element: <Legal /> },
       { path: 'refund-policy', element: <Legal /> },
