@@ -10,6 +10,7 @@ import { TheatreFinder } from '@/components/home/TheatreFinder'
 import { BobPerks } from '@/components/home/BobPerks'
 import { ExperienceCategories } from '@/components/home/ExperienceCategories'
 import { ExperienceHighlights } from '@/components/home/ExperienceHighlights'
+import { PersonaliseSurpriseSection } from '@/components/home/PersonaliseSurpriseSection'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { OfferTicket } from '@/components/ui/OfferTicket'
 import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
@@ -653,6 +654,8 @@ export default function HomePage() {
       </Section>
 
       <ExperienceHighlights />
+
+      <PersonaliseSurpriseSection />
 
       <ReviewsSection />
       <TheatreFinder />

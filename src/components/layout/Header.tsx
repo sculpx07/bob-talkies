@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { label: 'Home', to: '/' },
   { label: 'Our Theatres', to: '/theatres' },
   { label: 'Celebrations', to: '/celebrations', hasMega: true },
+  { label: 'Personalise', to: '/personalise' },
   { label: 'Gallery', to: '/gallery' },
   { label: 'Reviews', to: '/reviews' },
   { label: 'Locations', to: '/locations' },
