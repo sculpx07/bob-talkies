@@ -215,7 +215,7 @@ export default function BookPage() {
         canonical="/book"
         noindex
       />
-      <div className="min-h-screen pt-20 md:pt-28 pb-40">
+      <div className="min-h-screen pt-20 md:pt-28 pb-12">
         <div className="mx-auto max-w-[1440px] px-4 md:px-8">
           {/* Heading */}
           <motion.div
@@ -252,6 +252,7 @@ export default function BookPage() {
           )}
 
           <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
+            <div className="min-w-0">
             {/* Step content */}
             <div className="rounded-[2rem] border border-white/70 bg-white/65 p-5 shadow-[0_20px_60px_rgba(107,35,152,0.12)] backdrop-blur-xl md:p-10">
               <AnimatePresence mode="wait">
@@ -265,6 +266,17 @@ export default function BookPage() {
                   {stepContent[step]}
                 </motion.div>
               </AnimatePresence>
+            </div>
+
+            {/* Back / Continue sit right under the card (cake and add-ons steps only; other steps have their own buttons) */}
+            {step >= 6 && step < LAST_STEP && (
+              <StickyPriceBar
+                onNext={handleNext}
+                onBack={handleBack}
+                canProceed={canProceed(step, state)}
+                nextLabel={step === 7 ? 'Review and pay' : 'Continue'}
+              />
+            )}
             </div>
 
             {/* Your celebration */}
@@ -342,15 +354,6 @@ export default function BookPage() {
         </div>
       </div>
 
-      {/* Sticky bar only on the optional steps; theatre, details and payment steps have their own buttons */}
-      {step >= 6 && step < LAST_STEP && (
-        <StickyPriceBar
-          onNext={handleNext}
-          onBack={handleBack}
-          canProceed={canProceed(step, state)}
-          nextLabel={step === 7 ? 'Review and pay' : 'Continue'}
-        />
-      )}
     </>
   )
 }

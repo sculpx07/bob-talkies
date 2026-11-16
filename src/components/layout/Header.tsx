@@ -1,5 +1,5 @@
 import { OCCASIONS } from '@/content/occasions'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -24,6 +24,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
+  const megaRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const { plan: savedPlan } = useSavedPlan()
 
@@ -38,12 +39,30 @@ export function Header() {
     setMegaOpen(false)
   }, [location.pathname])
 
+  // close the Celebrations dropdown when the visitor clicks/taps anywhere outside it, or presses Escape
+  useEffect(() => {
+    if (!megaOpen) return
+    const onPointerDown = (e: MouseEvent | TouchEvent) => {
+      if (!megaRef.current?.contains(e.target as Node)) setMegaOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMegaOpen(false) }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('touchstart', onPointerDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('touchstart', onPointerDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [megaOpen])
+
 
   return (
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-        (scrolled || /^\/celebrations\/.+/.test(location.pathname))
+        // pages that open on a dark hero need the light header background from the start so the nav stays readable
+        (scrolled || /^\/(celebrations\/.+|personalise)/.test(location.pathname))
           ? 'bg-[#fffaf4]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(50,16,95,0.08)]'
           : 'bg-transparent',
       )}
@@ -59,7 +78,7 @@ export function Header() {
           <nav className="hidden lg:flex items-center gap-0.5" aria-label="Main navigation">
             {NAV_LINKS.map((link) =>
               link.hasMega ? (
-                <div key={link.label} className="relative">
+                <div key={link.label} ref={megaRef} className="relative">
                   <button
                     className={cn(
                       'flex items-center gap-1 px-3 py-2 text-base font-medium leading-6 text-[#32105f]',
