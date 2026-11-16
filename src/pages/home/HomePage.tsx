@@ -17,7 +17,6 @@ import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
 import { PartySelect } from '@/components/ui/PartySelect'
 import { PartyCounter } from '@/components/ui/PartyCounter'
 import { FeaturedTheatres } from '@/components/ui/FeaturedTheatres'
-import { TheatreStrip } from '@/components/ui/TheatreStrip'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { Card, CardBody } from '@/components/ui/Card'
@@ -198,6 +197,19 @@ export default function HomePage() {
 
   const today = new Date().toISOString().split('T')[0]
 
+  // the hero video is full-HD: decode it only while the hero is on screen so the rest of the page scrolls smoothly
+  const heroVideoRef = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    const v = heroVideoRef.current
+    if (!v) return
+    const io = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) v.play().catch(() => {}); else v.pause() },
+      { threshold: 0.05 },
+    )
+    io.observe(v)
+    return () => io.disconnect()
+  }, [])
+
   return (
     <>
       <Seo
@@ -208,23 +220,26 @@ export default function HomePage() {
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Hero background video: muted + looping so it can autoplay on every browser */}
         <video
-          className="hidden"
-          autoPlay muted loop playsInline
-          poster="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600"
+          ref={heroVideoRef}
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay muted loop playsInline preload="auto"
           aria-hidden="true"
         >
-          <source src="" type="video/mp4" />
+          <source src="/Hero%20section.mp4" type="video/mp4" />
         </video>
+        {/* black tint over the video so the white hero text stays readable */}
+        <div className="absolute inset-0 bg-black/55" aria-hidden="true" />
         <div className="film-grain absolute inset-0 pointer-events-none" aria-hidden="true" />
 
         <div className="relative z-10 w-full min-w-0 text-center px-4 max-w-5xl mx-auto pt-24">
-          <Badge variant="gold" className="mb-6 !border-0 !text-sm md:!text-lg !font-medium !text-gold-600 px-4 py-1.5 md:px-5 md:py-2 font-['Jost',sans-serif]">
+          <Badge variant="gold" className="mb-6 !border-0 !text-sm md:!text-lg !font-medium !text-[#f5d7a1] px-4 py-1.5 md:px-5 md:py-2 font-['Jost',sans-serif]">
             <Sparkles size={12} />
             Hyderabad's #1 Private Celebrations Venue
           </Badge>
-          <h1 className="mb-4 font-display text-3xl font-bold leading-tight tracking-tight text-[#2a0e4f] sm:text-4xl md:text-5xl lg:text-6xl">
-            <span className="block text-[#2a0e4f]">Your Theatre.</span>
+          <h1 className="mb-4 font-display text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
+            <span className="block text-white">Your Theatre.</span>
             <span className="block">
               Your{' '}
               <span key={heroKey} className="relative inline-block whitespace-nowrap">
@@ -236,7 +251,7 @@ export default function HomePage() {
               </span>
             </span>
           </h1>
-          <p className="mb-8 text-sm md:text-base text-[#5b4578]/80 max-w-lg mx-auto leading-relaxed">
+          <p className="mb-8 text-sm md:text-base text-white/85 max-w-lg mx-auto leading-relaxed">
             From intimate celebrations to exclusive screenings and grand gatherings, experience entertainment your way at BOB Talkies.
           </p>
 
@@ -370,8 +385,6 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-
-          <TheatreStrip theatres={theatres ?? []} />
         </div>
       </section>
 

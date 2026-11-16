@@ -168,24 +168,23 @@ export default function BlogPage() {
               >
                 <Link
                   to={`/blog/${post.slug}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-[0_12px_34px_rgba(107,35,152,0.12)] ring-1 ring-[#ecd9ec] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_50px_rgba(107,35,152,0.2)]"
+                  className="group flex h-full flex-col rounded-[1.75rem] border border-[#ecd9ec] bg-white/80 p-2 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_50px_rgba(107,35,152,0.16)]"
                 >
-                  <div className="relative aspect-[16/10] overflow-hidden">
+                  {/* photo set inside the card with its own rounded corners */}
+                  <div className="aspect-[4/3] overflow-hidden rounded-3xl">
                     <img src={post.coverImage} alt={post.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold text-[#6b2398] backdrop-blur">{post.category}</span>
                   </div>
-                  <div className="flex flex-1 flex-col p-6">
-                    <h3 className="line-clamp-2 font-display text-lg font-semibold leading-snug text-[#2a0e4f]">{post.title}</h3>
-                    <p className="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-[#5b4578]">{post.excerpt}</p>
-                    <div className="mt-5 flex items-center justify-between border-t border-[#f1e2f0] pt-4">
-                      <div className="flex items-center gap-3 text-xs text-[#7d7094]">
-                        <span className="flex items-center gap-1"><Calendar size={12} />{fmt(post.publishedAt)}</span>
-                        <span className="flex items-center gap-1"><Clock size={12} />{post.readingTime} min</span>
-                      </div>
-                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f6e6ef] text-[#6b2398] transition-colors group-hover:bg-[#6b2398] group-hover:text-white">
-                        <ArrowUpRight size={16} />
-                      </span>
+                  <div className="flex flex-1 flex-col px-3 pb-5 pt-6">
+                    <div className="flex items-center gap-6 text-[15px] text-[#6a5f7d]">
+                      <span className="flex items-center gap-2"><Calendar size={16} className="text-[#8e39c7]" />{fmt(post.publishedAt)}</span>
+                      <span className="flex items-center gap-2"><Clock size={16} className="text-[#8e39c7]" />{post.readingTime} min read</span>
                     </div>
+                    <hr className="my-4 border-[#f1e2f0]" />
+                    <h3 className="line-clamp-2 font-display text-2xl font-normal leading-snug text-[#2a0e4f]">{post.title}</h3>
+                    <p className="mt-3 line-clamp-3 flex-1 text-base leading-8 text-[#5b4578]">{post.excerpt}</p>
+                    <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#2a0e4f]">
+                      Read more <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    </span>
                   </div>
                 </Link>
               </motion.div>

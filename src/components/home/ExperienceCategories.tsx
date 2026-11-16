@@ -522,7 +522,7 @@ export function ExperienceCategories() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#fffaf4] py-10 font-['Jost',sans-serif] md:py-14"
+      className="relative overflow-x-clip pb-16 pt-10 font-['Jost',sans-serif] md:pb-20 md:pt-14"
     >
       {/* Ambient glow that follows the active tab */}
       <motion.div

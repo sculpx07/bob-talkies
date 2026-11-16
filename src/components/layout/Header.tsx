@@ -34,6 +34,11 @@ export function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // over the dark hero video (home page, before scrolling) the menu turns white so it stays readable
+  const heroDark = location.pathname === '/' && !scrolled
+  const navText = heroDark ? 'text-white' : 'text-[#32105f]'
+  const navLine = heroDark ? 'after:bg-white' : 'after:bg-[#32105f]'
+
   useEffect(() => {
     setMobileOpen(false)
     setMegaOpen(false)
@@ -71,7 +76,7 @@ export function Header() {
         <div className="flex items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="shrink-0 justify-self-start" aria-label="BOB Talkies home">
-            <img src="/logo.png" alt="BOB Talkies" className="h-12 md:h-16 w-auto" />
+            <img src="/logo.png" alt="BOB Talkies" className={cn('h-12 md:h-16 w-auto transition-[filter] duration-300', heroDark && 'brightness-0 invert')} />
           </Link>
 
           {/* Desktop nav */}
@@ -81,8 +86,8 @@ export function Header() {
                 <div key={link.label} ref={megaRef} className="relative">
                   <button
                     className={cn(
-                      'flex items-center gap-1 px-3 py-2 text-base font-medium leading-6 text-[#32105f]',
-                      'relative after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[2px] after:rounded-full after:bg-[#32105f] after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
+                      'flex items-center gap-1 px-3 py-2 text-base font-medium leading-6', navText,
+                      'relative after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[2px] after:rounded-full', navLine, 'after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
                     )}
                     onClick={() => setMegaOpen(!megaOpen)}
                     aria-expanded={megaOpen}
@@ -112,8 +117,8 @@ export function Header() {
                   to={link.to}
                   className={({ isActive }) =>
                     cn(
-                      'px-3 py-2 text-base font-medium leading-6 text-[#32105f]',
-                      'relative after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[2px] after:rounded-full after:bg-[#32105f] after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
+                      'px-3 py-2 text-base font-medium leading-6', navText,
+                      'relative after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[2px] after:rounded-full', navLine, 'after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
                       isActive && 'after:scale-x-100 after:origin-left',
                     )
                   }
@@ -130,7 +135,7 @@ export function Header() {
               <button
                 type="button"
                 onClick={() => window.dispatchEvent(new Event(OPEN_SAVED_EVENT))}
-                className="hidden items-center gap-1.5 whitespace-nowrap px-2 py-2 text-base font-medium leading-6 text-[#32105f] md:flex"
+                className={cn('hidden items-center gap-1.5 whitespace-nowrap px-2 py-2 text-base font-medium leading-6 md:flex', navText)}
                 aria-label="Open your saved plan"
               >
                 Saved
@@ -157,7 +162,7 @@ export function Header() {
               <ArrowRight size={14} className="relative transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
             <button
-              className="lg:hidden p-2 text-[#32105f] hover:text-[#6b2398] transition-colors"
+              className={cn('lg:hidden p-2 transition-colors', heroDark ? 'text-white' : 'text-[#32105f] hover:text-[#6b2398]')}
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-expanded={mobileOpen}
               aria-label="Toggle mobile menu"

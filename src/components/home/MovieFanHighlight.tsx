@@ -20,7 +20,6 @@ export function MovieFanHighlight() {
     <section
       ref={ref}
       className="py-16 md:py-24"
-      style={{ background: 'linear-gradient(180deg,#fdf5e8 0%,#fffaf4 100%)' }}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6">
 
