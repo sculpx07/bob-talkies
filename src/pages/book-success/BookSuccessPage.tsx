@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { motion } from 'framer-motion'
@@ -7,8 +7,9 @@ import { Seo } from '@/components/seo/Seo'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { formatINR } from '@/lib/utils/currency'
 import { formatDate, formatTime } from '@/lib/utils/date'
-import { Check, Calendar, MapPin, MessageCircle, QrCode, Users, ArrowRight, Sparkles } from 'lucide-react'
+import { Check, Calendar, MapPin, MessageCircle, QrCode, Users, ArrowRight, Sparkles, Gift, Share2, Star } from 'lucide-react'
 import { config } from '@/lib/config'
+import { awardBookingPoints, buildReferralUrl } from '@/lib/utils/bobRewards'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const CONFETTI = [
@@ -20,9 +21,18 @@ const CONFETTI = [
 export default function BookSuccessPage() {
   const { bookingId } = useParams()
   const { dispatch } = useBooking()
-  // booking is done: wipe the in-memory journey so the next Book Now starts at step 1
   useEffect(() => { dispatch({ type: 'RESET' }) }, [dispatch])
   const { data: booking, isLoading } = useBookingStatus(bookingId ?? null)
+
+  // award points once per booking (guard by bookingId so strict-mode double-fire is safe)
+  const [reward, setReward] = useState<{ points: number; total: number; bookings: number } | null>(null)
+  useEffect(() => {
+    if (!booking || booking.status !== 'CONFIRMED') return
+    const key = `bob_awarded_${bookingId}`
+    if (localStorage.getItem(key)) return
+    localStorage.setItem(key, '1')
+    setReward(awardBookingPoints())
+  }, [booking, bookingId])
 
   const waLink = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(`Hi! I just booked a private theatre (Booking ID: ${bookingId}). Need help with my booking.`)}`
   const confirmed = booking?.status === 'CONFIRMED'
@@ -207,6 +217,60 @@ export default function BookSuccessPage() {
                   <MessageCircle size={16} /> WhatsApp Support
                 </a>
               </motion.div>
+
+              {/* Rewards + Referral card */}
+              {reward && (
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.5, duration: 0.6, ease: EASE }}
+                  className="mt-5 overflow-hidden rounded-3xl border border-[#c9a84c]/30 bg-gradient-to-br from-[#fffaf0] to-[#fdf4e3]"
+                >
+                  {/* points earned banner */}
+                  <div className="flex items-center gap-3 bg-gradient-to-r from-[#c9a84c]/20 to-transparent px-5 py-4 border-b border-[#c9a84c]/15">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#c9a84c]/20">
+                      <Star size={18} fill="#c9a84c" stroke="none" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-black text-[#8a6010] uppercase tracking-widest">BOB Points Earned!</p>
+                      <p className="font-black text-[#2a0e4f] text-lg leading-tight">
+                        +{reward.points} pts
+                        <span className="ml-2 text-sm font-semibold text-[#5b4578]/60">({reward.total} total)</span>
+                      </p>
+                    </div>
+                    {reward.bookings >= 2 && (
+                      <span className="rounded-full bg-[#34d399]/20 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2a7a4f]">
+                        Repeat Guest ✓
+                      </span>
+                    )}
+                  </div>
+
+                  {/* refer & earn */}
+                  <div className="px-5 py-4">
+                    <p className="text-xs font-black text-[#2a0e4f] mb-1 flex items-center gap-1.5">
+                      <Gift size={12} className="text-[#c9a84c]" /> Refer &amp; Earn
+                    </p>
+                    <p className="text-[11px] text-[#5b4578]/70 mb-3 leading-relaxed">
+                      Share your referral link. When a friend completes their first booking, you both earn BOB credits.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const url = buildReferralUrl()
+                        const text = '🎬 Book a private theatre at BOB Talkies and use my link — we both earn BOB Points!'
+                        try {
+                          if (navigator.share) await navigator.share({ title: 'BOB Talkies', text, url })
+                          else { await navigator.clipboard.writeText(url) }
+                        } catch { /* dismissed */ }
+                      }}
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-xs font-black text-white transition-all hover:scale-[1.02]"
+                      style={{ background: 'linear-gradient(135deg,#32105f,#5b1fa3)' }}
+                    >
+                      <Share2 size={13} /> Share Referral Link
+                    </button>
+                  </div>
+                </motion.div>
+              )}
 
               {/* Upsell */}
               <div className="mt-9">

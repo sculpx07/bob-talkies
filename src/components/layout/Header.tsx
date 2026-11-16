@@ -1,7 +1,7 @@
 import { OCCASIONS } from '@/content/occasions'
 import { useState, useEffect, useRef } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react'
+import { Menu, X, ChevronDown, ArrowRight, Ticket } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
 import { config } from '@/lib/config'
@@ -13,11 +13,75 @@ const NAV_LINKS = [
   { label: 'Our Theatres', to: '/theatres' },
   { label: 'Celebrations', to: '/celebrations', hasMega: true },
   { label: 'Personalise', to: '/personalise' },
-  { label: 'Gallery', to: '/gallery' },
-  { label: 'Refund Policy', to: '/refund-policy' },
+  { label: 'Rewards', to: '/rewards' },
 ]
 
 const OCCASION_LINKS = OCCASIONS.map((o) => ({ label: o.label, to: `/celebrations/${o.slug}`, emoji: o.emoji }))
+
+function MyBookingsMenu({ savedPlan, navText, heroDark }: { savedPlan: boolean; navText: string; heroDark: boolean }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const close = (e: MouseEvent | TouchEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false) }
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', close)
+    document.addEventListener('touchstart', close)
+    document.addEventListener('keydown', esc)
+    return () => { document.removeEventListener('mousedown', close); document.removeEventListener('touchstart', close); document.removeEventListener('keydown', esc) }
+  }, [open])
+
+  return (
+    <div ref={ref} className="relative hidden sm:block">
+      <button
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        className={cn(
+          'flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition-all',
+          heroDark
+            ? 'border-white/30 text-white hover:bg-white/10'
+            : 'border-[#32105f]/25 text-[#32105f] hover:bg-[#32105f]/5',
+          open && (heroDark ? 'bg-white/10' : 'bg-[#32105f]/5'),
+        )}
+      >
+        <Ticket size={14} />
+        My Bookings
+        {savedPlan && <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#6b2398] text-[9px] font-black text-white">1</span>}
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl bg-white shadow-[0_12px_40px_rgba(42,14,79,0.18)] ring-1 ring-[#f0e6cc] overflow-hidden z-50">
+          <Link
+            to="/my-booking"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 px-4 py-3.5 text-sm font-semibold text-[#2a0e4f] hover:bg-[#f8f0ff] transition-colors"
+          >
+            <Ticket size={15} className="text-[#6b2398]" />
+            <div>
+              <p className="font-black text-[#2a0e4f] text-sm">My Bookings</p>
+              <p className="text-[10px] text-[#5b4578]/60 font-normal">View history &amp; details</p>
+            </div>
+          </Link>
+          <div className="h-px bg-[#f0e6cc]" />
+          <button
+            type="button"
+            onClick={() => { window.dispatchEvent(new Event(OPEN_SAVED_EVENT)); setOpen(false) }}
+            className="flex w-full items-center gap-3 px-4 py-3.5 text-sm text-[#2a0e4f] hover:bg-[#f8f0ff] transition-colors"
+          >
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#6b2398] text-[9px] font-black text-white shrink-0">
+              {savedPlan ? '1' : '0'}
+            </span>
+            <div className="text-left">
+              <p className="font-black text-[#2a0e4f] text-sm">Saved Plan</p>
+              <p className="text-[10px] text-[#5b4578]/60 font-normal">{savedPlan ? 'Resume your booking' : 'No saved plan yet'}</p>
+            </div>
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false)
@@ -129,18 +193,7 @@ export function Header() {
           </nav>
 
           {/* CTA + Mobile toggle */}
-          <div className="flex items-center gap-2 md:gap-3 justify-self-end">
-            {savedPlan && (
-              <button
-                type="button"
-                onClick={() => window.dispatchEvent(new Event(OPEN_SAVED_EVENT))}
-                className={cn('hidden items-center gap-1.5 whitespace-nowrap px-2 py-2 text-base font-medium leading-6 md:flex', navText)}
-                aria-label="Open your saved plan"
-              >
-                Saved
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#6b2398] text-[11px] font-bold text-white">1</span>
-              </button>
-            )}
+          <div className="flex items-center gap-2 justify-self-end">
             {/* Animated Book Now CTA */}
             <Link
               to="/"
@@ -152,14 +205,13 @@ export function Header() {
                 animation: 'bob-btn-pulse 2.4s ease-in-out infinite',
               }}
             >
-              {/* shimmer sweep on hover */}
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-white/20 transition-all duration-700 group-hover:left-[130%]"
-              />
+              <span aria-hidden className="pointer-events-none absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-white/20 transition-all duration-700 group-hover:left-[130%]" />
               <span className="relative">Book Now</span>
               <ArrowRight size={14} className="relative transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
+
+            {/* My Bookings + Saved mini-dropdown */}
+            <MyBookingsMenu savedPlan={!!savedPlan} navText={navText} heroDark={heroDark} />
             <button
               className={cn('lg:hidden p-2 transition-colors', heroDark ? 'text-white' : 'text-[#32105f] hover:text-[#6b2398]')}
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -190,9 +242,18 @@ export function Header() {
                 {link.label}
               </NavLink>
             ))}
+            <NavLink
+              to="/my-booking"
+              className={({ isActive }) =>
+                cn('px-4 py-3 rounded-xl text-sm font-medium transition-colors flex items-center gap-2',
+                  isActive ? 'text-gold-400 bg-gold-500/10' : 'text-text-secondary hover:text-gold-400')
+              }
+            >
+              <Ticket size={14} /> My Bookings
+            </NavLink>
             <div className="pt-3 border-t border-border-subtle">
               <Button asChild fullWidth>
-                <Link to="/" state={{ highlightPlan: true }}>Book Now </Link>
+                <Link to="/" state={{ highlightPlan: true }}>Book Now</Link>
               </Button>
             </div>
           </nav>

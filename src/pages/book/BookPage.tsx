@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useQuery } from '@tanstack/react-query'
-import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck } from 'lucide-react'
+import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck, Gift, Zap, RotateCcw, Star } from 'lucide-react'
+import { getPoints, getBookingCount, buildReferralUrl } from '@/lib/utils/bobRewards'
 import { SAVED_KEY, SAVED_EVENT } from '@/features/booking/useSavedPlan'
 import { useToast } from '@/components/ui/Toast'
 import { addonKeys, theatreKeys } from '@/lib/api/queryKeys'
@@ -161,14 +162,15 @@ export default function BookPage() {
 
   async function sharePlan() {
     if (!occasion || !date) { toast('info', 'Pick an occasion and date first'); return }
-    const url = `${window.location.origin}/book?occasion=${occasion}&guests=${guests}&date=${date}`
-    const text = `My ${occasionData?.label ?? 'celebration'} plan at BOB Talkies — ${guests} guests on ${prettyDate}`
+    const refUrl = buildReferralUrl()
+    const url = `${refUrl}&occasion=${occasion}&guests=${guests}&date=${date}`
+    const text = `🎬 Book a private theatre at BOB Talkies! ${guests} guests on ${prettyDate}. Use my link to book and we both earn BOB Points!`
     try {
       if (navigator.share) {
-        await navigator.share({ title: 'BOB Talkies', text, url })
+        await navigator.share({ title: 'BOB Talkies — Private Theatre', text, url })
       } else {
         await navigator.clipboard.writeText(url)
-        toast('success', 'Link copied', 'Paste it anywhere to share your plan.')
+        toast('success', 'Referral link copied!', 'Share it — you both earn BOB Points when they book.')
       }
     } catch {
       /* share sheet dismissed */
@@ -321,6 +323,67 @@ export default function BookPage() {
                 </li>
               </ul>
               {step >= 4 && step < LAST_STEP && <div className="px-4 pb-4"><BookingSummaryCard /></div>}
+
+              {/* Rewards strip */}
+              {(() => {
+                const pts = getPoints()
+                const bookings = getBookingCount()
+                return (
+                  <div className="mx-4 mb-3 overflow-hidden rounded-2xl border border-[#c9a84c]/30 bg-gradient-to-br from-[#fffaf0] to-[#fdf4e3]">
+                    {/* header */}
+                    <div className="flex items-center justify-between border-b border-[#c9a84c]/15 px-4 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <Gift size={13} className="text-[#c9a84c]" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#c9933a]">BOB Rewards</span>
+                      </div>
+                      {pts > 0 && (
+                        <div className="flex items-center gap-1 rounded-full bg-[#c9a84c]/15 px-2.5 py-0.5">
+                          <Star size={9} fill="#c9a84c" stroke="none" />
+                          <span className="text-[10px] font-black text-[#8a6010]">{pts} pts</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <ul className="px-4 py-3 space-y-2">
+                      {/* 1. Refer & Earn — always first */}
+                      <li className="flex items-start gap-2 text-[11px] text-[#5b4578]/80 font-medium">
+                        <Users size={11} className="mt-0.5 shrink-0 text-[#c9a84c]" />
+                        <span>Refer friends &amp; earn BOB credits when they book</span>
+                      </li>
+                      {/* 2. Repeat Guest Offers */}
+                      <li className="flex items-start gap-2 text-[11px] font-medium" style={{ color: bookings >= 2 ? '#2a7a4f' : '#5b4578cc' }}>
+                        <RotateCcw size={11} className="mt-0.5 shrink-0" style={{ color: bookings >= 2 ? '#34d399' : '#c9a84c' }} />
+                        <span>
+                          Repeat guest upgrades &amp; offers
+                          {bookings >= 2 && <span className="ml-1 text-[9px] font-black text-[#34d399] uppercase tracking-wide">Active ✓</span>}
+                        </span>
+                      </li>
+                      {/* 3. Earn BOB Points */}
+                      <li className="flex items-start gap-2 text-[11px] text-[#5b4578]/80 font-medium">
+                        <Zap size={11} className="mt-0.5 shrink-0 text-[#c9a84c]" />
+                        <span>
+                          +{50} BOB Points on this booking
+                          {pts > 0 && <span className="ml-1 text-[9px] text-[#8a6010] font-black">({pts} earned so far)</span>}
+                        </span>
+                      </li>
+                    </ul>
+
+                    <div className="flex items-center justify-between border-t border-[#c9a84c]/15 px-4 py-2">
+                      <Link to="/rewards" className="text-[10px] font-black text-[#c9933a] hover:underline">
+                        View all rewards →
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={sharePlan}
+                        className="text-[10px] font-black text-[#6b2398] hover:underline"
+                      >
+                        Share &amp; refer →
+                      </button>
+                    </div>
+                  </div>
+                )
+              })()}
+
               <div className="space-y-2.5 border-t border-[#f1e2f0] p-4">
                 <div className="grid grid-cols-2 gap-2.5">
                   <button
