@@ -172,13 +172,13 @@ export function Header() {
               aria-label="Open saved plan"
               title={savedPlan ? 'You have a saved plan' : 'No saved plan yet'}
               className={cn(
-                'hidden sm:flex items-center justify-center rounded-full w-9 h-9 transition-all duration-200',
+                'hidden sm:flex items-center justify-center rounded-full w-9 h-9 transition-all duration-200 ring-1',
                 savedPlan
-                  ? 'bg-[#c9a84c]/15 text-[#c9933a] hover:bg-[#c9a84c]/30 ring-1 ring-[#c9a84c]/40'
-                  : 'text-[#32105f]/30 hover:text-[#32105f]/60',
+                  ? 'bg-[#c9a84c]/20 text-[#c9933a] ring-[#c9a84c]/60 hover:bg-[#c9a84c]/35'
+                  : 'bg-[#32105f]/8 text-[#32105f] ring-[#32105f]/20 hover:bg-[#32105f]/12',
               )}
             >
-              <Bookmark size={16} fill={savedPlan ? '#c9a84c' : 'none'} />
+              <Bookmark size={17} strokeWidth={2.2} fill={savedPlan ? '#c9a84c' : 'none'} />
             </button>
 
             <button
