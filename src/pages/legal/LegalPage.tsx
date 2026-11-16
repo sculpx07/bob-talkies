@@ -139,19 +139,19 @@ export default function LegalPage() {
         noindex
       />
       <PageShell>
-        <div className="max-w-3xl mx-auto">
+        <div className="mx-auto max-w-5xl p-2 sm:p-6 md:px-14 md:py-8">
           <div className="mb-10">
             <p className="text-xs text-text-muted uppercase tracking-widest font-medium mb-2">Legal</p>
-            <h1 className="font-display text-4xl text-text-primary mb-2">{content.title}</h1>
+            <h1 className="font-display text-4xl font-medium text-text-primary mb-2 md:text-5xl">{content.title}</h1>
             <p className="text-sm text-text-muted">Last updated: {content.lastUpdated}</p>
           </div>
 
-          <div className="space-y-10">
+          <div className="space-y-10 md:space-y-12">
             {content.sections.map((section) => (
               <div key={section.heading}>
-                <h2 className="font-display text-xl text-text-primary mb-3">{section.heading}</h2>
+                <h2 className="font-display text-xl text-text-primary mb-3 md:text-2xl">{section.heading}</h2>
                 {section.body.split('\n\n').map((para, i) => (
-                  <p key={i} className="text-text-secondary leading-relaxed mb-3 text-sm whitespace-pre-line">
+                  <p key={i} className="text-text-secondary leading-relaxed mb-3 text-sm md:text-base whitespace-pre-line">
                     {para}
                   </p>
                 ))}

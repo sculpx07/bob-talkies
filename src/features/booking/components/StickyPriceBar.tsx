@@ -41,7 +41,7 @@ export function StickyPriceBar({ onNext, onBack, canProceed, loading, nextLabel 
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 24 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.85, ease: [0.25, 0.8, 0.25, 1] }}
         className="flex w-full max-w-md items-center justify-between gap-3 rounded-full border border-white/80 bg-white/85 p-2 shadow-[0_18px_50px_rgba(50,16,95,0.22)] backdrop-blur-xl"
       >
         {showBack ? (
@@ -66,7 +66,7 @@ export function StickyPriceBar({ onNext, onBack, canProceed, loading, nextLabel 
               initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 16 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.7, ease: [0.25, 0.8, 0.25, 1] }}
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.98 }}
               // highlighted: brighter gradient, gold ring and a soft pulsing glow so it is the obvious next action
