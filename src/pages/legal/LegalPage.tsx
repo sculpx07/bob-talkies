@@ -87,32 +87,36 @@ const LEGAL_CONTENT: Record<string, { title: string; seoTitle: string; lastUpdat
     lastUpdated: '1 January 2025',
     sections: [
       {
-        heading: 'Our Refund Promise',
-        body: `We want every booking to go ahead as planned. If circumstances change, here is exactly how our refund policy works. All refunds are processed to the original payment method within 5–7 business days of approval.`,
+        heading: 'Overview',
+        body: `An advance amount of ₹750 (Delight / Heavens / Filmdom), ₹1,250 (Cosmos) or ₹1,750 (Vibe Hall) is collected to confirm your booking. A partial advance of ₹500 (Delight / Heavens / Filmdom), ₹1,000 (Cosmos) or ₹1,250 (Vibe Hall) is refundable if you cancel your slot at least 72 hours prior to the booking time.\n\nPlease be aware that refunds are not provided for cancellations made after the 72-hour window. Additionally, no refunds are given for no-shows or late arrivals.`,
       },
       {
-        heading: 'Cancellations',
-        body: `More than 48 hours before the slot: 100% refund of the advance amount paid.\n\n24–48 hours before the slot: 50% refund of the advance amount paid.\n\nLess than 24 hours before the slot: No refund.\n\nNo-show (failure to arrive without prior notice): No refund.\n\nTo cancel, WhatsApp us or email bookings@bobtalkies.com with your booking ID.`,
+        heading: '1. Advance Payment & Booking Confirmation',
+        body: `To confirm a booking, an advance payment is required based on the selected hall:\n\nDelight / Heavens / Filmdom – ₹750\nCosmos – ₹1,250\nVibe Hall – ₹1,750`,
       },
       {
-        heading: 'Rescheduling',
-        body: `You may reschedule your booking once at no charge, provided you request it at least 48 hours before your original slot and the new slot is within 30 days. Additional reschedules may incur a ₹500 rescheduling fee. Rescheduling within 24 hours of a slot is treated as a cancellation per the policy above.`,
+        heading: '2. Cancellation & Refund Eligibility',
+        body: `If you need to cancel your booking, you may be eligible for a partial refund depending on when you make the cancellation.\n\nRefundable Amounts (if cancelled at least 72 hours before booking time):\n\nDelight / Heavens / Filmdom – ₹500 refunded\nCosmos – ₹1,000 refunded\nVibe Hall – ₹1,250 refunded`,
       },
       {
-        heading: 'Addon & Decoration Refunds',
-        body: `Addons and decoration packages that have already been prepared or ordered cannot be refunded if cancellation occurs within 48 hours of the slot. If we cancel or modify your booking (e.g., due to technical failure), all amounts including addons are refunded in full.`,
+        heading: '3. Non-Refundable Scenarios',
+        body: `Refunds will not be provided under the following circumstances:\n\nLate Cancellations: If you cancel within 72 hours of your booking time.\n\nNo-Shows: If you fail to attend your scheduled booking without prior notice.\n\nLate Arrivals & Shortened Bookings: No refund or adjustments will be provided.`,
       },
       {
-        heading: 'Coupon & Offer Codes',
-        body: `Coupon discounts are applied at the time of booking. If you cancel and rebook, the coupon may no longer be valid if its usage limit has been reached. Refunds are calculated on the amount actually paid after discount.`,
+        heading: '4. How to Request a Cancellation & Refund',
+        body: `If you need to cancel your booking, please contact us as soon as possible via:\n\n📱 WhatsApp: 9888 99 49 89\n\nWhen making a cancellation request, please provide:\n• Your full name\n• Booking date and time\n• The venue / hall name`,
       },
       {
-        heading: 'Force Majeure',
-        body: `If BOB Talkies cancels your booking due to circumstances beyond our control (power outage, natural disaster, government order, etc.), you will receive a full refund of all amounts paid within 7 business days.`,
+        heading: '5. Refund Processing Timeline',
+        body: `Refunds will be processed within 7 business days after the cancellation request is received.\n\nThe refunded amount will be issued via the original payment method or an alternative method as agreed upon.`,
       },
       {
-        heading: 'How to Raise a Refund Request',
-        body: `WhatsApp: +91 98765 43210\nEmail: bookings@bobtalkies.com\nPlease include your Booking ID and the reason for cancellation. Our team responds within 2 business hours (10 AM – 10 PM, 7 days a week).`,
+        heading: '6. Exceptions & Special Considerations',
+        body: `Force Majeure: In cases of natural disasters, government restrictions, or technical failures, BOB Talkies reserves the right to issue refunds or reschedule bookings at its discretion.\n\nManagement Discretion: Any refunds outside the scope of this policy will be decided at the sole discretion of BOB Talkies.`,
+      },
+      {
+        heading: 'Contact Us',
+        body: `If you have any questions or concerns regarding our refund policy, please feel free to reach out. We are always happy to assist!\n\n📞 WhatsApp: 9888 99 49 89\n\n📍 BOB Talkies (Private Theatres)\nPlot 2 & 3, 4th Floor, SR A2Z Heights\nGokul Plots Junction, near KPHB 9th Phase\nKukatpally, Hyderabad – 500085\n\nThank you for choosing BOB Talkies! We look forward to providing you with a fantastic entertainment experience.`,
       },
     ],
   },
