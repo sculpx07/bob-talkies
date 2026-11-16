@@ -2,8 +2,17 @@
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronRight, Star, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Camera, Cake, Music, Users, Tv, Shield, ChevronLeft, Clapperboard, ArrowRight } from 'lucide-react'
+import { ChevronRight, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Users, Clapperboard, ArrowRight } from 'lucide-react'
 import { Seo } from '@/components/seo/Seo'
+import { ReviewsSection } from '@/components/home/ReviewsSection'
+import { CelebrationGallery } from '@/components/home/CelebrationGallery'
+import { TheatreFinder } from '@/components/home/TheatreFinder'
+import { BobClub } from '@/components/home/BobClub'
+import { BobPromise } from '@/components/home/BobPromise'
+import { ExperienceCategories } from '@/components/home/ExperienceCategories'
+import { SportsNightHighlight } from '@/components/home/SportsNightHighlight'
+import { MovieFanHighlight } from '@/components/home/MovieFanHighlight'
+import { VibeHallSpotlight } from '@/components/home/VibeHallSpotlight'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { OfferTicket } from '@/components/ui/OfferTicket'
 import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
@@ -26,7 +35,13 @@ import type { Offer } from '@/schemas/offer'
 
 const OCCASION_QUICK = OCCASIONS.map((o) => ({ label: o.label, slug: o.slug, emoji: o.emoji }))
 
-const HERO_WORDS = ['Celebration', 'Birthday', 'Anniversary', 'Proposal', 'Date Night', 'Movie Night', 'Sports Night']
+const HERO_WORDS = [
+  'Celebrations', 'Birthday Parties', 'Sports Nights', 'Movie Premieres',
+  'Fan Screenings', 'Teaser Launches', 'Movie Marathons', 'Family Movie Nights',
+  'Gaming Nights', 'Karaoke Nights', 'Date Nights', 'Proposal Moments',
+  "Friends' Reunions", 'Corporate Events', 'Private Screenings',
+  'Music Experiences', 'Grand Gatherings', 'Vibe Hall Events',
+]
 
 const CEL_ROW1 = [
   { slug: 'birthday',    label: 'Birthday',    sub: 'Celebrate',  img: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=600&q=80', overlay: 'from-[#a855f7]/80' },
@@ -39,15 +54,6 @@ const CEL_ROW2 = [
   { slug: 'friends',          label: 'Friends',          sub: 'Book for', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80', overlay: 'from-[#6366f1]/80' },
   { slug: 'sports-screening', label: 'Sports Screening', sub: 'Book for', img: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=600&q=80', overlay: 'from-[#0ea5e9]/80' },
   { slug: 'corporate',        label: 'Corporate',        sub: 'Book for', img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80', overlay: 'from-[#334155]/80' },
-]
-
-const GUEST_STORIES = [
-  { id: '1', name: 'Priya & Rohit', avatar: 'P', role: 'Anniversary Couple', rating: 5, occasion: 'Anniversary', theatre: 'The Delight', text: 'We booked The Delight for our 5th anniversary and it was absolutely magical. Rose petals, fairy lights, a custom "5 Years" banner — when my husband walked in, he was in tears. Best anniversary ever!', date: 'Oct 2024' },
-  { id: '2', name: 'Karthik S.', avatar: 'K', role: 'Birthday Planner', rating: 5, occasion: 'Birthday Surprise', theatre: 'Heavens', text: 'BOB Talkies made it effortless. Balloons, a photo wall, the cake — everything. When she walked in and saw 12 friends sitting there, she burst out crying. I\'ve never seen her so happy.', date: 'Sep 2024' },
-  { id: '3', name: 'Meera & Arjun', avatar: 'M', role: 'Engaged Couple', rating: 5, occasion: 'Proposal', theatre: 'The Delight', text: 'I proposed here and she said YES! Roses, candles, our favourite song playing — the entire theatre was ours. The team kept me calm and made the moment absolutely perfect.', date: 'Aug 2024' },
-  { id: '4', name: 'Vikram & Team', avatar: 'V', role: 'Team Organiser', rating: 5, occasion: 'Farewell', theatre: 'Filmdom', text: 'An unforgettable farewell! We played a surprise video compilation on the big screen — there wasn\'t a dry eye in the room. The décor was elegant and staff made everything flawless.', date: 'Nov 2024' },
-  { id: '5', name: 'Rahul M.', avatar: 'R', role: 'Sports Fan', rating: 5, occasion: 'Sports Screening', theatre: 'Cosmos', text: 'Watched the IPL final with 20 friends at Cosmos — absolute blast! The 250" screen and Atmos surround made every boundary feel like we were in the stadium. BOB Talkies totally nailed it.', date: 'May 2024' },
-  { id: '6', name: 'Divya & Suresh', avatar: 'D', role: 'Date Night Couple', rating: 5, occasion: 'Date Night', theatre: 'The Delight', text: 'Intimate, romantic, absolutely perfect. Champagne, comfort food, recliners, and a surprise message on screen before the movie. The team thought of everything. Pure bliss!', date: 'Dec 2024' },
 ]
 
 export default function HomePage() {
@@ -67,9 +73,6 @@ export default function HomePage() {
   const [selectedOccasion, setSelectedOccasion] = useState('')
   const [guests, setGuests] = useState('2')
   const [date, setDate] = useState('')
-  const [storyIndex, setStoryIndex] = useState(0)
-  const storyTimer = useRef<ReturnType<typeof setInterval> | null>(null)
-
   const offersScrollRef = useRef<HTMLDivElement>(null)
   const [offersActiveIndex, setOffersActiveIndex] = useState(0)
   const celRow1Ref = useRef<HTMLDivElement>(null)
@@ -80,10 +83,6 @@ export default function HomePage() {
   const offersInView = useInView(offersRevealRef, { once: true, margin: '-80px' })
   const celRevealRef = useRef(null)
   const celInView = useInView(celRevealRef, { once: true, margin: '-80px' })
-  const reviewsRevealRef = useRef(null)
-  const reviewsInView = useInView(reviewsRevealRef, { once: true, margin: '-80px' })
-  const expRevealRef = useRef(null)
-  const expInView = useInView(expRevealRef, { once: true, margin: '-80px' })
   const locationRevealRef = useRef(null)
   const locationInView = useInView(locationRevealRef, { once: true, margin: '-80px' })
   const [heroWordIndex, setHeroWordIndex] = useState(0)
@@ -189,28 +188,6 @@ export default function HomePage() {
     }
   }, [offers])
 
-  function resetTimer() {
-    if (storyTimer.current) clearInterval(storyTimer.current)
-    storyTimer.current = setInterval(() => {
-      setStoryIndex((i) => (i + 1) % GUEST_STORIES.length)
-    }, 5000)
-  }
-
-  useEffect(() => {
-    resetTimer()
-    return () => { if (storyTimer.current) clearInterval(storyTimer.current) }
-  }, [])
-
-  function prevStory() {
-    setStoryIndex((i) => (i - 1 + GUEST_STORIES.length) % GUEST_STORIES.length)
-    resetTimer()
-  }
-
-  function nextStory() {
-    setStoryIndex((i) => (i + 1) % GUEST_STORIES.length)
-    resetTimer()
-  }
-
   function handleQuickBook() {
     const params = new URLSearchParams()
     if (selectedOccasion) params.set('occasion', selectedOccasion)
@@ -222,12 +199,6 @@ export default function HomePage() {
   }
 
   const today = new Date().toISOString().split('T')[0]
-
-  const visibleStories = [
-    GUEST_STORIES[storyIndex],
-    GUEST_STORIES[(storyIndex + 1) % GUEST_STORIES.length],
-    GUEST_STORIES[(storyIndex + 2) % GUEST_STORIES.length],
-  ]
 
   return (
     <>
@@ -254,7 +225,8 @@ export default function HomePage() {
             <Sparkles size={12} />
             Hyderabad's #1 Private Celebrations Venue
           </Badge>
-          <h1 className="mb-8 font-display text-3xl font-bold leading-tight tracking-tight text-[#2a0e4f] sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="mb-4 font-display text-3xl font-bold leading-tight tracking-tight text-[#2a0e4f] sm:text-4xl md:text-5xl lg:text-6xl">
+            <span className="block text-[#2a0e4f]">Your Theatre.</span>
             <span className="block">
               Your{' '}
               <span key={heroKey} className="relative inline-block whitespace-nowrap">
@@ -265,11 +237,10 @@ export default function HomePage() {
                 <span className="hero-sparkle sp4" aria-hidden="true">✦</span>
               </span>
             </span>
-            <span className="block">
-              <span className="text-[#2a0e4f]">Your Theatre</span>
-              <span className="text-[#8e39c7]"> Your Memories</span>
-            </span>
           </h1>
+          <p className="mb-8 text-sm md:text-base text-[#5b4578]/80 max-w-lg mx-auto leading-relaxed">
+            From intimate celebrations to exclusive screenings and grand gatherings, experience entertainment your way at BOB Talkies.
+          </p>
 
           {/* Plan your party — desktop pill (matches design) */}
           <div id="plan" className="relative mx-auto w-full max-w-4xl scroll-mt-28 font-['Jost',sans-serif]">
@@ -405,6 +376,8 @@ export default function HomePage() {
           <TheatreStrip theatres={theatres ?? []} />
         </div>
       </section>
+
+      <ExperienceCategories />
 
       <FeaturedTheatres />
 
@@ -678,195 +651,18 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+
+        <CelebrationGallery />
       </Section>
 
-      {/* Guest Stories — Fan Carousel */}
-      <section className="py-16 md:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fdf5e8 0%, #fffaf4 55%, #fdf5e8 100%)' }}>
-        <style>{`
-          @keyframes floatEmoji {
-            0%   { transform: translateY(0px) rotate(0deg) scale(1); opacity: 0; }
-            10%  { opacity: 1; }
-            80%  { opacity: 0.8; }
-            100% { transform: translateY(-120px) rotate(20deg) scale(0.6); opacity: 0; }
-          }
-          @keyframes glowPulse {
-            0%, 100% { opacity: 0.55; transform: scale(1); }
-            50%       { opacity: 0.85; transform: scale(1.08); }
-          }
-          @keyframes glowRing {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.0), 0 0 60px 20px rgba(201,168,76,0.18); }
-            50%       { box-shadow: 0 0 0 8px rgba(201,168,76,0.08), 0 0 80px 30px rgba(201,168,76,0.28); }
-          }
-        `}</style>
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full bg-[#c9a84c]/7 blur-3xl" />
-          {/* Ambient glow orbs */}
-          <div className="absolute top-1/4 left-1/3 w-64 h-64 rounded-full bg-[#c9a84c]/10 blur-3xl" style={{ animation: 'glowPulse 4s ease-in-out infinite' }} />
-          <div className="absolute bottom-1/4 right-1/3 w-56 h-56 rounded-full bg-[#8b5cf6]/8 blur-3xl" style={{ animation: 'glowPulse 5s ease-in-out infinite 1.5s' }} />
-          {/* Floating emoji particles */}
-          {(['🎉','🌟','❤️','🥳','🎊','⭐','✨','💫'] as const).map((emoji, i) => (
-            <div key={i} style={{
-              position: 'absolute',
-              left: `${8 + i * 12}%`,
-              bottom: `${10 + (i % 3) * 15}%`,
-              fontSize: i % 2 === 0 ? '20px' : '16px',
-              animation: `floatEmoji ${3.5 + i * 0.6}s ease-in-out ${i * 0.8}s infinite`,
-              pointerEvents: 'none',
-              userSelect: 'none',
-            }}>
-              {emoji}
-            </div>
-          ))}
-        </div>
+      <SportsNightHighlight />
+      <MovieFanHighlight />
+      <VibeHallSpotlight />
 
-        <div className="max-w-7xl mx-auto px-4 md:px-6 relative">
-
-          {/* Header */}
-          <div ref={reviewsRevealRef} className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 32 }}
-              animate={reviewsInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <p className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.22em] mb-1.5">Real Stories</p>
-              <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-black text-[#2a0e4f] leading-tight">What Our Guests Lived</h2>
-              <motion.div
-                className="mt-2 h-[3px] rounded-full bg-gradient-to-r from-[#c9a84c] to-[#eed98a]"
-                initial={{ width: 0 }}
-                animate={reviewsInView ? { width: 40 } : {}}
-                transition={{ delay: 0.35, duration: 0.5 }}
-              />
-            </motion.div>
-            {/* Rating badge */}
-            <motion.div
-              className="flex items-center gap-3 bg-white border border-[#f0e6cc] rounded-2xl px-5 py-3 shadow-sm shrink-0"
-              initial={{ opacity: 0, scale: 0.75, x: 20 }}
-              animate={reviewsInView ? { opacity: 1, scale: 1, x: 0 } : {}}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 220, damping: 18 }}
-            >
-              <span className="font-display text-4xl font-black text-[#c9a84c] leading-none">4.9</span>
-              <div>
-                <div className="flex gap-0.5">
-                  {[1,2,3,4,5].map(s => (
-                    <svg key={s} width="14" height="14" viewBox="0 0 24 24" fill={s <= 4 ? '#c9a84c' : 'none'} stroke="#c9a84c" strokeWidth="1.5">
-                      <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-[11px] text-[#5b4578]/50 mt-0.5">847+ Google reviews</p>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Fan carousel */}
-          <div className="relative flex items-center">
-            <button onClick={prevStory}
-              className="relative z-20 shrink-0 w-10 h-10 rounded-full bg-white border border-[#f0e6cc] shadow-md hover:border-[#c9a84c] hover:text-[#c9a84c] text-[#5b4578]/50 flex items-center justify-center transition-all"
-              aria-label="Previous">
-              <ChevronLeft size={18} />
-            </button>
-
-            {/* Cards stage */}
-            <div className="relative flex-1 h-[320px] sm:h-[290px] md:h-[260px] overflow-hidden mx-1 sm:mx-2">
-              {GUEST_STORIES.map((story, i) => {
-                let pos = i - storyIndex
-                if (pos > GUEST_STORIES.length / 2) pos -= GUEST_STORIES.length
-                if (pos < -GUEST_STORIES.length / 2) pos += GUEST_STORIES.length
-                const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
-                if (Math.abs(pos) > (isMobile ? 1 : 2)) return null
-                const isCenter = pos === 0
-                const absPos = Math.abs(pos)
-                const scale = isCenter ? 1 : absPos === 1 ? 0.86 : 0.72
-                const opacity = isCenter ? 1 : absPos === 1 ? 0.78 : 0.45
-                const zIndex = isCenter ? 10 : absPos === 1 ? 6 : 3
-                const spread = isMobile ? 44 : 48
-                return (
-                  <motion.div
-                    key={story.id}
-                    animate={{
-                      x: `calc(-50% + ${pos * spread}%)`,
-                      scale,
-                      rotate: pos * -4,
-                      opacity,
-                      zIndex,
-                    }}
-                    transition={{ type: 'spring', stiffness: 240, damping: 28 }}
-                    style={{ position: 'absolute', left: '50%', top: 0, width: '100%', maxWidth: 440, cursor: !isCenter ? 'pointer' : 'default' }}
-                    onClick={() => { if (!isCenter) { pos < 0 ? prevStory() : nextStory() } }}
-                  >
-                    <div className={`bg-white rounded-3xl p-5 md:p-6 h-full transition-shadow duration-300 ${
-                      isCenter
-                        ? 'border-2 border-[#c9a84c]'
-                        : absPos === 1
-                        ? 'border border-[#f0e6cc] shadow-[0_4px_16px_rgba(0,0,0,0.06)]'
-                        : 'border border-[#f5efe3] shadow-sm'
-                    }`} style={isCenter ? { animation: 'glowRing 2.8s ease-in-out infinite' } : undefined}>
-                      {/* Top: avatar + name + stars */}
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className={`w-11 h-11 rounded-full shrink-0 flex items-center justify-center font-bold text-base border-2 ${isCenter ? 'bg-[#c9a84c] text-white border-[#c9a84c]' : 'bg-[#f9f4ec] text-[#c9a84c] border-[#f0e6cc]'}`}>
-                          {story.avatar}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-bold text-[#2a0e4f] text-sm truncate">{story.name}</p>
-                          <p className="text-xs text-[#5b4578]/50 truncate">{story.role}</p>
-                        </div>
-                        {isCenter && (
-                          <div className="flex gap-0.5 shrink-0">
-                            {Array.from({ length: 5 }).map((_, s) => (
-                              <motion.svg key={s} width="13" height="13" viewBox="0 0 24 24" fill="#c9a84c" stroke="none"
-                                initial={{ scale: 0 }} animate={{ scale: 1 }}
-                                transition={{ delay: s * 0.06, type: 'spring', stiffness: 320 }}>
-                                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
-                              </motion.svg>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      {/* Quote */}
-                      <div className="relative mb-3">
-                        <span className="text-[#c9a84c] font-display text-4xl leading-none absolute -top-1 -left-0.5 select-none opacity-55">"</span>
-                        <p className={`pl-5 leading-relaxed italic font-light line-clamp-3 ${isCenter ? 'text-[#2a0e4f] text-[15px]' : 'text-[#5b4578]/60 text-sm'}`}>
-                          {story.text}
-                        </p>
-                      </div>
-                      {/* Footer */}
-                      <div className="flex items-center justify-between pt-3 border-t border-[#f8f0e0]">
-                        <span className="text-[10px] text-[#5b4578]/40 font-medium">{story.date} · {story.theatre}</span>
-                        {isCenter && (
-                          <span className="text-[9px] font-black uppercase tracking-widest text-[#7a5500] border border-[#c9a84c]/40 bg-[#c9a84c]/10 rounded-full px-2.5 py-0.5">
-                            {story.occasion}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                )
-              })}
-            </div>
-
-            <button onClick={nextStory}
-              className="relative z-20 shrink-0 w-10 h-10 rounded-full bg-white border border-[#f0e6cc] shadow-md hover:border-[#c9a84c] hover:text-[#c9a84c] text-[#5b4578]/50 flex items-center justify-center transition-all"
-              aria-label="Next">
-              <ChevronRight size={18} />
-            </button>
-          </div>
-
-          {/* Dots + all reviews */}
-          <div className="flex items-center justify-center gap-4 mt-6">
-            <div className="flex gap-1.5">
-              {GUEST_STORIES.map((_, i) => (
-                <button key={i} onClick={() => { setStoryIndex(i); resetTimer() }}
-                  className={`rounded-full transition-all duration-300 ${i === storyIndex ? 'bg-[#c9a84c] w-5 h-1.5' : 'bg-[#c9a84c]/25 w-1.5 h-1.5 hover:bg-[#c9a84c]/50'}`}
-                  aria-label={`Story ${i + 1}`} />
-              ))}
-            </div>
-            <Link to="/reviews" className="text-xs font-bold text-[#c9a84c] hover:text-[#a07830] transition-colors flex items-center gap-1">
-              All Reviews <ChevronRight size={12} />
-            </Link>
-          </div>
-
-        </div>
-      </section>
+      <ReviewsSection />
+      <TheatreFinder />
+      <BobClub />
+      <BobPromise />
 
       {/* Location */}
       <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fdf5e8 0%, #fffaf4 55%, #fdf5e8 100%)' }}>
