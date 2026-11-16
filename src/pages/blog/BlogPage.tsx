@@ -1,8 +1,10 @@
+﻿import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { Seo } from '@/components/seo/Seo'
 import { PageShell, SectionHeader } from '@/components/layout/PageShell'
-import { Badge } from '@/components/ui/Badge'
-import { Calendar, Clock } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Calendar, Clock } from 'lucide-react'
+import { cn } from '@/lib/utils/cn'
 
 export interface BlogPost {
   slug: string
@@ -80,7 +82,14 @@ export const BLOG_POSTS: BlogPost[] = [
 
 const ALL_CATEGORIES = ['All', ...Array.from(new Set(BLOG_POSTS.map((p) => p.category)))]
 
+const EASE = [0.22, 1, 0.36, 1] as const
+const fmt = (d: string) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+
 export default function BlogPage() {
+  const [category, setCategory] = useState('All')
+  const featured = BLOG_POSTS[0]
+  const rest = BLOG_POSTS.slice(1).filter((p) => category === 'All' || p.category === category)
+
   return (
     <>
       <Seo
@@ -96,55 +105,93 @@ export default function BlogPage() {
           centered
         />
 
-        {/* Featured post */}
-        <Link to={`/blog/${BLOG_POSTS[0].slug}`} className="block mb-14 group">
-          <div className="relative rounded-card overflow-hidden h-72 md:h-96">
-            <img
-              src={BLOG_POSTS[0].coverImage}
-              alt={BLOG_POSTS[0].title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-6 md:p-8 max-w-2xl">
-              <Badge variant="gold" className="mb-3">{BLOG_POSTS[0].category}</Badge>
-              <h2 className="font-display text-2xl md:text-3xl text-text-primary mb-2 group-hover:text-gold-400 transition-colors">
-                {BLOG_POSTS[0].title}
-              </h2>
-              <p className="text-text-secondary text-sm line-clamp-2 hidden md:block">{BLOG_POSTS[0].excerpt}</p>
-              <div className="flex items-center gap-4 mt-3 text-xs text-text-muted">
-                <span className="flex items-center gap-1"><Calendar size={11} />{new Date(BLOG_POSTS[0].publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                <span className="flex items-center gap-1"><Clock size={11} />{BLOG_POSTS[0].readingTime} min read</span>
-              </div>
+        {/* Featured post: photo + plum panel */}
+        <motion.div initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE }}>
+          <Link
+            to={`/blog/${featured.slug}`}
+            className="group mb-12 grid overflow-hidden rounded-[2rem] bg-[#1b0b3a] shadow-[0_30px_70px_rgba(42,14,79,0.3)] ring-1 ring-white/10 lg:grid-cols-[1.15fr_1fr]"
+          >
+            <div className="relative h-64 overflow-hidden sm:h-80 lg:h-auto lg:min-h-[420px]">
+              <img src={featured.coverImage} alt={featured.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <span className="absolute inset-0 bg-gradient-to-t from-[#1b0b3a]/50 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-[#1b0b3a]/40" />
+              <span className="absolute left-5 top-5 rounded-full bg-[#f5d7a1] px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#4a2a00]">Featured</span>
             </div>
-          </div>
-        </Link>
+            <div className="relative flex flex-col justify-center p-7 text-white sm:p-10">
+              <span className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-[#d946ef]/25 blur-3xl" aria-hidden="true" />
+              <p className="relative text-[11px] font-bold uppercase tracking-[0.28em] text-[#f5d7a1]">{featured.category}</p>
+              <h2 className="relative mt-3 font-display text-2xl font-semibold leading-tight !text-white sm:text-3xl lg:text-4xl">{featured.title}</h2>
+              <p className="relative mt-4 line-clamp-3 text-sm leading-relaxed text-white/70 sm:text-base">{featured.excerpt}</p>
+              <div className="relative mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/60">
+                <span className="flex items-center gap-1.5"><Calendar size={13} />{fmt(featured.publishedAt)}</span>
+                <span className="flex items-center gap-1.5"><Clock size={13} />{featured.readingTime} min read</span>
+              </div>
+              <span className="relative mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-[linear-gradient(135deg,#6b2398,#d946ef)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_28px_rgba(217,70,239,0.35)] transition-transform group-hover:translate-x-1">
+                Read article <ArrowRight size={16} />
+              </span>
+            </div>
+          </Link>
+        </motion.div>
 
-        {/* Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
-          {BLOG_POSTS.slice(1).map((post) => (
-            <Link key={post.slug} to={`/blog/${post.slug}`} className="group flex flex-col bg-bg-surface border border-border-subtle rounded-card overflow-hidden hover:border-gold-500/40 transition-all">
-              <div className="h-48 overflow-hidden">
-                <img
-                  src={post.coverImage}
-                  alt={post.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
-              </div>
-              <div className="flex-1 flex flex-col p-5">
-                <Badge variant="muted" className="self-start mb-3">{post.category}</Badge>
-                <h3 className="font-display text-lg text-text-primary mb-2 group-hover:text-gold-400 transition-colors line-clamp-2 flex-1">
-                  {post.title}
-                </h3>
-                <p className="text-text-secondary text-sm line-clamp-2 mb-4">{post.excerpt}</p>
-                <div className="flex items-center gap-3 text-xs text-text-muted">
-                  <span className="flex items-center gap-1"><Calendar size={10} />{new Date(post.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                  <span className="flex items-center gap-1"><Clock size={10} />{post.readingTime} min</span>
-                </div>
-              </div>
-            </Link>
+        {/* Category filter */}
+        <div className="mb-8 flex flex-wrap items-center gap-2" role="tablist" aria-label="Filter articles by category">
+          {ALL_CATEGORIES.map((c) => (
+            <button
+              key={c}
+              type="button"
+              role="tab"
+              aria-selected={category === c}
+              onClick={() => setCategory(c)}
+              className={cn(
+                'rounded-full px-4 py-2 text-sm font-semibold transition-all',
+                category === c
+                  ? 'bg-[linear-gradient(135deg,#32105f,#6b2398)] text-white shadow-[0_8px_20px_rgba(50,16,95,0.3)]'
+                  : 'bg-white/70 text-[#5b4578] ring-1 ring-[#ecd9ec] hover:bg-white hover:text-[#32105f]',
+              )}
+            >
+              {c}
+            </button>
           ))}
         </div>
+
+        {/* Grid */}
+        {rest.length === 0 ? (
+          <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-12 text-center text-sm text-[#7d7094]">No more articles in this category yet.</p>
+        ) : (
+          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+            {rest.map((post, i) => (
+              <motion.div
+                key={post.slug}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '0px 0px -40px 0px' }}
+                transition={{ duration: 0.6, delay: (i % 3) * 0.08, ease: EASE }}
+              >
+                <Link
+                  to={`/blog/${post.slug}`}
+                  className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-[0_12px_34px_rgba(107,35,152,0.12)] ring-1 ring-[#ecd9ec] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_50px_rgba(107,35,152,0.2)]"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <img src={post.coverImage} alt={post.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold text-[#6b2398] backdrop-blur">{post.category}</span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="line-clamp-2 font-display text-lg font-semibold leading-snug text-[#2a0e4f]">{post.title}</h3>
+                    <p className="mt-2 line-clamp-2 flex-1 text-sm leading-relaxed text-[#5b4578]">{post.excerpt}</p>
+                    <div className="mt-5 flex items-center justify-between border-t border-[#f1e2f0] pt-4">
+                      <div className="flex items-center gap-3 text-xs text-[#7d7094]">
+                        <span className="flex items-center gap-1"><Calendar size={12} />{fmt(post.publishedAt)}</span>
+                        <span className="flex items-center gap-1"><Clock size={12} />{post.readingTime} min</span>
+                      </div>
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f6e6ef] text-[#6b2398] transition-colors group-hover:bg-[#6b2398] group-hover:text-white">
+                        <ArrowUpRight size={16} />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </PageShell>
     </>
   )
