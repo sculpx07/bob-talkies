@@ -368,6 +368,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* light — body bg shows */}
       <SectionReveal style="rise"><ExperienceCategories /></SectionReveal>
 
       <SectionReveal style="slide"><FeaturedTheatres /></SectionReveal>
@@ -646,17 +647,30 @@ export default function HomePage() {
           </div>
         </div>
 
-        <CelebrationGallery />
       </Section>
       </SectionReveal>
 
+      {/* dark — ExperienceHighlights owns its own dark bg */}
       <SectionReveal style="tilt"><ExperienceHighlights /></SectionReveal>
 
+      {/* Real Moments gallery — right after the experience section */}
+      <SectionReveal style="rise"><CelebrationGallery /></SectionReveal>
+
+      {/* light — body bg */}
       <SectionReveal style="curtain"><PersonaliseSurpriseSection /></SectionReveal>
 
-      <SectionReveal style="zoom"><ReviewsSection /></SectionReveal>
+      {/* warm blush tint */}
+      <div style={{ background: 'linear-gradient(160deg,#fdf0f8 0%,#fce8f4 50%,#fdf0f8 100%)' }}>
+        <SectionReveal style="zoom"><ReviewsSection /></SectionReveal>
+      </div>
+
+      {/* light — body bg */}
       <SectionReveal style="unfold"><TheatreFinder /></SectionReveal>
-      <SectionReveal style="rise"><BobPerks /></SectionReveal>
+
+      {/* warm gold tint — distinct from cream */}
+      <div style={{ background: 'linear-gradient(160deg,#fdf6e3 0%,#faefd4 50%,#fdf6e3 100%)' }}>
+        <SectionReveal style="rise"><BobPerks /></SectionReveal>
+      </div>
 
       {/* Location */}
       <SectionReveal style="tilt">

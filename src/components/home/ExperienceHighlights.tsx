@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ChevronDown, Sparkles } from 'lucide-react'
@@ -43,11 +43,38 @@ export function ExperienceHighlights() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
   const [active, setActive] = useState('sports')
+  const ulRef = useRef<HTMLUListElement>(null)
+  const liRefs = useRef<(HTMLLIElement | null)[]>([])
+  const [ballY, setBallY] = useState<number | null>(null)
+
+  // Calculate ball Y position relative to the ul whenever active changes
+  useEffect(() => {
+    const idx = HIGHLIGHTS.findIndex(h => h.id === active)
+    const li = liRefs.current[idx]
+    const ul = ulRef.current
+    if (!li || !ul) return
+    const liRect = li.getBoundingClientRect()
+    const ulRect = ul.getBoundingClientRect()
+    setBallY(liRect.top + liRect.height / 2 - ulRect.top)
+  }, [active])
+
+  // Auto-cycle: ball travels to next item every 3s
+  useEffect(() => {
+    if (!inView) return
+    const ids = HIGHLIGHTS.map(h => h.id)
+    let idx = 0
+    const timer = setInterval(() => {
+      idx = (idx + 1) % ids.length
+      setActive(ids[idx])
+    }, 3000)
+    return () => clearInterval(timer)
+  }, [inView])
 
   return (
     <section
       ref={ref}
       className="pb-16 pt-6 md:pb-24 md:pt-10"
+      style={{ background: 'linear-gradient(135deg,#1a0840 0%,#2a0e4f 60%,#1e0a3c 100%)' }}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6">
 
@@ -72,7 +99,7 @@ export function ExperienceHighlights() {
               initial={{ opacity: 0, y: 16 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.09, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-              className="text-2xl md:text-3xl font-black text-[#2a0e4f]"
+              className="text-2xl md:text-3xl font-black text-white"
             >Every Experience. One Venue.</motion.h2>
           </div>
         </motion.div>
@@ -80,7 +107,7 @@ export function ExperienceHighlights() {
         {/* ── Desktop: editorial list + photo with an overlapping text card ── */}
         <div className="hidden md:grid md:h-[480px] md:grid-cols-[300px_1fr] gap-10">
           {/* list: huge outlined numbers, stagger in one by one */}
-          <ul className="relative flex h-full flex-col justify-between" role="tablist" aria-label="Experiences">
+          <ul ref={ulRef} className="relative flex h-full flex-col justify-between" role="tablist" aria-label="Experiences">
             <motion.span
               className="pointer-events-none absolute bottom-3 left-[7px] top-3 w-px bg-[#e3d3ee]"
               initial={{ scaleY: 0, originY: 0 }}
@@ -88,11 +115,24 @@ export function ExperienceHighlights() {
               transition={{ delay: 0.18, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               aria-hidden="true"
             />
+
+            {/* Traveling ball */}
+            {ballY !== null && (
+              <motion.span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 z-10 h-[15px] w-[15px] -translate-x-0 -translate-y-1/2 rounded-full"
+                style={{ boxShadow: '0 0 10px 3px rgba(201,168,76,0.7)', background: '#c9a84c' }}
+                animate={{ top: ballY }}
+                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              />
+            )}
+
             {HIGHLIGHTS.map((h, i) => {
               const isActive = active === h.id
               return (
                 <motion.li
                   key={h.id}
+                  ref={el => { liRefs.current[i] = el }}
                   className="relative"
                   initial={{ opacity: 0, x: -36 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -104,9 +144,9 @@ export function ExperienceHighlights() {
                     onClick={() => setActive(h.id)}
                     className="group flex w-full items-center gap-6 pl-6 text-left"
                   >
+                    {/* static dot hidden when ball is traveling to this item */}
                     <span
-                      className={`absolute left-0 top-1/2 h-[15px] w-[15px] -translate-y-1/2 rounded-full border-2 bg-[#fffaf4] transition-all duration-300 ${isActive ? 'scale-125' : 'border-[#d9c9e6]'}`}
-                      style={isActive ? { borderColor: h.accent, background: h.accent } : undefined}
+                      className={`absolute left-0 top-1/2 h-[15px] w-[15px] -translate-y-1/2 rounded-full border-2 transition-all duration-300 ${isActive ? 'opacity-0' : 'bg-[#fffaf4] border-[#d9c9e6]'}`}
                       aria-hidden="true"
                     />
                     <span
@@ -116,8 +156,8 @@ export function ExperienceHighlights() {
                       {i + 1}
                     </span>
                     <span className="min-w-0">
-                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? 'text-[#2a0e4f]' : 'text-[#9a8cae] group-hover:text-[#5b4578]'}`}>{h.eyebrow}</span>
-                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-[#7d7094]' : 'text-transparent'}`}>{h.tagline}</span>
+                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? 'text-white' : 'text-white/40 group-hover:text-white/70'}`}>{h.eyebrow}</span>
+                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-white/60' : 'text-transparent'}`}>{h.tagline}</span>
                     </span>
                   </button>
                 </motion.li>
