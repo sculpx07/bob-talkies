@@ -1,7 +1,7 @@
 import { OCCASIONS } from '@/content/occasions'
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Phone, ChevronDown, ArrowRight } from 'lucide-react'
+import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils/cn'
 import { config } from '@/lib/config'
@@ -14,8 +14,8 @@ const NAV_LINKS = [
   { label: 'Celebrations', to: '/celebrations', hasMega: true },
   { label: 'Personalise', to: '/personalise' },
   { label: 'Gallery', to: '/gallery' },
-  { label: 'Reviews', to: '/reviews' },
-  { label: 'Locations', to: '/locations' },
+  { label: 'Blog', to: '/blog' },
+  { label: 'Refund Policy', to: '/refund-policy' },
 ]
 
 const OCCASION_LINKS = OCCASIONS.map((o) => ({ label: o.label, to: `/celebrations/${o.slug}`, emoji: o.emoji }))
@@ -107,14 +107,6 @@ export function Header() {
 
           {/* CTA + Mobile toggle */}
           <div className="flex items-center gap-2 md:gap-3 justify-self-end">
-            <a
-              href={`tel:+${config.whatsappNumber}`}
-              className="hidden md:flex items-center gap-1.5 px-3 py-2 leading-6 text-[#32105f] text-base font-medium"
-              aria-label="Call us"
-            >
-              <Phone size={15} />
-              <span>Call</span>
-            </a>
             {savedPlan && (
               <button
                 type="button"
@@ -126,13 +118,25 @@ export function Header() {
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#6b2398] text-[11px] font-bold text-white">1</span>
               </button>
             )}
-            <Button
-              asChild
-              size="md"
-              className="hidden sm:inline-flex whitespace-nowrap !px-6 !bg-none !bg-[#32105f] !text-white hover:!bg-[#32105f] !rounded-full !shadow-none"
+            {/* Animated Book Now CTA */}
+            <Link
+              to="/"
+              state={{ highlightPlan: true }}
+              className="group relative hidden sm:inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-2.5 text-sm font-black text-white whitespace-nowrap transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg,#32105f 0%,#5b1fa3 100%)',
+                boxShadow: '0 0 0 0 rgba(91,31,163,0.5)',
+                animation: 'bob-btn-pulse 2.4s ease-in-out infinite',
+              }}
             >
-              <Link to="/" state={{ highlightPlan: true }}>Book Now <ArrowRight size={14} /></Link>
-            </Button>
+              {/* shimmer sweep on hover */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-white/20 transition-all duration-700 group-hover:left-[130%]"
+              />
+              <span className="relative">Book Now</span>
+              <ArrowRight size={14} className="relative transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
             <button
               className="lg:hidden p-2 text-[#32105f] hover:text-[#6b2398] transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
