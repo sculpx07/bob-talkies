@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Users, Monitor, Volume2, Sofa, ChevronLeft, ChevronRight, Check, MapPin, Calendar, Clock, ArrowRight } from 'lucide-react'
+import { Users, Monitor, Volume2, Sofa, ChevronLeft, ChevronRight, Check, MapPin, Calendar, Clock, ArrowRight, Star, Play } from 'lucide-react'
 import { format, addMonths, parseISO, getDay } from 'date-fns'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Seo } from '@/components/seo/Seo'
@@ -10,11 +10,10 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui/EmptyState'
 import { PageShell } from '@/components/layout/PageShell'
 import { api } from '@/lib/api/client'
-import { theatreKeys, packageKeys, availabilityKeys } from '@/lib/api/queryKeys'
+import { theatreKeys, availabilityKeys } from '@/lib/api/queryKeys'
 import { formatINR } from '@/lib/utils/currency'
 import { formatTime } from '@/lib/utils/date'
 import type { Theatre } from '@/schemas/theatre'
-import type { Package } from '@/schemas/package'
 
 const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }
 const stagger = { show: { transition: { staggerChildren: 0.07 } } }
@@ -62,9 +61,48 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   )
 }
 
+// ─── Per-theatre reviews data ────────────────────────────────────────────────
+
+const DETAIL_REVIEWS: Record<string, {
+  name: string; occasion: string; stars: number; text: string;
+  avatar: string; thumb: string; hasVideo: boolean;
+}[]> = {
+  delight: [
+    { name: 'Priya & Arjun', occasion: 'Surprise Proposal 💍', stars: 5, text: 'Absolutely magical! The intimate setting made every moment feel so personal. The decor was breathtaking.', avatar: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=480&q=80', hasVideo: true },
+    { name: 'Sneha R.', occasion: 'Anniversary 🌹', stars: 5, text: 'Perfect cosy theatre for two. The rose petals, the LED board with our names — it was everything I dreamed of.', avatar: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=480&q=80', hasVideo: false },
+    { name: 'Rahul M.', occasion: 'Birthday Surprise 🎂', stars: 5, text: 'My girlfriend had no idea. She walked in to her favourite song on the big screen. She cried happy tears!', avatar: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=480&q=80', hasVideo: true },
+    { name: 'Kavitha S.', occasion: 'Friendship Day 🎊', stars: 5, text: 'Booked Delight for a surprise for my best friend. The staff helped set everything up perfectly. 10/10!', avatar: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=480&q=80', hasVideo: false },
+  ],
+  heavens: [
+    { name: 'Divya & Group', occasion: 'Bachelorette 🥂', stars: 5, text: 'We were 6 girls and Heavens was perfect. Great vibes, the screen is huge and staff handled everything so smoothly.', avatar: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=480&q=80', hasVideo: false },
+    { name: 'Kartik & Friends', occasion: 'Reunion Night 🎉', stars: 5, text: 'Old college gang back together after 5 years. We screened our trip photos and it was so emotional.', avatar: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=480&q=80', hasVideo: true },
+    { name: 'Meena Family', occasion: 'Family Movie Night 🍿', stars: 5, text: 'Everyone from grandparents to kids had a blast. Clean, comfortable and the sound was amazing.', avatar: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=480&q=80', hasVideo: false },
+    { name: 'Rohit & Swathi', occasion: 'Date Night 💕', stars: 5, text: 'Surprise date for my wife at Heavens. She loved the whole setup. Already planning a second visit!', avatar: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=480&q=80', hasVideo: true },
+  ],
+  filmdom: [
+    { name: 'Suresh & 10 Friends', occasion: 'Birthday Bash 🎊', stars: 5, text: 'Big group, big screen, big fun! Filmdom lived up to its cinematic name. Stunning picture quality.', avatar: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=480&q=80', hasVideo: true },
+    { name: 'Ananya K.', occasion: 'Farewell Party 🌟', stars: 5, text: 'The personal video reel on that giant screen had the whole room in tears. Unforgettable evening.', avatar: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=480&q=80', hasVideo: false },
+    { name: 'Vignesh B.', occasion: 'Team Outing 🎬', stars: 5, text: 'Used Filmdom for a team outing. Much better than a multiplex — private, premium and everyone gets the best seat.', avatar: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=480&q=80', hasVideo: true },
+    { name: 'Nisha & Crew', occasion: 'Girls Trip 🛫', stars: 5, text: 'Started the trip with a movie at Filmdom. What a way to kick off the vacation! Absolutely stunning setup.', avatar: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=480&q=80', hasVideo: false },
+  ],
+  cosmos: [
+    { name: 'Harsha Family', occasion: 'Grand Anniversary 👑', stars: 5, text: 'Parents\' 25th anniversary in Cosmos was unforgettable. The sheer grandeur made them feel like royalty.', avatar: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=480&q=80', hasVideo: true },
+    { name: 'Reena & 15 Guests', occasion: 'Baby Shower 🌸', stars: 5, text: 'Cosmos is so spacious and elegant. We had 15 guests and it still felt luxurious. Screen quality blew everyone away.', avatar: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=480&q=80', hasVideo: false },
+    { name: 'Nikhil S.', occasion: 'Proposal 💍', stars: 5, text: 'Cosmos was the most dramatic and beautiful setting. She said yes immediately when she saw the screen message!', avatar: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=480&q=80', hasVideo: true },
+    { name: 'Preethi M.', occasion: 'Mom\'s Birthday 🎂', stars: 5, text: 'Booked Cosmos to celebrate my mom\'s 60th. She felt like a celebrity! The staff made it extra special.', avatar: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=480&q=80', hasVideo: false },
+  ],
+  'vibe-hall': [
+    { name: 'Rohit & 30 Friends', occasion: 'IPL Watch Party 🏏', stars: 5, text: 'Rented Vibe Hall for the IPL final. 30 of us watching on that massive screen — better than the stadium!', avatar: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=480&q=80', hasVideo: true },
+    { name: 'TechCorp HR Team', occasion: 'Team Outing 💼', stars: 5, text: 'Used it for a team-building session and movie. Great sound, comfortable seating — everyone loved it.', avatar: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=480&q=80', hasVideo: false },
+    { name: 'Swathi\'s Birthday Crew', occasion: 'Big Birthday Party 🎈', stars: 5, text: '40 people, one epic party. Vibe Hall delivered on every front. Everyone kept asking where we booked!', avatar: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=480&q=80', hasVideo: true },
+    { name: 'Arun & Squad', occasion: 'New Year Bash 🎆', stars: 5, text: 'New Year party at Vibe Hall was a dream. The screen, the sound, the whole vibe — absolutely electric!', avatar: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=100&q=70', thumb: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=480&q=80', hasVideo: false },
+  ],
+}
+
 export default function TheatreDetailPage() {
   const { slug } = useParams<{ slug: string }>()
   const [activeImg, setActiveImg] = useState(0)
+  const [videoReview, setVideoReview] = useState<{ name: string; occasion: string; thumb: string } | null>(null)
   const [selectedDate, setSelectedDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'))
   const [currentMonth, setCurrentMonth] = useState(format(new Date(), 'yyyy-MM'))
 
@@ -74,13 +112,7 @@ export default function TheatreDetailPage() {
     enabled: !!slug,
   })
 
-  const { data: packages } = useQuery({
-    queryKey: packageKeys.list(theatre?.id),
-    queryFn: () => api.get<Package[]>(`/packages?theatreId=${theatre?.id}`),
-    enabled: !!theatre?.id,
-  })
-
-  const { data: slots, isLoading: slotsLoading } = useQuery({
+const { data: slots, isLoading: slotsLoading } = useQuery({
     queryKey: availabilityKeys.slots(theatre?.id ?? '', selectedDate),
     queryFn: () => api.get<Slot[]>(`/availability?theatre=${theatre?.id}&date=${selectedDate}`),
     enabled: !!theatre?.id && !!selectedDate,
@@ -288,45 +320,111 @@ export default function TheatreDetailPage() {
                 </StaggerGrid>
               </RevealSection>
 
-              {/* Packages */}
-              {packages && packages.length > 0 && (
-                <RevealSection>
-                  <SectionTitle>Available Packages</SectionTitle>
-                  <StaggerGrid className="grid sm:grid-cols-2 gap-5">
-                    {packages.map((pkg) => (
-                      <motion.div key={pkg.id} variants={fadeUp} transition={{ duration: 0.4 }}
-                        whileHover={{ y: -4, boxShadow: '0 12px 36px rgba(201,168,76,0.18)' }}
-                        className="bg-white rounded-2xl border border-[#f0e6cc] hover:border-[#c9a84c] transition-all group overflow-hidden">
-                        {/* Top accent strip */}
-                        <div className="h-1 bg-gradient-to-r from-[#c9a84c] to-[#eed98a]" />
-                        <div className="p-5">
-                          <div className="flex items-start justify-between mb-2">
-                            <h3 className="font-display text-lg font-bold text-[#2a0e4f]">{pkg.name}</h3>
-                            {pkg.badge && (
-                              <span className="text-[9px] font-black uppercase tracking-widest text-[#7a5500] border border-[#c9a84c]/40 bg-[#c9a84c]/10 rounded-full px-2.5 py-0.5 ml-2 shrink-0">{pkg.badge}</span>
+              {/* Reviews */}
+              {(() => {
+                const reviews = DETAIL_REVIEWS[slug ?? ''] ?? []
+                if (!reviews.length) return null
+                return (
+                  <RevealSection>
+                    <div className="flex items-center gap-3 mb-2">
+                      <h2 className="font-display text-xl font-bold text-[#2a0e4f] whitespace-nowrap">Guest Reviews</h2>
+                      <div className="flex-1 h-px bg-gradient-to-r from-[#c9a84c]/40 to-transparent" />
+                    </div>
+                    <div className="flex items-center gap-2 mb-6">
+                      {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="#c9a84c" stroke="none" />)}
+                      <span className="text-sm font-black text-[#2a0e4f]">5.0</span>
+                      <span className="text-xs text-[#5b4578]/50 ml-1">· Verified guests</span>
+                    </div>
+                    <StaggerGrid className="grid sm:grid-cols-2 gap-5">
+                      {reviews.map((r, i) => (
+                        <motion.div key={i} variants={fadeUp} transition={{ duration: 0.4 }}
+                          whileHover={{ y: -4, boxShadow: '0 12px 36px rgba(201,168,76,0.14)' }}
+                          className="group bg-white rounded-2xl border border-[#f0e6cc] hover:border-[#c9a84c] transition-all overflow-hidden">
+                          {/* Thumb */}
+                          <div
+                            className="relative h-36 overflow-hidden cursor-pointer"
+                            onClick={() => r.hasVideo && setVideoReview(r)}
+                          >
+                            <img src={r.thumb} alt={r.occasion} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                            <span className="absolute top-3 left-3 text-[9px] font-black uppercase tracking-wider rounded-full px-2.5 py-1 text-white bg-[#c9a84c]">{r.occasion}</span>
+                            {r.hasVideo && (
+                              <>
+                                <div className="absolute bottom-3 right-3 flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1">
+                                  <Play size={9} className="text-white" fill="white" />
+                                  <span className="text-[9px] font-bold text-white">Watch Reel</span>
+                                </div>
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                  <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/80 bg-white/20 backdrop-blur-sm">
+                                    <Play size={13} className="text-white ml-0.5" fill="white" />
+                                  </div>
+                                </div>
+                              </>
                             )}
                           </div>
-                          <PriceTag paise={pkg.pricePaise} className="mb-2" />
-                          <p className="text-xs text-[#5b4578]/50 mb-4">Includes {pkg.includedGuests} guests · Extra: {formatINR(theatre.extraGuestPricePaise)}/person</p>
-                          <ul className="space-y-1.5 mb-5">
-                            {pkg.inclusions.slice(0, 4).map((inc, i) => (
-                              <li key={i} className="flex items-start gap-2 text-xs text-[#5b4578]/70">
-                                <Check size={11} className="text-[#c9a84c] mt-0.5 shrink-0" />{inc}
-                              </li>
-                            ))}
-                          </ul>
-                          <Link
-                            to={`/book?theatre=${theatre.id}&package=${pkg.id}`}
-                            className="flex items-center justify-center gap-2 w-full rounded-xl bg-[#32105f] text-white text-sm font-bold py-2.5 hover:bg-[#4a1a8a] transition-colors"
+                          {/* Body */}
+                          <div className="p-4">
+                            <div className="flex items-center gap-3 mb-3">
+                              <img src={r.avatar} alt={r.name} className="h-9 w-9 rounded-full object-cover ring-2 ring-[#c9a84c]/30" />
+                              <div>
+                                <p className="font-black text-[#1a0840] text-sm">{r.name}</p>
+                                <div className="flex gap-0.5 mt-0.5">{[1,2,3,4,5].map(s => <Star key={s} size={9} fill="#f59e0b" stroke="none" />)}</div>
+                              </div>
+                            </div>
+                            <p className="text-[#4a2d6e] text-sm leading-relaxed">
+                              <span className="text-lg font-serif leading-none mr-0.5 text-[#c9a84c]">"</span>
+                              {r.text}
+                              <span className="text-lg font-serif leading-none ml-0.5 text-[#c9a84c]">"</span>
+                            </p>
+                          </div>
+                          <div className="h-[3px] bg-gradient-to-r from-[#c9a84c] to-[#c9a84c]/30" />
+                        </motion.div>
+                      ))}
+                    </StaggerGrid>
+                  </RevealSection>
+                )
+              })()}
+
+              {/* Video overlay */}
+              <AnimatePresence>
+                {videoReview && (
+                  <motion.div
+                    className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    onClick={() => setVideoReview(null)}
+                  >
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+                    <motion.div
+                      className="relative z-10 w-full max-w-2xl rounded-3xl overflow-hidden"
+                      initial={{ scale: 0.88, y: 40 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.88, y: 40 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                      onClick={e => e.stopPropagation()}
+                      style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.5), 0 0 0 2px #c9a84c' }}
+                    >
+                      <div className="relative bg-[#0d0618]" style={{ aspectRatio: '16/9' }}>
+                        <img src={videoReview.thumb} alt="" className="w-full h-full object-cover opacity-70" />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                          <motion.div
+                            className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-white/20 backdrop-blur-md"
+                            animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 1.8, repeat: Infinity }}
                           >
-                            Choose Package <ArrowRight size={14} />
-                          </Link>
+                            <Play size={24} className="text-white ml-1" fill="white" />
+                          </motion.div>
+                          <div className="rounded-full bg-black/50 backdrop-blur-sm px-5 py-2 text-center">
+                            <p className="text-white/60 text-xs uppercase tracking-widest mb-0.5">Guest Reel · Coming Soon</p>
+                            <p className="text-white font-black text-sm">{videoReview.name} · {videoReview.occasion}</p>
+                          </div>
                         </div>
-                      </motion.div>
-                    ))}
-                  </StaggerGrid>
-                </RevealSection>
-              )}
+                        <div className="absolute top-0 inset-x-0 h-1 bg-[#c9a84c]" />
+                      </div>
+                    </motion.div>
+                    <button
+                      className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm text-white hover:bg-white/30 transition-colors"
+                      onClick={() => setVideoReview(null)}
+                    >✕</button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* ── Sidebar ── */}

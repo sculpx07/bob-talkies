@@ -41,7 +41,7 @@ const HIGHLIGHTS = [
 
 export function ExperienceHighlights() {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const inView = useInView(ref, { once: true, margin: '-100px' })
   const [active, setActive] = useState('sports')
 
   return (
@@ -55,32 +55,49 @@ export function ExperienceHighlights() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7"
         >
           <div>
-            <div className="flex items-center gap-2 mb-0.5">
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              animate={inView ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: 0.05, duration: 0.28 }}
+              className="flex items-center gap-2 mb-0.5"
+            >
               <Sparkles size={15} className="text-[#d4a94a]" />
               <p className="font-cursive text-xl text-[#c9933a]">Experiences at BOB</p>
-            </div>
-            <h2 className="text-2xl md:text-3xl font-black text-[#2a0e4f]">Every Experience. One Venue.</h2>
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.09, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+              className="text-2xl md:text-3xl font-black text-[#2a0e4f]"
+            >Every Experience. One Venue.</motion.h2>
           </div>
         </motion.div>
 
         {/* ── Desktop: editorial list + photo with an overlapping text card ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.1, duration: 0.5 }}
-          className="hidden md:grid md:h-[480px] md:grid-cols-[300px_1fr] gap-10"
-        >
-          {/* list: huge outlined numbers, no boxes */}
+        <div className="hidden md:grid md:h-[480px] md:grid-cols-[300px_1fr] gap-10">
+          {/* list: huge outlined numbers, stagger in one by one */}
           <ul className="relative flex h-full flex-col justify-between" role="tablist" aria-label="Experiences">
-            <span className="pointer-events-none absolute bottom-3 left-[7px] top-3 w-px bg-[#e3d3ee]" aria-hidden="true" />
+            <motion.span
+              className="pointer-events-none absolute bottom-3 left-[7px] top-3 w-px bg-[#e3d3ee]"
+              initial={{ scaleY: 0, originY: 0 }}
+              animate={inView ? { scaleY: 1 } : {}}
+              transition={{ delay: 0.18, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              aria-hidden="true"
+            />
             {HIGHLIGHTS.map((h, i) => {
               const isActive = active === h.id
               return (
-                <li key={h.id} className="relative">
+                <motion.li
+                  key={h.id}
+                  className="relative"
+                  initial={{ opacity: 0, x: -36 }}
+                  animate={inView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ delay: 0.12 + i * 0.09, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                >
                   <button
                     role="tab"
                     aria-selected={isActive}
@@ -103,13 +120,18 @@ export function ExperienceHighlights() {
                       <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-[#7d7094]' : 'text-transparent'}`}>{h.tagline}</span>
                     </span>
                   </button>
-                </li>
+                </motion.li>
               )
             })}
           </ul>
 
-          {/* photo with an overlapping white card */}
-          <div className="relative h-full">
+          {/* photo with an overlapping white card — spring in from right */}
+          <motion.div
+            className="relative h-full"
+            initial={{ opacity: 0, x: 40 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.15, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+          >
             <AnimatePresence mode="wait">
               {HIGHLIGHTS.filter(h => h.id === active).map(h => (
                 <motion.div
@@ -120,18 +142,34 @@ export function ExperienceHighlights() {
                   transition={{ duration: 0.45 }}
                   className="absolute inset-0"
                 >
-                  <div className="absolute inset-y-0 left-0 w-[72%] overflow-hidden rounded-[2rem] shadow-[0_24px_60px_rgba(42,14,79,0.28)]">
+                  <motion.div
+                    className="absolute inset-y-0 left-0 w-[72%] overflow-hidden rounded-[2rem] shadow-[0_24px_60px_rgba(42,14,79,0.28)]"
+                    initial={{ scale: 0.94, opacity: 0 }}
+                    animate={inView ? { scale: 1, opacity: 1 } : {}}
+                    transition={{ delay: 0.2, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+                  >
                     <img src={h.img} alt={h.eyebrow} className="h-full w-full object-cover" loading="lazy" />
                     <span className="absolute inset-0 bg-gradient-to-t from-[#140930]/40 to-transparent" />
                     <span className="absolute left-5 top-5 rounded-full px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#2a0e4f]" style={{ background: h.accent }}>{h.eyebrow}</span>
-                  </div>
+                  </motion.div>
 
-                  <div className="absolute bottom-8 right-0 w-[48%] rounded-[1.75rem] bg-white p-7 shadow-[0_26px_60px_rgba(107,35,152,0.25)] ring-1 ring-[#f0e1f3]">
+                  <motion.div
+                    className="absolute bottom-8 right-0 w-[48%] rounded-[1.75rem] bg-white p-7 shadow-[0_26px_60px_rgba(107,35,152,0.25)] ring-1 ring-[#f0e1f3]"
+                    initial={{ opacity: 0, y: 32 }}
+                    animate={inView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ delay: 0.28, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+                  >
                     <h3 className="font-display text-2xl font-bold leading-snug text-[#2a0e4f]">{h.tagline}</h3>
                     <p className="mt-3 text-sm leading-relaxed text-[#7d7094]">{h.desc}</p>
                     <div className="mt-4 flex flex-wrap gap-1.5">
-                      {h.items.map(item => (
-                        <span key={item} className="rounded-full bg-[#f6eefb] px-2.5 py-1 text-[11px] font-medium text-[#5b4578]">{item}</span>
+                      {h.items.map((item, idx) => (
+                        <motion.span
+                          key={item}
+                          className="rounded-full bg-[#f6eefb] px-2.5 py-1 text-[11px] font-medium text-[#5b4578]"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={inView ? { opacity: 1, scale: 1 } : {}}
+                          transition={{ delay: 0.32 + idx * 0.04, duration: 0.22 }}
+                        >{item}</motion.span>
                       ))}
                     </div>
                     <Link
@@ -140,12 +178,12 @@ export function ExperienceHighlights() {
                     >
                       {h.cta} <ArrowRight size={15} />
                     </Link>
-                  </div>
+                  </motion.div>
                 </motion.div>
               ))}
             </AnimatePresence>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         {/* ── Mobile: vertical accordion ── */}
         <div className="md:hidden space-y-2">
@@ -154,9 +192,9 @@ export function ExperienceHighlights() {
             return (
               <motion.div
                 key={h.id}
-                initial={{ opacity: 0, y: 16 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.07 * i, duration: 0.4 }}
+                initial={{ opacity: 0, y: 24, scale: 0.97 }}
+                animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                transition={{ delay: 0.08 + i * 0.08, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
                 className="overflow-hidden rounded-2xl"
               >
                 {/* Header button */}
