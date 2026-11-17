@@ -142,12 +142,8 @@ function TheatreListingCard({
 
         <div className="mt-2.5">
           <p className="text-base text-[#2a0e4f]">
-            <strong>{formatINR(theatre.weekendPricePaise)} for {info?.includedGuests ?? '—'} people</strong> <span className="text-sm text-[#7d7094]">(including taxes)</span>
-            {isWeekend && <span className="ml-2 rounded-full bg-[#e7f7ee] px-2 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide text-emerald-700">Your date</span>}
-          </p>
-          <p className="mt-1 text-sm text-[#5b4578]">
-            Weekday Offer: <s className="font-semibold opacity-60">{formatINR(theatre.weekendPricePaise)}</s> <strong className="text-base text-[#c2255c]">{formatINR(theatre.weekdayPricePaise)}</strong>
-            {!isWeekend && <span className="ml-2 rounded-full bg-[#e7f7ee] px-2 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide text-emerald-700">Your date</span>}
+            <strong>{formatINR(price)} for {info?.includedGuests ?? '—'} people</strong> <span className="text-sm text-[#7d7094]">(including taxes)</span>
+            <span className="ml-2 rounded-full bg-[#e7f7ee] px-2 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide text-emerald-700">Your date</span>
           </p>
         </div>
 
@@ -189,6 +185,16 @@ function TheatreListingCard({
                     )}
                   >
                     {formatTime(slot.start)} -<br />{formatTime(slot.end)}
+                    <span className="mt-0.5 block text-[9px] font-bold leading-tight">
+                      {!isWeekend && !booked && (
+                        <s className={cn('mr-0.5 opacity-50', active ? 'text-white' : 'text-[#9a8cae]')}>
+                          {formatINR(theatre.weekendPricePaise)}
+                        </s>
+                      )}
+                      <span className={cn(active ? 'text-white/90' : booked ? 'text-[#b9aac9]' : !isWeekend ? 'text-[#c2255c]' : 'text-[#9a8cae]')}>
+                        {formatINR(price)}
+                      </span>
+                    </span>
                     {hot && !active && !booked && <Zap size={10} className="absolute -right-1 -top-1 rounded-full bg-white text-[#c2255c]" />}
                   </button>
                 )
