@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { label: 'Celebrations', to: '/celebrations', hasMega: true },
   { label: 'Personalise', to: '/personalise' },
   { label: 'Rewards', to: '/rewards' },
+  { label: 'Gallery', to: '/gallery' },
 ]
 
 const OCCASION_LINKS = OCCASIONS.map((o) => ({ label: o.label, to: `/celebrations/${o.slug}`, emoji: o.emoji }))
@@ -101,8 +102,8 @@ export function Header() {
                 <div key={link.label} ref={megaRef} className="relative">
                   <button
                     className={cn(
-                      'flex items-center gap-1 px-3 py-2 text-base font-medium leading-6', navText,
-                      'relative after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[2px] after:rounded-full', navLine, 'after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
+                      'flex items-center gap-1 px-2.5 py-2 text-sm font-medium leading-6', navText,
+                      'relative after:absolute after:left-2.5 after:right-2.5 after:bottom-0 after:h-[2px] after:rounded-full', navLine, 'after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
                     )}
                     onClick={() => setMegaOpen(!megaOpen)}
                     aria-expanded={megaOpen}
@@ -132,8 +133,8 @@ export function Header() {
                   to={link.to}
                   className={({ isActive }) =>
                     cn(
-                      'px-3 py-2 text-base font-medium leading-6', navText,
-                      'relative after:absolute after:left-3 after:right-3 after:bottom-0 after:h-[2px] after:rounded-full', navLine, 'after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
+                      'px-2.5 py-2 text-sm font-medium leading-6', navText,
+                      'relative after:absolute after:left-2.5 after:right-2.5 after:bottom-0 after:h-[2px] after:rounded-full', navLine, 'after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
                       isActive && 'after:scale-x-100 after:origin-left',
                     )
                   }
@@ -165,7 +166,7 @@ export function Header() {
             {/* My Bookings direct link */}
             <MyBookingsLink navText={navText} heroDark={heroDark} />
 
-            {/* Saved plan quick-open */}
+            {/* Saved plan quick-open — last */}
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event(OPEN_SAVED_EVENT))}
