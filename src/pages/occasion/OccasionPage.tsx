@@ -9,10 +9,9 @@ import { Accordion } from '@/components/ui/Accordion'
 import { TheatreCardSkeleton } from '@/components/ui/Skeleton'
 import { formatINR } from '@/lib/utils/currency'
 import { api } from '@/lib/api/client'
-import { theatreKeys, packageKeys } from '@/lib/api/queryKeys'
+import { theatreKeys } from '@/lib/api/queryKeys'
 import { OCCASIONS, getOccasionBySlug } from '@/content/occasions'
 import type { Theatre } from '@/schemas/theatre'
-import type { Package } from '@/schemas/package'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const VIEW = { once: true, margin: '0px 0px -80px 0px' }
@@ -43,12 +42,7 @@ export default function OccasionPage() {
     queryFn: () => api.get<Theatre[]>('/theatres'),
   })
 
-  const { data: packages, isLoading: packagesLoading } = useQuery({
-    queryKey: packageKeys.list(),
-    queryFn: () => api.get<Package[]>('/packages'),
-  })
-
-  const heroRef = useRef<HTMLElement>(null)
+const heroRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
   const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '25%'])
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '-30%'])
@@ -220,49 +214,6 @@ export default function OccasionPage() {
                         </div>
                       </div>
                     </Link>
-                  </motion.div>
-                ))}
-          </div>
-        </section>
-
-        {/* Packages */}
-        <section className="mx-auto mt-20 max-w-6xl px-4 md:mt-28 md:px-6">
-          <div className="mb-8 text-center">
-            <motion.p initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={VIEW} transition={{ duration: 0.7, ease: EASE }} className="font-cursive text-2xl text-[#6b2398] md:text-3xl">Packages</motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }} whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }} viewport={VIEW} transition={{ duration: 0.8, ease: EASE }} className="font-display text-3xl font-semibold text-[#2a0e4f] md:text-5xl">Choose Your Package</motion.h2>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {packagesLoading
-              ? Array.from({ length: 4 }, (_, i) => <div key={i} className="skeleton h-64 rounded-3xl" />)
-              : packages?.slice(0, 4).map((pkg, i) => (
-                  <motion.div
-                    key={pkg.id}
-                    initial={{ opacity: 0, y: 60, scale: 0.94 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={VIEW}
-                    transition={{ duration: 0.8, delay: i * 0.1, ease: EASE }}
-                    whileHover={{ y: -6 }}
-                    className="flex flex-col overflow-hidden rounded-3xl bg-white/90 shadow-[0_12px_32px_rgba(107,35,152,0.14)] ring-1 ring-[#ecd9ec]"
-                  >
-                    <div className="bg-[linear-gradient(135deg,#32105f,#6b2398_60%,#d946ef)] px-5 py-4 text-white">
-                      <p className="font-display text-xl font-semibold">{pkg.name}</p>
-                      <p className="text-2xl font-bold">{formatINR(pkg.pricePaise)}</p>
-                    </div>
-                    <ul className="flex-1 space-y-2 p-5">
-                      {pkg.inclusions.slice(0, 4).map((inc) => (
-                        <li key={inc} className="flex items-start gap-2 text-[13px] text-[#2a0e4f]">
-                          <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#e7f7ee] text-emerald-600">
-                            <Check size={10} strokeWidth={3} />
-                          </span>
-                          {inc}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="px-5 pb-5">
-                      <Link to="/" state={{ highlightPlan: true }} className="flex items-center justify-center rounded-full bg-[#32105f] px-5 py-2.5 text-sm font-medium text-white">
-                        Choose
-                      </Link>
-                    </div>
                   </motion.div>
                 ))}
           </div>
