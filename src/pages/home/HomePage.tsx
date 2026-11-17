@@ -8,6 +8,7 @@ import { ReviewsSection } from '@/components/home/ReviewsSection'
 import { CelebrationGallery } from '@/components/home/CelebrationGallery'
 import { TheatreFinder } from '@/components/home/TheatreFinder'
 import { BobPerks } from '@/components/home/BobPerks'
+import { InstagramSection } from '@/components/home/InstagramSection'
 import { ExperienceCategories } from '@/components/home/ExperienceCategories'
 import { ExperienceHighlights } from '@/components/home/ExperienceHighlights'
 import { PersonaliseSurpriseSection } from '@/components/home/PersonaliseSurpriseSection'
@@ -670,6 +671,8 @@ export default function HomePage() {
       <div style={{ background: 'linear-gradient(160deg,#fdf6e3 0%,#faefd4 50%,#fdf6e3 100%)' }}>
         <SectionReveal style="rise"><BobPerks /></SectionReveal>
       </div>
+
+      <SectionReveal style="slide"><InstagramSection /></SectionReveal>
 
       {/* Location */}
       <SectionReveal style="tilt">
