@@ -220,8 +220,10 @@ const CAKE_MENU: Array<{ key: string; name: string; image: string; sizes: Array<
 ]
 
 const CAKE_ADDONS: Addon[] = CAKE_MENU.flatMap((c) =>
-  c.sizes.map(([sizeLabel, pricePaise]) => ({
-    id: `add-cake-${c.key}-${sizeLabel.replace(/\D/g, '') || 'one'}`,
+  c.sizes.map(([rawLabel, pricePaise]) => {
+    const sizeLabel = rawLabel === '500 gm' ? 'Half kg' : rawLabel === '1000 gm' ? '1 kg' : rawLabel
+    return {
+    id: `add-cake-${c.key}-${rawLabel.replace(/\D/g, '') || 'one'}`,
     name: c.sizes.length > 1 ? `${c.name} (${sizeLabel})` : c.name,
     description: '',
     category: 'cake' as const,
@@ -232,7 +234,8 @@ const CAKE_ADDONS: Addon[] = CAKE_MENU.flatMap((c) =>
     isOutOfStock: false,
     cakeName: c.name,
     sizeLabel,
-  })),
+    }
+  }),
 )
 
 // [name, category, original price (rupees), charged price (rupees), image path]; page order

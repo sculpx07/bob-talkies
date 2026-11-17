@@ -450,7 +450,7 @@ export function ExperienceCategories() {
   const [paused, setPaused] = useState(false)
   const [settled, setSettled] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
-  const inView = useInView(sectionRef, { once: true, margin: '-80px' })
+  const inView = useInView(sectionRef, { once: true, margin: '0px 0px 18% 0px' })
   const reduce = useReducedMotion()
   const [stageRef, stageW, stageH] = useSize<HTMLDivElement>()
 

@@ -1,5 +1,6 @@
 import { OCCASIONS } from '@/content/occasions'
 import { useState, useEffect, useRef } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown, ArrowRight, Ticket, Bookmark } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -111,20 +112,34 @@ export function Header() {
                     {link.label}
                     <ChevronDown size={14} className={cn('transition-transform', megaOpen && 'rotate-180')} />
                   </button>
-                  {megaOpen && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[480px] bg-bg-elevated border border-border-subtle rounded-card shadow-2xl p-4 grid grid-flow-col grid-cols-2 grid-rows-9 gap-1">
-                      {OCCASION_LINKS.map((o) => (
-                        <Link
-                          key={o.to}
-                          to={o.to}
-                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-gold-400 hover:bg-bg-surface transition-colors"
-                        >
-                          <span>{o.emoji}</span>
-                          <span>{o.label}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {megaOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute left-1/2 top-full z-50 mt-2 w-[400px] -translate-x-1/2 origin-top overflow-hidden rounded-2xl bg-white shadow-[0_26px_60px_rgba(50,16,95,0.22)] ring-1 ring-[#f0e1f3]"
+                      >
+                        <div className="flex items-center justify-between border-b border-[#f3e8f8] px-4 py-2.5">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9933a]">Celebrations</p>
+                          <Link to="/celebrations" className="text-xs font-semibold text-[#6b2398] hover:underline">View all</Link>
+                        </div>
+                        <div className="grid grid-cols-2 gap-0.5 p-2">
+                          {OCCASION_LINKS.map((o) => (
+                            <Link
+                              key={o.to}
+                              to={o.to}
+                              className="group flex items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] font-medium text-[#3b2a55] transition-colors hover:bg-[#f6eefb] hover:text-[#2a0e4f]"
+                            >
+                              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f6eefb] text-sm transition-transform duration-200 group-hover:scale-110 group-hover:bg-white">{o.emoji}</span>
+                              <span className="truncate">{o.label}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ) : (
                 <NavLink

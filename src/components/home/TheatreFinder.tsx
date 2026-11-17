@@ -84,7 +84,7 @@ function recommend(guests: number) {
 
 export function TheatreFinder() {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const inView = useInView(ref, { once: true, margin: '0px 0px 18% 0px' })
 
   const [guests, setGuests] = useState(4)
   const [occasion, setOccasion] = useState('Birthday')

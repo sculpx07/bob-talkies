@@ -56,10 +56,10 @@ export function Footer() {
               Hyderabad's most loved private theatre experience for birthdays, anniversaries, proposals and every celebration worth remembering.
             </p>
             <div className="space-y-2 text-sm text-white/60">
-              <a href={`tel:+${config.whatsappNumber}`} className="flex items-center gap-2 hover:text-gold-400 transition-colors">
+              <a href={`tel:+${config.whatsappNumber}`} className="flex items-center gap-2 hover:text-white transition-colors">
                 <Phone size={14} /> +91 {config.whatsappNumber.slice(2)}
               </a>
-              <a href={waLink} className="flex items-center gap-2 hover:text-gold-400 transition-colors" target="_blank" rel="noopener noreferrer">
+              <a href={waLink} className="flex items-center gap-2 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <MessageCircle size={14} /> WhatsApp Us
               </a>
               <div className="flex items-center gap-2">
@@ -76,7 +76,7 @@ export function Footer() {
                   key={s.label}
                   href={s.href}
                   aria-label={s.label}
-                  className="w-9 h-9 rounded-lg border border-white/20 flex items-center justify-center text-white/60 hover:text-gold-400 hover:border-gold-500/40 transition-all"
+                  className="w-9 h-9 rounded-lg border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white/50 transition-all"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -92,7 +92,7 @@ export function Footer() {
             <ul className="space-y-2">
               {THEATRE_LINKS.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className="text-sm text-white/60 hover:text-gold-400 transition-colors">
+                  <Link to={l.to} className="text-sm text-white/60 hover:text-white transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -106,7 +106,7 @@ export function Footer() {
             <ul className="space-y-2">
               {BOOKING_LINKS.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className="text-sm text-white/60 hover:text-gold-400 transition-colors">
+                  <Link to={l.to} className="text-sm text-white/60 hover:text-white transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -120,7 +120,7 @@ export function Footer() {
             <ul className="space-y-2">
               {OCCASION_LINKS.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className="text-sm text-white/60 hover:text-gold-400 transition-colors">
+                  <Link to={l.to} className="text-sm text-white/60 hover:text-white transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -134,7 +134,7 @@ export function Footer() {
             <ul className="space-y-2">
               {SUPPORT_LINKS.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className="text-sm text-white/60 hover:text-gold-400 transition-colors">
+                  <Link to={l.to} className="text-sm text-white/60 hover:text-white transition-colors">
                     {l.label}
                   </Link>
                 </li>

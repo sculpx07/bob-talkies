@@ -74,7 +74,6 @@ export function ExperienceHighlights() {
     <section
       ref={ref}
       className="pb-16 pt-6 md:pb-24 md:pt-10"
-      style={{ background: 'linear-gradient(135deg,#1a0840 0%,#2a0e4f 60%,#1e0a3c 100%)' }}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6">
 
@@ -99,7 +98,7 @@ export function ExperienceHighlights() {
               initial={{ opacity: 0, y: 16 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.09, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-              className="text-2xl md:text-3xl font-black text-white"
+              className="text-2xl md:text-3xl font-black text-[#2a0e4f]"
             >Every Experience. One Venue.</motion.h2>
           </div>
         </motion.div>
@@ -156,8 +155,8 @@ export function ExperienceHighlights() {
                       {i + 1}
                     </span>
                     <span className="min-w-0">
-                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? 'text-white' : 'text-white/40 group-hover:text-white/70'}`}>{h.eyebrow}</span>
-                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-white/60' : 'text-transparent'}`}>{h.tagline}</span>
+                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? 'text-[#2a0e4f]' : 'text-[#9a8cae] group-hover:text-[#5b4578]'}`}>{h.eyebrow}</span>
+                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-[#7d7094]' : 'text-transparent'}`}>{h.tagline}</span>
                     </span>
                   </button>
                 </motion.li>

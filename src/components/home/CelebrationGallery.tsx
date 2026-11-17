@@ -19,7 +19,7 @@ const GAP    = 12    // px — gap between cards
 export function CelebrationGallery() {
   const sectionRef = useRef(null)
   const stripRef   = useRef<HTMLDivElement>(null)
-  const inView     = useInView(sectionRef, { once: true, margin: '-60px' })
+  const inView     = useInView(sectionRef, { once: true, margin: '0px 0px 18% 0px' })
   const [current, setCurrent]   = useState(0)
   const pausedRef = useRef(false)
 

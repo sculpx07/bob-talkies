@@ -27,7 +27,7 @@ const PROMISES = [
 
 export function BobPerks() {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const inView = useInView(ref, { once: true, margin: '0px 0px 18% 0px' })
 
   return (
     <section ref={ref} className="relative overflow-x-clip pb-16 pt-6 md:pb-24 md:pt-8">

@@ -79,11 +79,11 @@ export default function HomePage() {
 
   // Section scroll-reveal refs
   const offersRevealRef = useRef(null)
-  const offersInView = useInView(offersRevealRef, { once: true, margin: '-80px' })
+  const offersInView = useInView(offersRevealRef, { once: true, margin: '0px 0px 18% 0px' })
   const celRevealRef = useRef(null)
-  const celInView = useInView(celRevealRef, { once: true, margin: '-80px' })
+  const celInView = useInView(celRevealRef, { once: true, margin: '0px 0px 18% 0px' })
   const locationRevealRef = useRef(null)
-  const locationInView = useInView(locationRevealRef, { once: true, margin: '-80px' })
+  const locationInView = useInView(locationRevealRef, { once: true, margin: '0px 0px 18% 0px' })
   const [heroWordIndex, setHeroWordIndex] = useState(0)
   const [heroKey, setHeroKey] = useState(0)
 
@@ -650,7 +650,6 @@ export default function HomePage() {
       </Section>
       </SectionReveal>
 
-      {/* dark — ExperienceHighlights owns its own dark bg */}
       <SectionReveal style="tilt"><ExperienceHighlights /></SectionReveal>
 
       {/* Real Moments gallery — right after the experience section */}

@@ -19,27 +19,27 @@ const EASE = [0.22, 1, 0.36, 1] as const
 const STYLES: Record<RevealStyle, Variants> = {
   curtain: {
     hidden: { opacity: 0, clipPath: 'inset(0% 50% 0% 50%)' },
-    show: { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)', transition: { duration: 1.1, ease: EASE } },
+    show: { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)', transition: { duration: 0.7, ease: EASE } },
   },
   rise: {
-    hidden: { opacity: 0, y: 90, filter: 'blur(14px)' },
-    show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.95, ease: EASE } },
+    hidden: { opacity: 0, y: 50 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
   },
   zoom: {
-    hidden: { opacity: 0, scale: 1.12 },
-    show: { opacity: 1, scale: 1, transition: { duration: 1.2, ease: EASE } },
+    hidden: { opacity: 0, scale: 1.05 },
+    show: { opacity: 1, scale: 1, transition: { duration: 0.7, ease: EASE } },
   },
   tilt: {
-    hidden: { opacity: 0, rotateX: 18, y: 60, transformPerspective: 1200, transformOrigin: '50% 100%' },
-    show: { opacity: 1, rotateX: 0, y: 0, transformPerspective: 1200, transition: { duration: 1.05, ease: EASE } },
+    hidden: { opacity: 0, rotateX: 10, y: 40, transformPerspective: 1200, transformOrigin: '50% 100%' },
+    show: { opacity: 1, rotateX: 0, y: 0, transformPerspective: 1200, transition: { duration: 0.7, ease: EASE } },
   },
   slide: {
-    hidden: { opacity: 0, x: -110, skewX: -4 },
-    show: { opacity: 1, x: 0, skewX: 0, transition: { duration: 1, ease: EASE } },
+    hidden: { opacity: 0, x: -60, skewX: -2 },
+    show: { opacity: 1, x: 0, skewX: 0, transition: { duration: 0.65, ease: EASE } },
   },
   unfold: {
     hidden: { opacity: 0, scaleY: 0.82, transformOrigin: '50% 0%' },
-    show: { opacity: 1, scaleY: 1, transformOrigin: '50% 0%', transition: { duration: 1, ease: EASE } },
+    show: { opacity: 1, scaleY: 1, transformOrigin: '50% 0%', transition: { duration: 0.65, ease: EASE } },
   },
 }
 
@@ -47,7 +47,7 @@ export function SectionReveal({ children, style = 'rise', className }: { childre
   const watchRef = useRef<HTMLDivElement>(null)
   const motionRef = useRef<HTMLDivElement>(null)
   // the visibility check lives on an unclipped outer wrapper, so clip-path styles can still be detected
-  const seen = useInView(watchRef, { once: true, amount: 0.12 })
+  const seen = useInView(watchRef, { once: true, amount: 0, margin: '0px 0px 25% 0px' })
   const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   if (reduce) return <div className={className}>{children}</div>
   return (

@@ -27,7 +27,7 @@ const VIDEOS = [
 
 export function ReviewsSection() {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const inView = useInView(ref, { once: true, margin: '0px 0px 18% 0px' })
   const [activeFilter, setActiveFilter] = useState<Filter>('All')
   const [showAll, setShowAll] = useState(false)
   const [playingId, setPlayingId] = useState<string | null>(null)

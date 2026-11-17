@@ -17,7 +17,7 @@ const USE_CASES = [
 
 export function VibeHallSpotlight() {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const inView = useInView(ref, { once: true, margin: '0px 0px 18% 0px' })
 
   return (
     <section
