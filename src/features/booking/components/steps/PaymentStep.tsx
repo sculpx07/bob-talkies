@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../../state/booking.context'
 import { bookingApi } from '../../api'
 import { PriceSummary } from '../PriceSummary'
+import { ProvisionalNote } from '../ProvisionalNote'
+import { hasExtraGuestLine } from '@/content/bookingInclusions'
 import { motion } from 'framer-motion'
 import { formatINR } from '@/lib/utils/currency'
 import { Check, CreditCard, Shield } from 'lucide-react'
@@ -37,6 +39,7 @@ export function PaymentStep() {
         customerEmail: state.customerEmail || undefined,
         specialInstructions: [
           state.kids > 0 && `Kids (3-10 yrs): ${state.kids}`,
+          state.personalMessage?.trim() && `Personalised message: ${state.personalMessage.trim()}`,
           state.customRequest && `Cake request: ${state.customRequest}`,
           state.addonRequest && `Add-on request: ${state.addonRequest}`,
           state.specialInstructions,
@@ -162,6 +165,7 @@ export function PaymentStep() {
         Payments are secured by Razorpay. We never store your card details.
       </div>
 
+      {hasExtraGuestLine(quote?.lineItems) && <ProvisionalNote className="mt-6 -mb-3" short="The amount to pay is provisional until the extra guest rate is confirmed." />}
       <motion.button
         type="button"
         onClick={handlePay}

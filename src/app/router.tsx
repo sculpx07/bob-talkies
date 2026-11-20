@@ -49,6 +49,7 @@ const MyBookingDetail = lazy_(() => import('@/pages/my-booking/MyBookingDetailPa
 const Pass = lazy_(() => import('@/pages/pass/PassPage'))
 const About = lazy_(() => import('@/pages/about/AboutPage'))
 const Contact = lazy_(() => import('@/pages/contact/ContactPage'))
+const VibeHall = lazy_(() => import('@/pages/vibe-hall/VibeHallPage'))
 const Faq = lazy_(() => import('@/pages/faq/FaqPage'))
 const Blog = lazy_(() => import('@/pages/blog/BlogPage'))
 const BlogPost = lazy_(() => import('@/pages/blog-post/BlogPostPage'))
@@ -132,6 +133,7 @@ export const router = createBrowserRouter([
       { path: 'pass/:token', element: <Pass /> },
       { path: 'about', element: <About /> },
       { path: 'contact', element: <Contact /> },
+      { path: 'vibe-hall', element: <VibeHall /> },
       { path: 'faq', element: <Faq /> },
       { path: 'blog', element: <Blog /> },
       { path: 'blog/:slug', element: <BlogPost /> },

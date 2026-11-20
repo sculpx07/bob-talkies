@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { guestRangeText, getVerifiedFacilities, CONFIRM_TEXT } from '@/content/bookingInclusions'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronLeft, ChevronRight, Ticket, X, Pause, Play, Images, Star } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -418,7 +419,7 @@ export default function TheatresPage() {
                 />
 
                 <p className="tp-rise text-base text-white/90 md:text-lg" style={{ animationDelay: '.12s' }}>
-                  {current.capacityMin}–{current.capacityMax} Guests · {current.screenSize}
+                  {guestRangeText(current.slug)} · {current.screenSize}
                 </p>
 
                 <h1
@@ -530,7 +531,7 @@ export default function TheatresPage() {
                             style={{ background: uid.accent }}
                           />
                           <p className="text-[10px] text-white/75">
-                            {theatre.capacityMin}–{theatre.capacityMax} Guests
+                            {guestRangeText(theatre.slug)}
                           </p>
                           <p
                             className="mt-1 text-xl uppercase leading-[1.05] tracking-wide text-white"
@@ -656,7 +657,7 @@ export default function TheatresPage() {
                     { label: 'Screen',     value: current?.screenSize },
                     { label: 'Resolution', value: current?.resolution },
                     { label: 'Sound',      value: current?.soundSystem },
-                    { label: 'Seating',    value: current?.seatingType },
+                    { label: 'Seating',    value: CONFIRM_TEXT },
                   ].map(s => (
                     <div key={s.label}>
                       <p className="text-[9px] uppercase tracking-widest mb-1" style={{ color: `${id.accent}99` }}>{s.label}</p>
@@ -665,10 +666,8 @@ export default function TheatresPage() {
                   ))}
                 </div>
 
-                <p className="text-white/55 text-sm leading-relaxed mb-5">{current?.description}</p>
-
                 <div className="flex flex-wrap gap-2">
-                  {current?.facilities.map(f => (
+                  {[...getVerifiedFacilities(current?.slug ?? ''), `Other facilities: ${CONFIRM_TEXT}`].map(f => (
                     <span
                       key={f}
                       className="text-[11px] rounded-full px-3 py-1"

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Users, Monitor, Volume2, Sofa, ChevronLeft, ChevronRight, Check, MapPin, Calendar, Clock, ArrowRight, Star, Play } from 'lucide-react'
+import { Users, Monitor, Volume2, ChevronLeft, ChevronRight, Check, MapPin, Calendar, Clock, ArrowRight, Star, Play } from 'lucide-react'
 import { format, addMonths, parseISO, getDay } from 'date-fns'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Seo } from '@/components/seo/Seo'
@@ -14,6 +14,8 @@ import { theatreKeys, availabilityKeys } from '@/lib/api/queryKeys'
 import { formatINR } from '@/lib/utils/currency'
 import { formatTime } from '@/lib/utils/date'
 import type { Theatre } from '@/schemas/theatre'
+import { BookingInclusions } from '@/features/booking/components/BookingInclusions'
+import { guestRangeText, getVerifiedFacilities, CONFIRM_TEXT } from '@/content/bookingInclusions'
 
 const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }
 const stagger = { show: { transition: { staggerChildren: 0.07 } } }
@@ -154,7 +156,7 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
     <>
       <Seo
         title={`${theatre.name} — Private Theatre Hyderabad | BOB Talkies`}
-        description={`Book ${theatre.name} at BOB Talkies. ${theatre.capacityMin}–${theatre.capacityMax} guests, ${theatre.screenSize} screen, ${theatre.soundSystem}. Starting from ${formatINR(theatre.startingPricePaise)}.`}
+        description={`Book ${theatre.name} at BOB Talkies. ${theatre.screenSize} screen, ${theatre.soundSystem}. Starting from ${formatINR(theatre.startingPricePaise)}.`}
         canonical={`/theatres/${slug}`}
         ogImage={theatre.images[0]}
       />
@@ -165,7 +167,7 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
           <div className="flex items-center gap-4">
             <span className="font-display text-lg font-bold text-[#2a0e4f]">{theatre.name}</span>
             <span className="h-4 w-px bg-[#e8d5a3]" />
-            <span className="text-sm text-[#5b4578]/60">{theatre.capacityMin}–{theatre.capacityMax} guests</span>
+            <span className="text-sm text-[#5b4578]/60">{guestRangeText(theatre.slug, 'guests')}</span>
           </div>
           <div className="flex items-center gap-5">
             <PriceTag paise={theatre.startingPricePaise} />
@@ -236,7 +238,7 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
                 transition={{ delay: 0.5, duration: 0.5, ease: 'easeOut' }} style={{ transformOrigin: 'left' }}
                 className="mt-3 flex items-center gap-3">
                 <div className="h-[2px] w-10 bg-gradient-to-r from-[#c9a84c] to-[#eed98a] rounded-full" />
-                <span className="text-white/60 text-sm">{theatre.capacityMin}–{theatre.capacityMax} guests</span>
+                <span className="text-white/60 text-sm">{guestRangeText(theatre.slug, 'guests')}</span>
               </motion.div>
             </motion.div>
           </div>
@@ -260,11 +262,10 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
             variants={{ show: { transition: { staggerChildren: 0.06, delayChildren: 0.2 } } }}
           >
             {[
-              { icon: <Users size={15} />, label: `${theatre.capacityMin}–${theatre.capacityMax} Guests` },
+              { icon: <Users size={15} />, label: guestRangeText(theatre.slug) },
               { icon: <Monitor size={15} />, label: theatre.screenSize },
               { icon: <Monitor size={15} />, label: theatre.resolution },
               { icon: <Volume2 size={15} />, label: theatre.soundSystem },
-              { icon: <Sofa size={15} />, label: theatre.seatingType },
               { icon: <MapPin size={15} />, label: 'Kukatpally, Hyderabad' },
             ].map((s) => (
               <motion.div key={s.label} variants={fadeUp} transition={{ duration: 0.4 }}
@@ -286,14 +287,16 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
               {/* About */}
               <RevealSection>
                 <SectionTitle>About this Theatre</SectionTitle>
-                <p className="text-[#5b4578]/80 leading-relaxed text-base">{theatre.description}</p>
+                <p className="text-[#5b4578]/80 leading-relaxed text-base">
+                  {getVerifiedFacilities(theatre.slug)[0] ?? CONFIRM_TEXT}. {theatre.tagline}. More details: {CONFIRM_TEXT}.
+                </p>
               </RevealSection>
 
               {/* Facilities */}
               <RevealSection>
                 <SectionTitle>Facilities Included</SectionTitle>
                 <StaggerGrid className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {theatre.facilities.map((f) => (
+                  {[...getVerifiedFacilities(theatre.slug), `Other facilities: ${CONFIRM_TEXT}`].map((f) => (
                     <motion.li key={f} variants={fadeUp} transition={{ duration: 0.35 }}
                       whileHover={{ y: -3, boxShadow: '0 6px 20px rgba(201,168,76,0.15)' }}
                       className="flex items-center gap-2.5 bg-white rounded-xl px-4 py-3 border border-[#f0e6cc] text-sm text-[#2a0e4f] font-medium shadow-sm list-none cursor-default">
@@ -304,6 +307,12 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
                     </motion.li>
                   ))}
                 </StaggerGrid>
+              </RevealSection>
+
+              {/* What's included in my booking */}
+              <RevealSection>
+                <SectionTitle>What's Included in My Booking</SectionTitle>
+                <BookingInclusions theatre={theatre} />
               </RevealSection>
 
               {/* Suitable for */}

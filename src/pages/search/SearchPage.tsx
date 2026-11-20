@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
+import { guestRangeText } from '@/content/bookingInclusions'
 import { useQuery } from '@tanstack/react-query'
 import { theatreKeys } from '@/lib/api/queryKeys'
 import { api } from '@/lib/api/client'
@@ -103,7 +104,7 @@ export default function SearchPage() {
                         {t.currentOffer && <Badge variant="gold">{t.currentOffer}</Badge>}
                       </div>
                       <div className="flex flex-wrap gap-2 text-xs text-text-muted mb-3">
-                        <span className="flex items-center gap-1"><Users size={11} />{t.capacityMin}–{t.capacityMax}</span>
+                        <span className="flex items-center gap-1"><Users size={11} />{guestRangeText(t.slug, '')}</span>
                         <span className="flex items-center gap-1"><Monitor size={11} />{t.screenSize}</span>
                       </div>
                       <p className="text-gold-400 font-semibold text-sm mb-4">{formatINR(t.startingPricePaise)} onwards</p>

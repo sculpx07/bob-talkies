@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { getDay, parseISO } from 'date-fns'
 import {
-  ChevronLeft, ChevronRight, Users, Monitor, BadgeCheck, Zap, Palette, UserPlus, Cake,
+  ChevronLeft, ChevronRight, Users, Monitor, Zap, Palette, UserPlus, Cake,
 } from 'lucide-react'
 import { theatreKeys } from '@/lib/api/queryKeys'
 import { api } from '@/lib/api/client'
@@ -17,6 +17,8 @@ import { formatTime } from '@/lib/utils/date'
 import { ADVANCE_PAYMENT_PERCENT } from '@/lib/constants'
 import { cn } from '@/lib/utils/cn'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { BookingInclusions } from '../BookingInclusions'
+import { CONFIRM_TEXT, getVerifiedCapacity } from '@/content/bookingInclusions'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -78,8 +80,10 @@ function TheatreListingCard({
   guests: number; date: string; selectedSlotId: string | null; onPickSlot: (slotId: string) => void; onContinue: () => void
 }) {
   const [img, setImg] = useState(0)
+  const [showIncluded, setShowIncluded] = useState(false)
   const { data: slots = [], isLoading } = useSlots(theatre.id, date)
   const info = THEATRE_LISTING[theatre.slug]
+  const verifiedCapacity = getVerifiedCapacity(theatre.slug) // display only; booking maths still uses theatre data
   const dow = getDay(parseISO(date))
   const isWeekend = dow === 0 || dow === 6
   const price = isWeekend ? theatre.weekendPricePaise : theatre.weekdayPricePaise // price for the chosen date
@@ -148,13 +152,24 @@ function TheatreListingCard({
         </div>
 
         <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-[12.5px] leading-snug text-[#5b4578]">
-          <li className="flex items-center gap-2"><Users size={15} className="shrink-0 text-[#8e39c7]" />Max {theatre.capacityMax} People{guests > theatre.capacityMax && <strong className="text-[#c2255c]"> (your group is larger)</strong>}</li>
+          <li className="flex items-center gap-2"><Users size={15} className="shrink-0 text-[#8e39c7]" />{verifiedCapacity ? `Max ${verifiedCapacity[1]} People` : `Max capacity: ${CONFIRM_TEXT}`}{verifiedCapacity && guests > theatre.capacityMax && <strong className="text-[#c2255c]"> (your group is larger)</strong>}</li>
           <li className="flex items-center gap-2"><Palette size={15} className="shrink-0 text-[#8e39c7]" />Decor ₹{DECOR_PRICE_INR} extra</li>
-          <li className="flex items-center gap-2"><UserPlus size={15} className="shrink-0 text-[#8e39c7]" />{formatINR(theatre.extraGuestPricePaise)} per extra person</li>
+          <li className="flex items-center gap-2"><UserPlus size={15} className="shrink-0 text-[#8e39c7]" />Extra guest charges: {CONFIRM_TEXT}</li>
           <li className="flex items-center gap-2"><Monitor size={15} className="shrink-0 text-[#8e39c7]" />{info?.spec ?? `${theatre.screenSize} ${theatre.resolution} screen, ${theatre.soundSystem}`}</li>
           <li className="flex items-center gap-2"><Cake size={15} className="shrink-0 text-[#8e39c7]" />{LISTING_NOTES.addOns}</li>
-          <li className="flex items-center gap-2"><BadgeCheck size={15} className="shrink-0 text-[#8e39c7]" />{LISTING_NOTES.cancellation}</li>
         </ul>
+
+        {/* What's included (collapsed by default; does not affect slot selection) */}
+        <button
+          type="button"
+          onClick={() => setShowIncluded((v) => !v)}
+          aria-expanded={showIncluded}
+          className="mt-3 inline-flex items-center gap-1.5 self-start text-[13px] font-semibold text-[#6b2398] hover:underline"
+        >
+          What's included in my booking?
+          <ChevronRight size={14} className={cn('transition-transform', showIncluded && 'rotate-90')} />
+        </button>
+        {showIncluded && <BookingInclusions theatre={theatre} className="mt-2" />}
 
         {/* Time slots */}
         <div className="mt-3.5 border-t border-[#f1e2f0] pt-3.5">
@@ -217,6 +232,7 @@ function TheatreListingCard({
                 <div className="mt-3.5 rounded-2xl bg-[#f3ecf8] p-3">
                   <p className="mb-3 text-center text-xs text-[#5b4578]">
                     You pay only <strong className="text-[#32105f]">{formatINR(reservePaise)}</strong> ({ADVANCE_PAYMENT_PERCENT}%) to reserve the slot
+                    {extraGuests > 0 && <span className="mt-0.5 block text-[11px] text-[#8f6420]">Provisional: extra guest rate is still to be confirmed.</span>}
                   </p>
                   <button
                     type="button"

@@ -1,4 +1,5 @@
 import { useParams, Link, useLocation } from 'react-router-dom'
+import { guestRangeText } from '@/content/bookingInclusions'
 import { useQuery } from '@tanstack/react-query'
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
@@ -12,6 +13,7 @@ import { api } from '@/lib/api/client'
 import { theatreKeys } from '@/lib/api/queryKeys'
 import { OCCASIONS, getOccasionBySlug } from '@/content/occasions'
 import type { Theatre } from '@/schemas/theatre'
+import { useOccasionServices, OccasionServiceList } from '@/components/home/OccasionServices'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const VIEW = { once: true, margin: '0px 0px -80px 0px' }
@@ -47,6 +49,8 @@ const heroRef = useRef<HTMLElement>(null)
   const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '25%'])
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '-30%'])
   const textOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
+
+  const { groups: services } = useOccasionServices(occasion.slug)
 
   const recommendedTheatres = theatres?.filter((t) => occasion.recommendedTheatres.includes(t.id)) ?? []
 
@@ -209,7 +213,7 @@ const heroRef = useRef<HTMLElement>(null)
                         <p className="font-display text-2xl font-semibold">{t.name}</p>
                         <p className="line-clamp-1 text-sm text-white/80">{t.tagline}</p>
                         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-                          <span className="rounded-full bg-white/15 px-2.5 py-1 backdrop-blur">{t.capacityMin}–{t.capacityMax} guests</span>
+                          <span className="rounded-full bg-white/15 px-2.5 py-1 backdrop-blur">{guestRangeText(t.slug, 'guests')}</span>
                           <span className="ml-auto rounded-full bg-[#f5d7a1] px-3 py-1 font-bold text-[#4a2a00]">from {formatINR(t.startingPricePaise)}</span>
                         </div>
                       </div>
@@ -218,6 +222,23 @@ const heroRef = useRef<HTMLElement>(null)
                 ))}
           </div>
         </section>
+
+        {/* Services for this experience (real add-on categories only) */}
+        {services.length > 0 && (
+          <section className="mx-auto mt-20 max-w-6xl px-4 md:mt-28 md:px-6">
+            <div className="mb-8 text-center">
+              <p className="font-cursive text-2xl text-[#6b2398] md:text-3xl">Make it yours</p>
+              <h2 className="font-display text-3xl font-semibold text-[#2a0e4f] md:text-5xl">Services for Your {occasion.label}</h2>
+              <p className="mx-auto mt-3 max-w-xl text-[#5b4578]">Add these while booking. Availability and prices are shown in the add-ons step.</p>
+            </div>
+            <OccasionServiceList groups={services} />
+            <div className="mt-8 text-center">
+              <Link to="/" state={{ highlightPlan: true }} className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] px-8 py-3 text-sm font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)]">
+                Book This Experience <ArrowRight size={15} />
+              </Link>
+            </div>
+          </section>
+        )}
 
         {/* FAQ */}
         {occasion.faqs.length > 0 && (

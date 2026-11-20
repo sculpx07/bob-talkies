@@ -3,6 +3,8 @@ import { useCurrentQuote } from '../hooks/useCurrentQuote'
 import { formatINR } from '@/lib/utils/currency'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
+import { displayQuoteLabel, hasExtraGuestLine, isExtraGuestLabel } from '@/content/bookingInclusions'
+import { ProvisionalNote } from './ProvisionalNote'
 
 interface PriceSummaryProps {
   compact?: boolean
@@ -20,6 +22,7 @@ export function PriceSummary({ compact }: PriceSummaryProps) {
   }
 
   if (!quote) return null
+  const provisional = hasExtraGuestLine(quote.lineItems)
 
   return (
     <motion.div
@@ -46,14 +49,14 @@ export function PriceSummary({ compact }: PriceSummaryProps) {
               transition={{ delay: 0.15 + i * 0.07, duration: 0.5 }}
               className={cn('flex justify-between gap-4 text-sm', item.paise < 0 ? 'text-emerald-600' : 'text-[#5b4578]')}
             >
-              <dt>{item.label}</dt>
-              <dd className="font-semibold">{item.paise < 0 ? '-' : ''}{formatINR(Math.abs(item.paise))}</dd>
+              <dt>{displayQuoteLabel(item.label)}</dt>
+              <dd className="font-semibold">{item.paise < 0 ? '-' : ''}{formatINR(Math.abs(item.paise))}{isExtraGuestLabel(item.label) && <span className="ml-1 text-[10px] font-bold uppercase text-[#8f6420]">provisional</span>}</dd>
             </motion.div>
           ))}
         </dl>
         <div className="my-5 border-t border-dashed border-[#d9b8e0]" />
         <div className="flex items-end justify-between">
-          <span className="text-sm font-bold uppercase tracking-wider text-[#7d7094]">Total</span>
+          <span className="text-sm font-bold uppercase tracking-wider text-[#7d7094]">Total{provisional && <span className="ml-1.5 text-[10px] text-[#8f6420]">(provisional)</span>}</span>
           <span className="bg-[linear-gradient(135deg,#32105f,#c026d3)] bg-clip-text text-4xl font-bold tabular-nums text-transparent">{formatINR(quote.totalPaise)}</span>
         </div>
         <div className="mt-5 grid grid-cols-2 gap-3">
@@ -66,6 +69,7 @@ export function PriceSummary({ compact }: PriceSummaryProps) {
             <p className="mt-1 text-xl font-bold text-[#4a2a00]">{formatINR(quote.balancePaise)}</p>
           </div>
         </div>
+        {provisional && <ProvisionalNote className="mt-4" />}
       </div>
     </motion.div>
   )

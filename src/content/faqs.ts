@@ -9,7 +9,7 @@ export interface Faq {
   category: FaqCategory
 }
 
-export const FAQS: Faq[] = [
+const ALL_FAQS: Faq[] = [
   // Booking
   { id: 'b1', category: 'booking', question: 'How do I book a private theatre at BOB Talkies?', answer: 'You can book directly on our website in under 5 minutes. Choose your occasion, select guests, pick a date and theatre, customise your package and pay the advance. No calls needed!' },
   { id: 'b2', category: 'booking', question: 'How far in advance should I book?', answer: 'We recommend booking at least 24–48 hours in advance for weekdays and 3–5 days for weekends, as slots fill up quickly. For special occasions with custom decorations, 72 hours minimum is ideal.' },
@@ -57,7 +57,7 @@ export const FAQS: Faq[] = [
   { id: 'r2', category: 'rescheduling', question: 'Is there a fee for rescheduling?', answer: 'No fee for the first reschedule. Subsequent reschedules are subject to a nominal service charge.' },
 ]
 
-export const FAQ_CATEGORIES: Record<FaqCategory, string> = {
+const ALL_FAQ_CATEGORIES: Record<FaqCategory, string> = {
   booking: 'Booking',
   payment: 'Payment',
   cancellation: 'Cancellation & Refund',
@@ -71,3 +71,15 @@ export const FAQ_CATEGORIES: Record<FaqCategory, string> = {
   timings: 'Timings',
   rescheduling: 'Rescheduling',
 }
+
+/**
+ * Cancellation and rescheduling answers are hidden until the business confirms the policy
+ * (the refund policy and terms pages disagree). Remove entries from this list to show them again.
+ */
+const HIDDEN_FAQ_CATEGORIES: FaqCategory[] = ['cancellation', 'rescheduling']
+
+export const FAQS: Faq[] = ALL_FAQS.filter((f) => !HIDDEN_FAQ_CATEGORIES.includes(f.category))
+
+export const FAQ_CATEGORIES = Object.fromEntries(
+  Object.entries(ALL_FAQ_CATEGORIES).filter(([k]) => !HIDDEN_FAQ_CATEGORIES.includes(k as FaqCategory)),
+) as Record<FaqCategory, string>
