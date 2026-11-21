@@ -1,7 +1,8 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  // the admin panel has its own config (tailwind.admin.config.ts)
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}', '!./src/admin/**'],
   darkMode: 'class',
   theme: {
     extend: {

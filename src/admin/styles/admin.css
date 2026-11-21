@@ -1,0 +1,49 @@
+/* Admin panel styles. Loaded only by the admin app (src/admin/main.tsx), never by the customer site. */
+@config '../../../tailwind.admin.config.ts';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  #admin-root {
+    min-height: 100%;
+  }
+
+  ::selection {
+    @apply bg-violet-200 text-violet-950;
+  }
+}
+
+@layer components {
+  /* Shared focus ring for interactive elements */
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+  }
+
+  /* Base look shared by inputs, selects and textareas */
+  .field {
+    @apply block w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 shadow-sm
+      placeholder:text-slate-400
+      focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/20
+      disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500;
+  }
+
+  .field-invalid {
+    @apply border-red-400 focus:border-red-500 focus:ring-red-500/20;
+  }
+}

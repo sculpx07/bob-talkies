@@ -1,0 +1,171 @@
+import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Lock } from 'lucide-react'
+import { Button, ConfirmDialog, FormField, FormSection, FullWidth, Input, MoneyInput, Switch, Textarea, useToast } from '@/admin/components/ui'
+import { applyServerErrors } from '@/admin/lib/forms'
+import { formatPaise, rupeesToPaise } from '@/admin/lib/utils/money'
+import { useUpdateSettings } from '../api'
+import { formatSettingValue, settingLabel } from '../labels'
+import { diffSettings, settingsFormSchema, settingsToForm, type SettingsFormValues } from '../schema'
+import type { SettingChange, Settings } from '../types'
+
+const num = { valueAsNumber: true } as const
+const EXAMPLE_PAISE = 100_000 // ₹1,000 booking for the worked example
+
+/** What a ₹1,000 booking would cost with the values on screen (same maths as the backend). */
+function PricingExample({ gst, included, advance }: { gst: number; included: boolean; advance: number }) {
+  if (![gst, advance].every(Number.isFinite)) return null
+  const total = included ? EXAMPLE_PAISE : Math.round(EXAMPLE_PAISE * (1 + gst / 100))
+  const gstPaise = included ? total - Math.round((total * 100) / (100 + gst)) : total - EXAMPLE_PAISE
+  const advancePaise = Math.round((total * advance) / 100)
+  return (
+    <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600">
+      Example: a {formatPaise(EXAMPLE_PAISE)} booking → GST {formatPaise(gstPaise)}{included ? ' (inside the price)' : ''}, total{' '}
+      <strong className="text-slate-900">{formatPaise(total)}</strong>, advance online <strong className="text-slate-900">{formatPaise(advancePaise)}</strong>,
+      balance at the venue {formatPaise(total - advancePaise)}.
+    </p>
+  )
+}
+
+/** Business settings. Everyone can read them; only a super admin can save. */
+export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdit: boolean }) {
+  const toast = useToast()
+  const update = useUpdateSettings()
+  const [pending, setPending] = useState<{ values: SettingsFormValues; changes: SettingChange[] } | null>(null)
+  const [formErrors, setFormErrors] = useState<string[]>([])
+
+  const { register, control, handleSubmit, reset, setError, watch, formState: { errors, isDirty } } =
+    useForm<SettingsFormValues>({ resolver: zodResolver(settingsFormSchema), defaultValues: settingsToForm(settings) })
+
+  useEffect(() => { reset(settingsToForm(settings)) }, [settings, reset])
+
+  const [gst, included, advance, decoration] = watch(['pricing.gstPercent', 'pricing.pricesIncludeGst', 'pricing.advancePercent', 'pricing.decorationPrice'])
+
+  // review the exact changes before saving: these settings move money
+  const review = handleSubmit((values) => {
+    const { changes } = diffSettings(settings, values)
+    if (!changes.length) { toast.info('Nothing changed'); return }
+    setPending({ values, changes })
+  })
+
+  const save = async () => {
+    if (!pending) return
+    setFormErrors([])
+    try {
+      const { patch } = diffSettings(settings, pending.values)
+      const { changes } = await update.mutateAsync(patch)
+      toast.success(`${changes.length} setting(s) saved`)
+      setPending(null)
+    } catch (err) {
+      setPending(null)
+      setFormErrors(applyServerErrors(err, setError, ['pricing', 'booking', 'contact'], (f) => f.replace(/decorationPricePaise$/, 'decorationPrice')))
+    }
+  }
+
+  const e = errors
+
+  return (
+    <form onSubmit={review} noValidate className="space-y-6">
+      {!canEdit && (
+        <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+          <Lock className="h-4 w-4 shrink-0" /> Only a super admin can change these settings.
+        </div>
+      )}
+      {formErrors.length > 0 && (
+        <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {formErrors.map((m) => <p key={m}>{m}</p>)}
+        </div>
+      )}
+
+      <fieldset disabled={!canEdit} className="space-y-6">
+        <FormSection title="Pricing" description="Applies to new quotes and bookings. Existing bookings keep the prices they were made with.">
+          <FormField label="GST %" required error={e.pricing?.gstPercent?.message}>
+            {(f) => <Input {...f} type="number" step="0.01" min={0} max={100} trailing="%" {...register('pricing.gstPercent', num)} />}
+          </FormField>
+          <FormField label="Advance paid online" required hint="Share of the total paid to confirm a booking" error={e.pricing?.advancePercent?.message}>
+            {(f) => <Input {...f} type="number" min={1} max={100} trailing="%" {...register('pricing.advancePercent', num)} />}
+          </FormField>
+          <FormField label="Decoration price" required hint={Number.isFinite(decoration) ? `Charged as ${formatPaise(rupeesToPaise(decoration))}` : undefined} error={e.pricing?.decorationPrice?.message}>
+            {(f) => <MoneyInput {...f} {...register('pricing.decorationPrice', num)} />}
+          </FormField>
+          <div />
+          <FullWidth>
+            <Controller control={control} name="pricing.pricesIncludeGst" render={({ field }) => (
+              <Switch id="pricesIncludeGst" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Listed prices already include GST" description="Off: GST is added on top of the price." />
+            )} />
+          </FullWidth>
+          <FullWidth>
+            <Controller control={control} name="pricing.allowFullPayment" render={({ field }) => (
+              <Switch id="allowFullPayment" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Customers may pay the full amount online" description="Off: only the advance can be paid online." />
+            )} />
+          </FullWidth>
+          <FullWidth><PricingExample gst={gst} included={included} advance={advance} /></FullWidth>
+        </FormSection>
+
+        <FormSection title="Booking rules">
+          <FormField label="Slot hold" required hint="How long a slot stays reserved while the customer pays" error={e.booking?.slotHoldMinutes?.message}>
+            {(f) => <Input {...f} type="number" min={1} max={60} trailing="min" {...register('booking.slotHoldMinutes', num)} />}
+          </FormField>
+          <FormField label="Minimum notice" required hint="Bookings close this long before a slot" error={e.booking?.minLeadHours?.message}>
+            {(f) => <Input {...f} type="number" min={0} max={168} trailing="h" {...register('booking.minLeadHours', num)} />}
+          </FormField>
+          <FormField label="Booking window" required hint="How far ahead the calendar opens" error={e.booking?.maxAdvanceDays?.message}>
+            {(f) => <Input {...f} type="number" min={1} max={365} trailing="days" {...register('booking.maxAdvanceDays', num)} />}
+          </FormField>
+          <FormField label="Refund cut-off" required hint="Cancelling at least this long before the slot is refundable" error={e.booking?.refundCutoffHours?.message}>
+            {(f) => <Input {...f} type="number" min={0} max={720} trailing="h" {...register('booking.refundCutoffHours', num)} />}
+          </FormField>
+        </FormSection>
+
+        <FormSection title="Contact" description="Shown to customers on the website and in messages.">
+          <FormField label="WhatsApp number" required hint="Digits only, with country code" error={e.contact?.whatsappNumber?.message}>
+            {(f) => <Input {...f} inputMode="numeric" placeholder="919876543210" {...register('contact.whatsappNumber')} />}
+          </FormField>
+          <FormField label="Phone" required error={e.contact?.phone?.message}>
+            {(f) => <Input {...f} {...register('contact.phone')} />}
+          </FormField>
+          <FullWidth>
+            <FormField label="Email" required error={e.contact?.email?.message}>
+              {(f) => <Input {...f} type="email" {...register('contact.email')} />}
+            </FormField>
+          </FullWidth>
+          <FullWidth>
+            <FormField label="Address" required error={e.contact?.address?.message}>
+              {(f) => <Textarea {...f} rows={2} {...register('contact.address')} />}
+            </FormField>
+          </FullWidth>
+        </FormSection>
+      </fieldset>
+
+      {canEdit && (
+        <div className="sticky bottom-0 -mx-4 flex items-center justify-end gap-2 border-t border-slate-200 bg-white/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <Button variant="secondary" disabled={!isDirty} onClick={() => reset(settingsToForm(settings))}>Discard changes</Button>
+          <Button type="submit" disabled={!isDirty}>Review & save</Button>
+        </div>
+      )}
+
+      <ConfirmDialog
+        open={Boolean(pending)}
+        onOpenChange={(o) => !o && setPending(null)}
+        title="Save these changes?"
+        description="New quotes and bookings use them straight away."
+        confirmLabel="Save settings"
+        loading={update.isPending}
+        onConfirm={save}
+      >
+        <ul className="divide-y divide-slate-100 text-sm">
+          {pending?.changes.map((c) => (
+            <li key={c.path} className="flex items-center justify-between gap-3 py-2">
+              <span className="text-slate-600">{settingLabel(c.path)}</span>
+              <span className="text-right">
+                <span className="text-slate-400 line-through">{formatSettingValue(c.path, c.from)}</span>{' '}
+                <span className="font-medium text-slate-900">{formatSettingValue(c.path, c.to)}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </ConfirmDialog>
+    </form>
+  )
+}

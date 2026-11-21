@@ -145,7 +145,11 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white">
-          <p>© {year} BOB Talkies. All rights reserved. Kukatpally, Hyderabad.</p>
+          <p>
+            {/* Hidden staff entrance: the © opens the admin login. It looks and behaves like plain text. */}
+            <a href="/admin/login" rel="nofollow" aria-label="Staff login" className="cursor-text text-inherit no-underline">©</a>
+            {' '}{year} BOB Talkies. All rights reserved. Kukatpally, Hyderabad.
+          </p>
           <div className="flex items-center gap-4">
             {LEGAL_LINKS.map((l) => (
               <Link key={l.to} to={l.to} className="text-white/80 hover:text-white transition-colors">
