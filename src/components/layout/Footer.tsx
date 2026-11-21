@@ -29,6 +29,7 @@ const OCCASION_LINKS = [
 const SUPPORT_LINKS = [
   { label: 'About Us', to: '/about' },
   { label: 'Contact', to: '/contact' },
+  { label: 'Corporate & Groups', to: '/vibe-hall' },
   { label: 'FAQ', to: '/faq' },
   { label: 'Blog', to: '/blog' },
   { label: 'Locations', to: '/locations' },

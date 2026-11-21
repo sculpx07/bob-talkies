@@ -22,6 +22,8 @@ import { TheatreSlotStep } from '@/features/booking/components/steps/TheatreSlot
 import { AddonsStep } from '@/features/booking/components/steps/AddonsStep'
 import { BasicDetailsStep } from '@/features/booking/components/steps/BasicDetailsStep'
 import { CakeStep } from '@/features/booking/components/steps/CakeStep'
+import { hasExtraGuestLine } from '@/content/bookingInclusions'
+import { PersonalisedMessageSummary } from '@/features/booking/components/PersonalisedMessage'
 import { BookingSummaryCard } from '@/features/booking/components/BookingSummaryCard'
 import { PaymentStep } from '@/features/booking/components/steps/PaymentStep'
 import { trackEvent } from '@/features/tracking/events'
@@ -250,7 +252,7 @@ export default function BookPage() {
           </div>
 
           {step >= 4 && step < LAST_STEP && state.serverQuote && (
-            <p className="-mt-5 mb-6 text-center text-xs text-[#5b4578]">Note: pay only <strong className="text-[#6b2398]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve</p>
+            <p className="-mt-5 mb-6 text-center text-xs text-[#5b4578]">Note: pay only <strong className="text-[#6b2398]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve{hasExtraGuestLine(state.serverQuote.lineItems) && <span className="text-[#8f6420]"> (provisional until the extra guest rate is confirmed)</span>}</p>
           )}
 
           <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -322,6 +324,7 @@ export default function BookPage() {
                   )}
                 </li>
               </ul>
+              <PersonalisedMessageSummary />
               {step >= 4 && step < LAST_STEP && <div className="px-4 pb-4"><BookingSummaryCard /></div>}
 
               {/* Rewards strip */}

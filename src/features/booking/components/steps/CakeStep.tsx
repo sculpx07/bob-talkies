@@ -37,7 +37,6 @@ function CakePhoto({ cake, index, className }: { cake: Cake; index: number; clas
 export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () => void }) {
   const { state, dispatch } = useBooking()
   const [tab, setTab] = useState<'standard' | 'premium'>('standard')
-  const [customOpen, setCustomOpen] = useState(Boolean(state.customRequest))
   const [openCake, setOpenCake] = useState<{ cake: Cake; index: number } | null>(null)
 
   const { data: addons = [], isLoading } = useQuery({
@@ -84,12 +83,10 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
       </div>
 
       <h2 className="font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Choose cake</h2>
-      <button type="button" onClick={() => setCustomOpen((o) => !o)} aria-expanded={customOpen} className="mb-4 mt-1 text-sm text-[#5b4578] underline decoration-[#c58be6] underline-offset-2 hover:text-[#6b2398]">
-        Customized cakes also available
-      </button>
-      {customOpen && (
-        <div className="mb-5 rounded-2xl bg-[#fdf6ff] p-4 ring-1 ring-[#ecd9ec]">
-          <label htmlFor="custom-request" className="mb-1.5 block text-sm font-semibold text-[#2a0e4f]">Describe the cake you would like</label>
+      <p className="mb-6 mt-1 text-sm text-[#5b4578]">Pick a cake below, or describe a customized one. You can skip this step.</p>
+      {(
+        <div className="mb-7 rounded-2xl bg-[#fdf6ff] p-4 ring-1 ring-[#ecd9ec]">
+          <label htmlFor="custom-request" className="mb-1.5 block text-sm font-semibold text-[#2a0e4f]">Customize as per your requirement</label>
           <textarea
             id="custom-request" rows={3} value={state.customRequest}
             onChange={(e) => dispatch({ type: 'SET_CUSTOM_REQUEST', text: e.target.value.slice(0, 400) })}

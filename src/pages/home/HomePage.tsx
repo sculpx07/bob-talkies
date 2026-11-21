@@ -9,6 +9,7 @@ import { CelebrationGallery } from '@/components/home/CelebrationGallery'
 import { TheatreFinder } from '@/components/home/TheatreFinder'
 import { BobPerks } from '@/components/home/BobPerks'
 import { InstagramSection } from '@/components/home/InstagramSection'
+import { ExperiencePicker } from '@/components/home/ExperiencePicker'
 import { ExperienceCategories } from '@/components/home/ExperienceCategories'
 import { ExperienceHighlights } from '@/components/home/ExperienceHighlights'
 import { PersonaliseSurpriseSection } from '@/components/home/PersonaliseSurpriseSection'
@@ -373,6 +374,8 @@ export default function HomePage() {
       <SectionReveal style="rise"><ExperienceCategories /></SectionReveal>
 
       <SectionReveal style="slide"><FeaturedTheatres /></SectionReveal>
+
+      <SectionReveal style="rise"><ExperiencePicker /></SectionReveal>
 
       {/* Live Offers */}
       {(offersLoading || (offers && offers.length > 0)) && (

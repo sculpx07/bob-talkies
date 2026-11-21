@@ -9,6 +9,8 @@ import { format, parseISO } from 'date-fns'
 import { useBooking } from '../../state/booking.context'
 import { useSlots } from '../../hooks/useAvailability'
 import { CouponStep } from './CouponStep'
+import { PersonalisedMessage } from '../PersonalisedMessage'
+import { getVerifiedCapacity } from '@/content/bookingInclusions'
 import { Input } from '@/components/ui/Input'
 import { api } from '@/lib/api/client'
 import { theatreKeys } from '@/lib/api/queryKeys'
@@ -21,6 +23,7 @@ const DetailsSchema = z.object({
   name: z.string().trim().min(2, 'Please enter the booking name'),
   mobile: z.string().regex(/^[6-9]\d{9}$/, 'Enter a valid 10-digit WhatsApp number'),
   email: z.string().trim().email('Enter a valid email address'),
+  personalMessage: z.string().trim().min(1, 'Please enter your personalised message').max(250, 'Maximum 250 characters'),
   consentTnC: z.boolean().refine((v) => v === true, { message: 'You must accept the Terms & Conditions' }),
 })
 type DetailsForm = z.infer<typeof DetailsSchema>
@@ -67,9 +70,9 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
     }
   }, [theatre?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const { register, handleSubmit, getValues, formState: { errors } } = useForm<DetailsForm>({
+  const { register, handleSubmit, getValues, watch, formState: { errors } } = useForm<DetailsForm>({
     resolver: zodResolver(DetailsSchema),
-    defaultValues: { name: state.customerName, mobile: state.customerMobile, email: state.customerEmail, consentTnC: state.consentTnC },
+    defaultValues: { name: state.customerName, mobile: state.customerMobile, email: state.customerEmail, personalMessage: state.personalMessage ?? '', consentTnC: state.consentTnC },
   })
 
   const { mutate: sendOtp, isPending: sending } = useMutation({
@@ -134,7 +137,7 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
           <Counter label="People (Above 10 yrs)" value={state.guests} min={1} max={Math.max(1, capacity - state.kids)} onChange={(n) => dispatch({ type: 'SET_PEOPLE', guests: n })} />
           <Counter label="Kids (3-10 yrs)" value={state.kids} min={0} max={Math.max(0, capacity - state.guests)} onChange={(n) => dispatch({ type: 'SET_KIDS', kids: n })} />
         </div>
-        {theatre && <p className="-mt-2 text-xs text-[#7d7094]">{theatre.name} holds up to {theatre.capacityMax} guests.</p>}
+        {theatre && getVerifiedCapacity(theatre.slug) && <p className="-mt-2 text-xs text-[#7d7094]">{theatre.name} holds up to {getVerifiedCapacity(theatre.slug)![1]} guests.</p>}
 
         <Input label="WhatsApp Number" required placeholder="Type here" inputMode="numeric" maxLength={10} error={errors.mobile?.message} className={field} {...register('mobile')} />
         <Input label="Email ID" required type="email" placeholder="Type here" error={errors.email?.message} className={field} {...register('email')} />
@@ -153,6 +156,8 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
             <option value="no">No</option>
           </select>
         </div>
+
+        <PersonalisedMessage registration={register('personalMessage')} value={watch('personalMessage') ?? ''} error={errors.personalMessage?.message} />
 
         <CouponStep embedded />
 
