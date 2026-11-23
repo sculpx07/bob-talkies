@@ -28,8 +28,8 @@ export function ScrollToTop() {
           transition={{ type: 'spring', stiffness: 320, damping: 22 }}
           whileHover={{ y: -4, scale: 1.08 }}
           whileTap={{ scale: 0.92 }}
-          // desktop: directly above the WhatsApp button (bottom-6 + 56px button + 16px gap); mobile: above the bottom bar
-          className="fixed bottom-24 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-[#32105f] text-white shadow-[0_10px_24px_rgba(50,16,95,0.35)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c026d3]/40 md:right-6 md:h-14 md:w-14"
+          // stack (bottom to top, 16px gaps): WhatsApp (desktop) -> Vibe Hall icon -> this button; on mobile it sits above the Vibe Hall icon
+          className="fixed bottom-40 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-[#32105f] text-white shadow-[0_10px_24px_rgba(50,16,95,0.35)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c026d3]/40 md:bottom-[10.5rem] md:right-6 md:h-14 md:w-14"
         >
           <ArrowUp size={22} strokeWidth={2.5} aria-hidden="true" />
         </motion.button>

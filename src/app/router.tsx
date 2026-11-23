@@ -5,6 +5,7 @@ import { SavedDrawer } from '@/components/layout/SavedDrawer'
 import { Footer } from '@/components/layout/Footer'
 import { MobileBottomBar } from '@/components/layout/MobileBottomBar'
 import { WhatsAppFab } from '@/components/layout/WhatsAppFab'
+import { VibeHallFab } from '@/components/layout/VibeHallFab'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorBoundary } from './error-boundary'
@@ -102,6 +103,7 @@ function RootLayout() {
         <Footer />
         <MobileBottomBar />
         <WhatsAppFab />
+        <VibeHallFab />
         <ScrollToTop />
         <ScrollRestoration />
       </div>
