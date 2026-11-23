@@ -12,6 +12,8 @@ import { InstagramSection } from '@/components/home/InstagramSection'
 import { ExperiencePicker } from '@/components/home/ExperiencePicker'
 import { ExperienceCategories } from '@/components/home/ExperienceCategories'
 import { ExperienceHighlights } from '@/components/home/ExperienceHighlights'
+import { VibeHallSpotlight } from '@/components/home/VibeHallSpotlight'
+import { VibeHallIntroPopup } from '@/components/home/VibeHallIntroPopup'
 import { PersonaliseSurpriseSection } from '@/components/home/PersonaliseSurpriseSection'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { OfferTicket } from '@/components/ui/OfferTicket'
@@ -203,6 +205,7 @@ export default function HomePage() {
 
   return (
     <>
+      <VibeHallIntroPopup />
       <Seo
         title="BOB Talkies — Premium Private Theatre in Hyderabad"
         description="Book a private theatre in Hyderabad for birthdays, anniversaries, proposals, date nights and all celebrations. 4K projection, Dolby Atmos, in-house decoration and photography. Book online in minutes."
@@ -655,6 +658,8 @@ export default function HomePage() {
       </SectionReveal>
 
       <SectionReveal style="tilt"><ExperienceHighlights /></SectionReveal>
+
+      <SectionReveal style="rise"><VibeHallSpotlight /></SectionReveal>
 
       {/* Real Moments gallery — right after the experience section */}
       <SectionReveal style="rise"><CelebrationGallery /></SectionReveal>

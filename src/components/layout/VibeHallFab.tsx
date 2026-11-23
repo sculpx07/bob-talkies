@@ -42,13 +42,14 @@ export function VibeHallFab() {
       <Link
         to="/vibe-hall"
         aria-label="Discover Vibe Hall"
-        className="vh-fab fixed bottom-24 right-4 md:right-6 z-30 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full border border-[#C9A24B]/70 bg-gradient-to-br from-[#8b1a3a] to-[#5c1535] text-[#E8CC85] transition-transform duration-200 hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C9A24B]"
+        className="vh-fab fixed bottom-24 right-4 md:right-6 z-30 flex items-center gap-2 rounded-full border border-[#C9A24B]/70 bg-gradient-to-br from-[#8b1a3a] to-[#5c1535] text-[#E8CC85] transition-transform duration-200 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C9A24B] px-4 py-2.5 md:px-5 md:py-3"
       >
         <span
           aria-hidden="true"
           className="vh-fab-glow pointer-events-none absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(232,204,133,.45)_0%,transparent_70%)]"
         />
-        <Clapperboard className="relative h-5 w-5 md:h-6 md:w-6" strokeWidth={1.8} aria-hidden="true" />
+        <Clapperboard className="relative h-4 w-4 md:h-5 md:w-5 shrink-0" strokeWidth={1.8} aria-hidden="true" />
+        <span className="relative text-xs md:text-sm font-black tracking-wide whitespace-nowrap">Vibe Hall</span>
       </Link>
     </>
   )
