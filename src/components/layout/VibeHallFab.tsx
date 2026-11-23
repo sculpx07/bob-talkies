@@ -9,12 +9,17 @@ import { Clapperboard } from 'lucide-react'
  *  - mobile: WhatsApp FAB is hidden and the bottom bar is ~72px tall; bottom-24 (96px, 48px tall) clears it.
  * No hover label by design.
  */
+/** Pages where the icon is not shown (the Vibe Hall page itself, and the booking wizard). */
+export function isVibeHallFabHidden(pathname: string) {
+  if (pathname === '/vibe-hall') return true
+  return pathname.startsWith('/book') && pathname !== '/book/success' && pathname !== '/book/failed'
+}
+
 export function VibeHallFab() {
   const { pathname } = useLocation()
 
   // Already on the page it points to, or inside the booking wizard: stay out of the way.
-  if (pathname === '/vibe-hall') return null
-  if (pathname.startsWith('/book') && pathname !== '/book/success' && pathname !== '/book/failed') return null
+  if (isVibeHallFabHidden(pathname)) return null
 
   return (
     <>
