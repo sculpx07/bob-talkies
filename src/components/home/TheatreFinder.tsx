@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+﻿import { useState, useRef } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Users, ChevronRight, Sparkles, Minus, Plus } from 'lucide-react'
@@ -111,8 +111,8 @@ export function TheatreFinder() {
             <p className="font-cursive text-2xl text-[#c9933a] md:text-3xl">Experience Finder</p>
           </div>
           <h2 className="mb-2 text-2xl font-black leading-tight md:text-3xl lg:text-4xl">
-            <span className="text-[#2a0e4f]">What Are You </span>
-            <span className="text-[#8e39c7]">Planning Today?</span>
+            <span className="text-[#3d0a24]">What Are You </span>
+            <span className="text-[#a81a3a]">Planning Today?</span>
           </h2>
           <motion.div
             className="mx-auto mt-3 h-[3px] rounded-full bg-[#d4a94a]"
@@ -120,7 +120,7 @@ export function TheatreFinder() {
             animate={inView ? { width: 40 } : {}}
             transition={{ delay: 0.3, duration: 0.5 }}
           />
-          <p className="mx-auto mt-3 max-w-sm text-sm text-[#5b4578]/80">
+          <p className="mx-auto mt-3 max-w-sm text-sm text-[#5b2535]/80">
             Tell us your group size and occasion — we'll find the best theatre for you.
           </p>
         </motion.div>
@@ -130,10 +130,10 @@ export function TheatreFinder() {
           initial={{ opacity: 0, y: 32, rotate: -1.5 }}
           animate={inView ? { opacity: 1, y: 0, rotate: 0 } : {}}
           transition={{ delay: 0.1, duration: 0.7 }}
-          className="relative mb-8 grid overflow-hidden rounded-[2rem] bg-white shadow-[0_28px_70px_rgba(107,35,152,0.2)] ring-1 ring-[#f0e1f3] md:grid-cols-[280px_1fr]"
+          className="relative mb-8 grid overflow-hidden rounded-[2rem] bg-white shadow-[0_28px_70px_rgba(107,35,152,0.2)] ring-1 ring-[#f8dce4] md:grid-cols-[280px_1fr]"
         >
           {/* Stub: guests */}
-          <div className="relative bg-[linear-gradient(160deg,#32105f_0%,#6b2398_100%)] p-7 text-white">
+          <div className="relative bg-[linear-gradient(160deg,#5c1535_0%,#8b1a3a_100%)] p-7 text-white">
             <motion.span
               className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#f5bd61]/25 blur-2xl"
               animate={{ scale: [1, 1.25, 1] }}
@@ -165,33 +165,33 @@ export function TheatreFinder() {
           </div>
 
           {/* Perforation + notches */}
-          <span className="pointer-events-none absolute left-[280px] top-0 hidden h-full w-0 border-l-2 border-dashed border-[#e3d3ee] md:block" aria-hidden="true" />
+          <span className="pointer-events-none absolute left-[280px] top-0 hidden h-full w-0 border-l-2 border-dashed border-[#f0d0dc] md:block" aria-hidden="true" />
           <span className="pointer-events-none absolute left-[280px] -top-3 hidden h-6 w-6 -translate-x-1/2 rounded-full bg-[#fff6f0] md:block" aria-hidden="true" />
           <span className="pointer-events-none absolute -bottom-3 left-[280px] hidden h-6 w-6 -translate-x-1/2 rounded-full bg-[#fff6f0] md:block" aria-hidden="true" />
 
           {/* Main: occasion + quick start + action */}
           <div className="p-7 md:p-8">
-            <label className="mb-4 block text-xs font-bold uppercase tracking-[0.2em] text-[#8e39c7]">Occasion</label>
+            <label className="mb-4 block text-xs font-bold uppercase tracking-[0.2em] text-[#a81a3a]">Occasion</label>
             <div className="flex flex-wrap gap-2">
               {OCCASIONS.map(o => (
                 <button
                   key={o}
                   onClick={() => { setOccasion(o); setShowResult(false) }}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${occasion === o ? 'bg-[linear-gradient(135deg,#32105f,#8e39c7)] text-white shadow-[0_8px_20px_rgba(50,16,95,0.28)]' : 'bg-[#f6eefb] text-[#5b4578] hover:bg-[#efe0f8]'}`}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${occasion === o ? 'bg-[linear-gradient(135deg,#5c1535,#a81a3a)] text-white shadow-[0_8px_20px_rgba(50,16,95,0.28)]' : 'bg-[#fce8f0] text-[#5b2535] hover:bg-[#efe0f8]'}`}
                 >
                   {o}
                 </button>
               ))}
             </div>
 
-            <div className="mt-6 border-t border-dashed border-[#e3d3ee] pt-5">
+            <div className="mt-6 border-t border-dashed border-[#f0d0dc] pt-5">
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#c9933a]">Quick Start</p>
               <div className="flex flex-wrap gap-2">
                 {QUICK_PICKS.map(qp => (
                   <button
                     key={qp.label}
                     onClick={() => { setGuests(qp.guests); setOccasion(qp.occasion); setShowResult(false) }}
-                    className="rounded-full border border-[#ecd9ec] bg-[#fff7e8] px-3.5 py-1.5 text-xs font-semibold text-[#8f6420] transition-transform hover:scale-105"
+                    className="rounded-full border border-[#f5d5e0] bg-[#fff7e8] px-3.5 py-1.5 text-xs font-semibold text-[#8f6420] transition-transform hover:scale-105"
                   >
                     {qp.label}
                   </button>
@@ -202,7 +202,7 @@ export function TheatreFinder() {
             <div className="mt-7">
               <button
                 onClick={() => setShowResult(true)}
-                className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] px-8 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5 active:scale-95"
+                className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-8 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5 active:scale-95"
               >
                 Find My Theatre <Sparkles size={14} />
               </button>
@@ -218,7 +218,7 @@ export function TheatreFinder() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.45 }}
-              className="overflow-hidden rounded-[2rem] bg-white shadow-[0_24px_60px_rgba(107,35,152,0.18)] ring-1 ring-[#f0e1f3]"
+              className="overflow-hidden rounded-[2rem] bg-white shadow-[0_24px_60px_rgba(107,35,152,0.18)] ring-1 ring-[#f8dce4]"
             >
               <div className="flex flex-col sm:flex-row">
                 <div className="relative h-44 shrink-0 overflow-hidden sm:h-auto sm:w-60">
@@ -229,13 +229,13 @@ export function TheatreFinder() {
                   </span>
                 </div>
                 <div className="flex-1 p-6 md:p-7">
-                  <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-[#8e39c7]">Our Recommendation</p>
-                  <h3 className="mb-1 text-2xl font-black text-[#2a0e4f]">{result.name}</h3>
-                  <p className="mb-3 text-sm text-[#7d7094]">{result.capacity}</p>
-                  <p className="mb-5 text-sm leading-relaxed text-[#5b4578]">{result.desc}</p>
+                  <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-[#a81a3a]">Our Recommendation</p>
+                  <h3 className="mb-1 text-2xl font-black text-[#3d0a24]">{result.name}</h3>
+                  <p className="mb-3 text-sm text-[#7d4555]">{result.capacity}</p>
+                  <p className="mb-5 text-sm leading-relaxed text-[#5b2535]">{result.desc}</p>
                   <Link
                     to={`/theatres/${result.slug}`}
-                    className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] px-6 py-2.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(50,16,95,0.28)] transition-transform hover:-translate-y-0.5"
+                    className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-6 py-2.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(50,16,95,0.28)] transition-transform hover:-translate-y-0.5"
                   >
                     Book {result.name} <ChevronRight size={14} />
                   </Link>
@@ -258,10 +258,10 @@ export function TheatreFinder() {
                 <Link
                   key={t.slug}
                   to={`/theatres/${t.slug}`}
-                  className="rounded-full bg-white/80 px-4 py-2 text-sm text-[#2a0e4f] ring-1 ring-[#ecd9ec] backdrop-blur transition-transform hover:scale-105"
+                  className="rounded-full bg-white/80 px-4 py-2 text-sm text-[#3d0a24] ring-1 ring-[#f5d5e0] backdrop-blur transition-transform hover:scale-105"
                 >
                   {t.name}
-                  <span className="ml-1.5 text-xs text-[#9a8cae]">{t.capacity}</span>
+                  <span className="ml-1.5 text-xs text-[#9a6575]">{t.capacity}</span>
                 </Link>
               ))}
             </motion.div>

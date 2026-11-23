@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+﻿import type { ReactNode } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
@@ -40,13 +40,13 @@ export function PartyCounter({
       id={id}
       className={cn(
         'relative flex h-14 w-full items-center rounded-2xl border pl-11 transition-colors',
-        count > min ? 'bg-[#ede8ff] border-[#c4b5fd]' : 'bg-[#fff7f0] border-[#ecd9ec]',
+        count > min ? 'bg-[#ede8ff] border-[#c4b5fd]' : 'bg-[#fff7f0] border-[#f5d5e0]',
         label ? 'flex-col items-start justify-center gap-[3px] pr-4' : 'pr-4',
         className,
       )}
     >
       {/* icon */}
-      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#8e39c7]" aria-hidden="true">
+      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#a81a3a]" aria-hidden="true">
         {icon}
       </span>
 
@@ -56,7 +56,7 @@ export function PartyCounter({
             {label}
           </span>
           <div className="flex w-full items-center gap-2">
-            <span className="min-w-0 flex-1 whitespace-nowrap text-left text-base font-semibold tabular-nums text-[#5b1fa3]">
+            <span className="min-w-0 flex-1 whitespace-nowrap text-left text-base font-semibold tabular-nums text-[#7b1535]">
               {count} {displayLabel}
             </span>
             <div className="flex shrink-0 items-center gap-1.5">
@@ -65,7 +65,7 @@ export function PartyCounter({
                 onClick={decrement}
                 disabled={count <= min}
                 aria-label="Fewer guests"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#5c1535] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <Minus size={13} strokeWidth={2.5} />
               </button>
@@ -74,7 +74,7 @@ export function PartyCounter({
                 onClick={increment}
                 disabled={count >= max}
                 aria-label="More guests"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#5c1535] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <Plus size={13} strokeWidth={2.5} />
               </button>
@@ -83,7 +83,7 @@ export function PartyCounter({
         </>
       ) : (
         <div className="flex w-full items-center gap-2">
-          <span className={cn('min-w-0 flex-1 whitespace-nowrap text-left text-base tabular-nums', count === min ? 'font-medium text-[#b0a0c8]' : 'font-semibold text-[#5b1fa3]')}>
+          <span className={cn('min-w-0 flex-1 whitespace-nowrap text-left text-base tabular-nums', count === min ? 'font-medium text-[#b0a0c8]' : 'font-semibold text-[#7b1535]')}>
             {count} {displayLabel}
           </span>
           <div className="flex shrink-0 items-center gap-1.5">
@@ -92,7 +92,7 @@ export function PartyCounter({
               onClick={decrement}
               disabled={count <= min}
               aria-label="Fewer guests"
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#5c1535] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Minus size={13} strokeWidth={2.5} />
             </button>
@@ -101,7 +101,7 @@ export function PartyCounter({
               onClick={increment}
               disabled={count >= max}
               aria-label="More guests"
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#3b1278] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ede8f8] text-[#5c1535] transition-colors hover:bg-[#ddd4f5] disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Plus size={13} strokeWidth={2.5} />
             </button>

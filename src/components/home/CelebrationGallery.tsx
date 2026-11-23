@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+﻿import { useRef, useEffect, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Camera, ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -59,10 +59,10 @@ export function CelebrationGallery() {
           transition={{ duration: 0.35 }}
           className="flex items-center gap-2 mb-6"
         >
-          <Camera size={14} className="text-[#6b2398]" />
+          <Camera size={14} className="text-[#8b1a3a]" />
           <p className="font-cursive text-xl text-[#c9933a]">Real Moments, Real Memories</p>
           <span className="h-px flex-1 max-w-[40px] bg-[#d4a94a]/40" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-[#2a0e4f]/40">Recent Celebrations</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#3d0a24]/40">Recent Celebrations</span>
         </motion.div>
 
         {/* Strip + arrow buttons */}
@@ -82,7 +82,7 @@ export function CelebrationGallery() {
             aria-label="Previous"
             className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_6px_20px_rgba(42,14,79,0.18)] ring-1 ring-[#f0e6cc] transition-all hover:scale-110 disabled:opacity-30"
           >
-            <ChevronLeft size={16} className="text-[#2a0e4f]" />
+            <ChevronLeft size={16} className="text-[#3d0a24]" />
           </button>
 
           {/* Right arrow */}
@@ -93,7 +93,7 @@ export function CelebrationGallery() {
             aria-label="Next"
             className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-[0_6px_20px_rgba(42,14,79,0.18)] ring-1 ring-[#f0e6cc] transition-all hover:scale-110 disabled:opacity-30"
           >
-            <ChevronRight size={16} className="text-[#2a0e4f]" />
+            <ChevronRight size={16} className="text-[#3d0a24]" />
           </button>
 
           {/* Scrollable strip */}

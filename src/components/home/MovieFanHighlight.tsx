@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+﻿import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Film } from 'lucide-react'
@@ -31,12 +31,12 @@ export function MovieFanHighlight() {
           className="text-center mb-12"
         >
           <div className="flex items-center justify-center gap-2 mb-1">
-            <Film size={18} className="text-[#6b2398]" strokeWidth={1.8} />
+            <Film size={18} className="text-[#8b1a3a]" strokeWidth={1.8} />
             <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Movie & Fan Experiences</p>
           </div>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#2a0e4f] leading-tight mb-2">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#3d0a24] leading-tight mb-2">
             More Than a Movie.<br />
-            <span className="text-[#7c3aed]">It's a Fan Moment.</span>
+            <span className="text-[#9b1a3a]">It's a Fan Moment.</span>
           </h2>
           <motion.div
             className="mx-auto mt-3 h-[3px] rounded-full bg-[#d4a94a]"
@@ -44,7 +44,7 @@ export function MovieFanHighlight() {
             animate={inView ? { width: 40 } : {}}
             transition={{ delay: 0.3, duration: 0.5 }}
           />
-          <p className="mt-3 text-[#5b4578] text-sm max-w-md mx-auto">
+          <p className="mt-3 text-[#5b2535] text-sm max-w-md mx-auto">
             Celebrate your favourite films, stars and cinematic moments on the big screen — the way they were meant to be experienced.
           </p>
         </motion.div>
@@ -63,8 +63,8 @@ export function MovieFanHighlight() {
             >
               <span className="text-3xl shrink-0 leading-none">{h.emoji}</span>
               <div>
-                <h3 className="font-bold text-[#2a0e4f] text-sm mb-1">{h.label}</h3>
-                <p className="text-[#5b4578] text-xs leading-relaxed">{h.desc}</p>
+                <h3 className="font-bold text-[#3d0a24] text-sm mb-1">{h.label}</h3>
+                <p className="text-[#5b2535] text-xs leading-relaxed">{h.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -79,7 +79,7 @@ export function MovieFanHighlight() {
         >
           <Link
             to="/book?occasion=movie-night"
-            className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-black text-[#2a0e4f] transition-all hover:brightness-110 hover:scale-105 active:scale-95"
+            className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-black text-[#3d0a24] transition-all hover:brightness-110 hover:scale-105 active:scale-95"
             style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)' }}
           >
             Explore Screening Experiences <ArrowRight size={14} />

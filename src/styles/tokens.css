@@ -1,6 +1,6 @@
-:root {
+﻿:root {
   /* Backgrounds */
-  --bg-base: #fffaf4;
+  --bg-base: #fff8f9;
   --bg-surface: #fff4e9;
   --bg-elevated: #ffffff;
   --bg-navy: #f6e6ef;
@@ -9,9 +9,9 @@
   --border-subtle: #e6d3e4;
 
   /* Text */
-  --text-primary: #32105f;
-  --text-secondary: #5b4578;
-  --text-muted: #7d7094;
+  --text-primary: #5c1535;
+  --text-secondary: #5b2535;
+  --text-muted: #7d4555;
 
   /* Gold palette */
   --gold-400: #d9a24a;

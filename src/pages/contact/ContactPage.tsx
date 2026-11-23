@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+﻿import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
@@ -69,12 +69,12 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 36 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="grid overflow-hidden rounded-[2.25rem] bg-white shadow-[0_32px_80px_rgba(107,35,152,0.2)] ring-1 ring-[#f0e1f3] lg:grid-cols-[1fr_1.15fr]"
+            className="grid overflow-hidden rounded-[2.25rem] bg-white shadow-[0_32px_80px_rgba(107,35,152,0.2)] ring-1 ring-[#f8dce4] lg:grid-cols-[1fr_1.15fr]"
           >
             {/* Left: plum info panel */}
-            <div className="relative overflow-hidden bg-[linear-gradient(160deg,#32105f_0%,#5a1f9a_60%,#8e39c7_100%)] p-8 text-white md:p-10">
+            <div className="relative overflow-hidden bg-[linear-gradient(160deg,#5c1535_0%,#5a1f9a_60%,#a81a3a_100%)] p-8 text-white md:p-10">
               <motion.span className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-[#f5bd61]/30 blur-3xl" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 8, repeat: Infinity }} aria-hidden="true" />
-              <motion.span className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-[#d946ef]/30 blur-3xl" animate={{ scale: [1, 1.25, 1] }} transition={{ duration: 10, repeat: Infinity }} aria-hidden="true" />
+              <motion.span className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-[#d9126a]/30 blur-3xl" animate={{ scale: [1, 1.25, 1] }} transition={{ duration: 10, repeat: Infinity }} aria-hidden="true" />
               {['🎟️', '🍿', '🎬'].map((e, i) => (
                 <motion.span
                   key={e}
@@ -125,8 +125,8 @@ export default function ContactPage() {
                   <span className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 ring-8 ring-emerald-50">
                     <Check size={34} className="text-emerald-600" />
                   </span>
-                  <h3 className="font-display text-3xl font-bold text-[#2a0e4f]">Message Sent!</h3>
-                  <p className="mt-2 max-w-sm text-[#5b4578]">We'll get back to you within 2 hours. For urgent queries, chat with us on WhatsApp.</p>
+                  <h3 className="font-display text-3xl font-bold text-[#3d0a24]">Message Sent!</h3>
+                  <p className="mt-2 max-w-sm text-[#5b2535]">We'll get back to you within 2 hours. For urgent queries, chat with us on WhatsApp.</p>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit((data) => submitLead(data))} className="space-y-5">
@@ -151,13 +151,13 @@ export default function ContactPage() {
                   </div>
                   <Textarea label="Message" required placeholder="Tell us how we can help..." error={errors.message?.message} rows={4} {...register('message')} />
                   <label className="flex cursor-pointer items-start gap-3 rounded-2xl bg-[#fdf6ff] p-3.5">
-                    <input type="checkbox" defaultChecked className="mt-0.5 h-4 w-4 rounded accent-[#6b2398]" {...register('consentWhatsapp')} />
-                    <span className="text-sm text-[#5b4578]">I agree to receive updates on WhatsApp</span>
+                    <input type="checkbox" defaultChecked className="mt-0.5 h-4 w-4 rounded accent-[#8b1a3a]" {...register('consentWhatsapp')} />
+                    <span className="text-sm text-[#5b2535]">I agree to receive updates on WhatsApp</span>
                   </label>
                   <button
                     type="submit"
                     disabled={isPending}
-                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] text-base font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)] transition-all hover:-translate-y-0.5 disabled:opacity-60"
+                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-base font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)] transition-all hover:-translate-y-0.5 disabled:opacity-60"
                   >
                     {isPending ? 'Sending…' : <>Send Message <Send size={17} /></>}
                   </button>

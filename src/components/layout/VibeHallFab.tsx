@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom'
+﻿import { Link, useLocation } from 'react-router-dom'
 import { Clapperboard } from 'lucide-react'
 
 /**
@@ -42,7 +42,7 @@ export function VibeHallFab() {
       <Link
         to="/vibe-hall"
         aria-label="Discover Vibe Hall"
-        className="vh-fab fixed bottom-24 right-4 md:right-6 z-30 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full border border-[#C9A24B]/70 bg-gradient-to-br from-[#6b2398] to-[#32105f] text-[#E8CC85] transition-transform duration-200 hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C9A24B]"
+        className="vh-fab fixed bottom-24 right-4 md:right-6 z-30 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full border border-[#C9A24B]/70 bg-gradient-to-br from-[#8b1a3a] to-[#5c1535] text-[#E8CC85] transition-transform duration-200 hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C9A24B]"
       >
         <span
           aria-hidden="true"

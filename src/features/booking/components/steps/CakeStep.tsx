@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils/cn'
 const PREMIUM_FROM_PAISE = 99900
 
 const TILES = [
-  'from-[#fbe3ec] to-[#f6c9dc]', 'from-[#f3e6ff] to-[#dcc4f5]', 'from-[#fff1d6] to-[#f8dca0]', 'from-[#e4f1ff] to-[#c6dcf5]',
+  'from-[#fbe3ec] to-[#f6c9dc]', 'from-[#fce8f0] to-[#dcc4f5]', 'from-[#fff1d6] to-[#f8dca0]', 'from-[#e4f1ff] to-[#c6dcf5]',
 ]
 
 interface Cake {
@@ -74,26 +74,26 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
   return (
     <div>
       <div className="mb-4 flex items-center justify-between gap-3">
-        <button type="button" onClick={onBack} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6b2398] hover:underline">
+        <button type="button" onClick={onBack} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8b1a3a] hover:underline">
           <ArrowLeft size={15} /> Back
         </button>
-        <button type="button" onClick={onSkip} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6b2398] hover:underline">
+        <button type="button" onClick={onSkip} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8b1a3a] hover:underline">
           Add later after booking <ArrowRight size={15} />
         </button>
       </div>
 
-      <h2 className="font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Choose cake</h2>
-      <p className="mb-6 mt-1 text-sm text-[#5b4578]">Pick a cake below, or describe a customized one. You can skip this step.</p>
+      <h2 className="font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">Choose cake</h2>
+      <p className="mb-6 mt-1 text-sm text-[#5b2535]">Pick a cake below, or describe a customized one. You can skip this step.</p>
       {(
-        <div className="mb-7 rounded-2xl bg-[#fdf6ff] p-4 ring-1 ring-[#ecd9ec]">
-          <label htmlFor="custom-request" className="mb-1.5 block text-sm font-semibold text-[#2a0e4f]">Customize as per your requirement</label>
+        <div className="mb-7 rounded-2xl bg-[#fdf6ff] p-4 ring-1 ring-[#f5d5e0]">
+          <label htmlFor="custom-request" className="mb-1.5 block text-sm font-semibold text-[#3d0a24]">Customize as per your requirement</label>
           <textarea
             id="custom-request" rows={3} value={state.customRequest}
             onChange={(e) => dispatch({ type: 'SET_CUSTOM_REQUEST', text: e.target.value.slice(0, 400) })}
             placeholder="Flavour, theme, message on the cake, anything special"
-            className="w-full resize-none rounded-xl border border-[#ecd9ec] bg-white px-4 py-3 text-sm text-[#2a0e4f] outline-none placeholder:text-[#b0a0c8] focus:border-[#c026d3] focus:ring-2 focus:ring-[#c026d3]/25"
+            className="w-full resize-none rounded-xl border border-[#f5d5e0] bg-white px-4 py-3 text-sm text-[#3d0a24] outline-none placeholder:text-[#b0a0c8] focus:border-[#c0125a] focus:ring-2 focus:ring-[#c0125a]/25"
           />
-          <p className="mt-1 text-right text-[11px] text-[#7d7094]">{state.customRequest.length}/400. Our team will confirm custom cakes with you.</p>
+          <p className="mt-1 text-right text-[11px] text-[#7d4555]">{state.customRequest.length}/400. Our team will confirm custom cakes with you.</p>
         </div>
       )}
 
@@ -107,7 +107,7 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
             onClick={() => setTab(id)}
             className={cn(
               'rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
-              tab === id ? 'bg-[linear-gradient(135deg,#32105f,#6b2398)] text-white shadow-[0_8px_18px_rgba(50,16,95,0.3)]' : 'bg-[#f3ecf8] text-[#5b4578] hover:bg-[#eadcf5]',
+              tab === id ? 'bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-white shadow-[0_8px_18px_rgba(50,16,95,0.3)]' : 'bg-[#f3ecf8] text-[#5b2535] hover:bg-[#eadcf5]',
             )}
           >
             {label}
@@ -118,7 +118,7 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
       {isLoading ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">{[1, 2, 3, 4].map((i) => <Skeleton key={i} className="aspect-square w-full" rounded="lg" />)}</div>
       ) : shown.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d7094]">No cakes in this list yet.</p>
+        <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d4555]">No cakes in this list yet.</p>
       ) : (
         <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-4">
           {shown.map((cake, i) => {
@@ -139,19 +139,19 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
                 <span
                   className={cn(
                     'relative block aspect-square w-full overflow-hidden rounded-2xl transition-all',
-                    size ? 'ring-[3px] ring-[#c026d3] shadow-[0_14px_30px_rgba(192,38,211,0.3)]' : 'ring-1 ring-[#ecd9ec] group-focus-visible:ring-2 group-focus-visible:ring-[#c026d3]',
+                    size ? 'ring-[3px] ring-[#c0125a] shadow-[0_14px_30px_rgba(192,38,211,0.3)]' : 'ring-1 ring-[#f5d5e0] group-focus-visible:ring-2 group-focus-visible:ring-[#c0125a]',
                   )}
                 >
                   <CakePhoto cake={cake} index={i} className="transition-transform duration-500 group-hover:scale-105" />
                   {size && (
-                    <span className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#c026d3] text-white shadow">
+                    <span className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#c0125a] text-white shadow">
                       <Check size={15} strokeWidth={3} />
                     </span>
                   )}
                 </span>
-                <span className="mt-2 block text-sm font-semibold leading-tight text-[#2a0e4f]">{cake.name}</span>
-                <span className="block text-sm text-[#5b4578]">
-                  {size ? <strong className="text-[#6b2398]">{size.sizeLabel} · {formatINR(size.pricePaise)}</strong> : <>from {formatINR(cake.sizes[0].pricePaise)}</>}
+                <span className="mt-2 block text-sm font-semibold leading-tight text-[#3d0a24]">{cake.name}</span>
+                <span className="block text-sm text-[#5b2535]">
+                  {size ? <strong className="text-[#8b1a3a]">{size.sizeLabel} · {formatINR(size.pricePaise)}</strong> : <>from {formatINR(cake.sizes[0].pricePaise)}</>}
                 </span>
               </motion.button>
             )
@@ -184,15 +184,15 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
                 >
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      <span className="block h-14 w-14 shrink-0 overflow-hidden rounded-xl ring-1 ring-[#ecd9ec]">
+                      <span className="block h-14 w-14 shrink-0 overflow-hidden rounded-xl ring-1 ring-[#f5d5e0]">
                         <CakePhoto cake={openCake.cake} index={openCake.index} className="!text-2xl" />
                       </span>
                       <div className="min-w-0">
-                        <Dialog.Title className="text-lg font-bold leading-tight text-[#2a0e4f]">Customize as per requirement</Dialog.Title>
-                        <p className="truncate text-sm text-[#7d7094]">{openCake.cake.name}</p>
+                        <Dialog.Title className="text-lg font-bold leading-tight text-[#3d0a24]">Customize as per requirement</Dialog.Title>
+                        <p className="truncate text-sm text-[#7d4555]">{openCake.cake.name}</p>
                       </div>
                     </div>
-                    <Dialog.Close aria-label="Close" className="shrink-0 rounded-full p-1.5 text-[#2a0e4f] transition-colors hover:bg-[#f6e6ef]">
+                    <Dialog.Close aria-label="Close" className="shrink-0 rounded-full p-1.5 text-[#3d0a24] transition-colors hover:bg-[#f6e6ef]">
                       <X size={20} />
                     </Dialog.Close>
                   </div>
@@ -211,14 +211,14 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
                           transition={{ delay: 0.08 + i * 0.06, duration: 0.3 }}
                           whileTap={{ scale: 0.98 }}
                           className={cn(
-                            'flex w-full items-center justify-between rounded-2xl border px-4 py-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c026d3]',
-                            active ? 'border-[#c026d3] bg-[#faf0ff]' : 'border-[#e8dcef] bg-white hover:border-[#c58be6]',
+                            'flex w-full items-center justify-between rounded-2xl border px-4 py-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c0125a]',
+                            active ? 'border-[#c0125a] bg-[#faf0ff]' : 'border-[#e8dcef] bg-white hover:border-[#c58be6]',
                           )}
                         >
-                          <span className="font-semibold text-[#2a0e4f]">{size.sizeLabel}</span>
+                          <span className="font-semibold text-[#3d0a24]">{size.sizeLabel}</span>
                           <span className="flex items-center gap-3">
-                            <span className="font-semibold tabular-nums text-[#2a0e4f]">{formatINR(size.pricePaise)}</span>
-                            <span className={cn('flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors', active ? 'border-[#c026d3] bg-[#c026d3]' : 'border-[#b9b2c4]')}>
+                            <span className="font-semibold tabular-nums text-[#3d0a24]">{formatINR(size.pricePaise)}</span>
+                            <span className={cn('flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors', active ? 'border-[#c0125a] bg-[#c0125a]' : 'border-[#b9b2c4]')}>
                               {active && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500, damping: 18 }} className="flex"><Check size={14} strokeWidth={3} className="text-white" /></motion.span>}
                             </span>
                           </span>

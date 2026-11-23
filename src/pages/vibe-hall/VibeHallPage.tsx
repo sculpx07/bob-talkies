@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+﻿import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
@@ -97,7 +97,7 @@ export default function VibeHallPage() {
               >
                 <Link
                   to={bookTo}
-                  className="group inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#f5d7a1] to-[#e0a94a] px-8 py-4 text-sm font-black tracking-wide text-[#2a0e4f] shadow-[0_18px_50px_rgba(224,169,74,.35)] transition-transform duration-300 hover:-translate-y-1"
+                  className="group inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#f5d7a1] to-[#e0a94a] px-8 py-4 text-sm font-black tracking-wide text-[#3d0a24] shadow-[0_18px_50px_rgba(224,169,74,.35)] transition-transform duration-300 hover:-translate-y-1"
                 >
                   Book Vibe Hall
                   <ArrowRight size={17} className="transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true" />
@@ -128,7 +128,7 @@ export default function VibeHallPage() {
           <div className="md:col-span-5">
             <GoldRule />
             <p className="mt-5 font-cursive text-3xl text-[#c9933a]">The venue</p>
-            <h2 className="mt-1 font-display text-4xl font-medium leading-[1.08] text-[#2a0e4f] md:text-6xl">
+            <h2 className="mt-1 font-display text-4xl font-medium leading-[1.08] text-[#3d0a24] md:text-6xl">
               A private hall with a cinema's heart.
             </h2>
             <p className="mt-6 text-base leading-relaxed text-[#4a3a66] md:text-lg">
@@ -142,8 +142,8 @@ export default function VibeHallPage() {
                 { icon: Sparkles, k: '4K', v: 'visuals' },
               ].map(({ icon: Icon, k, v }) => (
                 <li key={v} className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#2a0e4f] text-[#f5d7a1]"><Icon size={18} aria-hidden="true" /></span>
-                  <span><span className="block font-display text-xl font-semibold leading-none text-[#2a0e4f]">{k}</span><span className="text-xs text-[#6b5a86]">{v}</span></span>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#3d0a24] text-[#f5d7a1]"><Icon size={18} aria-hidden="true" /></span>
+                  <span><span className="block font-display text-xl font-semibold leading-none text-[#3d0a24]">{k}</span><span className="text-xs text-[#6b5a86]">{v}</span></span>
                 </li>
               ))}
             </ul>
@@ -167,7 +167,7 @@ export default function VibeHallPage() {
 
         {/* 3. PACKAGES: two distinct presentations */}
         <section id="packages" className="relative mx-3 mt-32 scroll-mt-24 overflow-hidden rounded-[2rem] bg-[#0d0420] px-5 py-20 md:mx-6 md:mt-48 md:rounded-[3rem] md:px-10 md:py-28">
-          <span className="pointer-events-none absolute -left-24 top-10 h-96 w-96 rounded-full bg-[#6b2398]/40 blur-[110px]" aria-hidden="true" />
+          <span className="pointer-events-none absolute -left-24 top-10 h-96 w-96 rounded-full bg-[#8b1a3a]/40 blur-[110px]" aria-hidden="true" />
           <span className="pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-[#c9933a]/25 blur-[110px]" aria-hidden="true" />
 
           <div className="relative mx-auto max-w-6xl">
@@ -182,7 +182,7 @@ export default function VibeHallPage() {
               <motion.article
                 initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={VIEW} transition={{ duration: 0.9, ease: EASE }}
                 whileHover={reduce ? undefined : { y: -8, rotate: -0.6 }}
-                className="relative flex flex-col text-[#2a0e4f] [filter:drop-shadow(0_30px_50px_rgba(0,0,0,.45))]"
+                className="relative flex flex-col text-[#3d0a24] [filter:drop-shadow(0_30px_50px_rgba(0,0,0,.45))]"
               >
                 <div
                   className="relative flex-1 bg-[#fbf1dc] px-7 pb-8 pt-9 md:px-10"
@@ -206,12 +206,12 @@ export default function VibeHallPage() {
                   </div>
                   <p className="mt-3 text-sm font-medium text-[#5a4630]">20 people included · Maximum capacity 40</p>
 
-                  <div className="mt-6 flex items-center justify-between gap-3 rounded-2xl bg-[#2a0e4f] px-5 py-3.5 text-white">
+                  <div className="mt-6 flex items-center justify-between gap-3 rounded-2xl bg-[#3d0a24] px-5 py-3.5 text-white">
                     <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#f5d7a1]">Weekday offer</span>
                     <span className="font-display text-2xl font-semibold">₹6,499</span>
                   </div>
 
-                  <span className="mt-8 block border-t-2 border-dashed border-[#2a0e4f]/25" aria-hidden="true" />
+                  <span className="mt-8 block border-t-2 border-dashed border-[#3d0a24]/25" aria-hidden="true" />
 
                   <dl className="mt-6 grid grid-cols-2 gap-4 text-sm">
                     <div><dt className="text-[11px] font-bold uppercase tracking-widest text-[#7d6a4c]">Extra person</dt><dd className="mt-0.5 font-display text-2xl font-semibold">₹300</dd></div>
@@ -224,7 +224,7 @@ export default function VibeHallPage() {
               <motion.article
                 initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={VIEW} transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
                 whileHover={reduce ? undefined : { y: -8 }}
-                className="relative rounded-[1.75rem] bg-[linear-gradient(140deg,#e8b95c,#6b2398_45%,#e8b95c)] p-px shadow-[0_30px_70px_rgba(201,147,58,.25)]"
+                className="relative rounded-[1.75rem] bg-[linear-gradient(140deg,#e8b95c,#8b1a3a_45%,#e8b95c)] p-px shadow-[0_30px_70px_rgba(201,147,58,.25)]"
               >
                 <div className="relative flex h-full flex-col overflow-hidden rounded-[1.7rem] bg-[linear-gradient(160deg,#1d0a42,#0d0420_70%)] px-7 pb-8 pt-9 text-white md:px-10">
                   <motion.span
@@ -280,7 +280,7 @@ export default function VibeHallPage() {
             <div className="mt-12 flex flex-col items-center gap-3">
               <Link
                 to={bookTo}
-                className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#f5d7a1] to-[#e0a94a] px-10 py-4 text-sm font-black tracking-wide text-[#2a0e4f] shadow-[0_18px_50px_rgba(224,169,74,.3)] transition-transform duration-300 hover:-translate-y-1"
+                className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#f5d7a1] to-[#e0a94a] px-10 py-4 text-sm font-black tracking-wide text-[#3d0a24] shadow-[0_18px_50px_rgba(224,169,74,.3)] transition-transform duration-300 hover:-translate-y-1"
               >
                 Select your slot
                 <ArrowRight size={17} className="transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true" />

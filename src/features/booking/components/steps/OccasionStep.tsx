@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+﻿import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import { useBooking } from '../../state/booking.context'
 import { OCCASIONS } from '@/content/occasions'
@@ -19,8 +19,8 @@ export function OccasionStep() {
   const { state, dispatch } = useBooking()
   return (
     <div>
-      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">What are you celebrating?</h2>
-      <p className="mb-6 text-sm text-[#5b4578]">Pick the occasion and we will tailor the rest of your booking.</p>
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">What are you celebrating?</h2>
+      <p className="mb-6 text-sm text-[#5b2535]">Pick the occasion and we will tailor the rest of your booking.</p>
       <div role="radiogroup" aria-label="Select occasion" className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {OCCASIONS.map((o, i) => {
           const active = state.occasion === o.slug
@@ -37,14 +37,14 @@ export function OccasionStep() {
               whileHover={{ y: -4 }}
               whileTap={{ scale: 0.97 }}
               className={cn(
-                'group relative aspect-[4/5] overflow-hidden rounded-3xl text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c026d3]/40',
-                active ? 'ring-[3px] ring-[#c026d3] shadow-[0_18px_40px_rgba(192,38,211,0.35)]' : 'shadow-[0_10px_26px_rgba(107,35,152,0.16)]',
+                'group relative aspect-[4/5] overflow-hidden rounded-3xl text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c0125a]/40',
+                active ? 'ring-[3px] ring-[#c0125a] shadow-[0_18px_40px_rgba(192,38,211,0.35)]' : 'shadow-[0_10px_26px_rgba(107,35,152,0.16)]',
               )}
             >
               <img src={IMAGES[o.slug] ?? o.heroImage} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
-              <span className={cn('absolute inset-0 bg-gradient-to-t', active ? 'from-[#32105f] via-[#32105f]/40' : 'from-[#1d0a38]/90 via-[#1d0a38]/20', 'to-transparent')} />
+              <span className={cn('absolute inset-0 bg-gradient-to-t', active ? 'from-[#5c1535] via-[#5c1535]/40' : 'from-[#1d0a38]/90 via-[#1d0a38]/20', 'to-transparent')} />
               {active && (
-                <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-[#c026d3] text-white shadow">
+                <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-[#c0125a] text-white shadow">
                   <Check size={15} strokeWidth={3} />
                 </span>
               )}

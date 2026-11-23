@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+﻿import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { ArrowRight, CalendarDays, Clock, Clapperboard, Users, BadgeCheck, ShieldCheck } from 'lucide-react'
@@ -44,7 +44,7 @@ export default function PassPage() {
           >
             {/* three columns on wide screens: main | tear line | QR stub; stacked on phones */}
             <article className="relative grid overflow-hidden rounded-[2rem] bg-[#140930] text-white shadow-[0_40px_90px_rgba(42,14,79,0.45)] ring-1 ring-white/10 md:grid-cols-[1fr_auto_17rem]">
-              <span className="pointer-events-none absolute -left-20 -top-24 h-64 w-64 rounded-full bg-[#d946ef]/35 blur-3xl" aria-hidden="true" />
+              <span className="pointer-events-none absolute -left-20 -top-24 h-64 w-64 rounded-full bg-[#d9126a]/35 blur-3xl" aria-hidden="true" />
               <span className="pointer-events-none absolute -bottom-24 right-48 h-64 w-64 rounded-full bg-[#f5bd61]/20 blur-3xl" aria-hidden="true" />
 
               {/* Main: guest + details */}
@@ -98,7 +98,7 @@ export default function PassPage() {
               </div>
             </article>
 
-            <p className="mt-5 flex items-center justify-center gap-1.5 text-center text-xs text-[#7d7094]">
+            <p className="mt-5 flex items-center justify-center gap-1.5 text-center text-xs text-[#7d4555]">
               <ShieldCheck size={13} /> Show this pass at the venue. Present a photo ID if requested.
             </p>
           </motion.div>

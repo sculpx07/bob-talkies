@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+﻿import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles } from 'lucide-react'
@@ -19,7 +19,7 @@ export function SportsNightHighlight() {
     <section
       ref={ref}
       className="py-16 md:py-24 relative overflow-hidden"
-      style={{ background: 'linear-gradient(160deg,#2a0e4f 0%,#32105f 55%,#2a0e4f 100%)' }}
+      style={{ background: 'linear-gradient(160deg,#3d0a24 0%,#5c1535 55%,#3d0a24 100%)' }}
     >
       {/* Ambient */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -50,7 +50,7 @@ export function SportsNightHighlight() {
             </p>
             <Link
               to="/book?occasion=sports-screening"
-              className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#2a0e4f] transition-all hover:brightness-110 hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#3d0a24] transition-all hover:brightness-110 hover:scale-105 active:scale-95"
               style={{ background: 'linear-gradient(135deg,#fbbf24,#fde68a 50%,#fbbf24)' }}
             >
               Plan Your Sports Night <ArrowRight size={14} />

@@ -1,4 +1,4 @@
-import { Link, useLocation, NavLink } from 'react-router-dom'
+﻿import { Link, useLocation, NavLink } from 'react-router-dom'
 import { MessageCircle, Ticket } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { config } from '@/lib/config'
@@ -29,7 +29,7 @@ export function MobileBottomBar() {
           to="/my-booking"
           className={({ isActive }) => cn(
             'flex flex-col items-center justify-center gap-0.5 rounded-2xl px-3 py-2 text-[10px] font-black transition-colors shrink-0',
-            isActive ? 'bg-[#32105f] text-white' : 'bg-[#f6e6ef] text-[#6b2398]'
+            isActive ? 'bg-[#5c1535] text-white' : 'bg-[#f6e6ef] text-[#8b1a3a]'
           )}
           aria-label="My Bookings"
         >

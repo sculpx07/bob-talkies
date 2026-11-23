@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+﻿import { useState, type ReactNode } from 'react'
 import * as Popover from '@radix-ui/react-popover'
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 import {
@@ -53,11 +53,11 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
         className={cn(
           'group relative flex h-14 w-full items-center rounded-2xl border pl-11 pr-10 text-left text-base outline-none transition-colors',
           label && 'flex-col items-start justify-center gap-px',
-          selected ? 'bg-[#ede8ff] border-[#c4b5fd] font-semibold text-[#160730]' : 'bg-[#fff7f0] border-[#ecd9ec] font-medium text-[#b0a0c8]',
+          selected ? 'bg-[#ede8ff] border-[#c4b5fd] font-semibold text-[#160730]' : 'bg-[#fff7f0] border-[#f5d5e0] font-medium text-[#b0a0c8]',
           className,
         )}
       >
-        <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#8e39c7]" aria-hidden="true">
+        <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#a81a3a]" aria-hidden="true">
           {icon}
         </span>
         {label && (
@@ -70,7 +70,7 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
         </span>
         <ChevronDown
           size={15}
-          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#7d7094] transition-transform group-data-[state=open]:rotate-180"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#7d4555] transition-transform group-data-[state=open]:rotate-180"
           aria-hidden="true"
         />
       </Popover.Trigger>
@@ -82,18 +82,18 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
           side="top"
           avoidCollisions
           collisionPadding={{ top: 80 }}
-          className="z-[200] w-[272px] rounded-2xl border border-[#ecd9ec] bg-white p-3 shadow-[0_24px_50px_rgba(107,35,152,0.22)] data-[state=open]:animate-fade-in"
+          className="z-[200] w-[272px] rounded-2xl border border-[#f5d5e0] bg-white p-3 shadow-[0_24px_50px_rgba(107,35,152,0.22)] data-[state=open]:animate-fade-in"
         >
           {/* month header */}
           <div className="mb-2 flex items-center justify-between">
-            <p className="pl-1 text-sm font-bold text-[#2a0e4f]">{format(month, 'MMMM yyyy')}</p>
+            <p className="pl-1 text-sm font-bold text-[#3d0a24]">{format(month, 'MMMM yyyy')}</p>
             <div className="flex gap-1">
               <button
                 type="button"
                 aria-label="Previous month"
                 disabled={!canGoBack}
                 onClick={() => setMonth(addMonths(month, -1))}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-[#6b2398] transition-colors hover:bg-[#f6e6ef] disabled:opacity-30 disabled:hover:bg-transparent"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-[#8b1a3a] transition-colors hover:bg-[#f6e6ef] disabled:opacity-30 disabled:hover:bg-transparent"
               >
                 <ChevronLeft size={18} />
               </button>
@@ -101,7 +101,7 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
                 type="button"
                 aria-label="Next month"
                 onClick={() => setMonth(addMonths(month, 1))}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-[#6b2398] transition-colors hover:bg-[#f6e6ef]"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-[#8b1a3a] transition-colors hover:bg-[#f6e6ef]"
               >
                 <ChevronRight size={18} />
               </button>
@@ -111,7 +111,7 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
           {/* weekdays */}
           <div className="grid grid-cols-7 text-center">
             {WEEKDAYS.map((w) => (
-              <span key={w} className="py-1 text-[11px] font-semibold uppercase tracking-wide text-[#7d7094]">{w}</span>
+              <span key={w} className="py-1 text-[11px] font-semibold uppercase tracking-wide text-[#7d4555]">{w}</span>
             ))}
           </div>
 
@@ -133,11 +133,11 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
                   className={cn(
                     'mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition-colors',
                     isSel
-                      ? 'bg-[linear-gradient(135deg,#6b2398,#d946ef)] font-bold text-white shadow-[0_6px_14px_rgba(107,35,152,0.35)]'
+                      ? 'bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] font-bold text-white shadow-[0_6px_14px_rgba(107,35,152,0.35)]'
                       : disabled
                       ? 'cursor-not-allowed text-[#d8cfe8] line-through'
-                      : 'text-[#32105f] hover:bg-[#f6e6ef]',
-                    isToday && !isSel && 'ring-1 ring-[#d946ef]',
+                      : 'text-[#5c1535] hover:bg-[#f6e6ef]',
+                    isToday && !isSel && 'ring-1 ring-[#d9126a]',
                   )}
                 >
                   {d.getDate()}
@@ -147,11 +147,11 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
           </div>
 
           {/* footer */}
-          <div className="mt-2 flex items-center justify-between border-t border-[#f1e2f0] px-1 pt-2.5 text-sm font-semibold">
+          <div className="mt-2 flex items-center justify-between border-t border-[#f8dce4] px-1 pt-2.5 text-sm font-semibold">
             <button
               type="button"
               onClick={() => { onChange(''); setOpen(false) }}
-              className="text-[#7d7094] transition-colors hover:text-[#32105f]"
+              className="text-[#7d4555] transition-colors hover:text-[#5c1535]"
             >
               Clear
             </button>
@@ -159,7 +159,7 @@ export function PartyDatePicker({ id, value, onChange, min, placeholder = 'Selec
               type="button"
               disabled={minDate ? isBefore(today, minDate) : false}
               onClick={() => pick(today)}
-              className="text-[#6b2398] transition-colors hover:text-[#d946ef] disabled:opacity-40"
+              className="text-[#8b1a3a] transition-colors hover:text-[#d9126a] disabled:opacity-40"
             >
               Today
             </button>

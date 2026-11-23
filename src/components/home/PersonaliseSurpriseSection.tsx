@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles } from 'lucide-react'
@@ -91,7 +91,7 @@ export function PersonaliseSurpriseSection() {
   return (
     <section ref={ref} className="relative overflow-x-clip py-14 md:py-20">
       <motion.span
-        className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#d946ef]/15 blur-3xl"
+        className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#d9126a]/15 blur-3xl"
         animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
         transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
         aria-hidden="true"
@@ -116,16 +116,16 @@ export function PersonaliseSurpriseSection() {
               <Sparkles size={15} className="text-[#d4a94a]" />
               <p className="font-cursive text-xl text-[#c9933a]">Personalise Your Surprise</p>
             </div>
-            <h2 className="text-2xl font-black leading-snug text-[#2a0e4f] md:text-3xl">
+            <h2 className="text-2xl font-black leading-snug text-[#3d0a24] md:text-3xl">
               Your Story. Your Screen. Your Surprise.
             </h2>
-            <p className="mt-2 max-w-sm text-sm text-[#5b4578]/80">
+            <p className="mt-2 max-w-sm text-sm text-[#5b2535]/80">
               Make your celebration truly yours — from personalised videos to big-screen surprises they'll never expect.
             </p>
           </div>
           <Link
             to="/personalise"
-            className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] px-6 py-3 text-xs font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5"
+            className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-6 py-3 text-xs font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5"
           >
             Create Your Screen Surprise <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
           </Link>
@@ -153,11 +153,11 @@ export function PersonaliseSurpriseSection() {
                 transition={{ duration: 0.35 }}
               >
                 <span className="mt-5 block h-1 w-12 rounded-full" style={{ background: cur.color }} />
-                <h3 className="mt-4 font-display text-3xl font-bold leading-snug text-[#2a0e4f]">{cur.title}</h3>
-                <p className="mt-3 text-base leading-relaxed text-[#5b4578]">{cur.desc}</p>
+                <h3 className="mt-4 font-display text-3xl font-bold leading-snug text-[#3d0a24]">{cur.title}</h3>
+                <p className="mt-3 text-base leading-relaxed text-[#5b2535]">{cur.desc}</p>
                 <Link
                   to={`/personalise#${cur.id}`}
-                  className="group mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#6b2398]"
+                  className="group mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#8b1a3a]"
                 >
                   Explore <ArrowRight size={16} className="transition-transform group-hover:translate-x-1.5" />
                 </Link>
@@ -165,10 +165,10 @@ export function PersonaliseSurpriseSection() {
             </AnimatePresence>
 
             <div className="mt-8 flex items-center gap-4">
-              <button type="button" onClick={() => go(-1)} aria-label="Previous" className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#2a0e4f] shadow-[0_8px_20px_rgba(107,35,152,0.15)] ring-1 ring-[#ecd9ec] transition-transform hover:-translate-x-0.5">
+              <button type="button" onClick={() => go(-1)} aria-label="Previous" className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#3d0a24] shadow-[0_8px_20px_rgba(107,35,152,0.15)] ring-1 ring-[#f5d5e0] transition-transform hover:-translate-x-0.5">
                 <ArrowRight size={16} className="rotate-180" />
               </button>
-              <button type="button" onClick={() => go(1)} aria-label="Next" className="flex h-11 w-11 items-center justify-center rounded-full bg-[#2a0e4f] text-white shadow-[0_8px_20px_rgba(42,14,79,0.3)] transition-transform hover:translate-x-0.5">
+              <button type="button" onClick={() => go(1)} aria-label="Next" className="flex h-11 w-11 items-center justify-center rounded-full bg-[#3d0a24] text-white shadow-[0_8px_20px_rgba(42,14,79,0.3)] transition-transform hover:translate-x-0.5">
                 <ArrowRight size={16} />
               </button>
               <div className="flex items-center gap-1.5">
@@ -182,7 +182,7 @@ export function PersonaliseSurpriseSection() {
               to="/personalise"
               className="mt-6 flex max-w-sm items-center justify-between gap-3 rounded-2xl border border-dashed border-[#d4a94a]/60 bg-[#fff6e0]/70 px-4 py-3 text-sm transition-colors hover:bg-[#fff1d0]"
             >
-              <span className="font-bold text-[#2a0e4f]">Have your own surprise idea?</span>
+              <span className="font-bold text-[#3d0a24]">Have your own surprise idea?</span>
               <span className="inline-flex shrink-0 items-center gap-1.5 font-bold text-[#8f6420]">Plan It Here <ArrowRight size={13} /></span>
             </Link>
           </div>
@@ -217,7 +217,7 @@ export function PersonaliseSurpriseSection() {
                   <span className="absolute inset-0 bg-gradient-to-t from-[#140930]/80 via-transparent to-transparent" />
                   <span className="absolute left-5 top-5 h-7 w-1.5 rounded-full" style={{ background: s.color }} />
                   <span className="absolute inset-x-5 bottom-5 font-display text-xl font-bold leading-snug !text-white">{s.title}</span>
-                  {!isActive && <span className="absolute inset-0 bg-[#f6eefb]/25" />}
+                  {!isActive && <span className="absolute inset-0 bg-[#fce8f0]/25" />}
                 </motion.button>
               )
             })}

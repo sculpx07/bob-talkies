@@ -1,4 +1,4 @@
-import { Play, BadgeCheck } from 'lucide-react'
+﻿import { Play, BadgeCheck } from 'lucide-react'
 
 const HANDLE = 'bob_talkies'
 const IG_URL = 'https://www.instagram.com/bob_talkies/'
@@ -46,11 +46,11 @@ export function InstagramSection() {
         <div className="mb-10 flex flex-col items-start justify-between gap-5 md:flex-row md:items-end">
           <div>
             <p className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#c9933a]"><InstagramIcon size={16} /> Instagram</p>
-            <h2 className="font-display text-3xl font-medium leading-tight text-[#2a0e4f] md:text-4xl">Follow us on Instagram</h2>
-            <p className="mt-2 text-[#5b4578]">Real celebrations, decor ideas and surprises from our guests — <span className="font-semibold text-[#6b2398]">@{HANDLE}</span></p>
+            <h2 className="font-display text-3xl font-medium leading-tight text-[#3d0a24] md:text-4xl">Follow us on Instagram</h2>
+            <p className="mt-2 text-[#5b2535]">Real celebrations, decor ideas and surprises from our guests — <span className="font-semibold text-[#8b1a3a]">@{HANDLE}</span></p>
           </div>
           <div className="flex items-center gap-3">
-            <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] px-6 text-sm font-bold text-white shadow-[0_12px_26px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5">
+            <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-6 text-sm font-bold text-white shadow-[0_12px_26px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5">
               <InstagramIcon size={16} /> Follow
             </a>
           </div>
@@ -68,26 +68,26 @@ export function InstagramSection() {
               rel="noopener noreferrer"
               aria-hidden={i >= POSTS.length ? true : undefined}
               tabIndex={i >= POSTS.length ? -1 : undefined}
-              className="group mr-5 w-[270px] shrink-0 overflow-hidden rounded-[1.75rem] bg-white shadow-[0_18px_44px_rgba(107,35,152,0.16)] ring-1 ring-[#f0e1f3] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_26px_60px_rgba(107,35,152,0.26)]"
+              className="group mr-5 w-[270px] shrink-0 overflow-hidden rounded-[1.75rem] bg-white shadow-[0_18px_44px_rgba(107,35,152,0.16)] ring-1 ring-[#f8dce4] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_26px_60px_rgba(107,35,152,0.26)]"
             >
               <div className="flex items-center gap-2.5 px-4 py-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(135deg,#32105f,#8e39c7)] p-[2px]">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)] p-[2px]">
                   <img src="/logo.png" alt="" className="h-full w-full rounded-full bg-white object-contain p-0.5" />
                 </span>
-                <span className="flex min-w-0 flex-1 items-center gap-1 text-sm font-semibold text-[#2a0e4f]"><span className="truncate">{HANDLE}</span><BadgeCheck size={15} className="shrink-0 text-[#3b82f6]" /></span>
-                <span className="text-lg leading-none text-[#9a8cae]">···</span>
+                <span className="flex min-w-0 flex-1 items-center gap-1 text-sm font-semibold text-[#3d0a24]"><span className="truncate">{HANDLE}</span><BadgeCheck size={15} className="shrink-0 text-[#3b82f6]" /></span>
+                <span className="text-lg leading-none text-[#9a6575]">···</span>
               </div>
 
               <div className="relative aspect-[4/5] overflow-hidden bg-[#f3e8fa]">
                 <img src={p.img} alt={p.label} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                <span className="absolute inset-0 bg-gradient-to-t from-[#32105f]/70 via-transparent to-transparent" aria-hidden="true" />
-                <span className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#6b2398] shadow-lg transition-transform group-hover:scale-110"><Play size={22} fill="currentColor" /></span>
+                <span className="absolute inset-0 bg-gradient-to-t from-[#5c1535]/70 via-transparent to-transparent" aria-hidden="true" />
+                <span className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#8b1a3a] shadow-lg transition-transform group-hover:scale-110"><Play size={22} fill="currentColor" /></span>
                 <div className="absolute inset-x-0 bottom-0 p-4 text-center">
                   <p className="mb-2 text-sm font-bold text-white">{p.label}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 px-4 py-3.5 text-[#2a0e4f]">
+              <div className="flex items-center gap-4 px-4 py-3.5 text-[#3d0a24]">
                 <IgHeart /><IgComment /><IgShare />
                 <span className="ml-auto"><IgSave /></span>
               </div>

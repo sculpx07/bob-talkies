@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+﻿import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, ChevronRight, MapPin } from 'lucide-react'
@@ -129,22 +129,22 @@ export function FeaturedTheatres() {
 
         {/* ── Left copy (unchanged) ── */}
         <div ref={copyRef}>
-          <p className="flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#32105f]">
+          <p className="flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#5c1535]">
             <span className="h-px w-4 bg-gold-500" aria-hidden="true" />
             Featured Theatres
             <span className="h-px w-4 bg-gold-500" aria-hidden="true" />
           </p>
-          <h2 id="featured-theatres-heading" className="mt-4 font-display font-bold text-4xl md:text-5xl leading-[1.1] text-[#2a0e4f]">
+          <h2 id="featured-theatres-heading" className="mt-4 font-display font-bold text-4xl md:text-5xl leading-[1.1] text-[#3d0a24]">
             Moments
             <br />
             That Matter
           </h2>
-          <p className="mt-5 text-base text-[#5b4578] leading-relaxed max-w-xs">
+          <p className="mt-5 text-base text-[#5b2535] leading-relaxed max-w-xs">
             Discover our most loved theatres and find the perfect space for your celebration.
           </p>
           <Link
             to="/theatres"
-            className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#32105f]/60 px-6 py-2.5 text-sm font-semibold text-[#32105f] transition-colors hover:bg-[#32105f]/5"
+            className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#5c1535]/60 px-6 py-2.5 text-sm font-semibold text-[#5c1535] transition-colors hover:bg-[#5c1535]/5"
           >
             Explore All Theatres <ArrowRight size={14} />
           </Link>

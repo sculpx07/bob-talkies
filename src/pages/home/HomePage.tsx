@@ -47,7 +47,7 @@ const HERO_WORDS = [
 const CEL_ROW1 = [
   { slug: 'birthday',    label: 'Birthday',    sub: 'Celebrate',  img: 'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=600&q=80', overlay: 'from-[#a855f7]/80' },
   { slug: 'anniversary', label: 'Anniversary', sub: 'Book for',   img: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&q=80', overlay: 'from-[#ec4899]/80' },
-  { slug: 'date-night',  label: 'Date Night',  sub: 'Book for',   img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80', overlay: 'from-[#7c3aed]/80' },
+  { slug: 'date-night',  label: 'Date Night',  sub: 'Book for',   img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80', overlay: 'from-[#9b1a3a]/80' },
   { slug: 'proposal',    label: 'Proposal',    sub: 'Book for',   img: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&q=80', overlay: 'from-[#db2777]/80' },
 ]
 const CEL_ROW2 = [
@@ -218,8 +218,8 @@ export default function HomePage() {
             <Sparkles size={12} />
             Hyderabad's #1 Private Celebrations Venue
           </Badge>
-          <h1 className="mb-4 font-display text-3xl font-bold leading-tight tracking-tight text-[#2a0e4f] sm:text-4xl md:text-5xl lg:text-6xl">
-            <span className="block text-[#2a0e4f]">Your Theatre </span>
+          <h1 className="mb-4 font-display text-3xl font-bold leading-tight tracking-tight text-[#3d0a24] sm:text-4xl md:text-5xl lg:text-6xl">
+            <span className="block text-[#3d0a24]">Your Theatre </span>
             <span className="block">
               Your{' '}
               <span key={heroKey} className="relative inline-block whitespace-nowrap">
@@ -231,7 +231,7 @@ export default function HomePage() {
               </span>
             </span>
           </h1>
-          <p className="mb-8 text-sm md:text-base text-[#5b4578]/80 max-w-lg mx-auto leading-relaxed">
+          <p className="mb-8 text-sm md:text-base text-[#5b2535]/80 max-w-lg mx-auto leading-relaxed">
             From intimate celebrations to exclusive screenings and grand gatherings, experience entertainment your way at BOB Talkies.
           </p>
 
@@ -268,9 +268,9 @@ export default function HomePage() {
                     onValueChange={setSelectedOccasion}
                     placeholder="Select Occasion"
                     label="Occasion"
-                    icon={<Clapperboard size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
+                    icon={<Clapperboard size={28} strokeWidth={1.6} className="text-[#5c1535]" />}
                     options={OCCASION_QUICK.map((o) => ({ value: o.slug, label: o.label }))}
-                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-10 text-[#3b1278] transition-colors hover:bg-white/50"
+                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-10 text-[#5c1535] transition-colors hover:bg-white/50"
                   />
                 </div>
 
@@ -285,8 +285,8 @@ export default function HomePage() {
                     min={1}
                     max={30}
                     label="Guests"
-                    icon={<Users size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
-                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-4 text-[#3b1278] transition-colors hover:bg-white/50"
+                    icon={<Users size={28} strokeWidth={1.6} className="text-[#5c1535]" />}
+                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-4 text-[#5c1535] transition-colors hover:bg-white/50"
                   />
                 </div>
 
@@ -301,8 +301,8 @@ export default function HomePage() {
                     min={today}
                     placeholder="Select Date"
                     label="Date"
-                    icon={<CalendarDays size={28} strokeWidth={1.6} className="text-[#3b1278]" />}
-                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-10 text-[#3b1278] transition-colors hover:bg-white/50"
+                    icon={<CalendarDays size={28} strokeWidth={1.6} className="text-[#5c1535]" />}
+                    className="h-[80px] rounded-full border-0 bg-transparent pl-16 pr-10 text-[#5c1535] transition-colors hover:bg-white/50"
                   />
                 </div>
 
@@ -314,7 +314,7 @@ export default function HomePage() {
                   onClick={handleQuickBook}
                   disabled={!selectedOccasion || !date}
                   className="ml-2 flex h-[56px] shrink-0 items-center gap-2 whitespace-nowrap rounded-full
-                    bg-[linear-gradient(135deg,#3b1278_0%,#5b1fa3_100%)] px-6 text-[15px] font-semibold text-white
+                    bg-[linear-gradient(135deg,#5c1535_0%,#7b1535_100%)] px-6 text-[15px] font-semibold text-white
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_8px_18px_rgba(59,18,120,0.35)]
                     transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                 >
@@ -324,7 +324,7 @@ export default function HomePage() {
             </div>
 
             {/* Mobile: stacked card */}
-            <div className={`md:hidden relative rounded-[2rem] bg-[linear-gradient(135deg,#8e39c7,#f472b6_50%,#f5bd61)] p-[2px] shadow-[0_24px_60px_rgba(107,35,152,0.22)] ${planHighlight ? 'animate-plan-pulse' : ''}`}>
+            <div className={`md:hidden relative rounded-[2rem] bg-[linear-gradient(135deg,#a81a3a,#f472b6_50%,#f5bd61)] p-[2px] shadow-[0_24px_60px_rgba(107,35,152,0.22)] ${planHighlight ? 'animate-plan-pulse' : ''}`}>
               <div className="rounded-[calc(2rem-2px)] bg-white/95 p-5 text-left backdrop-blur-xl">
                 <div className="grid gap-4">
                   <PartySelect
@@ -354,13 +354,13 @@ export default function HomePage() {
                     type="button"
                     onClick={handleQuickBook}
                     disabled={!selectedOccasion || !date}
-                    className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-[#2a0e4f] px-7 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(42,14,79,0.30)] transition-all hover:bg-[#3d1575] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-[#3d0a24] px-7 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(42,14,79,0.30)] transition-all hover:bg-[#6b1535] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Book Now <ChevronRight size={18} />
                   </button>
                 </div>
                 {(!selectedOccasion || !date) && (
-                  <p className="mt-3 text-xs text-[#7d7094]">Choose an occasion and a date to see available theatres.</p>
+                  <p className="mt-3 text-xs text-[#7d4555]">Choose an occasion and a date to see available theatres.</p>
                 )}
               </div>
             </div>
@@ -386,11 +386,11 @@ export default function HomePage() {
           {[
             { left: '5%',  color: '#f472b6', w: 22, h: 28, delay: 0,   dur: 7 },
             { left: '15%', color: '#c9a84c', w: 18, h: 24, delay: 1.5, dur: 8 },
-            { left: '30%', color: '#a78bfa', w: 20, h: 26, delay: 3,   dur: 6.5 },
+            { left: '30%', color: '#c9183a', w: 20, h: 26, delay: 3,   dur: 6.5 },
             { left: '55%', color: '#fb923c', w: 16, h: 22, delay: 0.8, dur: 7.5 },
             { left: '70%', color: '#f472b6', w: 22, h: 28, delay: 2.2, dur: 7 },
             { left: '82%', color: '#c9a84c', w: 18, h: 24, delay: 4,   dur: 6 },
-            { left: '92%', color: '#a78bfa', w: 20, h: 26, delay: 1,   dur: 8.5 },
+            { left: '92%', color: '#8b1a3a', w: 20, h: 26, delay: 1,   dur: 8.5 },
           ].map((b, i) => (
             <motion.div
               key={`bal-${i}`}
@@ -408,12 +408,12 @@ export default function HomePage() {
           {/* Confetti ribbons */}
           {[
             { left: '8%',  top: '10%', color: '#fbbf24', w: 8,  h: 3,  delay: 0,   dur: 4.5, rot: 20  },
-            { left: '20%', top: '65%', color: '#a78bfa', w: 10, h: 3,  delay: 1.1, dur: 3.8, rot: -35 },
+            { left: '20%', top: '65%', color: '#c9183a', w: 10, h: 3,  delay: 1.1, dur: 3.8, rot: -35 },
             { left: '38%', top: '20%', color: '#f472b6', w: 7,  h: 3,  delay: 2.3, dur: 5,   rot: 50  },
             { left: '52%', top: '75%', color: '#34d399', w: 9,  h: 3,  delay: 0.6, dur: 4.2, rot: -20 },
             { left: '65%', top: '15%', color: '#fbbf24', w: 8,  h: 3,  delay: 1.8, dur: 3.6, rot: 40  },
             { left: '78%', top: '55%', color: '#f472b6', w: 10, h: 3,  delay: 3,   dur: 4.8, rot: -55 },
-            { left: '88%', top: '25%', color: '#a78bfa', w: 7,  h: 3,  delay: 0.4, dur: 5.2, rot: 15  },
+            { left: '88%', top: '25%', color: '#8b1a3a', w: 7,  h: 3,  delay: 0.4, dur: 5.2, rot: 15  },
             { left: '44%', top: '45%', color: '#34d399', w: 8,  h: 3,  delay: 2.7, dur: 4,   rot: -30 },
           ].map((c, i) => (
             <motion.div
@@ -430,7 +430,7 @@ export default function HomePage() {
           {[
             { cx: '3%',  cy: '30%', color: '#fbbf24' },
             { cx: '95%', cy: '60%', color: '#f472b6' },
-            { cx: '50%', cy: '5%',  color: '#a78bfa' },
+            { cx: '50%', cy: '5%',  color: '#c9183a' },
           ].map((pp, pi) => (
             <motion.div key={`pp-${pi}`} className="pointer-events-none absolute" style={{ left: pp.cx, top: pp.cy }} aria-hidden>
               {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, si) => (
@@ -460,20 +460,20 @@ export default function HomePage() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <div className="relative">
-                  <Clapperboard size={28} className="text-[#6b2398]" strokeWidth={1.8} />
+                  <Clapperboard size={28} className="text-[#8b1a3a]" strokeWidth={1.8} />
                   <Sparkles size={11} className="text-[#d4a94a] absolute -top-1.5 -right-1.5" />
                 </div>
                 <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Limited Time</p>
               </div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight">
-                <span className="text-[#2a0e4f]">Current </span>
-                <span className="text-[#7c3aed]">Offers</span>
+                <span className="text-[#3d0a24]">Current </span>
+                <span className="text-[#9b1a3a]">Offers</span>
               </h2>
               <div className="mt-2 h-[3px] w-10 rounded-full bg-[#d4a94a]" />
             </div>
             <Link
               to="/offers"
-              className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#32105f]/50 px-4 py-2 text-xs font-semibold text-[#32105f] hover:bg-[#32105f]/5 transition-colors mt-1"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#5c1535]/50 px-4 py-2 text-xs font-semibold text-[#5c1535] hover:bg-[#5c1535]/5 transition-colors mt-1"
             >
               View All <ChevronRight size={14} />
             </Link>
@@ -544,14 +544,14 @@ export default function HomePage() {
               animate={celInView ? { rotate: [0, -15, 15, -10, 10, 0] } : {}}
               transition={{ delay: 0.4, duration: 0.6 }}
             >
-              <PartyPopper size={26} className="text-[#6b2398]" strokeWidth={1.8} />
+              <PartyPopper size={26} className="text-[#8b1a3a]" strokeWidth={1.8} />
               <Sparkles size={10} className="text-[#d4a94a] absolute -top-1.5 -right-1.5" />
             </motion.div>
             <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Every Occasion</p>
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight">
-            <span className="text-[#2a0e4f]">Choose Your </span>
-            <span className="text-[#7c3aed]">Celebration</span>
+            <span className="text-[#3d0a24]">Choose Your </span>
+            <span className="text-[#9b1a3a]">Celebration</span>
           </h2>
           <motion.div
             className="mt-2 h-[3px] rounded-full bg-[#d4a94a]"
@@ -595,7 +595,7 @@ export default function HomePage() {
                   <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
                     <p className="text-[9px] font-black uppercase tracking-[0.28em] text-white/60 mb-0.5">{c.sub}</p>
                     <p className="font-display text-lg font-bold text-white leading-tight">{c.label}</p>
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#2a0e4f] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#3d0a24] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
                       Book Now <ArrowRight size={9} />
                     </span>
                   </div>
@@ -640,7 +640,7 @@ export default function HomePage() {
                   <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
                     <p className="text-[9px] font-black uppercase tracking-[0.28em] text-white/60 mb-0.5">{c.sub}</p>
                     <p className="font-display text-lg font-bold text-white leading-tight">{c.label}</p>
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#2a0e4f] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#3d0a24] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
                       Book Now <ArrowRight size={9} />
                     </span>
                   </div>
@@ -679,10 +679,10 @@ export default function HomePage() {
 
       {/* Location */}
       <SectionReveal style="tilt">
-      <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fdf5e8 0%, #fffaf4 55%, #fdf5e8 100%)' }}>
+      <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fdf5f5 0%, #fff8f9 55%, #fdf5f5 100%)' }}>
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-[#c9a84c]/8 blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-[#8b5cf6]/8 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-[#8b1a3a]/8 blur-3xl" />
         </div>
         <div className="max-w-7xl mx-auto px-4 md:px-6 relative">
           <motion.div
@@ -692,7 +692,7 @@ export default function HomePage() {
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.28em] mb-3">Find Us</p>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-black text-[#2a0e4f] leading-tight mb-4">Visit BOB Talkies</h2>
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-black text-[#3d0a24] leading-tight mb-4">Visit BOB Talkies</h2>
             <motion.div className="mx-auto h-[3px] rounded-full bg-gradient-to-r from-[#c9a84c] to-[#eed98a]"
               initial={{ width: 0 }} animate={locationInView ? { width: 64 } : {}} transition={{ delay: 0.3, duration: 0.5 }} />
           </motion.div>
@@ -707,12 +707,12 @@ export default function HomePage() {
             {/* Info panel */}
             <div className="flex flex-col justify-between p-6 md:p-10">
               <div>
-                <h3 className="font-display text-3xl md:text-4xl font-bold text-[#2a0e4f] mb-7">BOB Talkies — Kukatpally</h3>
+                <h3 className="font-display text-3xl md:text-4xl font-bold text-[#3d0a24] mb-7">BOB Talkies — Kukatpally</h3>
                 <div className="space-y-5">
                   {[
-                    { icon: <MapPin size={20} className="text-[#6b2398]" />, label: 'Address', content: <p className="text-[#2a0e4f] leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
-                    { icon: <Phone size={20} className="text-[#6b2398]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${config.whatsappNumber}`} className="text-[#2a0e4f] hover:text-[#6b2398] transition-colors">+91 {config.whatsappNumber.slice(2)}</a> },
-                    { icon: <CalendarDays size={20} className="text-[#6b2398]" />, label: 'Operating Hours', content: <><p className="text-[#2a0e4f]">10:00 AM – 1:00 AM</p><p className="text-[#8f6420] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
+                    { icon: <MapPin size={20} className="text-[#8b1a3a]" />, label: 'Address', content: <p className="text-[#3d0a24] leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
+                    { icon: <Phone size={20} className="text-[#8b1a3a]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${config.whatsappNumber}`} className="text-[#3d0a24] hover:text-[#8b1a3a] transition-colors">+91 {config.whatsappNumber.slice(2)}</a> },
+                    { icon: <CalendarDays size={20} className="text-[#8b1a3a]" />, label: 'Operating Hours', content: <><p className="text-[#3d0a24]">10:00 AM – 1:00 AM</p><p className="text-[#8f6420] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
                   ].map((item, i) => (
                     <motion.div key={item.label} className="flex items-start gap-4"
                       initial={{ opacity: 0, x: -20 }}
@@ -723,7 +723,7 @@ export default function HomePage() {
                         {item.icon}
                       </div>
                       <div>
-                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7d7094] mb-0.5">{item.label}</p>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7d4555] mb-0.5">{item.label}</p>
                         {item.content}
                       </div>
                     </motion.div>

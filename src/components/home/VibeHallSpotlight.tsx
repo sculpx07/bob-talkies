@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+﻿import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, MessageCircle, Zap } from 'lucide-react'
@@ -23,7 +23,7 @@ export function VibeHallSpotlight() {
     <section
       ref={ref}
       className="py-16 md:py-24 relative overflow-hidden"
-      style={{ background: 'linear-gradient(160deg,#2a0e4f 0%,#32105f 55%,#2a0e4f 100%)' }}
+      style={{ background: 'linear-gradient(160deg,#3d0a24 0%,#5c1535 55%,#3d0a24 100%)' }}
     >
       {/* Ambient glows */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -63,7 +63,7 @@ export function VibeHallSpotlight() {
               alt="Vibe Hall at BOB Talkies"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#2a0e4f]/80 via-[#2a0e4f]/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#3d0a24]/80 via-[#3d0a24]/20 to-transparent" />
             {/* Capacity pill */}
             <div className="absolute bottom-5 left-5 flex items-center gap-2">
               <span
@@ -110,7 +110,7 @@ export function VibeHallSpotlight() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/theatres/vibe-hall"
-                className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#2a0e4f] transition-all hover:brightness-110 hover:scale-105"
+                className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#3d0a24] transition-all hover:brightness-110 hover:scale-105"
                 style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)' }}
               >
                 Explore Vibe Hall <ArrowRight size={14} />

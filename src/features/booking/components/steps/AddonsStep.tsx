@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { Check, Plus } from 'lucide-react'
@@ -25,7 +25,7 @@ const CATEGORY_LABELS: Record<AddonCategory, string> = {
   signage: 'Signage',
 }
 
-const TILES = ['from-[#fbe3ec] to-[#f6c9dc]', 'from-[#f3e6ff] to-[#dcc4f5]', 'from-[#fff1d6] to-[#f8dca0]', 'from-[#e4f1ff] to-[#c6dcf5]']
+const TILES = ['from-[#fbe3ec] to-[#f6c9dc]', 'from-[#fce8f0] to-[#dcc4f5]', 'from-[#fff1d6] to-[#f8dca0]', 'from-[#e4f1ff] to-[#c6dcf5]']
 
 /** Optional extras. Cakes have their own step before this one, and decoration is chosen with the booking details. */
 export function AddonsStep() {
@@ -50,28 +50,28 @@ export function AddonsStep() {
 
   return (
     <div>
-      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Add the finishing touches</h2>
-      <p className="mb-6 text-sm text-[#5b4578]">Optional: effects, decor, flowers, gifts, photography and videography. You can skip this step.</p>
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">Add the finishing touches</h2>
+      <p className="mb-6 text-sm text-[#5b2535]">Optional: effects, decor, flowers, gifts, photography and videography. You can skip this step.</p>
 
-      <div className="mb-7 rounded-2xl bg-[#fdf6ff] p-4 ring-1 ring-[#ecd9ec]">
-        <label htmlFor="addon-request" className="mb-1.5 block text-sm font-semibold text-[#2a0e4f]">Customize as per your requirement</label>
+      <div className="mb-7 rounded-2xl bg-[#fdf6ff] p-4 ring-1 ring-[#f5d5e0]">
+        <label htmlFor="addon-request" className="mb-1.5 block text-sm font-semibold text-[#3d0a24]">Customize as per your requirement</label>
         <textarea
           id="addon-request" rows={3} value={state.addonRequest}
           onChange={(e) => dispatch({ type: 'SET_ADDON_REQUEST', text: e.target.value.slice(0, 400) })}
           placeholder="Photography style, flowers, food, effects, anything special"
-          className="w-full resize-none rounded-xl border border-[#ecd9ec] bg-white px-4 py-3 text-sm text-[#2a0e4f] outline-none placeholder:text-[#b0a0c8] focus:border-[#c026d3] focus:ring-2 focus:ring-[#c026d3]/25"
+          className="w-full resize-none rounded-xl border border-[#f5d5e0] bg-white px-4 py-3 text-sm text-[#3d0a24] outline-none placeholder:text-[#b0a0c8] focus:border-[#c0125a] focus:ring-2 focus:ring-[#c0125a]/25"
         />
-        <p className="mt-1 text-right text-[11px] text-[#7d7094]">{state.addonRequest.length}/400. Our team will confirm custom requests with you.</p>
+        <p className="mt-1 text-right text-[11px] text-[#7d4555]">{state.addonRequest.length}/400. Our team will confirm custom requests with you.</p>
       </div>
 
       {shown.length === 0 && (
-        <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d7094]">Nothing to add here. Continue to the next step.</p>
+        <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d4555]">Nothing to add here. Continue to the next step.</p>
       )}
 
       <div className="space-y-9">
         {categories.map((category) => (
           <section key={category}>
-            <h3 className="mb-3 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.18em] text-[#6b2398]">
+            <h3 className="mb-3 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.18em] text-[#8b1a3a]">
               {CATEGORY_LABELS[category]}
               <span className="h-px flex-1 bg-gradient-to-r from-[#e3cbe6] to-transparent" />
             </h3>
@@ -113,14 +113,14 @@ function AddonCard({ addon, selected, onToggle, index }: { addon: Addon; selecte
       whileTap={disabled ? undefined : { scale: 0.97 }}
       className={cn(
         'relative flex items-center gap-4 rounded-3xl p-4 text-left transition-shadow duration-300',
-        'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c026d3]/40',
+        'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c0125a]/40',
         selected
-          ? 'bg-[linear-gradient(135deg,#faf0ff,#fff)] shadow-[0_16px_38px_rgba(192,38,211,0.28)] ring-2 ring-[#c026d3]'
-          : 'bg-white/85 shadow-[0_8px_24px_rgba(107,35,152,0.1)] ring-1 ring-[#ecd9ec] hover:shadow-[0_14px_34px_rgba(107,35,152,0.18)]',
+          ? 'bg-[linear-gradient(135deg,#faf0ff,#fff)] shadow-[0_16px_38px_rgba(192,38,211,0.28)] ring-2 ring-[#c0125a]'
+          : 'bg-white/85 shadow-[0_8px_24px_rgba(107,35,152,0.1)] ring-1 ring-[#f5d5e0] hover:shadow-[0_14px_34px_rgba(107,35,152,0.18)]',
         disabled && 'cursor-not-allowed opacity-50',
       )}
     >
-      <span className="block h-[72px] w-[72px] shrink-0 overflow-hidden rounded-2xl ring-1 ring-[#ecd9ec]">
+      <span className="block h-[72px] w-[72px] shrink-0 overflow-hidden rounded-2xl ring-1 ring-[#f5d5e0]">
         {addon.image && !imgFailed ? (
           <img src={addon.image} alt="" loading="lazy" onError={() => setImgFailed(true)} className="h-full w-full object-cover" />
         ) : (
@@ -129,17 +129,17 @@ function AddonCard({ addon, selected, onToggle, index }: { addon: Addon; selecte
       </span>
 
       <span className="flex min-w-0 flex-1 flex-col gap-2">
-        <span className="text-[15px] font-semibold leading-snug text-[#2a0e4f]">{addon.name}</span>
+        <span className="text-[15px] font-semibold leading-snug text-[#3d0a24]">{addon.name}</span>
         <span className="flex items-center gap-2">
           <span className="rounded-full bg-[#fff1d6] px-3 py-1 text-sm font-bold text-[#8f6420]">{formatINR(addon.pricePaise)}</span>
-          {onOffer && <s className="text-xs tabular-nums text-[#9a8cae]">{formatINR(addon.originalPricePaise!)}</s>}
+          {onOffer && <s className="text-xs tabular-nums text-[#9a6575]">{formatINR(addon.originalPricePaise!)}</s>}
         </span>
       </span>
 
       <span
         className={cn(
           'flex h-8 w-8 shrink-0 items-center justify-center self-start rounded-full transition-all duration-300',
-          selected ? 'bg-[#c026d3] text-white' : 'bg-[#f6e6ef] text-[#6b2398]',
+          selected ? 'bg-[#c0125a] text-white' : 'bg-[#f6e6ef] text-[#8b1a3a]',
         )}
         aria-hidden="true"
       >

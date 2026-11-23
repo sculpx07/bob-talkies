@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
@@ -39,7 +39,7 @@ function RewardsSidebar({ bookingCount }: { bookingCount: number }) {
       {/* Points card: horizontal plum member card */}
       <motion.div
         initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-        className="relative flex flex-col gap-6 overflow-hidden rounded-[1.75rem] bg-[linear-gradient(135deg,#32105f_0%,#5a1f9a_60%,#8e39c7_100%)] p-6 text-white shadow-[0_26px_60px_rgba(50,16,95,0.35)] lg:flex-row lg:items-center lg:gap-8"
+        className="relative flex flex-col gap-6 overflow-hidden rounded-[1.75rem] bg-[linear-gradient(135deg,#5c1535_0%,#5a1f9a_60%,#a81a3a_100%)] p-6 text-white shadow-[0_26px_60px_rgba(50,16,95,0.35)] lg:flex-row lg:items-center lg:gap-8"
       >
         <motion.span
           className="pointer-events-none absolute -left-1/2 top-0 h-full w-1/3 -skew-x-12 bg-white/10"
@@ -69,7 +69,7 @@ function RewardsSidebar({ bookingCount }: { bookingCount: number }) {
               <div>
                 <p className="font-bold">Refer &amp; Earn</p>
                 <p className="mt-0.5 text-xs leading-snug text-white/75">Share your link. Friend books → you both earn credits.</p>
-                <button type="button" onClick={shareRef} className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[11px] font-bold text-[#2a0e4f]">
+                <button type="button" onClick={shareRef} className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[11px] font-bold text-[#3d0a24]">
                   <Share2 size={11} /> Share referral link
                 </button>
               </div>
@@ -102,17 +102,17 @@ function RewardsSidebar({ bookingCount }: { bookingCount: number }) {
       {plan && (
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.4 }}
-          className="overflow-hidden rounded-3xl border border-[#32105f]/20 bg-white"
+          className="overflow-hidden rounded-3xl border border-[#5c1535]/20 bg-white"
         >
-          <div className="flex items-center gap-2 border-b border-[#f0e6cc] px-5 py-3 bg-[#f8f0ff]">
-            <Bookmark size={13} className="text-[#6b2398]" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-[#6b2398]">Saved Plan</span>
+          <div className="flex items-center gap-2 border-b border-[#f0e6cc] px-5 py-3 bg-[#fff0f5]">
+            <Bookmark size={13} className="text-[#8b1a3a]" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#8b1a3a]">Saved Plan</span>
           </div>
           <div className="px-5 py-4 space-y-1.5">
-            <p className="font-black text-[#2a0e4f] text-sm">
+            <p className="font-black text-[#3d0a24] text-sm">
               {occasion ? `${occasion.emoji} ${occasion.label}` : plan.occasion}
             </p>
-            <p className="text-[11px] text-[#5b4578]/70">
+            <p className="text-[11px] text-[#5b2535]/70">
               {plan.guests} guests ·{' '}
               {plan.date ? new Date(`${plan.date}T00:00:00`).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '—'}
             </p>
@@ -120,7 +120,7 @@ function RewardsSidebar({ bookingCount }: { bookingCount: number }) {
               type="button"
               onClick={resume}
               className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-2xl py-2.5 text-xs font-black text-white"
-              style={{ background: 'linear-gradient(135deg,#32105f,#5b1fa3)' }}
+              style={{ background: 'linear-gradient(135deg,#5c1535,#7b1535)' }}
             >
               Resume booking <ArrowRight size={11} />
             </button>
@@ -177,22 +177,22 @@ export default function MyBookingPage() {
             initial={{ opacity: 0, y: 36, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mx-auto max-w-md overflow-hidden rounded-[2rem] bg-white p-8 text-[#2a0e4f] shadow-[0_30px_80px_rgba(107,35,152,0.2)] ring-1 ring-[#f0e1f3] sm:p-10"
+            className="relative mx-auto max-w-md overflow-hidden rounded-[2rem] bg-white p-8 text-[#3d0a24] shadow-[0_30px_80px_rgba(107,35,152,0.2)] ring-1 ring-[#f8dce4] sm:p-10"
           >
             <div className="relative">
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6eefb] ring-1 ring-[#ecd9ec]">
-                <Ticket size={26} className="text-[#6b2398]" />
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fce8f0] ring-1 ring-[#f5d5e0]">
+                <Ticket size={26} className="text-[#8b1a3a]" />
               </span>
               <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.3em] text-[#c9933a]">My Bookings</p>
-              <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-[#2a0e4f]">Access Your Bookings</h1>
-              <p className="mt-2 text-sm text-[#5b4578]">Enter your mobile number to view your upcoming and past bookings.</p>
+              <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-[#3d0a24]">Access Your Bookings</h1>
+              <p className="mt-2 text-sm text-[#5b2535]">Enter your mobile number to view your upcoming and past bookings.</p>
 
               {/* step progress */}
               <div className="mt-6 flex items-center gap-2" aria-hidden="true">
                 {[0, 1].map((i) => (
-                  <span key={i} className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-[#f0e1f3]">
+                  <span key={i} className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-[#f8dce4]">
                     <motion.span
-                      className="absolute inset-y-0 left-0 rounded-full bg-[linear-gradient(90deg,#6b2398,#d946ef)]"
+                      className="absolute inset-y-0 left-0 rounded-full bg-[linear-gradient(90deg,#8b1a3a,#d9126a)]"
                       initial={false}
                       animate={{ width: authState === 'otp_sent' || i === 0 ? '100%' : '0%' }}
                       transition={{ duration: 0.5 }}
@@ -200,13 +200,13 @@ export default function MyBookingPage() {
                   </span>
                 ))}
               </div>
-              <p className="mt-2 text-xs font-semibold text-[#7d7094]">{authState === 'otp_sent' ? 'Step 2 of 2 · Verify OTP' : 'Step 1 of 2 · Mobile number'}</p>
+              <p className="mt-2 text-xs font-semibold text-[#7d4555]">{authState === 'otp_sent' ? 'Step 2 of 2 · Verify OTP' : 'Step 1 of 2 · Mobile number'}</p>
 
               <div className="mt-6 space-y-4 text-left">
                 <div>
-                  <label htmlFor="mb-mobile" className="mb-1.5 block text-sm font-medium text-[#2a0e4f]">Mobile Number</label>
+                  <label htmlFor="mb-mobile" className="mb-1.5 block text-sm font-medium text-[#3d0a24]">Mobile Number</label>
                   <div className="relative">
-                    <Phone size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#8e39c7]" />
+                    <Phone size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#a81a3a]" />
                     <input
                       id="mb-mobile"
                       placeholder="10-digit mobile number"
@@ -214,7 +214,7 @@ export default function MyBookingPage() {
                       maxLength={10}
                       value={mobile}
                       onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
-                      className="w-full rounded-2xl border border-[#ecd9ec] bg-[#fff7f0] py-3.5 pl-11 pr-4 text-[#160730] placeholder:text-[#b0a0c8] outline-none transition-colors focus:border-[#c026d3] focus:ring-2 focus:ring-[#c026d3]/25"
+                      className="w-full rounded-2xl border border-[#f5d5e0] bg-[#fff7f0] py-3.5 pl-11 pr-4 text-[#160730] placeholder:text-[#b0a0c8] outline-none transition-colors focus:border-[#c0125a] focus:ring-2 focus:ring-[#c0125a]/25"
                     />
                   </div>
                   {mobileError && <p role="alert" className="mt-1.5 text-xs text-[#c2255c]">{mobileError}</p>}
@@ -222,7 +222,7 @@ export default function MyBookingPage() {
 
                 {authState === 'otp_sent' && (
                   <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
-                    <label htmlFor="mb-otp" className="mb-1.5 block text-sm font-medium text-[#2a0e4f]">Enter OTP</label>
+                    <label htmlFor="mb-otp" className="mb-1.5 block text-sm font-medium text-[#3d0a24]">Enter OTP</label>
                     <input
                       id="mb-otp"
                       placeholder="------"
@@ -230,9 +230,9 @@ export default function MyBookingPage() {
                       maxLength={6}
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                      className="w-full rounded-2xl border border-[#c4b5fd] bg-[#ede8ff] py-3.5 text-center font-mono text-2xl tracking-[0.6rem] text-[#32105f] placeholder:text-[#b0a0c8] outline-none transition-colors focus:border-[#c026d3] focus:ring-2 focus:ring-[#c026d3]/25"
+                      className="w-full rounded-2xl border border-[#c4b5fd] bg-[#ede8ff] py-3.5 text-center font-mono text-2xl tracking-[0.6rem] text-[#5c1535] placeholder:text-[#b0a0c8] outline-none transition-colors focus:border-[#c0125a] focus:ring-2 focus:ring-[#c0125a]/25"
                     />
-                    {otpError ? <p role="alert" className="mt-1.5 text-xs text-[#c2255c]">{otpError}</p> : <p className="mt-1.5 text-xs text-[#7d7094]">Use 123456 in test mode</p>}
+                    {otpError ? <p role="alert" className="mt-1.5 text-xs text-[#c2255c]">{otpError}</p> : <p className="mt-1.5 text-xs text-[#7d4555]">Use 123456 in test mode</p>}
                   </motion.div>
                 )}
 
@@ -241,7 +241,7 @@ export default function MyBookingPage() {
                     type="button"
                     disabled={mobile.length < 10 || sendingOtp}
                     onClick={() => { setMobileError(''); sendOtp(mobile) }}
-                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] text-base font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-50"
+                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-base font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-50"
                   >
                     {sendingOtp ? 'Sending…' : <>Send OTP <ArrowRight size={17} /></>}
                   </button>
@@ -250,7 +250,7 @@ export default function MyBookingPage() {
                     type="button"
                     disabled={otp.length < 6 || verifyingOtp}
                     onClick={() => { setOtpError(''); verifyOtp({ mobile, otp }) }}
-                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] text-base font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-50"
+                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-base font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-50"
                   >
                     {verifyingOtp ? 'Checking…' : <>Verify & View Bookings <ArrowRight size={17} /></>}
                   </button>
@@ -279,16 +279,16 @@ export default function MyBookingPage() {
             ) : bookings.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="relative flex flex-1 flex-col items-center justify-center overflow-hidden rounded-[2rem] bg-white/85 px-6 py-14 text-center shadow-[0_24px_60px_rgba(107,35,152,0.14)] ring-1 ring-[#f0e1f3] backdrop-blur md:py-20"
+                className="relative flex flex-1 flex-col items-center justify-center overflow-hidden rounded-[2rem] bg-white/85 px-6 py-14 text-center shadow-[0_24px_60px_rgba(107,35,152,0.14)] ring-1 ring-[#f8dce4] backdrop-blur md:py-20"
               >
-                <motion.span className="pointer-events-none absolute -left-16 -top-16 h-56 w-56 rounded-full bg-[#d946ef]/15 blur-3xl" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 9, repeat: Infinity }} aria-hidden="true" />
+                <motion.span className="pointer-events-none absolute -left-16 -top-16 h-56 w-56 rounded-full bg-[#d9126a]/15 blur-3xl" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 9, repeat: Infinity }} aria-hidden="true" />
                 <motion.span className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-[#f5bd61]/25 blur-3xl" animate={{ scale: [1, 1.25, 1] }} transition={{ duration: 11, repeat: Infinity }} aria-hidden="true" />
 
                 {/* floating ticket with a dashed ring */}
                 <div className="relative mx-auto mb-8 flex h-32 w-32 items-center justify-center">
                   <motion.span className="absolute inset-0 rounded-full border-2 border-dashed border-[#d9b8e0]" animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: 'linear' }} aria-hidden="true" />
                   <motion.span
-                    className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[linear-gradient(145deg,#32105f,#8e39c7)] shadow-[0_18px_36px_rgba(50,16,95,0.35)]"
+                    className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[linear-gradient(145deg,#5c1535,#a81a3a)] shadow-[0_18px_36px_rgba(50,16,95,0.35)]"
                     animate={{ y: [0, -10, 0], rotate: [-6, 6, -6] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     <Ticket size={34} className="text-[#f5d7a1]" />
@@ -298,11 +298,11 @@ export default function MyBookingPage() {
                   ))}
                 </div>
 
-                <h2 className="relative font-display text-3xl font-bold text-[#2a0e4f]">No bookings yet</h2>
-                <p className="relative mx-auto mt-3 max-w-sm text-[#5b4578]">When you book a theatre, your bookings will appear here.</p>
+                <h2 className="relative font-display text-3xl font-bold text-[#3d0a24]">No bookings yet</h2>
+                <p className="relative mx-auto mt-3 max-w-sm text-[#5b2535]">When you book a theatre, your bookings will appear here.</p>
                 <Link
                   to="/book"
-                  className="group relative mt-8 inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] px-8 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.32)] transition-transform hover:-translate-y-0.5"
+                  className="group relative mt-8 inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-8 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.32)] transition-transform hover:-translate-y-0.5"
                 >
                   Book Now <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                 </Link>
@@ -321,10 +321,10 @@ export default function MyBookingPage() {
                     >
                       <Link
                         to={`/my-booking/${b.id}`}
-                        className="group relative flex overflow-hidden rounded-[1.5rem] bg-white shadow-[0_14px_36px_rgba(107,35,152,0.14)] ring-1 ring-[#f0e1f3] transition-shadow hover:shadow-[0_22px_50px_rgba(107,35,152,0.22)]"
+                        className="group relative flex overflow-hidden rounded-[1.5rem] bg-white shadow-[0_14px_36px_rgba(107,35,152,0.14)] ring-1 ring-[#f8dce4] transition-shadow hover:shadow-[0_22px_50px_rgba(107,35,152,0.22)]"
                       >
                         {/* date block */}
-                        <div className="flex w-24 shrink-0 flex-col items-center justify-center bg-[linear-gradient(160deg,#32105f,#6b2398)] px-3 py-5 text-white sm:w-28">
+                        <div className="flex w-24 shrink-0 flex-col items-center justify-center bg-[linear-gradient(160deg,#5c1535,#8b1a3a)] px-3 py-5 text-white sm:w-28">
                           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#f5d7a1]">{d.toLocaleDateString('en-IN', { month: 'short' })}</span>
                           <span className="font-display text-4xl font-bold leading-none">{d.getDate()}</span>
                           <span className="mt-1 text-[11px] text-white/70">{d.toLocaleDateString('en-IN', { weekday: 'short' })}</span>
@@ -338,17 +338,17 @@ export default function MyBookingPage() {
                         <div className="flex min-w-0 flex-1 items-center gap-4 p-5">
                           <div className="min-w-0 flex-1">
                             <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                              <p className="font-display text-xl font-bold text-[#2a0e4f]">{b.theatreName}</p>
+                              <p className="font-display text-xl font-bold text-[#3d0a24]">{b.theatreName}</p>
                               <Badge variant={statusColors[b.status] ?? 'muted'}>{b.status}</Badge>
                             </div>
-                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[#5b4578]">
-                              <span className="flex items-center gap-1.5"><Calendar size={13} className="text-[#8e39c7]" />{formatTime(b.slotStart)}</span>
-                              <span className="font-bold text-[#2a0e4f]">{formatINR(b.totalPaise)}</span>
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[#5b2535]">
+                              <span className="flex items-center gap-1.5"><Calendar size={13} className="text-[#a81a3a]" />{formatTime(b.slotStart)}</span>
+                              <span className="font-bold text-[#3d0a24]">{formatINR(b.totalPaise)}</span>
                               {ok && <span className="flex items-center gap-1 text-xs font-bold text-[#c9933a]"><Star size={11} fill="#c9a84c" stroke="none" /> +50 pts</span>}
                             </div>
-                            <p className="mt-2 font-mono text-[11px] tracking-wide text-[#9a8cae]">{b.id}</p>
+                            <p className="mt-2 font-mono text-[11px] tracking-wide text-[#9a6575]">{b.id}</p>
                           </div>
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e6d4ee] text-[#6b2398] transition-colors group-hover:border-transparent group-hover:bg-[#6b2398] group-hover:text-white">
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e6d4ee] text-[#8b1a3a] transition-colors group-hover:border-transparent group-hover:bg-[#8b1a3a] group-hover:text-white">
                             <ChevronRight size={18} />
                           </span>
                         </div>

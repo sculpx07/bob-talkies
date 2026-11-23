@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+﻿import { useQuery } from '@tanstack/react-query'
 import { offerKeys } from '@/lib/api/queryKeys'
 import { api } from '@/lib/api/client'
 import type { Offer } from '@/schemas/offer'
@@ -23,7 +23,7 @@ export default function OffersPage() {
       <PageShell>
         <SectionHeader
           eyebrow="Current Offers"
-          eyebrowClassName="font-cursive normal-case tracking-normal text-3xl md:text-4xl font-semibold text-[#6b2398]"
+          eyebrowClassName="font-cursive normal-case tracking-normal text-3xl md:text-4xl font-semibold text-[#8b1a3a]"
           title="Save on Your Celebration"
           titleClassName="text-4xl md:text-5xl font-bold"
           subtitle="Use these exclusive discount codes to get the best deals on your private theatre booking."

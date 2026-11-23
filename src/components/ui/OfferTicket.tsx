@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { animate, motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
@@ -69,8 +69,8 @@ export function OfferTicket({ offer, index = 0 }: { offer: Offer; index?: number
               {offer.badge}
             </span>
           )}
-          <h3 className="font-display text-[13px] font-bold text-[#2a0e4f] leading-snug">{offer.title}</h3>
-          <p className="mt-1 text-[11px] text-[#5b4578]/70 leading-relaxed line-clamp-2">{offer.description}</p>
+          <h3 className="font-display text-[13px] font-bold text-[#3d0a24] leading-snug">{offer.title}</h3>
+          <p className="mt-1 text-[11px] text-[#5b2535]/70 leading-relaxed line-clamp-2">{offer.description}</p>
         </div>
 
         <div className="mt-3 space-y-2">
@@ -96,7 +96,7 @@ export function OfferTicket({ offer, index = 0 }: { offer: Offer; index?: number
             <Link
               to="/"
               state={{ highlightPlan: true }}
-              className="inline-flex items-center gap-1 rounded-full bg-[#32105f] px-3 py-1 text-[10px] font-bold text-white hover:bg-[#4a1a8a] transition-colors"
+              className="inline-flex items-center gap-1 rounded-full bg-[#5c1535] px-3 py-1 text-[10px] font-bold text-white hover:bg-[#6b1535] transition-colors"
             >
               Book Now <ArrowRight size={9} />
             </Link>

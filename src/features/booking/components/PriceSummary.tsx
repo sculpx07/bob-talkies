@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+﻿import { motion } from 'framer-motion'
 import { useCurrentQuote } from '../hooks/useCurrentQuote'
 import { formatINR } from '@/lib/utils/currency'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -29,10 +29,10 @@ export function PriceSummary({ compact }: PriceSummaryProps) {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className={cn(!compact && 'overflow-hidden rounded-3xl bg-white shadow-[0_16px_44px_rgba(107,35,152,0.14)] ring-1 ring-[#ecd9ec]')}
+      className={cn(!compact && 'overflow-hidden rounded-3xl bg-white shadow-[0_16px_44px_rgba(107,35,152,0.14)] ring-1 ring-[#f5d5e0]')}
     >
       {!compact && (
-        <div className="relative overflow-hidden bg-[linear-gradient(135deg,#32105f,#6b2398_55%,#d946ef)] px-6 py-5">
+        <div className="relative overflow-hidden bg-[linear-gradient(135deg,#5c1535,#8b1a3a_55%,#d9126a)] px-6 py-5">
           <span className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/15 blur-xl" aria-hidden="true" />
           <span className="pointer-events-none absolute -bottom-12 left-1/3 h-28 w-28 rounded-full bg-[#f5bd61]/30 blur-xl" aria-hidden="true" />
           <p className="relative text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80">Your booking</p>
@@ -47,7 +47,7 @@ export function PriceSummary({ compact }: PriceSummaryProps) {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.15 + i * 0.07, duration: 0.5 }}
-              className={cn('flex justify-between gap-4 text-sm', item.paise < 0 ? 'text-emerald-600' : 'text-[#5b4578]')}
+              className={cn('flex justify-between gap-4 text-sm', item.paise < 0 ? 'text-emerald-600' : 'text-[#5b2535]')}
             >
               <dt>{displayQuoteLabel(item.label)}</dt>
               <dd className="font-semibold">{item.paise < 0 ? '-' : ''}{formatINR(Math.abs(item.paise))}{isExtraGuestLabel(item.label) && <span className="ml-1 text-[10px] font-bold uppercase text-[#8f6420]">provisional</span>}</dd>
@@ -56,13 +56,13 @@ export function PriceSummary({ compact }: PriceSummaryProps) {
         </dl>
         <div className="my-5 border-t border-dashed border-[#d9b8e0]" />
         <div className="flex items-end justify-between">
-          <span className="text-sm font-bold uppercase tracking-wider text-[#7d7094]">Total{provisional && <span className="ml-1.5 text-[10px] text-[#8f6420]">(provisional)</span>}</span>
-          <span className="bg-[linear-gradient(135deg,#32105f,#c026d3)] bg-clip-text text-4xl font-bold tabular-nums text-transparent">{formatINR(quote.totalPaise)}</span>
+          <span className="text-sm font-bold uppercase tracking-wider text-[#7d4555]">Total{provisional && <span className="ml-1.5 text-[10px] text-[#8f6420]">(provisional)</span>}</span>
+          <span className="bg-[linear-gradient(135deg,#5c1535,#c0125a)] bg-clip-text text-4xl font-bold tabular-nums text-transparent">{formatINR(quote.totalPaise)}</span>
         </div>
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-[#f3e6ff] p-4">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-[#6b2398]">Pay now (30%)</p>
-            <p className="mt-1 text-xl font-bold text-[#32105f]">{formatINR(quote.advancePaise)}</p>
+          <div className="rounded-2xl bg-[#fce8f0] p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[#8b1a3a]">Pay now (30%)</p>
+            <p className="mt-1 text-xl font-bold text-[#5c1535]">{formatINR(quote.advancePaise)}</p>
           </div>
           <div className="rounded-2xl bg-[#fff1d6] p-4">
             <p className="text-[11px] font-bold uppercase tracking-wider text-[#8f6420]">Balance at venue</p>

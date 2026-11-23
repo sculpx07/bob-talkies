@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+﻿import { useState, useRef } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { CinemaFloatBackground } from './CinemaFloatBackground'
@@ -51,7 +51,7 @@ export function ReviewsSection() {
           className="mb-10"
         >
           <p className="font-cursive text-2xl md:text-3xl text-[#c9933a] mb-0.5">Loved by the BOB Family</p>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#2a0e4f] leading-tight">What Our Guests Lived</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#3d0a24] leading-tight">What Our Guests Lived</h2>
           <motion.div
             className="mt-2 h-[3px] rounded-full bg-[#d4a94a]"
             initial={{ width: 0 }}
@@ -66,7 +66,7 @@ export function ReviewsSection() {
             initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.1, duration: 0.6 }}
-            className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(160deg,#32105f_0%,#4a1a8a_60%,#6b2398_100%)] p-6 text-white shadow-[0_26px_60px_rgba(50,16,95,0.35)] lg:sticky lg:top-28"
+            className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(160deg,#5c1535_0%,#6b1535_60%,#8b1a3a_100%)] p-6 text-white shadow-[0_26px_60px_rgba(50,16,95,0.35)] lg:sticky lg:top-28"
           >
             <motion.span
               className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-[#f5bd61]/25 blur-3xl"
@@ -111,7 +111,7 @@ export function ReviewsSection() {
                     <img src={v.thumb} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     <span className="absolute inset-0 flex items-center justify-center bg-black/35">
                       <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/95 transition-transform duration-300 group-hover:scale-110">
-                        <Play size={12} fill="#2a0e4f" className="ml-0.5 text-[#2a0e4f]" />
+                        <Play size={12} fill="#3d0a24" className="ml-0.5 text-[#3d0a24]" />
                       </span>
                     </span>
                   </span>
@@ -135,12 +135,12 @@ export function ReviewsSection() {
                   <button
                     key={f}
                     onClick={() => { setActiveFilter(f); setShowAll(false) }}
-                    className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors ${on ? 'text-white' : 'text-[#5b4578] hover:text-[#2a0e4f]'}`}
+                    className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors ${on ? 'text-white' : 'text-[#5b2535] hover:text-[#3d0a24]'}`}
                   >
                     {on && (
-                      <motion.span layoutId="review-chip" className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,#32105f,#8e39c7)] shadow-[0_8px_20px_rgba(50,16,95,0.3)]" transition={{ type: 'spring', stiffness: 380, damping: 30 }} />
+                      <motion.span layoutId="review-chip" className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)] shadow-[0_8px_20px_rgba(50,16,95,0.3)]" transition={{ type: 'spring', stiffness: 380, damping: 30 }} />
                     )}
-                    {!on && <span className="absolute inset-0 rounded-full bg-white/60 ring-1 ring-[#ecd9ec]" />}
+                    {!on && <span className="absolute inset-0 rounded-full bg-white/60 ring-1 ring-[#f5d5e0]" />}
                     <span className="relative">{f}</span>
                   </button>
                 )
@@ -158,7 +158,7 @@ export function ReviewsSection() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ delay: i * 0.05, duration: 0.4 }}
                     whileHover={{ y: -6 }}
-                    className={`relative flex flex-col overflow-hidden rounded-[1.75rem] bg-white/85 p-6 shadow-[0_14px_36px_rgba(107,35,152,0.1)] ring-1 ring-[#f0e1f3] backdrop-blur ${i % 2 === 1 ? 'sm:mt-8' : ''}`}
+                    className={`relative flex flex-col overflow-hidden rounded-[1.75rem] bg-white/85 p-6 shadow-[0_14px_36px_rgba(107,35,152,0.1)] ring-1 ring-[#f8dce4] backdrop-blur ${i % 2 === 1 ? 'sm:mt-8' : ''}`}
                   >
                     <Quote size={44} strokeWidth={0} fill="#f1e3fa" className="pointer-events-none absolute right-5 top-5" aria-hidden="true" />
                     <div className="relative mb-4 flex gap-0.5">
@@ -170,14 +170,14 @@ export function ReviewsSection() {
                     </div>
                     <p className="relative flex-1 pr-8 text-[15px] leading-relaxed text-[#3b2a55] line-clamp-5">{r.text}</p>
                     <div className="relative mt-5 flex items-center gap-3 border-t border-[#f3e8f8] pt-4">
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-sm font-bold text-white">{r.avatar}</span>
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] text-sm font-bold text-white">{r.avatar}</span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
-                          <p className="truncate text-sm font-bold text-[#2a0e4f]">{r.name}</p>
+                          <p className="truncate text-sm font-bold text-[#3d0a24]">{r.name}</p>
                           {r.verified && <BadgeCheck size={14} className="shrink-0 text-[#4285F4]" />}
                           {r.repeat && <RefreshCw size={12} className="shrink-0 text-[#c9a84c]" />}
                         </div>
-                        <p className="text-xs text-[#7d7094]">{r.occasion}</p>
+                        <p className="text-xs text-[#7d4555]">{r.occasion}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -199,7 +199,7 @@ export function ReviewsSection() {
           )}
           <Link
             to="/reviews"
-            className="inline-flex items-center gap-1 rounded-full border border-[#32105f]/30 px-6 py-2.5 text-sm font-semibold text-[#32105f] hover:bg-[#32105f]/5 transition-colors"
+            className="inline-flex items-center gap-1 rounded-full border border-[#5c1535]/30 px-6 py-2.5 text-sm font-semibold text-[#5c1535] hover:bg-[#5c1535]/5 transition-colors"
           >
             All Reviews <ChevronRight size={14} />
           </Link>
