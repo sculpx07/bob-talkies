@@ -76,10 +76,10 @@ export function ExperiencePicker() {
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <p className="mb-2 font-cursive text-2xl text-[#c9933a]">Choose an experience</p>
-            <h2 id="experience-picker-heading" className="font-display text-3xl font-medium leading-tight text-white md:text-5xl">Not just a theatre, your occasion made special</h2>
+            <p className="mb-2 font-cursive text-2xl text-[#C69A55]">Choose an experience</p>
+            <h2 id="experience-picker-heading" className="font-display text-3xl font-medium leading-tight text-[#49283A] md:text-5xl">Not just a theatre, your occasion made special</h2>
           </div>
-          <p className="max-w-xs text-white/80">Pick what you are celebrating and see the services that go with it.</p>
+          <p className="max-w-xs text-[#725968]">Pick what you are celebrating and see the services that go with it.</p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:auto-rows-[280px] lg:grid-cols-12 lg:gap-5">

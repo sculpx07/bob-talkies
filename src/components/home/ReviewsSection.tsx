@@ -50,10 +50,10 @@ export function ReviewsSection() {
           transition={{ duration: 0.5 }}
           className="mb-10"
         >
-          <p className="font-cursive text-2xl md:text-3xl text-[#c9933a] mb-0.5">Loved by the BOB Family</p>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-white leading-tight">What Our Guests Lived</h2>
+          <p className="font-cursive text-2xl md:text-3xl text-[#C69A55] mb-0.5">Loved by the BOB Family</p>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#49283A] leading-tight">What Our Guests Lived</h2>
           <motion.div
-            className="mt-2 h-[3px] rounded-full bg-[#d4a94a]"
+            className="mt-2 h-[3px] rounded-full bg-[#C69A55]"
             initial={{ width: 0 }}
             animate={inView ? { width: 40 } : {}}
             transition={{ delay: 0.3, duration: 0.5 }}
@@ -111,7 +111,7 @@ export function ReviewsSection() {
                     <img src={v.thumb} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     <span className="absolute inset-0 flex items-center justify-center bg-black/35">
                       <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/95 transition-transform duration-300 group-hover:scale-110">
-                        <Play size={12} fill="#3d0a24" className="ml-0.5 text-[#3d0a24]" />
+                        <Play size={12} fill="#3d0a24" className="ml-0.5 text-[#49283A]" />
                       </span>
                     </span>
                   </span>
@@ -135,7 +135,7 @@ export function ReviewsSection() {
                   <button
                     key={f}
                     onClick={() => { setActiveFilter(f); setShowAll(false) }}
-                    className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors ${on ? 'text-white' : 'text-[#5b2535] hover:text-[#3d0a24]'}`}
+                    className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-colors ${on ? 'text-white' : 'text-[#725968] hover:text-[#49283A]'}`}
                   >
                     {on && (
                       <motion.span layoutId="review-chip" className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)] shadow-[0_8px_20px_rgba(50,16,95,0.3)]" transition={{ type: 'spring', stiffness: 380, damping: 30 }} />
@@ -173,11 +173,11 @@ export function ReviewsSection() {
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] text-sm font-bold text-white">{r.avatar}</span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
-                          <p className="truncate text-sm font-bold text-[#3d0a24]">{r.name}</p>
+                          <p className="truncate text-sm font-bold text-[#49283A]">{r.name}</p>
                           {r.verified && <BadgeCheck size={14} className="shrink-0 text-[#4285F4]" />}
                           {r.repeat && <RefreshCw size={12} className="shrink-0 text-[#c9a84c]" />}
                         </div>
-                        <p className="text-xs text-[#7d4555]">{r.occasion}</p>
+                        <p className="text-xs text-[#725968]">{r.occasion}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -199,7 +199,7 @@ export function ReviewsSection() {
           )}
           <Link
             to="/reviews"
-            className="inline-flex items-center gap-1 rounded-full border border-[#f5d7a1]/60 px-6 py-2.5 text-sm font-semibold text-[#f5d7a1] hover:bg-white/10 transition-colors"
+            className="inline-flex items-center gap-1 rounded-full border border-[#5c1535]/30 px-6 py-2.5 text-sm font-semibold text-[#5c1535] hover:bg-[#5c1535]/5 transition-colors"
           >
             All Reviews <ChevronRight size={14} />
           </Link>

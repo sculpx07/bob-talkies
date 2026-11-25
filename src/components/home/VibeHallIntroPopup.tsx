@@ -76,7 +76,7 @@ export function VibeHallIntroPopup() {
 
             {/* Content */}
             <div className="px-6 pb-7 pt-4">
-              <p className="font-cursive text-xl text-[#c9933a] mb-1">Introducing</p>
+              <p className="font-cursive text-xl text-[#C69A55] mb-1">Introducing</p>
               <h2 className="font-display text-3xl sm:text-4xl font-black text-white leading-tight mb-2">
                 Vibe Hall
               </h2>
@@ -88,7 +88,7 @@ export function VibeHallIntroPopup() {
                 <Link
                   to="/theatres/vibe-hall"
                   onClick={dismiss}
-                  className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#3d0a24] transition-all hover:brightness-110 active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#49283A] transition-all hover:brightness-110 active:scale-95"
                   style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)' }}
                 >
                   Explore Vibe Hall <ArrowRight size={14} />

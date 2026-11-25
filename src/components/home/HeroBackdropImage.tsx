@@ -40,7 +40,7 @@ const CELEBRATION_PHOTOS = BIRTHDAY.flatMap((b, i) => [
 
 const LOGO_MS = 4600
 const SLIDE_MS = 3200
-const FADE_MS = 900
+const FADE_MS = 1200
 
 /** CSS matrix3d that maps the rectangle (0,0)-(w,h) onto the quad `q` (TL, TR, BR, BL). */
 function quadMatrix(w: number, h: number, q: [number, number][]) {
@@ -93,7 +93,7 @@ export function HeroBackdropImage() {
     [theatres],
   )
   // only mount a photo once the loop is about to reach it, so the extra images don't all load up front
-  const [reached, setReached] = useState(1)
+  const [reached, setReached] = useState(2)
   // step 0 = logo, 1..n = theatre photos
   const total = 1 + photos.length
 
@@ -118,17 +118,17 @@ export function HeroBackdropImage() {
   const matrix = useMemo(() => quadMatrix(CW, CH, SCREEN), [])
   const active = reduce ? 0 : step % total
   useEffect(() => {
-    setReached((r) => Math.max(r, active + 1))
+    // mount the current photo and the NEXT one, so the next image is already loaded when its turn comes
+    setReached((r) => Math.max(r, active + 2))
   }, [active])
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 overflow-hidden"
+      className="hero-curve pointer-events-none absolute inset-0 overflow-hidden"
       style={{
         containerType: 'size',
-        // fade the picture out at the bottom so it melts into the page backdrop below
-        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 62%, transparent 100%)',
-        maskImage: 'linear-gradient(to bottom, black 0%, black 62%, transparent 100%)',
+        // solid deep purple hero base (no fade mask), ended by the curved ivory edge at the bottom
+        background: 'linear-gradient(180deg, #2a0430 0%, #3d0a43 55%, #4a0b4e 100%)',
       }}
       aria-hidden="true"
     >
@@ -137,10 +137,20 @@ export function HeroBackdropImage() {
           0%, 100% { transform: scale(1);     filter: drop-shadow(0 0 6px rgba(255,205,110,0.35)) drop-shadow(0 0 16px rgba(255,190,80,0.18)); }
           50%      { transform: scale(1.035); filter: drop-shadow(0 0 14px rgba(255,214,130,0.9)) drop-shadow(0 0 34px rgba(255,190,80,0.5)); }
         }
+        /* the hero ends in a soft curve; whatever is behind (the page background) shows below it */
+        .hero-curve { --curve-h: 32px;
+          -webkit-mask-image: linear-gradient(#000,#000), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L0 30 C280 6 520 4 760 20 C1020 38 1240 30 1440 10 L1440 0 Z' fill='%23000'/%3E%3C/svg%3E");
+          mask-image: linear-gradient(#000,#000), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L0 30 C280 6 520 4 760 20 C1020 38 1240 30 1440 10 L1440 0 Z' fill='%23000'/%3E%3C/svg%3E");
+          -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+          -webkit-mask-size: 100% calc(100% - var(--curve-h) + 1px), 100% var(--curve-h);
+          mask-size: 100% calc(100% - var(--curve-h) + 1px), 100% var(--curve-h);
+          -webkit-mask-position: top, bottom; mask-position: top, bottom; }
+        @media (min-width: 768px) { .hero-curve { --curve-h: 56px; } }
         .hero-screen-logo { transform-origin: 50% 50%; }
         .hero-screen-logo.is-on { animation: heroLogoBreath 4s ease-in-out infinite; will-change: transform, filter; }
-        .hero-slide { opacity: 0; transition: opacity ${FADE_MS}ms ease-in-out; }
-        .hero-slide.is-on { opacity: 1; }
+        /* incoming slide fades in on top while the outgoing one stays fully opaque beneath it, then drops out: no dark dip */
+        .hero-slide { opacity: 0; z-index: 1; transition: opacity 0s linear ${FADE_MS}ms; }
+        .hero-slide.is-on { opacity: 1; z-index: 2; transition: opacity ${FADE_MS}ms ease-in-out; }
         .hero-photo img { transform: scale(1); transition: transform 0s linear ${FADE_MS}ms; }
         .hero-photo.is-on img { transform: scale(1.07); transition: transform ${SLIDE_MS + FADE_MS}ms linear; }
         /* narrow screens: fit the whole picture to the width at the top so the screen stays in view */

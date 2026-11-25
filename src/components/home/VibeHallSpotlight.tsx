@@ -22,7 +22,7 @@ export function VibeHallSpotlight() {
   return (
     <section
       ref={ref}
-      className="py-16 md:py-24 relative overflow-hidden"
+      className="py-16 md:py-24 relative overflow-hidden"
     >
       {/* Ambient glows */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -40,10 +40,10 @@ export function VibeHallSpotlight() {
           className="text-center mb-10"
         >
           <div className="flex items-center justify-center gap-2 mb-1">
-            <Zap size={16} className="text-[#34d399]" />
-            <span className="text-xs font-bold tracking-widest uppercase text-[#34d399]">Featured Venue</span>
+            <Zap size={16} className="text-[#0f8a62]" />
+            <span className="text-xs font-bold tracking-widest uppercase text-[#0f8a62]">Featured Venue</span>
           </div>
-          <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Vibe Hall</p>
+          <p className="font-cursive text-2xl md:text-3xl text-[#C69A55]">Vibe Hall</p>
         </motion.div>
 
         {/* Main layout */}
@@ -72,8 +72,8 @@ export function VibeHallSpotlight() {
                 PARTY HALL
               </span>
               <span
-                className="rounded-full px-3 py-1.5 text-xs font-bold text-white/70"
-                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}
+                className="rounded-full px-3 py-1.5 text-xs font-bold text-[#725968]"
+                style={{ background: 'rgba(92,21,53,0.06)', border: '1px solid rgba(92,21,53,0.18)' }}
               >
                 20–40 Guests
               </span>
@@ -87,12 +87,12 @@ export function VibeHallSpotlight() {
             transition={{ delay: 0.1, duration: 0.6 }}
             className="flex flex-col justify-center"
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#49283A] leading-tight mb-4">
               Think Bigger.<br />
               <span className="text-[#34d399]">Celebrate at</span><br />
               Vibe Hall.
             </h2>
-            <p className="text-white/55 text-sm leading-relaxed mb-6 max-w-md">
+            <p className="text-[#725968] text-sm leading-relaxed mb-6 max-w-md">
               From energetic group gatherings to unforgettable entertainment experiences, Vibe Hall gives you a cinema-grade 250" screen, immersive Dolby Atmos sound and room for 20 to 40 of your favourite people.
             </p>
 
@@ -109,7 +109,7 @@ export function VibeHallSpotlight() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/theatres/vibe-hall"
-                className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#3d0a24] transition-all hover:brightness-110 hover:scale-105"
+                className="inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#49283A] transition-all hover:brightness-110 hover:scale-105"
                 style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)' }}
               >
                 Explore Vibe Hall <ArrowRight size={14} />
@@ -118,7 +118,7 @@ export function VibeHallSpotlight() {
                 href={`https://wa.me/${config.whatsappNumber}?text=Hi! I'm interested in booking Vibe Hall for a group event.`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-sm font-semibold text-white/80 hover:bg-white/10 transition-colors"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#5c1535]/40 px-7 py-3.5 text-sm font-semibold text-[#5c1535] hover:bg-[#5c1535]/5 transition-colors"
               >
                 <MessageCircle size={14} /> Enquire for Group Events
               </a>
@@ -139,11 +139,11 @@ export function VibeHallSpotlight() {
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.1 + i * 0.05, duration: 0.35 }}
-              className="flex items-center gap-2.5 rounded-2xl border border-white/10 px-4 py-3"
-              style={{ background: 'rgba(255,255,255,0.04)' }}
+              className="flex items-center gap-2.5 rounded-2xl border border-[#e6d3b0] px-4 py-3"
+              style={{ background: '#ffffff' }}
             >
               <span className="text-lg">{u.emoji}</span>
-              <span className="text-white/60 text-xs font-medium leading-snug">{u.label}</span>
+              <span className="text-[#725968] text-xs font-medium leading-snug">{u.label}</span>
             </motion.div>
           ))}
         </motion.div>

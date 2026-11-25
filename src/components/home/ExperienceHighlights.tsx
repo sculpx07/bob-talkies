@@ -92,13 +92,13 @@ export function ExperienceHighlights() {
               className="flex items-center gap-2 mb-0.5"
             >
               <Sparkles size={15} className="text-[#d4a94a]" />
-              <p className="font-cursive text-xl text-[#c9933a]">Experiences at BOB</p>
+              <p className="font-cursive text-xl text-[#C69A55]">Experiences at BOB</p>
             </motion.div>
             <motion.h2
               initial={{ opacity: 0, y: 16 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.09, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-              className="text-2xl md:text-3xl font-black text-white"
+              className="text-2xl md:text-3xl font-black text-[#49283A]"
             >Every Experience. One Venue.</motion.h2>
           </div>
         </motion.div>
@@ -155,8 +155,8 @@ export function ExperienceHighlights() {
                       {i + 1}
                     </span>
                     <span className="min-w-0">
-                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? "text-white" : "text-white/60 group-hover:text-white"}`}>{h.eyebrow}</span>
-                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-white/70' : 'text-transparent'}`}>{h.tagline}</span>
+                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? 'text-[#49283A]' : 'text-[#9a6575] group-hover:text-[#725968]'}`}>{h.eyebrow}</span>
+                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-[#725968]' : 'text-transparent'}`}>{h.tagline}</span>
                     </span>
                   </button>
                 </motion.li>
@@ -189,7 +189,7 @@ export function ExperienceHighlights() {
                   >
                     <img src={h.img} alt={h.eyebrow} className="h-full w-full object-cover" loading="lazy" />
                     <span className="absolute inset-0 bg-gradient-to-t from-[#140930]/40 to-transparent" />
-                    <span className="absolute left-5 top-5 rounded-full px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#3d0a24]" style={{ background: h.accent }}>{h.eyebrow}</span>
+                    <span className="absolute left-5 top-5 rounded-full px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#49283A]" style={{ background: h.accent }}>{h.eyebrow}</span>
                   </motion.div>
 
                   <motion.div
@@ -198,13 +198,13 @@ export function ExperienceHighlights() {
                     animate={inView ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: 0.28, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    <h3 className="font-display text-2xl font-bold leading-snug text-[#3d0a24]">{h.tagline}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-[#7d4555]">{h.desc}</p>
+                    <h3 className="font-display text-2xl font-bold leading-snug text-[#49283A]">{h.tagline}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#725968]">{h.desc}</p>
                     <div className="mt-4 flex flex-wrap gap-1.5">
                       {h.items.map((item, idx) => (
                         <motion.span
                           key={item}
-                          className="rounded-full bg-[#fce8f0] px-2.5 py-1 text-[11px] font-medium text-[#5b2535]"
+                          className="rounded-full bg-[#fce8f0] px-2.5 py-1 text-[11px] font-medium text-[#725968]"
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={inView ? { opacity: 1, scale: 1 } : {}}
                           transition={{ delay: 0.32 + idx * 0.04, duration: 0.22 }}
