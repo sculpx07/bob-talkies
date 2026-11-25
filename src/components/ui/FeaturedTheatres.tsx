@@ -28,26 +28,31 @@ export function FeaturedTheatres() {
   const featured = theatres.filter((t) => t.images[0]).slice(0, 5)
 
   return (
-    <section
-      className="py-14 md:py-20"
-      aria-labelledby="featured-theatres-heading"
-    >
+    <section className="py-14 md:py-20" aria-labelledby="featured-theatres-heading">
       <div className="max-w-7xl mx-auto px-4 md:px-6 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-12 items-center">
 
-        {/* ── Left copy (unchanged) ── */}
+        {/* ── Left copy ── */}
         <div>
-          <p className="flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#5c1535]">
-            <span className="h-px w-4 bg-gold-500" aria-hidden="true" />
-            Featured Theatres
-            <span className="h-px w-4 bg-gold-500" aria-hidden="true" />
-          </p>
-          <h2 id="featured-theatres-heading" className="mt-4 font-display font-bold text-4xl md:text-5xl leading-[1.1] text-[#3d0a24]">
-            Moments
-            <br />
-            That Matter
-          </h2>
-          <p className="mt-5 text-base text-[#5b2535] leading-relaxed max-w-xs">
-            Discover our most loved theatres and find the perfect space for your celebration.
+          {/* Decorative title */}
+          <div className="flex items-center gap-3 mb-4">
+            <span className="flex items-center gap-1.5" aria-hidden>
+              <span className="block h-px w-8 bg-gradient-to-r from-transparent to-[#c9a84c]" />
+              <span className="text-[#c9a84c] text-sm leading-none">✦</span>
+            </span>
+            <h2
+              id="featured-theatres-heading"
+              className="font-display text-2xl md:text-3xl font-black text-[#3d0a24] leading-tight"
+            >
+              Explore Our Private Theatres
+            </h2>
+            <span className="flex items-center gap-1.5" aria-hidden>
+              <span className="text-[#c9a84c] text-sm leading-none">✦</span>
+              <span className="block h-px w-8 bg-gradient-to-l from-transparent to-[#c9a84c]" />
+            </span>
+          </div>
+
+          <p className="text-base text-[#5b2535] leading-relaxed max-w-xs">
+            Five unique theatres. Perfect for every celebration.
           </p>
           <Link
             to="/theatres"
@@ -57,7 +62,7 @@ export function FeaturedTheatres() {
           </Link>
         </div>
 
-        {/* ── Cards strip (all 5), no animation ── */}
+        {/* ── Cards strip ── */}
         <div
           className="relative overflow-hidden"
           style={{
@@ -72,14 +77,11 @@ export function FeaturedTheatres() {
             {featured.map((t, i) => {
               const id = IDENTITY[t.slug] ?? FALLBACK
               return (
-                <li
-                  key={t.id}
-                  className="shrink-0 w-[185px] sm:w-[200px]"
-                >
+                <li key={t.id} className="shrink-0 w-[185px] sm:w-[200px]">
                   <Link
                     to={`/theatres/${t.slug}`}
                     className="group relative flex flex-col overflow-hidden rounded-3xl"
-                    style={{ boxShadow: `0 10px_30px_rgba(50,16,95,0.15), 0 4px 16px ${id.glow}` }}
+                    style={{ boxShadow: `0 10px 30px rgba(50,16,95,0.15), 0 4px 16px ${id.glow}` }}
                   >
                     {/* Image */}
                     <div className="relative aspect-[3/4] overflow-hidden">
@@ -103,7 +105,7 @@ export function FeaturedTheatres() {
                       </div>
                     </div>
 
-                    {/* Info */}
+                    {/* Info overlay */}
                     <div className="absolute inset-x-0 bottom-0 p-4">
                       <p className="truncate text-base font-semibold text-white">{t.name}</p>
                       <div className="mt-1.5 flex items-center justify-between gap-2">
