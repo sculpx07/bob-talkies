@@ -98,7 +98,7 @@ export function ExperienceHighlights() {
               initial={{ opacity: 0, y: 16 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.09, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-              className="text-2xl md:text-3xl font-black text-[#3d0a24]"
+              className="text-2xl md:text-3xl font-black text-white"
             >Every Experience. One Venue.</motion.h2>
           </div>
         </motion.div>
@@ -155,8 +155,8 @@ export function ExperienceHighlights() {
                       {i + 1}
                     </span>
                     <span className="min-w-0">
-                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? 'text-[#3d0a24]' : 'text-[#9a6575] group-hover:text-[#5b2535]'}`}>{h.eyebrow}</span>
-                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-[#7d4555]' : 'text-transparent'}`}>{h.tagline}</span>
+                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? "text-white" : "text-white/60 group-hover:text-white"}`}>{h.eyebrow}</span>
+                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-white/70' : 'text-transparent'}`}>{h.tagline}</span>
                     </span>
                   </button>
                 </motion.li>

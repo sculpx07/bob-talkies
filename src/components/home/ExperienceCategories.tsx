@@ -555,7 +555,7 @@ export function ExperienceCategories() {
             <p className="font-cursive text-2xl text-[#c9933a] md:text-3xl">Every Experience</p>
             <Sparkles size={16} className="text-[#d4a94a]" />
           </div>
-          <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-[#3d0a24] md:text-5xl">
+          <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl">
             One Theatre.{' '}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-[#8b1a3a] via-[#a855f7] to-[#d4a94a] bg-clip-text text-transparent">
@@ -569,7 +569,7 @@ export function ExperienceCategories() {
               />
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-[#5b2535] md:text-base">
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-white/80 md:text-base">
             Not just a place to watch movies. A space to celebrate, cheer, connect and create
             unforgettable experiences.
           </p>

@@ -111,8 +111,8 @@ export function TheatreFinder() {
             <p className="font-cursive text-2xl text-[#c9933a] md:text-3xl">Experience Finder</p>
           </div>
           <h2 className="mb-2 text-2xl font-black leading-tight md:text-3xl lg:text-4xl">
-            <span className="text-[#3d0a24]">What Are You </span>
-            <span className="text-[#a81a3a]">Planning Today?</span>
+            <span className="text-white">What Are You </span>
+            <span className="text-[#ff9bb8]">Planning Today?</span>
           </h2>
           <motion.div
             className="mx-auto mt-3 h-[3px] rounded-full bg-[#d4a94a]"
@@ -120,7 +120,7 @@ export function TheatreFinder() {
             animate={inView ? { width: 40 } : {}}
             transition={{ delay: 0.3, duration: 0.5 }}
           />
-          <p className="mx-auto mt-3 max-w-sm text-sm text-[#5b2535]/80">
+          <p className="mx-auto mt-3 max-w-sm text-sm text-white/80">
             Tell us your group size and occasion — we'll find the best theatre for you.
           </p>
         </motion.div>
@@ -130,7 +130,7 @@ export function TheatreFinder() {
           initial={{ opacity: 0, y: 32, rotate: -1.5 }}
           animate={inView ? { opacity: 1, y: 0, rotate: 0 } : {}}
           transition={{ delay: 0.1, duration: 0.7 }}
-          className="relative mb-8 grid overflow-hidden rounded-[2rem] bg-white shadow-[0_28px_70px_rgba(107,35,152,0.2)] ring-1 ring-[#f8dce4] md:grid-cols-[280px_1fr]"
+          className="relative mb-8 grid overflow-hidden rounded-[2rem] bg-white shadow-[0_28px_70px_rgba(107,35,152,0.2)] md:grid-cols-[280px_1fr]"
         >
           {/* Stub: guests */}
           <div className="relative bg-[linear-gradient(160deg,#5c1535_0%,#8b1a3a_100%)] p-7 text-white">

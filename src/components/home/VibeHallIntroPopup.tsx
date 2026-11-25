@@ -4,22 +4,21 @@ import { Link } from 'react-router-dom'
 import { X, ArrowRight, Zap } from 'lucide-react'
 import { config } from '@/lib/config'
 
-const SESSION_KEY = 'vhPopupSeen'
+// resets on every full page load / refresh, but not when navigating inside the app
+let shownThisLoad = false
 
 export function VibeHallIntroPopup() {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    try {
-      if (sessionStorage.getItem(SESSION_KEY)) return
-    } catch {}
+    if (shownThisLoad) return
     const t = setTimeout(() => setOpen(true), 3000)
     return () => clearTimeout(t)
   }, [])
 
   const dismiss = () => {
     setOpen(false)
-    try { sessionStorage.setItem(SESSION_KEY, '1') } catch {}
+    shownThisLoad = true
   }
 
   return (

@@ -51,7 +51,7 @@ export function ReviewsSection() {
           className="mb-10"
         >
           <p className="font-cursive text-2xl md:text-3xl text-[#c9933a] mb-0.5">Loved by the BOB Family</p>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#3d0a24] leading-tight">What Our Guests Lived</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-white leading-tight">What Our Guests Lived</h2>
           <motion.div
             className="mt-2 h-[3px] rounded-full bg-[#d4a94a]"
             initial={{ width: 0 }}
@@ -140,7 +140,7 @@ export function ReviewsSection() {
                     {on && (
                       <motion.span layoutId="review-chip" className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)] shadow-[0_8px_20px_rgba(50,16,95,0.3)]" transition={{ type: 'spring', stiffness: 380, damping: 30 }} />
                     )}
-                    {!on && <span className="absolute inset-0 rounded-full bg-white/60 ring-1 ring-[#f5d5e0]" />}
+                    {!on && <span className="absolute inset-0 rounded-full bg-white" />}
                     <span className="relative">{f}</span>
                   </button>
                 )
@@ -199,7 +199,7 @@ export function ReviewsSection() {
           )}
           <Link
             to="/reviews"
-            className="inline-flex items-center gap-1 rounded-full border border-[#5c1535]/30 px-6 py-2.5 text-sm font-semibold text-[#5c1535] hover:bg-[#5c1535]/5 transition-colors"
+            className="inline-flex items-center gap-1 rounded-full border border-[#f5d7a1]/60 px-6 py-2.5 text-sm font-semibold text-[#f5d7a1] hover:bg-white/10 transition-colors"
           >
             All Reviews <ChevronRight size={14} />
           </Link>

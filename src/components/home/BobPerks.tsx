@@ -78,7 +78,7 @@ export function BobPerks() {
             <Sparkles size={15} className="text-[#d4a94a]" />
             <p className="font-cursive text-xl text-[#c9933a]">The BOB Family</p>
           </div>
-          <h2 className="text-2xl font-black text-[#3d0a24] md:text-3xl">Club Benefits &amp; Our Promise</h2>
+          <h2 className="text-2xl font-black text-white md:text-3xl">Club Benefits &amp; Our Promise</h2>
           <motion.div
             className="mx-auto mt-3 h-[3px] rounded-full bg-[#d4a94a]"
             initial={{ width: 0 }}
@@ -197,7 +197,7 @@ export function BobPerks() {
             transition={{ delay: 0.12, duration: 0.6 }}
           >
             <p className="mb-7 flex items-center gap-3 text-xs font-black uppercase tracking-[0.3em] text-[#c9933a]">
-              The BOB Promise <span className="h-px flex-1 bg-[#e6d4ee]" />
+              The BOB Promise 
             </p>
             <ul className="grid gap-x-6 gap-y-7 sm:grid-cols-2">
               {PROMISES.map((pr, i) => {
@@ -224,8 +224,8 @@ export function BobPerks() {
                     </span>
                     <span className="relative min-w-0">
                       <span className="block text-[11px] font-black tracking-[0.25em] text-[#c9933a]" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-                      <span className="relative mt-0.5 block text-[15px] font-bold leading-tight text-[#3d0a24]">{pr.title}</span>
-                      <span className="relative mt-1 block text-sm leading-snug text-[#7d4555]">{pr.desc}</span>
+                      <span className="relative mt-0.5 block text-[15px] font-bold leading-tight text-white">{pr.title}</span>
+                      <span className="relative mt-1 block text-sm leading-snug text-white/70">{pr.desc}</span>
                     </span>
                   </motion.li>
                 )

@@ -93,7 +93,7 @@ export function Header() {
         <div className="flex items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="shrink-0 justify-self-start" aria-label="BOB Talkies home">
-            <img src="/logo.png" alt="BOB Talkies" className="h-12 md:h-16 w-auto" />
+            <img src="/logo 2.png" alt="BOB Talkies" className="h-16 md:h-19 w-auto" />
           </Link>
 
           {/* Desktop nav */}

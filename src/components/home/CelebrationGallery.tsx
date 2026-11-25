@@ -59,10 +59,10 @@ export function CelebrationGallery() {
           transition={{ duration: 0.35 }}
           className="flex items-center gap-2 mb-6"
         >
-          <Camera size={14} className="text-[#8b1a3a]" />
+          <Camera size={14} className="text-[#f5d7a1]" />
           <p className="font-cursive text-xl text-[#c9933a]">Real Moments, Real Memories</p>
           <span className="h-px flex-1 max-w-[40px] bg-[#d4a94a]/40" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-[#3d0a24]/40">Recent Celebrations</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-white/60">Recent Celebrations</span>
         </motion.div>
 
         {/* Strip + arrow buttons */}

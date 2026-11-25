@@ -22,8 +22,7 @@ export function VibeHallSpotlight() {
   return (
     <section
       ref={ref}
-      className="py-16 md:py-24 relative overflow-hidden"
-      style={{ background: 'linear-gradient(160deg,#3d0a24 0%,#5c1535 55%,#3d0a24 100%)' }}
+      className="py-16 md:py-24 relative overflow-hidden"
     >
       {/* Ambient glows */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">

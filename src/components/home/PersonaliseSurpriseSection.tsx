@@ -116,10 +116,10 @@ export function PersonaliseSurpriseSection() {
               <Sparkles size={15} className="text-[#d4a94a]" />
               <p className="font-cursive text-xl text-[#c9933a]">Personalise Your Surprise</p>
             </div>
-            <h2 className="text-2xl font-black leading-snug text-[#3d0a24] md:text-3xl">
+            <h2 className="text-2xl font-black leading-snug text-white md:text-3xl">
               Your Story. Your Screen. Your Surprise.
             </h2>
-            <p className="mt-2 max-w-sm text-sm text-[#5b2535]/80">
+            <p className="mt-2 max-w-sm text-sm text-white/80">
               Make your celebration truly yours — from personalised videos to big-screen surprises they'll never expect.
             </p>
           </div>
@@ -153,11 +153,11 @@ export function PersonaliseSurpriseSection() {
                 transition={{ duration: 0.35 }}
               >
                 <span className="mt-5 block h-1 w-12 rounded-full" style={{ background: cur.color }} />
-                <h3 className="mt-4 font-display text-3xl font-bold leading-snug text-[#3d0a24]">{cur.title}</h3>
-                <p className="mt-3 text-base leading-relaxed text-[#5b2535]">{cur.desc}</p>
+                <h3 className="mt-4 font-display text-3xl font-bold leading-snug text-white">{cur.title}</h3>
+                <p className="mt-3 text-base leading-relaxed text-white/80">{cur.desc}</p>
                 <Link
                   to={`/personalise#${cur.id}`}
-                  className="group mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#8b1a3a]"
+                  className="group mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#f5d7a1]"
                 >
                   Explore <ArrowRight size={16} className="transition-transform group-hover:translate-x-1.5" />
                 </Link>
@@ -180,7 +180,7 @@ export function PersonaliseSurpriseSection() {
 
             <Link
               to="/personalise"
-              className="mt-6 flex max-w-sm items-center justify-between gap-3 rounded-2xl border border-dashed border-[#d4a94a]/60 bg-[#fff6e0]/70 px-4 py-3 text-sm transition-colors hover:bg-[#fff1d0]"
+              className="mt-6 flex max-w-sm items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 text-sm transition-colors hover:bg-white/90"
             >
               <span className="font-bold text-[#3d0a24]">Have your own surprise idea?</span>
               <span className="inline-flex shrink-0 items-center gap-1.5 font-bold text-[#8f6420]">Plan It Here <ArrowRight size={13} /></span>

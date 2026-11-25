@@ -46,8 +46,8 @@ export function InstagramSection() {
         <div className="mb-10 flex flex-col items-start justify-between gap-5 md:flex-row md:items-end">
           <div>
             <p className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#c9933a]"><InstagramIcon size={16} /> Instagram</p>
-            <h2 className="font-display text-3xl font-medium leading-tight text-[#3d0a24] md:text-4xl">Follow us on Instagram</h2>
-            <p className="mt-2 text-[#5b2535]">Real celebrations, decor ideas and surprises from our guests — <span className="font-semibold text-[#8b1a3a]">@{HANDLE}</span></p>
+            <h2 className="font-display text-3xl font-medium leading-tight text-white md:text-4xl">Follow us on Instagram</h2>
+            <p className="mt-2 text-white/80">Real celebrations, decor ideas and surprises from our guests — <span className="font-semibold text-[#f5d7a1]">@{HANDLE}</span></p>
           </div>
           <div className="flex items-center gap-3">
             <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-6 text-sm font-bold text-white shadow-[0_12px_26px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5">

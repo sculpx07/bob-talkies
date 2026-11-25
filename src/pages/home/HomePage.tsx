@@ -32,6 +32,7 @@ import { api } from '@/lib/api/client'
 import { theatreKeys, offerKeys } from '@/lib/api/queryKeys'
 import { OCCASIONS } from '@/content/occasions'
 import { config } from '@/lib/config'
+import { HeroBackdropImage } from '@/components/home/HeroBackdropImage'
 import type { Theatre } from '@/schemas/theatre'
 import type { Offer } from '@/schemas/offer'
 
@@ -106,15 +107,20 @@ export default function HomePage() {
       let frameId: number
       let paused = false
       let initialized = false
+      let pos = 0 // keep the position as a float; scrollLeft alone rounds small steps away on scaled displays
       function step() {
-        if (!initialized) {
-          if (dir === -1) node.scrollLeft = node.scrollWidth / 3
+        const loop = node.scrollWidth / 3
+        if (!initialized && loop > 0) {
+          pos = dir === -1 ? loop : 0
+          node.scrollLeft = pos
           initialized = true
         }
-        if (!paused) {
-          node.scrollLeft += 0.55 * dir
-          if (dir === 1 && node.scrollLeft >= node.scrollWidth / 3) node.scrollLeft = 0
-          if (dir === -1 && node.scrollLeft <= 0) node.scrollLeft = node.scrollWidth / 3
+        if (initialized && !paused) {
+          if (Math.abs(node.scrollLeft - pos) > 2) pos = node.scrollLeft // visitor scrolled by hand
+          pos += 0.6 * dir
+          if (dir === 1 && pos >= loop) pos = 0
+          if (dir === -1 && pos <= 0) pos = loop
+          node.scrollLeft = pos
         }
         frameId = requestAnimationFrame(step)
       }
@@ -211,13 +217,10 @@ export default function HomePage() {
         canonical="/"
       />
 
+      <div className="home-dark" style={{ backgroundImage: "url('/bg 1.png')", backgroundSize: "auto 220%", backgroundPosition: "left bottom", backgroundAttachment: "fixed" }}>
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-top bg-no-repeat pointer-events-none md:inset-x-0 md:bottom-auto md:aspect-[1672/517] md:bg-[length:100%_auto]"
-          style={{ backgroundImage: "url('/Hero bg.png')" }}
-          aria-hidden="true"
-        />
+        <HeroBackdropImage />
         <div className="film-grain absolute inset-0 pointer-events-none" aria-hidden="true" />
 
         <div className="relative z-10 w-full min-w-0 text-center px-4 max-w-[1600px] mx-auto pt-24">
@@ -473,14 +476,14 @@ export default function HomePage() {
                 <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Limited Time</p>
               </div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight">
-                <span className="text-[#3d0a24]">Current </span>
-                <span className="text-[#9b1a3a]">Offers</span>
+                <span className="text-white">Current </span>
+                <span className="text-[#ff9bb8]">Offers</span>
               </h2>
               <div className="mt-2 h-[3px] w-10 rounded-full bg-[#d4a94a]" />
             </div>
             <Link
               to="/offers"
-              className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#5c1535]/50 px-4 py-2 text-xs font-semibold text-[#5c1535] hover:bg-[#5c1535]/5 transition-colors mt-1"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#f5d7a1]/60 px-4 py-2 text-xs font-semibold text-[#f5d7a1] hover:bg-white/10 transition-colors mt-1"
             >
               View All <ChevronRight size={14} />
             </Link>
@@ -557,7 +560,7 @@ export default function HomePage() {
             <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Every Occasion</p>
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight">
-            <span className="text-[#3d0a24]">Choose Your </span>
+            <span className="text-white">Choose Your </span>
             <span className="text-[#9b1a3a]">Celebration</span>
           </h2>
           <motion.div
@@ -672,7 +675,7 @@ export default function HomePage() {
       <SectionReveal style="curtain"><PersonaliseSurpriseSection /></SectionReveal>
 
       {/* warm blush tint */}
-      <div style={{ background: 'linear-gradient(160deg,#fdf0f8 0%,#fce8f4 50%,#fdf0f8 100%)' }}>
+      <div>
         <SectionReveal style="zoom"><ReviewsSection /></SectionReveal>
       </div>
 
@@ -680,7 +683,7 @@ export default function HomePage() {
       <SectionReveal style="unfold"><TheatreFinder /></SectionReveal>
 
       {/* warm gold tint — distinct from cream */}
-      <div style={{ background: 'linear-gradient(160deg,#fdf6e3 0%,#faefd4 50%,#fdf6e3 100%)' }}>
+      <div>
         <SectionReveal style="rise"><BobPerks /></SectionReveal>
       </div>
 
@@ -688,7 +691,7 @@ export default function HomePage() {
 
       {/* Location */}
       <SectionReveal style="tilt">
-      <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden" style={{ background: 'linear-gradient(160deg, #fdf5f5 0%, #fff8f9 55%, #fdf5f5 100%)' }}>
+      <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-[#c9a84c]/8 blur-3xl" />
           <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-[#8b1a3a]/8 blur-3xl" />
@@ -701,14 +704,14 @@ export default function HomePage() {
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.28em] mb-3">Find Us</p>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-black text-[#3d0a24] leading-tight mb-4">Visit BOB Talkies</h2>
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">Visit BOB Talkies</h2>
             <motion.div className="mx-auto h-[3px] rounded-full bg-gradient-to-r from-[#c9a84c] to-[#eed98a]"
               initial={{ width: 0 }} animate={locationInView ? { width: 64 } : {}} transition={{ delay: 0.3, duration: 0.5 }} />
           </motion.div>
 
           <motion.div
-            className="grid md:grid-cols-2 overflow-hidden rounded-[2rem] bg-white/80 backdrop-blur-sm"
-            style={{ border: '1px solid rgba(236,217,236,0.9)', boxShadow: '0 20px 60px rgba(107,35,152,0.1)' }}
+            className="grid md:grid-cols-2 overflow-hidden rounded-[2rem] bg-white"
+            style={{ boxShadow: '0 20px 60px rgba(107,35,152,0.1)' }}
             initial={{ opacity: 0, y: 40 }}
             animate={locationInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.15, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
@@ -766,6 +769,7 @@ export default function HomePage() {
         </div>
       </section>
       </SectionReveal>
+      </div>
     </>
   )
 }
