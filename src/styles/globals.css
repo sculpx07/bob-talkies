@@ -140,12 +140,12 @@
     display: inline-block;
     background: linear-gradient(
       105deg,
-      #7b0d2a 0%,
-      #a0122e 20%,
-      #c9183a 44%,
-      #e8305a 50%,
-      #a0122e 68%,
-      #7b0d2a 100%
+      #f5d7a1 0%,
+      #e8b95c 20%,
+      #ff9bb8 44%,
+      #ffffff 50%,
+      #e8b95c 68%,
+      #f5d7a1 100%
     );
     background-size: 250% 100%;
     -webkit-background-clip: text;

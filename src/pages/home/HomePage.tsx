@@ -18,7 +18,6 @@ import { PersonaliseSurpriseSection } from '@/components/home/PersonaliseSurpris
 import { useBooking } from '@/features/booking/state/booking.context'
 import { OfferTicket } from '@/components/ui/OfferTicket'
 import { PartyDatePicker } from '@/components/ui/PartyDatePicker'
-import { TheatreStrip } from '@/components/ui/TheatreStrip'
 import { SectionReveal } from '@/components/home/SectionReveal'
 import { PartySelect } from '@/components/ui/PartySelect'
 import { PartyCounter } from '@/components/ui/PartyCounter'
@@ -214,15 +213,21 @@ export default function HomePage() {
 
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-top bg-no-repeat pointer-events-none md:inset-x-0 md:bottom-auto md:aspect-[1672/517] md:bg-[length:100%_auto]"
+          style={{ backgroundImage: "url('/Hero bg.png')" }}
+          aria-hidden="true"
+        />
         <div className="film-grain absolute inset-0 pointer-events-none" aria-hidden="true" />
 
-        <div className="relative z-10 w-full min-w-0 text-center px-4 max-w-5xl mx-auto pt-24">
-          <Badge variant="gold" className="mb-6 !border-0 !text-sm md:!text-lg !font-medium !text-gold-600 px-4 py-1.5 md:px-5 md:py-2 font-['Jost',sans-serif]">
+        <div className="relative z-10 w-full min-w-0 text-center px-4 max-w-[1600px] mx-auto pt-24">
+          <div className="md:pl-14 md:text-left">
+          <Badge variant="gold" className="mb-6 !border-0 !text-sm md:!text-lg !font-medium !text-[#f5d7a1] px-4 py-1.5 md:px-5 md:py-2 font-['Jost',sans-serif]">
             <Sparkles size={12} />
             Hyderabad's #1 Private Celebrations Venue
           </Badge>
-          <h1 className="mb-4 font-display text-3xl font-bold leading-tight tracking-tight text-[#3d0a24] sm:text-4xl md:text-5xl lg:text-6xl">
-            <span className="block text-[#3d0a24]">Your Theatre </span>
+          <h1 className="mb-4 font-display text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
+            <span className="block text-white">Your Theatre </span>
             <span className="block">
               Your{' '}
               <span key={heroKey} className="relative inline-block whitespace-nowrap">
@@ -234,9 +239,10 @@ export default function HomePage() {
               </span>
             </span>
           </h1>
-          <p className="mb-8 text-sm md:text-base text-[#5b2535]/80 max-w-lg mx-auto leading-relaxed">
+          <p className="mb-8 text-sm md:text-base text-white/85 max-w-lg mx-auto md:mx-0 leading-relaxed">
             From intimate celebrations to exclusive screenings and grand gatherings, experience entertainment your way at BOB Talkies.
           </p>
+          </div>
 
           {/* Plan your party — desktop pill (matches design) */}
           <div id="plan" className="relative mx-auto w-full max-w-4xl scroll-mt-28 font-['Jost',sans-serif]">
@@ -369,14 +375,12 @@ export default function HomePage() {
             </div>
           </div>
 
-          <TheatreStrip theatres={theatres ?? []} />
+          <div className="text-left"><FeaturedTheatres /></div>
         </div>
       </section>
 
       {/* light — body bg shows */}
       <SectionReveal style="rise"><ExperienceCategories /></SectionReveal>
-
-      <SectionReveal style="slide"><FeaturedTheatres /></SectionReveal>
 
       <SectionReveal style="rise"><ExperiencePicker /></SectionReveal>
 

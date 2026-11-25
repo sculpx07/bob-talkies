@@ -1,5 +1,4 @@
-﻿import { useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, ChevronRight, MapPin } from 'lucide-react'
 import { api } from '@/lib/api/client'
@@ -28,107 +27,15 @@ export function FeaturedTheatres() {
   })
   const featured = theatres.filter((t) => t.images[0]).slice(0, 5)
 
-  const sectionRef  = useRef<HTMLElement>(null)
-  const copyRef     = useRef<HTMLDivElement>(null)
-  const stripRef    = useRef<HTMLUListElement>(null)
-  const cardRefs    = useRef<(HTMLLIElement | null)[]>([])
-
-  /* ── Scroll-reveal on the copy panel ── */
-  useEffect(() => {
-    const section = sectionRef.current
-    const copy    = copyRef.current
-    if (!section || !copy) return
-
-    function onScroll() {
-      const rect = section!.getBoundingClientRect()
-      const vh   = window.innerHeight
-      const cp   = Math.max(0, Math.min((vh - rect.top) / (vh * 0.55), 1))
-      copy!.style.opacity   = String(cp)
-      copy!.style.transform = `perspective(900px) rotateY(${(1 - cp) * -30}deg) translateX(${(1 - cp) * -50}px)`
-    }
-
-    copy.style.opacity    = '0'
-    copy.style.transform  = 'perspective(900px) rotateY(-30deg) translateX(-50px)'
-    copy.style.willChange = 'transform, opacity'
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  /* ── Scroll-reveal on each card ── */
-  useEffect(() => {
-    const section = sectionRef.current
-    const cards   = cardRefs.current
-    if (!section) return
-
-    function onScroll() {
-      const rect = section!.getBoundingClientRect()
-      const vh   = window.innerHeight
-      const p    = Math.max(0, Math.min((vh - rect.top) / (vh * 0.65), 1))
-      const rotY = [-22, -11, 0, 11, 22]
-
-      cards.forEach((card, i) => {
-        if (!card) return
-        const stagger = i * 0.09
-        const cp = Math.max(0, Math.min((p - stagger) / (1 - stagger), 1))
-        card.style.opacity   = String(cp)
-        card.style.transform = `perspective(1000px) rotateX(${(1 - cp) * 52}deg) rotateY(${(1 - cp) * (rotY[i] ?? 0)}deg) translateY(${(1 - cp) * 110}px) scale(${0.70 + cp * 0.30})`
-        card.style.willChange = 'transform, opacity'
-      })
-    }
-
-    cards.forEach((card) => { if (card) { card.style.opacity = '0'; card.style.willChange = 'transform, opacity' } })
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [featured.length])
-
-  /* ── Auto-scroll the cards strip ── */
-  useEffect(() => {
-    const el = stripRef.current
-    if (!el || featured.length <= 3) return
-
-    let paused   = false
-    let frameId: number
-
-    function step() {
-      if (!paused) {
-        el!.scrollLeft += 0.6
-        // loop: once the last card's right edge reaches the scroll end, jump back
-        if (el!.scrollLeft >= el!.scrollWidth - el!.clientWidth) {
-          el!.scrollLeft = 0
-        }
-      }
-      frameId = requestAnimationFrame(step)
-    }
-
-    const pause  = () => { paused = true }
-    const resume = () => { paused = false }
-    el.addEventListener('mouseenter',  pause)
-    el.addEventListener('mouseleave',  resume)
-    el.addEventListener('touchstart',  pause,  { passive: true })
-    el.addEventListener('touchend',    resume)
-
-    frameId = requestAnimationFrame(step)
-    return () => {
-      cancelAnimationFrame(frameId)
-      el.removeEventListener('mouseenter', pause)
-      el.removeEventListener('mouseleave', resume)
-      el.removeEventListener('touchstart', pause)
-      el.removeEventListener('touchend',   resume)
-    }
-  }, [featured.length])
-
   return (
     <section
-      ref={sectionRef}
       className="py-14 md:py-20"
       aria-labelledby="featured-theatres-heading"
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-12 items-center">
 
         {/* ── Left copy (unchanged) ── */}
-        <div ref={copyRef}>
+        <div>
           <p className="flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#5c1535]">
             <span className="h-px w-4 bg-gold-500" aria-hidden="true" />
             Featured Theatres
@@ -150,7 +57,7 @@ export function FeaturedTheatres() {
           </Link>
         </div>
 
-        {/* ── Auto-scrolling cards strip (all 5) ── */}
+        {/* ── Cards strip (all 5), no animation ── */}
         <div
           className="relative overflow-hidden"
           style={{
@@ -159,13 +66,8 @@ export function FeaturedTheatres() {
           }}
         >
           <ul
-            ref={stripRef}
             className="flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden pb-1"
-            style={{
-              scrollbarWidth: 'none',
-              perspective: '1000px',
-              perspectiveOrigin: 'center bottom',
-            }}
+            style={{ scrollbarWidth: 'none' }}
           >
             {featured.map((t, i) => {
               const id = IDENTITY[t.slug] ?? FALLBACK
@@ -173,11 +75,10 @@ export function FeaturedTheatres() {
                 <li
                   key={t.id}
                   className="shrink-0 w-[185px] sm:w-[200px]"
-                  ref={(el) => { cardRefs.current[i] = el }}
                 >
                   <Link
                     to={`/theatres/${t.slug}`}
-                    className="group relative flex flex-col overflow-hidden rounded-3xl transition-all duration-300 hover:-translate-y-1"
+                    className="group relative flex flex-col overflow-hidden rounded-3xl"
                     style={{ boxShadow: `0 10px_30px_rgba(50,16,95,0.15), 0 4px 16px ${id.glow}` }}
                   >
                     {/* Image */}
@@ -186,7 +87,7 @@ export function FeaturedTheatres() {
                         src={t.images[0]}
                         alt={`${t.name} private theatre`}
                         loading="lazy"
-                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="absolute inset-0 h-full w-full object-cover"
                       />
                       <div className={cn('absolute inset-0 bg-gradient-to-t', id.gradient)} />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
@@ -212,7 +113,7 @@ export function FeaturedTheatres() {
                         </p>
                         <span
                           className={cn(
-                            'flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110',
+                            'flex h-9 w-9 shrink-0 items-center justify-center rounded-full',
                             i === 0 ? 'bg-white text-[#1a1a1a]' : 'bg-[#f3d9a8] text-[#1a1a1a]',
                           )}
                           aria-hidden="true"

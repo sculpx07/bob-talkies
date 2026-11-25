@@ -52,7 +52,7 @@ export function Header() {
   }, [])
 
   // over the dark hero video (home page, before scrolling) the menu turns white so it stays readable
-  const heroDark = false // the hero no longer has a dark video behind the menu
+  const heroDark = location.pathname === "/" && !scrolled // the home hero image is dark, so the menu is white until the page scrolls
   const navText = heroDark ? 'text-white' : 'text-[#5c1535]'
   const navLine = heroDark ? 'after:bg-white' : 'after:bg-[#5c1535]'
 
@@ -93,7 +93,7 @@ export function Header() {
         <div className="flex items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="shrink-0 justify-self-start" aria-label="BOB Talkies home">
-            <img src="/logo.png" alt="BOB Talkies" className={cn('h-12 md:h-16 w-auto transition-[filter] duration-300', heroDark && 'brightness-0 invert')} />
+            <img src="/logo.png" alt="BOB Talkies" className="h-12 md:h-16 w-auto" />
           </Link>
 
           {/* Desktop nav */}
@@ -151,6 +151,7 @@ export function Header() {
                       'px-2.5 py-2 text-sm font-medium leading-6', navText,
                       'relative after:absolute after:left-2.5 after:right-2.5 after:bottom-0 after:h-[2px] after:rounded-full', navLine, 'after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
                       isActive && 'after:scale-x-100 after:origin-left',
+                      isActive && heroDark && '!text-[#f5d7a1] after:!bg-[#f5d7a1]',
                     )
                   }
                 >
@@ -166,9 +167,14 @@ export function Header() {
             <Link
               to="/"
               state={{ highlightPlan: true }}
-              className="group relative hidden sm:inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-2.5 text-sm font-black text-white whitespace-nowrap transition-all duration-300 hover:scale-105"
+              className={cn(
+                'group relative hidden sm:inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-2.5 text-sm font-black whitespace-nowrap transition-all duration-300 hover:scale-105',
+                heroDark ? 'text-[#2a0e4f]' : 'text-white',
+              )}
               style={{
-                background: 'linear-gradient(135deg,#5c1535 0%,#7b1535 100%)',
+                background: heroDark
+                  ? 'linear-gradient(135deg,#f5d7a1 0%,#e0a94a 55%,#c9933a 100%)'
+                  : 'linear-gradient(135deg,#5c1535 0%,#7b1535 100%)',
                 boxShadow: '0 0 0 0 rgba(91,31,163,0.5)',
                 animation: 'bob-btn-pulse 2.4s ease-in-out infinite',
               }}
@@ -191,7 +197,9 @@ export function Header() {
                 'hidden sm:flex items-center justify-center rounded-full w-9 h-9 transition-all duration-200 ring-1',
                 savedPlan
                   ? 'bg-[#c9a84c]/20 text-[#c9933a] ring-[#c9a84c]/60 hover:bg-[#c9a84c]/35'
-                  : 'bg-[#5c1535]/8 text-[#5c1535] ring-[#5c1535]/20 hover:bg-[#5c1535]/12',
+                  : heroDark
+                    ? 'bg-white/10 text-white ring-white/30 hover:bg-white/20'
+                    : 'bg-[#5c1535]/8 text-[#5c1535] ring-[#5c1535]/20 hover:bg-[#5c1535]/12',
               )}
             >
               <Bookmark size={17} strokeWidth={2.2} fill={savedPlan ? '#c9a84c' : 'none'} />
