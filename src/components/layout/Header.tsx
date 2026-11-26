@@ -52,9 +52,9 @@ export function Header() {
   }, [])
 
   // over the dark hero video (home page, before scrolling) the menu turns white so it stays readable
-  const heroDark = location.pathname === "/" && !scrolled // the home hero image is dark, so the menu is white until the page scrolls
-  const navText = heroDark ? 'text-white' : 'text-[#5c1535]'
-  const navLine = heroDark ? 'after:bg-white' : 'after:bg-[#5c1535]'
+  const heroDark = true // whole site is dark purple, nav is always white
+  const navText = 'text-white'
+  const navLine = 'after:bg-white'
 
   useEffect(() => {
     setMobileOpen(false)
@@ -85,7 +85,7 @@ export function Header() {
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
         // pages that open on a dark hero need the light header background from the start so the nav stays readable
         (scrolled || /^\/(celebrations\/.+|personalise)/.test(location.pathname))
-          ? 'bg-[#fff8f9]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(50,16,95,0.08)]'
+          ? 'bg-[#1a0438]/90 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.5)]'
           : 'bg-transparent',
       )}
     >
@@ -167,14 +167,9 @@ export function Header() {
             <Link
               to="/"
               state={{ highlightPlan: true }}
-              className={cn(
-                'group relative hidden sm:inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-2.5 text-sm font-black whitespace-nowrap transition-all duration-300 hover:scale-105',
-                heroDark ? 'text-[#2a0e4f]' : 'text-white',
-              )}
+              className="group relative hidden sm:inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-2.5 text-sm font-black whitespace-nowrap transition-all duration-300 hover:scale-105 text-[#2a0e4f]"
               style={{
-                background: heroDark
-                  ? 'linear-gradient(135deg,#f5d7a1 0%,#e0a94a 55%,#c9933a 100%)'
-                  : 'linear-gradient(135deg,#5c1535 0%,#7b1535 100%)',
+                background: 'linear-gradient(135deg,#f5d7a1 0%,#e0a94a 55%,#c9933a 100%)',
                 boxShadow: '0 0 0 0 rgba(91,31,163,0.5)',
                 animation: 'bob-btn-pulse 2.4s ease-in-out infinite',
               }}

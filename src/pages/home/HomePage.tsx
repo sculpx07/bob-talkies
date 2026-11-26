@@ -387,15 +387,28 @@ export default function HomePage() {
         </div>
       </section>
 
-      <FeaturedTheatres />
+      {/* FeaturedTheatres — #160438 → #2e0c62 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#160438 0%,#2e0c62 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', top: '20%', right: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+        <FeaturedTheatres />
+      </div>
 
-      {/* light — body bg shows */}
-      <SectionReveal style="rise"><ExperienceCategories /></SectionReveal>
+      {/* ExperienceCategories — #2e0c62 → #0d0220 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#2e0c62 0%,#0d0220 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', bottom: '10%', left: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,50,220,0.12) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+        <SectionReveal style="rise"><ExperienceCategories /></SectionReveal>
+      </div>
 
-      <SectionReveal style="rise"><ExperiencePicker /></SectionReveal>
+      {/* ExperiencePicker — #0d0220 → #1a0640 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#0d0220 0%,#1a0640 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', top: '30%', right: '-5%', width: 460, height: 460, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+        <SectionReveal style="rise"><ExperiencePicker /></SectionReveal>
+      </div>
 
-      {/* Live Offers */}
+      {/* Offers — #1a0640 → #3a0e72 */}
       {(offersLoading || (offers && offers.length > 0)) && (
+        <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#1a0640 0%,#3a0e72 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', bottom: '5%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(210,45,125,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="curtain">
         <Section bg="base" className="relative overflow-hidden">
           {/* ── Celebration background ── */}
@@ -539,11 +552,15 @@ export default function HomePage() {
           )}
         </Section>
         </SectionReveal>
+        </div>
       )}
 
       {/* Our Theatres */}
-  
 
+
+      {/* Celebrations — #3a0e72 → #110230 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#3a0e72 0%,#110230 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', top: '15%', right: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
       {/* Choose Your Celebration */}
       <SectionReveal style="zoom">
       <Section bg="base">
@@ -670,33 +687,59 @@ export default function HomePage() {
 
       </Section>
       </SectionReveal>
+      </div>
 
-      <SectionReveal style="tilt"><ExperienceHighlights /></SectionReveal>
+      {/* ExperienceHighlights — #110230 → #280a56 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#110230 0%,#280a56 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', bottom: '5%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,50,220,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+        <SectionReveal style="tilt"><ExperienceHighlights /></SectionReveal>
+      </div>
 
-      <SectionReveal style="rise"><VibeHallSpotlight /></SectionReveal>
+      {/* VibeHallSpotlight — #280a56 → #060118 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#280a56 0%,#060118 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(100,20,200,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+        <SectionReveal style="rise"><VibeHallSpotlight /></SectionReveal>
+      </div>
 
-      {/* Real Moments gallery — right after the experience section */}
-      <SectionReveal style="rise"><CelebrationGallery /></SectionReveal>
+      {/* CelebrationGallery — #060118 → #180438 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#060118 0%,#180438 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', top: '20%', right: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+        <SectionReveal style="rise"><CelebrationGallery /></SectionReveal>
+      </div>
 
-      {/* light — body bg */}
-      <SectionReveal style="curtain"><PersonaliseSurpriseSection /></SectionReveal>
+      {/* PersonaliseSurprise — #180438 → #2e0c62 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#180438 0%,#2e0c62 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', bottom: '5%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+        <SectionReveal style="curtain"><PersonaliseSurpriseSection /></SectionReveal>
+      </div>
 
-      {/* warm blush tint */}
-      <div>
+      {/* ReviewsSection — #2e0c62 → #0d0220 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#2e0c62 0%,#0d0220 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', top: '15%', right: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,50,220,0.11) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="zoom"><ReviewsSection /></SectionReveal>
       </div>
 
-      {/* light — body bg */}
-      <SectionReveal style="unfold"><TheatreFinder /></SectionReveal>
+      {/* TheatreFinder — #0d0220 → #1e0648 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#0d0220 0%,#1e0648 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', bottom: '5%', right: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+        <SectionReveal style="unfold"><TheatreFinder /></SectionReveal>
+      </div>
 
-      {/* warm gold tint — distinct from cream */}
-      <div>
+      {/* BobPerks — #1e0648 → #0a0120 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#1e0648 0%,#0a0120 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', top: '20%', left: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><BobPerks /></SectionReveal>
       </div>
 
-      <SectionReveal style="slide"><InstagramSection /></SectionReveal>
+      {/* InstagramSection — #0a0120 → #260856 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#0a0120 0%,#260856 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', bottom: '5%', right: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,40,220,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+        <SectionReveal style="slide"><InstagramSection /></SectionReveal>
+      </div>
 
-      {/* Location */}
+      {/* Location — #260856 → #0d0220 */}
+      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#260856 0%,#0d0220 100%)' }}>
+        <div aria-hidden style={{ position: 'absolute', top: '20%', left: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(130,50,220,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
       <SectionReveal style="tilt">
       <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -717,8 +760,8 @@ export default function HomePage() {
           </motion.div>
 
           <motion.div
-            className="grid md:grid-cols-2 overflow-hidden rounded-[2rem] bg-white"
-            style={{ boxShadow: '0 20px 60px rgba(107,35,152,0.1)' }}
+            className="grid md:grid-cols-2 overflow-hidden rounded-[2rem]"
+            style={{ background: 'rgba(255,255,255,0.05)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)' }}
             initial={{ opacity: 0, y: 40 }}
             animate={locationInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.15, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
@@ -726,23 +769,23 @@ export default function HomePage() {
             {/* Info panel */}
             <div className="flex flex-col justify-between p-6 md:p-10">
               <div>
-                <h3 className="font-display text-3xl md:text-4xl font-bold text-[#3d0a24] mb-7">BOB Talkies — Kukatpally</h3>
+                <h3 className="font-display text-3xl md:text-4xl font-bold text-white mb-7">BOB Talkies — Kukatpally</h3>
                 <div className="space-y-5">
                   {[
-                    { icon: <MapPin size={20} className="text-[#8b1a3a]" />, label: 'Address', content: <p className="text-[#3d0a24] leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
-                    { icon: <Phone size={20} className="text-[#8b1a3a]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${whatsappNumber}`} className="text-[#3d0a24] hover:text-[#8b1a3a] transition-colors">+91 {whatsappNumber.slice(2)}</a> },
-                    { icon: <CalendarDays size={20} className="text-[#8b1a3a]" />, label: 'Operating Hours', content: <><p className="text-[#3d0a24]">10:00 AM – 1:00 AM</p><p className="text-[#8f6420] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
+                    { icon: <MapPin size={20} className="text-[#c9a84c]" />, label: 'Address', content: <p className="text-white/75 leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
+                    { icon: <Phone size={20} className="text-[#c9a84c]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${whatsappNumber}`} className="text-white/75 hover:text-white transition-colors">+91 {whatsappNumber.slice(2)}</a> },
+                    { icon: <CalendarDays size={20} className="text-[#c9a84c]" />, label: 'Operating Hours', content: <><p className="text-white/75">10:00 AM – 1:00 AM</p><p className="text-[#c9a84c] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
                   ].map((item, i) => (
                     <motion.div key={item.label} className="flex items-start gap-4"
                       initial={{ opacity: 0, x: -20 }}
                       animate={locationInView ? { opacity: 1, x: 0 } : {}}
                       transition={{ delay: 0.3 + i * 0.1, duration: 0.45 }}
                     >
-                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-[#f6e6ef]">
+                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'rgba(255,255,255,0.1)' }}>
                         {item.icon}
                       </div>
                       <div>
-                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#5b2535] mb-0.5">{item.label}</p>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/45 mb-0.5">{item.label}</p>
                         {item.content}
                       </div>
                     </motion.div>
@@ -776,6 +819,7 @@ export default function HomePage() {
         </div>
       </section>
       </SectionReveal>
+      </div>
       </div>
     </>
   )
