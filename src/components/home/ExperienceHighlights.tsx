@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+﻿import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, ChevronDown, Sparkles } from 'lucide-react'
@@ -92,13 +92,13 @@ export function ExperienceHighlights() {
               className="flex items-center gap-2 mb-0.5"
             >
               <Sparkles size={15} className="text-[#d4a94a]" />
-              <p className="font-cursive text-xl text-[#c9933a]">Experiences at BOB</p>
+              <p className="font-cursive text-xl text-[#C69A55]">Experiences at BOB</p>
             </motion.div>
             <motion.h2
               initial={{ opacity: 0, y: 16 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.09, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-              className="text-2xl md:text-3xl font-black text-[#2a0e4f]"
+              className="text-2xl md:text-3xl font-black text-[#49283A]"
             >Every Experience. One Venue.</motion.h2>
           </div>
         </motion.div>
@@ -108,7 +108,7 @@ export function ExperienceHighlights() {
           {/* list: huge outlined numbers, stagger in one by one */}
           <ul ref={ulRef} className="relative flex h-full flex-col justify-between" role="tablist" aria-label="Experiences">
             <motion.span
-              className="pointer-events-none absolute bottom-3 left-[7px] top-3 w-px bg-[#e3d3ee]"
+              className="pointer-events-none absolute bottom-3 left-[7px] top-3 w-px bg-[#f0d0dc]"
               initial={{ scaleY: 0, originY: 0 }}
               animate={inView ? { scaleY: 1 } : {}}
               transition={{ delay: 0.18, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
@@ -145,7 +145,7 @@ export function ExperienceHighlights() {
                   >
                     {/* static dot hidden when ball is traveling to this item */}
                     <span
-                      className={`absolute left-0 top-1/2 h-[15px] w-[15px] -translate-y-1/2 rounded-full border-2 transition-all duration-300 ${isActive ? 'opacity-0' : 'bg-[#fffaf4] border-[#d9c9e6]'}`}
+                      className={`absolute left-0 top-1/2 h-[15px] w-[15px] -translate-y-1/2 rounded-full border-2 transition-all duration-300 ${isActive ? 'opacity-0' : 'bg-[#fff8f9] border-[#edc5d0]'}`}
                       aria-hidden="true"
                     />
                     <span
@@ -155,8 +155,8 @@ export function ExperienceHighlights() {
                       {i + 1}
                     </span>
                     <span className="min-w-0">
-                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? 'text-[#2a0e4f]' : 'text-[#9a8cae] group-hover:text-[#5b4578]'}`}>{h.eyebrow}</span>
-                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-[#7d7094]' : 'text-transparent'}`}>{h.tagline}</span>
+                      <span className={`block text-lg font-bold leading-tight transition-colors ${isActive ? 'text-[#49283A]' : 'text-[#9a6575] group-hover:text-[#725968]'}`}>{h.eyebrow}</span>
+                      <span className={`mt-1 block text-sm leading-snug transition-all ${isActive ? 'text-[#725968]' : 'text-transparent'}`}>{h.tagline}</span>
                     </span>
                   </button>
                 </motion.li>
@@ -189,22 +189,22 @@ export function ExperienceHighlights() {
                   >
                     <img src={h.img} alt={h.eyebrow} className="h-full w-full object-cover" loading="lazy" />
                     <span className="absolute inset-0 bg-gradient-to-t from-[#140930]/40 to-transparent" />
-                    <span className="absolute left-5 top-5 rounded-full px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#2a0e4f]" style={{ background: h.accent }}>{h.eyebrow}</span>
+                    <span className="absolute left-5 top-5 rounded-full px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#49283A]" style={{ background: h.accent }}>{h.eyebrow}</span>
                   </motion.div>
 
                   <motion.div
-                    className="absolute bottom-8 right-0 w-[48%] rounded-[1.75rem] bg-white p-7 shadow-[0_26px_60px_rgba(107,35,152,0.25)] ring-1 ring-[#f0e1f3]"
+                    className="absolute bottom-8 right-0 w-[48%] rounded-[1.75rem] bg-white p-7 shadow-[0_26px_60px_rgba(107,35,152,0.25)] ring-1 ring-[#f8dce4]"
                     initial={{ opacity: 0, y: 32 }}
                     animate={inView ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: 0.28, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    <h3 className="font-display text-2xl font-bold leading-snug text-[#2a0e4f]">{h.tagline}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-[#7d7094]">{h.desc}</p>
+                    <h3 className="font-display text-2xl font-bold leading-snug text-[#49283A]">{h.tagline}</h3>
+                    <p className="mt-3 text-sm leading-relaxed text-[#725968]">{h.desc}</p>
                     <div className="mt-4 flex flex-wrap gap-1.5">
                       {h.items.map((item, idx) => (
                         <motion.span
                           key={item}
-                          className="rounded-full bg-[#f6eefb] px-2.5 py-1 text-[11px] font-medium text-[#5b4578]"
+                          className="rounded-full bg-[#fce8f0] px-2.5 py-1 text-[11px] font-medium text-[#725968]"
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={inView ? { opacity: 1, scale: 1 } : {}}
                           transition={{ delay: 0.32 + idx * 0.04, duration: 0.22 }}
@@ -213,7 +213,7 @@ export function ExperienceHighlights() {
                     </div>
                     <Link
                       to={h.link}
-                      className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#6b2398] transition-all hover:gap-3"
+                      className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#8b1a3a] transition-all hover:gap-3"
                     >
                       {h.cta} <ArrowRight size={15} />
                     </Link>
@@ -240,7 +240,7 @@ export function ExperienceHighlights() {
                 <button
                   onClick={() => setActive(isOpen ? '' : h.id)}
                   className="w-full flex items-center justify-between p-4 text-left"
-                  style={{ background: 'linear-gradient(135deg,#2a0e4f,#32105f)' }}
+                  style={{ background: 'linear-gradient(135deg,#3d0a24,#5c1535)' }}
                 >
                   <div className="flex items-center gap-3">
                     <span
@@ -266,7 +266,7 @@ export function ExperienceHighlights() {
                     >
                       <div
                         className="relative"
-                        style={{ background: 'linear-gradient(135deg,#2a0e4f,#4a1a8a)' }}
+                        style={{ background: 'linear-gradient(135deg,#3d0a24,#6b1535)' }}
                       >
                         <img
                           src={h.img}
@@ -284,7 +284,7 @@ export function ExperienceHighlights() {
                           <Link
                             to={h.link}
                             className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-black"
-                            style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)', color: '#2a0e4f' }}
+                            style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)', color: '#3d0a24' }}
                           >
                             {h.cta} <ArrowRight size={11} />
                           </Link>

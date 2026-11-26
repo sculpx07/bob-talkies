@@ -1,152 +1,73 @@
-import { useEffect, useRef } from 'react'
+﻿import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ChevronRight, MapPin } from 'lucide-react'
-import { cn } from '@/lib/utils/cn'
+import { ArrowRight, Users } from 'lucide-react'
+import { formatINR } from '@/lib/utils/currency'
 import { useTheatres } from '@/features/catalog/api'
-
-function locationLabel(locationId: string) {
-  const name = locationId.replace(/^loc-/, '').replace(/-/g, ' ')
-  return `${name.replace(/\b\w/g, (c) => c.toUpperCase())}, Hyderabad`
-}
-
-const IDENTITY: Record<string, { accent: string; glow: string; gradient: string; label: string }> = {
-  delight:     { accent: '#f43f5e', glow: 'rgba(244,63,94,0.28)',   gradient: 'from-[#881337]/80 via-[#be123c]/15 to-transparent', label: 'INTIMATE'   },
-  heavens:     { accent: '#a78bfa', glow: 'rgba(167,139,250,0.28)', gradient: 'from-[#4c1d95]/80 via-[#6d28d9]/15 to-transparent', label: 'STYLISH'    },
-  filmdom:     { accent: '#fbbf24', glow: 'rgba(251,191,36,0.28)',  gradient: 'from-[#78350f]/80 via-[#b45309]/15 to-transparent', label: 'CINEMATIC'  },
-  cosmos:      { accent: '#818cf8', glow: 'rgba(129,140,248,0.28)', gradient: 'from-[#1e1b4b]/80 via-[#3730a3]/15 to-transparent', label: 'GRAND'      },
-  'vibe-hall': { accent: '#34d399', glow: 'rgba(52,211,153,0.28)',  gradient: 'from-[#064e3b]/80 via-[#065f46]/15 to-transparent', label: 'PARTY HALL' },
-}
-const FALLBACK = IDENTITY['delight']
 
 export function FeaturedTheatres() {
   const { data: theatres = [] } = useTheatres()
   const featured = theatres.filter((t) => t.images[0]).slice(0, 5)
+  const stripRef = useRef<HTMLUListElement>(null)
 
-  const sectionRef  = useRef<HTMLElement>(null)
-  const copyRef     = useRef<HTMLDivElement>(null)
-  const stripRef    = useRef<HTMLUListElement>(null)
-  const cardRefs    = useRef<(HTMLLIElement | null)[]>([])
-
-  /* ── Scroll-reveal on the copy panel ── */
+  // slow auto-scroll to the left, looping seamlessly over a duplicated list; pauses on hover
   useEffect(() => {
-    const section = sectionRef.current
-    const copy    = copyRef.current
-    if (!section || !copy) return
-
-    function onScroll() {
-      const rect = section!.getBoundingClientRect()
-      const vh   = window.innerHeight
-      const cp   = Math.max(0, Math.min((vh - rect.top) / (vh * 0.55), 1))
-      copy!.style.opacity   = String(cp)
-      copy!.style.transform = `perspective(900px) rotateY(${(1 - cp) * -30}deg) translateX(${(1 - cp) * -50}px)`
-    }
-
-    copy.style.opacity    = '0'
-    copy.style.transform  = 'perspective(900px) rotateY(-30deg) translateX(-50px)'
-    copy.style.willChange = 'transform, opacity'
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  /* ── Scroll-reveal on each card ── */
-  useEffect(() => {
-    const section = sectionRef.current
-    const cards   = cardRefs.current
-    if (!section) return
-
-    function onScroll() {
-      const rect = section!.getBoundingClientRect()
-      const vh   = window.innerHeight
-      const p    = Math.max(0, Math.min((vh - rect.top) / (vh * 0.65), 1))
-      const rotY = [-22, -11, 0, 11, 22]
-
-      cards.forEach((card, i) => {
-        if (!card) return
-        const stagger = i * 0.09
-        const cp = Math.max(0, Math.min((p - stagger) / (1 - stagger), 1))
-        card.style.opacity   = String(cp)
-        card.style.transform = `perspective(1000px) rotateX(${(1 - cp) * 52}deg) rotateY(${(1 - cp) * (rotY[i] ?? 0)}deg) translateY(${(1 - cp) * 110}px) scale(${0.70 + cp * 0.30})`
-        card.style.willChange = 'transform, opacity'
-      })
-    }
-
-    cards.forEach((card) => { if (card) { card.style.opacity = '0'; card.style.willChange = 'transform, opacity' } })
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [featured.length])
-
-  /* ── Auto-scroll the cards strip ── */
-  useEffect(() => {
-    const el = stripRef.current
-    if (!el || featured.length <= 3) return
-
-    let paused   = false
-    let frameId: number
-
-    function step() {
-      if (!paused) {
-        el!.scrollLeft += 0.6
-        // loop: once the last card's right edge reaches the scroll end, jump back
-        if (el!.scrollLeft >= el!.scrollWidth - el!.clientWidth) {
-          el!.scrollLeft = 0
-        }
+    const node = stripRef.current
+    if (!node || featured.length === 0) return
+    let frameId = 0
+    let paused = false
+    let pos = node.scrollLeft
+    const step = () => {
+      const loop = node.scrollWidth / 2
+      if (!paused && loop > 0) {
+        if (Math.abs(node.scrollLeft - pos) > 2) pos = node.scrollLeft // visitor scrolled by hand
+        pos += 0.6
+        if (pos >= loop) pos = 0
+        node.scrollLeft = pos
       }
       frameId = requestAnimationFrame(step)
     }
-
-    const pause  = () => { paused = true }
+    const pause = () => { paused = true }
     const resume = () => { paused = false }
-    el.addEventListener('mouseenter',  pause)
-    el.addEventListener('mouseleave',  resume)
-    el.addEventListener('touchstart',  pause,  { passive: true })
-    el.addEventListener('touchend',    resume)
-
+    node.addEventListener('mouseenter', pause)
+    node.addEventListener('mouseleave', resume)
     frameId = requestAnimationFrame(step)
     return () => {
       cancelAnimationFrame(frameId)
-      el.removeEventListener('mouseenter', pause)
-      el.removeEventListener('mouseleave', resume)
-      el.removeEventListener('touchstart', pause)
-      el.removeEventListener('touchend',   resume)
+      node.removeEventListener('mouseenter', pause)
+      node.removeEventListener('mouseleave', resume)
     }
   }, [featured.length])
 
   return (
-    <section
-      ref={sectionRef}
-      className="py-14 md:py-20"
-      aria-labelledby="featured-theatres-heading"
-    >
+    <section className="py-14 md:py-20" aria-labelledby="featured-theatres-heading">
       <div className="max-w-7xl mx-auto px-4 md:px-6 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-12 items-center">
 
-        {/* ── Left copy (unchanged) ── */}
-        <div ref={copyRef}>
-          <p className="flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#32105f]">
-            <span className="h-px w-4 bg-gold-500" aria-hidden="true" />
-            Featured Theatres
-            <span className="h-px w-4 bg-gold-500" aria-hidden="true" />
-          </p>
-          <h2 id="featured-theatres-heading" className="mt-4 font-display font-bold text-4xl md:text-5xl leading-[1.1] text-[#2a0e4f]">
-            Moments
-            <br />
-            That Matter
-          </h2>
-          <p className="mt-5 text-base text-[#5b4578] leading-relaxed max-w-xs">
-            Discover our most loved theatres and find the perfect space for your celebration.
+        {/* ── Left copy ── */}
+        <div>
+          {/* Decorative title */}
+          <div className="mb-4">
+            <h2
+              id="featured-theatres-heading"
+              className="font-display text-2xl md:text-3xl font-black text-[#49283A] leading-tight"
+            >
+              Explore Our Private Theatres
+            </h2>
+          </div>
+
+          <p className="text-base text-[#725968] leading-relaxed max-w-xs">
+            Five unique theatres. Perfect for every celebration.
           </p>
           <Link
             to="/theatres"
-            className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#32105f]/60 px-6 py-2.5 text-sm font-semibold text-[#32105f] transition-colors hover:bg-[#32105f]/5"
+            className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#5c1535]/60 px-6 py-2.5 text-sm font-semibold text-[#5c1535] transition-colors hover:bg-[#5c1535]/5"
           >
             Explore All Theatres <ArrowRight size={14} />
           </Link>
         </div>
 
-        {/* ── Auto-scrolling cards strip (all 5) ── */}
+        {/* ── Cards strip ── */}
         <div
-          className="relative overflow-hidden"
+          className="relative overflow-hidden -my-12 py-12"
           style={{
             WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)',
             maskImage: 'linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)',
@@ -154,66 +75,47 @@ export function FeaturedTheatres() {
         >
           <ul
             ref={stripRef}
-            className="flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden pb-1"
-            style={{
-              scrollbarWidth: 'none',
-              perspective: '1000px',
-              perspectiveOrigin: 'center bottom',
-            }}
+            className="flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden -mt-12 -mb-12 pt-12 pb-12"
+            style={{ scrollbarWidth: 'none' }}
           >
-            {featured.map((t, i) => {
-              const id = IDENTITY[t.slug] ?? FALLBACK
+            {[...featured, ...featured].map((t, n) => {
+              const i = n % featured.length
               return (
-                <li
-                  key={t.id}
-                  className="shrink-0 w-[185px] sm:w-[200px]"
-                  ref={(el) => { cardRefs.current[i] = el }}
-                >
+                <li key={`${t.id}-${n}`} aria-hidden={n >= featured.length || undefined} className="shrink-0 w-[236px] sm:w-[250px]">
                   <Link
                     to={`/theatres/${t.slug}`}
-                    className="group relative flex flex-col overflow-hidden rounded-3xl transition-all duration-300 hover:-translate-y-1"
-                    style={{ boxShadow: `0 10px_30px_rgba(50,16,95,0.15), 0 4px 16px ${id.glow}` }}
+                    className="group flex flex-col rounded-[1.75rem] border border-[#eadfce] p-2.5 transition-shadow hover:shadow-[0_18px_40px_rgba(0,0,0,0.35)]"
+                    style={{ background: '#FFFFFF', boxShadow: '0 10px 28px rgba(0,0,0,0.28)' }}
                   >
-                    {/* Image */}
-                    <div className="relative aspect-[3/4] overflow-hidden">
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                       <img
                         src={t.images[0]}
                         alt={`${t.name} private theatre`}
                         loading="lazy"
-                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="absolute inset-0 h-full w-full object-cover"
                       />
-                      <div className={cn('absolute inset-0 bg-gradient-to-t', id.gradient)} />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-
-                      {/* Identity badge */}
-                      <div className="absolute top-3 left-3">
-                        <span
-                          className="inline-block rounded-full px-2.5 py-[3px] text-[8px] font-black tracking-[0.22em] uppercase text-white"
-                          style={{ background: id.accent }}
-                        >
-                          {id.label}
-                        </span>
-                      </div>
                     </div>
 
-                    {/* Info */}
-                    <div className="absolute inset-x-0 bottom-0 p-4">
-                      <p className="truncate text-base font-semibold text-white">{t.name}</p>
-                      <div className="mt-1.5 flex items-center justify-between gap-2">
-                        <p className="flex items-center gap-1 text-sm text-white/80 min-w-0">
-                          <MapPin size={12} className="shrink-0" style={{ color: id.accent }} />
-                          <span className="truncate">{locationLabel(t.locationId)}</span>
-                        </p>
-                        <span
-                          className={cn(
-                            'flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110',
-                            i === 0 ? 'bg-white text-[#1a1a1a]' : 'bg-[#f3d9a8] text-[#1a1a1a]',
-                          )}
-                          aria-hidden="true"
-                        >
-                          <ChevronRight size={18} />
-                        </span>
+                    <div className="px-1.5 pb-1 pt-3">
+                      <div className="flex items-end justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="truncate font-display text-xl font-bold text-[#49283A]">{t.name}</p>
+                          <p className="mt-1 flex items-center gap-1.5 text-xs text-[#725968]/80">
+                            <Users size={13} className="shrink-0" />
+                            {t.capacityMin} – {t.capacityMax} Guests
+                          </p>
+                        </div>
+                        <div className="shrink-0 rounded-xl bg-[#f8e7d6] px-2.5 py-1 text-right">
+                          <p className="text-[9px] font-medium leading-none text-[#725968]/70">From</p>
+                          <p className="mt-0.5 text-sm font-black leading-none text-[#49283A]">{formatINR(t.startingPricePaise)}</p>
+                        </div>
                       </div>
+                      <span
+                        className="mt-3 flex items-center justify-center gap-2 rounded-full py-2.5 text-sm font-bold text-white"
+                        style={{ background: 'linear-gradient(135deg,#5c1a6b 0%,#3d0a4f 100%)' }}
+                      >
+                        View &amp; Book <ArrowRight size={15} />
+                      </span>
                     </div>
                   </Link>
                 </li>

@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+﻿import type { CSSProperties } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, MessageCircle, Ticket, Users, Clock, MapPin } from 'lucide-react'
@@ -32,7 +32,7 @@ function Barcode({ value }: { value: string }) {
   return (
     <div className="flex h-14 items-stretch" aria-hidden="true">
       {bars.map((b, i) => (
-        <span key={i} className="bg-[#2a0e4f]" style={{ width: b.w * 1.6, marginRight: b.gap * 1.4 }} />
+        <span key={i} className="bg-[#3d0a24]" style={{ width: b.w * 1.6, marginRight: b.gap * 1.4 }} />
       ))}
     </div>
   )
@@ -115,7 +115,7 @@ export default function MyBookingDetailPage() {
 
             {/* ── Ticket stub: payment + barcode ── */}
             <div
-              className="grid gap-6 rounded-b-[2rem] bg-[#fffaf4] px-6 pb-7 pt-9 sm:grid-cols-[1fr_auto] sm:px-9"
+              className="grid gap-6 rounded-b-[2rem] bg-[#fff8f9] px-6 pb-7 pt-9 sm:grid-cols-[1fr_auto] sm:px-9"
               style={notchMask('top')}
             >
               <div>
@@ -124,20 +124,20 @@ export default function MyBookingDetailPage() {
                   <Money label="Paid" value={formatINR(booking.advancePaidPaise)} tone="text-emerald-700" />
                   <Money label="Balance" value={formatINR(booking.balancePaise)} tone="text-[#b0701c]" />
                 </div>
-                <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#ecd9ec]" role="progressbar" aria-valuenow={paidPct} aria-valuemin={0} aria-valuemax={100} aria-label="Payment progress">
+                <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#f5d5e0]" role="progressbar" aria-valuenow={paidPct} aria-valuemin={0} aria-valuemax={100} aria-label="Payment progress">
                   <motion.div
-                    className="h-full rounded-full bg-[linear-gradient(90deg,#c9a84c,#6b2398)]"
+                    className="h-full rounded-full bg-[linear-gradient(90deg,#c9a84c,#8b1a3a)]"
                     initial={{ width: 0 }}
                     animate={{ width: `${paidPct}%` }}
                     transition={{ duration: 1.2, delay: 0.5, ease: EASE }}
                   />
                 </div>
-                <p className="mt-2 text-xs text-[#7d7094]">{paidPct}% paid · balance is payable at the venue</p>
+                <p className="mt-2 text-xs text-[#7d4555]">{paidPct}% paid · balance is payable at the venue</p>
               </div>
 
               <div className="flex flex-col items-start sm:items-end">
                 <Barcode value={booking.id} />
-                <p className="mt-2 font-mono text-xs font-semibold tracking-[0.18em] text-[#2a0e4f]">{booking.id}</p>
+                <p className="mt-2 font-mono text-xs font-semibold tracking-[0.18em] text-[#3d0a24]">{booking.id}</p>
               </div>
             </div>
 
@@ -146,7 +146,7 @@ export default function MyBookingDetailPage() {
               {booking.passToken && (
                 <Link
                   to={`/pass/${booking.passToken}`}
-                  className="flex h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] text-sm font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5"
+                  className="flex h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-sm font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5"
                 >
                   <Ticket size={16} /> View Pass
                 </Link>
@@ -161,7 +161,7 @@ export default function MyBookingDetailPage() {
                 <MessageCircle size={16} /> Support on WhatsApp
               </a>
             </div>
-            <p className="mt-4 text-center text-xs text-[#7d7094]">To reschedule or cancel, contact us on WhatsApp.</p>
+            <p className="mt-4 text-center text-xs text-[#7d4555]">To reschedule or cancel, contact us on WhatsApp.</p>
           </motion.div>
         ) : null}
       </PageShell>
@@ -169,10 +169,10 @@ export default function MyBookingDetailPage() {
   )
 }
 
-function Money({ label, value, tone = 'text-[#2a0e4f]' }: { label: string; value: string; tone?: string }) {
+function Money({ label, value, tone = 'text-[#3d0a24]' }: { label: string; value: string; tone?: string }) {
   return (
     <div>
-      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7d7094]">{label}</p>
+      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#7d4555]">{label}</p>
       <p className={cn('mt-0.5 font-display text-xl font-bold tabular-nums sm:text-2xl', tone)}>{value}</p>
     </div>
   )

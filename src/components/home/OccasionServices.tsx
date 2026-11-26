@@ -42,12 +42,12 @@ export function OccasionServiceList({ groups, tone = 'light' }: { groups: Occasi
   return (
     <ul className="grid gap-3 sm:grid-cols-2">
       {groups.map((g) => (
-        <li key={g.key} className={dark ? 'rounded-2xl bg-white/10 p-4 ring-1 ring-white/15' : 'rounded-2xl bg-white p-4 shadow-[0_10px_26px_rgba(107,35,152,0.1)] ring-1 ring-[#f0e1f3]'}>
+        <li key={g.key} className={dark ? 'rounded-2xl bg-white/10 p-4 ring-1 ring-white/15' : 'rounded-2xl bg-white p-4 shadow-[0_10px_26px_rgba(107,35,152,0.1)] ring-1 ring-[#f8dce4]'}>
           <div className="flex items-baseline justify-between gap-2">
-            <p className={dark ? 'font-display text-base font-bold text-white' : 'font-display text-base font-bold text-[#2a0e4f]'}>{g.label}</p>
-            <span className={dark ? 'text-xs text-[#f5d7a1]' : 'text-xs font-semibold text-[#6b2398]'}>from {formatINR(g.fromPaise)}</span>
+            <p className={dark ? 'font-display text-base font-bold text-white' : 'font-display text-base font-bold text-[#49283A]'}>{g.label}</p>
+            <span className={dark ? 'text-xs text-[#f5d7a1]' : 'text-xs font-semibold text-[#8b1a3a]'}>from {formatINR(g.fromPaise)}</span>
           </div>
-          <p className={dark ? 'mt-1 line-clamp-2 text-[13px] text-white/75' : 'mt-1 line-clamp-2 text-[13px] text-[#5b4578]'}>
+          <p className={dark ? 'mt-1 line-clamp-2 text-[13px] text-white/75' : 'mt-1 line-clamp-2 text-[13px] text-[#725968]'}>
             {g.names.slice(0, 3).join(', ')}{g.total > 3 ? ` +${g.total - 3} more` : ''}
           </p>
         </li>

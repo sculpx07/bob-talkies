@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { motion } from 'framer-motion'
@@ -14,8 +14,8 @@ import { useWhatsappNumber } from '@/features/site/api'
 const EASE = [0.22, 1, 0.36, 1] as const
 const CONFETTI = [
   { c: '#f472b6', x: '12%', y: '10%', r: 12 }, { c: '#f5bd61', x: '86%', y: '8%', r: 45 },
-  { c: '#8e39c7', x: '6%', y: '48%', r: -20 }, { c: '#f5bd61', x: '94%', y: '46%', r: 30 },
-  { c: '#d946ef', x: '20%', y: '88%', r: 60 }, { c: '#f472b6', x: '80%', y: '90%', r: -35 },
+  { c: '#a81a3a', x: '6%', y: '48%', r: -20 }, { c: '#f5bd61', x: '94%', y: '46%', r: 30 },
+  { c: '#d9126a', x: '20%', y: '88%', r: 60 }, { c: '#f472b6', x: '80%', y: '90%', r: -35 },
 ]
 
 export default function BookSuccessPage() {
@@ -63,9 +63,9 @@ export default function BookSuccessPage() {
             </div>
           ) : !confirmed ? (
             <div className="text-center">
-              <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-[#c026d3] border-t-transparent" />
-              <p className="mb-2 font-display text-2xl font-bold text-[#2a0e4f]">Verifying your payment…</p>
-              <p className="text-sm text-[#5b4578]">Please wait while we confirm your booking. This usually takes a few seconds.</p>
+              <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-[#c0125a] border-t-transparent" />
+              <p className="mb-2 font-display text-2xl font-bold text-[#3d0a24]">Verifying your payment…</p>
+              <p className="text-sm text-[#5b2535]">Please wait while we confirm your booking. This usually takes a few seconds.</p>
             </div>
           ) : (
             <>
@@ -75,10 +75,10 @@ export default function BookSuccessPage() {
                   initial={{ scale: 0, rotate: -90 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ type: 'spring', stiffness: 200, damping: 12 }}
-                  className="relative mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_16px_40px_rgba(107,35,152,0.4)]"
+                  className="relative mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] text-white shadow-[0_16px_40px_rgba(107,35,152,0.4)]"
                 >
                   <motion.span
-                    className="absolute inset-0 rounded-full ring-4 ring-[#d946ef]/40"
+                    className="absolute inset-0 rounded-full ring-4 ring-[#d9126a]/40"
                     animate={{ scale: [1, 1.35], opacity: [0.8, 0] }}
                     transition={{ duration: 1.6, repeat: 2, ease: 'easeOut', delay: 0.5 }}
                     aria-hidden="true"
@@ -89,7 +89,7 @@ export default function BookSuccessPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.7, ease: EASE }}
-                  className="font-cursive text-3xl font-semibold text-[#6b2398] md:text-4xl"
+                  className="font-cursive text-3xl font-semibold text-[#8b1a3a] md:text-4xl"
                 >
                   Hooray!
                 </motion.p>
@@ -97,7 +97,7 @@ export default function BookSuccessPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.7, ease: EASE }}
-                  className="font-display text-4xl font-bold text-[#2a0e4f] md:text-5xl"
+                  className="font-display text-4xl font-bold text-[#3d0a24] md:text-5xl"
                 >
                   Booking Confirmed
                 </motion.h1>
@@ -105,7 +105,7 @@ export default function BookSuccessPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
-                  className="mt-2 text-[#5b4578]"
+                  className="mt-2 text-[#5b2535]"
                 >
                   Your private theatre experience is all set. Get ready to celebrate!
                 </motion.p>
@@ -117,9 +117,9 @@ export default function BookSuccessPage() {
                 animate={{ opacity: 1, y: 0, rotateX: 0 }}
                 transition={{ delay: 0.5, duration: 0.9, ease: EASE }}
                 style={{ transformPerspective: 1200 }}
-                className="relative overflow-hidden rounded-3xl bg-white shadow-[0_24px_60px_rgba(107,35,152,0.2)] ring-1 ring-[#ecd9ec]"
+                className="relative overflow-hidden rounded-3xl bg-white shadow-[0_24px_60px_rgba(107,35,152,0.2)] ring-1 ring-[#f5d5e0]"
               >
-                <div className="relative flex items-center justify-between overflow-hidden bg-[linear-gradient(135deg,#32105f,#6b2398_60%,#d946ef)] px-6 py-5 text-white">
+                <div className="relative flex items-center justify-between overflow-hidden bg-[linear-gradient(135deg,#5c1535,#8b1a3a_60%,#d9126a)] px-6 py-5 text-white">
                   <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
                   <div className="relative">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">Booking ID</p>
@@ -143,12 +143,12 @@ export default function BookSuccessPage() {
                       transition={{ delay: 0.9 + i * 0.12, duration: 0.6, ease: EASE }}
                       className="flex items-center gap-4"
                     >
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#f6e6ef] text-[#6b2398]">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#f6e6ef] text-[#8b1a3a]">
                         <row.icon size={20} aria-hidden="true" />
                       </span>
                       <div>
-                        <p className="font-semibold text-[#2a0e4f]">{row.title}</p>
-                        <p className="text-xs text-[#7d7094]">{row.sub}</p>
+                        <p className="font-semibold text-[#3d0a24]">{row.title}</p>
+                        <p className="text-xs text-[#7d4555]">{row.sub}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -156,15 +156,15 @@ export default function BookSuccessPage() {
 
                 {/* perforation */}
                 <div className="relative">
-                  <span className="absolute -left-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-[#fff7f0] ring-1 ring-[#ecd9ec]" aria-hidden="true" />
-                  <span className="absolute -right-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-[#fff7f0] ring-1 ring-[#ecd9ec]" aria-hidden="true" />
+                  <span className="absolute -left-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-[#fff7f0] ring-1 ring-[#f5d5e0]" aria-hidden="true" />
+                  <span className="absolute -right-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-[#fff7f0] ring-1 ring-[#f5d5e0]" aria-hidden="true" />
                   <div className="mx-6 border-t-2 border-dashed border-[#e3cbe6]" />
                 </div>
 
                 <div className="grid grid-cols-3 gap-3 p-6 text-center">
                   <div className="rounded-2xl bg-[#fdf6ff] p-3">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Total</p>
-                    <p className="mt-1 text-lg font-bold text-[#32105f]">{formatINR(booking.totalPaise)}</p>
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#7d4555]">Total</p>
+                    <p className="mt-1 text-lg font-bold text-[#5c1535]">{formatINR(booking.totalPaise)}</p>
                   </div>
                   <div className="rounded-2xl bg-[#e7f7ee] p-3">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Advance paid</p>
@@ -183,14 +183,14 @@ export default function BookSuccessPage() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.2, duration: 0.7, ease: EASE }}
-                  className="mt-5 flex items-center gap-4 rounded-3xl bg-white/85 p-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] ring-1 ring-[#ecd9ec]"
+                  className="mt-5 flex items-center gap-4 rounded-3xl bg-white/85 p-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] ring-1 ring-[#f5d5e0]"
                 >
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#32105f] text-white"><QrCode size={22} aria-hidden="true" /></span>
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#5c1535] text-white"><QrCode size={22} aria-hidden="true" /></span>
                   <div className="flex-1">
-                    <p className="font-semibold text-[#2a0e4f]">Your Digital Pass</p>
-                    <p className="text-xs text-[#7d7094]">Show this at the venue for entry</p>
+                    <p className="font-semibold text-[#3d0a24]">Your Digital Pass</p>
+                    <p className="text-xs text-[#7d4555]">Show this at the venue for entry</p>
                   </div>
-                  <Link to={`/pass/${booking.passToken}`} className="group flex items-center gap-1.5 rounded-full bg-[#32105f] px-4 py-2 text-sm font-medium text-white">
+                  <Link to={`/pass/${booking.passToken}`} className="group flex items-center gap-1.5 rounded-full bg-[#5c1535] px-4 py-2 text-sm font-medium text-white">
                     View <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                   </Link>
                 </motion.div>
@@ -205,7 +205,7 @@ export default function BookSuccessPage() {
               >
                 <Link
                   to={`/my-booking/${booking.id}`}
-                  className="flex items-center justify-center rounded-full border border-[#32105f]/40 px-6 py-3 text-sm font-semibold text-[#32105f] transition-colors hover:bg-[#32105f]/5"
+                  className="flex items-center justify-center rounded-full border border-[#5c1535]/40 px-6 py-3 text-sm font-semibold text-[#5c1535] transition-colors hover:bg-[#5c1535]/5"
                 >
                   View Booking
                 </Link>
@@ -225,7 +225,7 @@ export default function BookSuccessPage() {
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.5, duration: 0.6, ease: EASE }}
-                  className="mt-5 overflow-hidden rounded-3xl border border-[#c9a84c]/30 bg-gradient-to-br from-[#fffaf0] to-[#fdf4e3]"
+                  className="mt-5 overflow-hidden rounded-3xl border border-[#c9a84c]/30 bg-gradient-to-br from-[#fffaf0] to-[#fdf4f5]"
                 >
                   {/* points earned banner */}
                   <div className="flex items-center gap-3 bg-gradient-to-r from-[#c9a84c]/20 to-transparent px-5 py-4 border-b border-[#c9a84c]/15">
@@ -234,9 +234,9 @@ export default function BookSuccessPage() {
                     </div>
                     <div className="flex-1">
                       <p className="text-xs font-black text-[#8a6010] uppercase tracking-widest">BOB Points Earned!</p>
-                      <p className="font-black text-[#2a0e4f] text-lg leading-tight">
+                      <p className="font-black text-[#3d0a24] text-lg leading-tight">
                         +{reward.points} pts
-                        <span className="ml-2 text-sm font-semibold text-[#5b4578]/60">({reward.total} total)</span>
+                        <span className="ml-2 text-sm font-semibold text-[#5b2535]/60">({reward.total} total)</span>
                       </p>
                     </div>
                     {reward.bookings >= 2 && (
@@ -248,10 +248,10 @@ export default function BookSuccessPage() {
 
                   {/* refer & earn */}
                   <div className="px-5 py-4">
-                    <p className="text-xs font-black text-[#2a0e4f] mb-1 flex items-center gap-1.5">
+                    <p className="text-xs font-black text-[#3d0a24] mb-1 flex items-center gap-1.5">
                       <Gift size={12} className="text-[#c9a84c]" /> Refer &amp; Earn
                     </p>
-                    <p className="text-[11px] text-[#5b4578]/70 mb-3 leading-relaxed">
+                    <p className="text-[11px] text-[#5b2535]/70 mb-3 leading-relaxed">
                       Share your referral link. When a friend completes their first booking, you both earn BOB credits.
                     </p>
                     <button
@@ -265,7 +265,7 @@ export default function BookSuccessPage() {
                         } catch { /* dismissed */ }
                       }}
                       className="flex w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-xs font-black text-white transition-all hover:scale-[1.02]"
-                      style={{ background: 'linear-gradient(135deg,#32105f,#5b1fa3)' }}
+                      style={{ background: 'linear-gradient(135deg,#5c1535,#7b1535)' }}
                     >
                       <Share2 size={13} /> Share Referral Link
                     </button>
@@ -275,7 +275,7 @@ export default function BookSuccessPage() {
 
               {/* Upsell */}
               <div className="mt-9">
-                <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#6b2398]">Add more to your experience</p>
+                <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#8b1a3a]">Add more to your experience</p>
                 <div className="grid grid-cols-2 gap-3">
                   {['Premium Decoration', 'Photographer', 'Surprise Cake', 'LED Name Board'].map((item, i) => (
                     <motion.div
@@ -287,7 +287,7 @@ export default function BookSuccessPage() {
                     >
                       <Link
                         to={`/my-booking/${booking.id}`}
-                        className="block rounded-2xl bg-white/85 p-3.5 text-center text-sm font-semibold text-[#32105f] shadow-sm ring-1 ring-[#ecd9ec] transition-shadow hover:shadow-[0_10px_24px_rgba(107,35,152,0.15)]"
+                        className="block rounded-2xl bg-white/85 p-3.5 text-center text-sm font-semibold text-[#5c1535] shadow-sm ring-1 ring-[#f5d5e0] transition-shadow hover:shadow-[0_10px_24px_rgba(107,35,152,0.15)]"
                       >
                         + {item}
                       </Link>

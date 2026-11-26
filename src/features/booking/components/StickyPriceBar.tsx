@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -48,7 +48,7 @@ export function StickyPriceBar({ onNext, onBack, canProceed, loading, nextLabel 
           <button
             type="button"
             onClick={onBack}
-            className="flex h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-[#32105f] ring-1 ring-[#ecd9ec] transition-all hover:-translate-y-0.5 hover:bg-[#fdf6ff] active:scale-[0.97]"
+            className="flex h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-[#5c1535] ring-1 ring-[#f5d5e0] transition-all hover:-translate-y-0.5 hover:bg-[#fdf6ff] active:scale-[0.97]"
           >
             <ArrowLeft size={17} aria-hidden="true" /> Back
           </button>
@@ -70,7 +70,7 @@ export function StickyPriceBar({ onNext, onBack, canProceed, loading, nextLabel 
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.98 }}
               // highlighted: brighter gradient, gold ring and a soft pulsing glow so it is the obvious next action
-              className="flex h-11 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#6b2398,#d946ef)] px-8 text-[15px] font-bold text-white ring-1 ring-[#f5d7a1] [animation:planPulse_1.8s_ease-out_infinite] disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex h-11 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] px-8 text-[15px] font-bold text-white ring-1 ring-[#f5d7a1] [animation:planPulse_1.8s_ease-out_infinite] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? 'Please wait…' : nextLabel}
               <ChevronRight size={17} aria-hidden="true" />

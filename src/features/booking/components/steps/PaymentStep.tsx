@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+﻿import { useState, useRef } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../../state/booking.context'
@@ -127,13 +127,13 @@ export function PaymentStep() {
 
   return (
     <div>
-      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Confirm and Pay</h2>
-      <p className="mb-7 text-sm text-[#5b4578]">Review your booking and choose how much to pay.</p>
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">Confirm and Pay</h2>
+      <p className="mb-7 text-sm text-[#5b2535]">Review your booking and choose how much to pay.</p>
 
       <PriceSummary />
 
       {/* Payment choice */}
-      <p className="mb-3 mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#6b2398]">How would you like to pay?</p>
+      <p className="mb-3 mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#8b1a3a]">How would you like to pay?</p>
       <div role="radiogroup" aria-label="Payment option" className="grid gap-4 sm:grid-cols-2">
         {options.map((o, i) => {
           const active = payFull === o.full
@@ -151,21 +151,21 @@ export function PaymentStep() {
               whileTap={{ scale: 0.98 }}
               className={`relative rounded-3xl p-5 text-left transition-shadow duration-300 ${
                 active
-                  ? 'bg-[linear-gradient(135deg,#faf0ff,#fff)] shadow-[0_16px_38px_rgba(192,38,211,0.28)] ring-2 ring-[#c026d3]'
-                  : 'bg-white/85 shadow-[0_8px_24px_rgba(107,35,152,0.1)] ring-1 ring-[#ecd9ec]'
+                  ? 'bg-[linear-gradient(135deg,#faf0ff,#fff)] shadow-[0_16px_38px_rgba(192,38,211,0.28)] ring-2 ring-[#c0125a]'
+                  : 'bg-white/85 shadow-[0_8px_24px_rgba(107,35,152,0.1)] ring-1 ring-[#f5d5e0]'
               }`}
             >
               <span
                 className={`absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors ${
-                  active ? 'border-[#c026d3] bg-[#c026d3]' : 'border-[#d9b8e0]'
+                  active ? 'border-[#c0125a] bg-[#c0125a]' : 'border-[#d9b8e0]'
                 }`}
                 aria-hidden="true"
               >
                 {active && <Check size={13} strokeWidth={3} className="text-white" />}
               </span>
-              <p className="text-sm font-semibold text-[#5b4578]">{o.title}</p>
-              <p className="mt-1 text-3xl font-bold tabular-nums text-[#32105f]">{formatINR(o.amount)}</p>
-              <p className="mt-1 text-xs text-[#7d7094]">{o.note}</p>
+              <p className="text-sm font-semibold text-[#5b2535]">{o.title}</p>
+              <p className="mt-1 text-3xl font-bold tabular-nums text-[#5c1535]">{formatINR(o.amount)}</p>
+              <p className="mt-1 text-xs text-[#7d4555]">{o.note}</p>
             </motion.button>
           )
         })}
@@ -185,7 +185,7 @@ export function PaymentStep() {
         disabled={isLoading}
         whileHover={{ y: -2 }}
         whileTap={{ scale: 0.98 }}
-        className="mt-6 mb-24 flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#6b2398,#d946ef)] px-6 py-4 text-base font-semibold text-white shadow-[0_14px_34px_rgba(107,35,152,0.4)] disabled:opacity-60"
+        className="mt-6 mb-24 flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] px-6 py-4 text-base font-semibold text-white shadow-[0_14px_34px_rgba(107,35,152,0.4)] disabled:opacity-60"
       >
         <CreditCard size={18} aria-hidden="true" />
         {isLoading ? 'Processing…' : `Pay ${formatINR(payAmount)} Securely`}

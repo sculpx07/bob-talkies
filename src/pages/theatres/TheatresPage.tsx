@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { guestRangeText, theatreFacts } from '@/features/catalog/theatre'
 import { CONFIRM_TEXT } from '@/content/bookingInclusions'
@@ -134,7 +134,7 @@ function TheatreReviewsSection({ theatreSlug, accent }: { theatreSlug: string; a
                 <span className="h-px flex-1 max-w-[40px]" style={{ background: accent }} />
                 <span className="text-xs font-black uppercase tracking-widest" style={{ color: accent }}>Guest Reviews</span>
               </div>
-              <h2 className="text-2xl md:text-3xl font-black text-[#2a0e4f]">
+              <h2 className="text-2xl md:text-3xl font-black text-[#3d0a24]">
                 What Guests Loved About{' '}
                 <span style={{ background: `linear-gradient(135deg,${accent},${accent}99)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   This Theatre
@@ -142,8 +142,8 @@ function TheatreReviewsSection({ theatreSlug, accent }: { theatreSlug: string; a
               </h2>
               <div className="flex items-center gap-2 mt-2">
                 {[1,2,3,4,5].map(s => <Star key={s} size={14} fill={accent} stroke="none" />)}
-                <span className="text-sm font-black text-[#2a0e4f]">5.0</span>
-                <span className="text-xs text-[#5b4578]/60 ml-1">· All verified guests</span>
+                <span className="text-sm font-black text-[#3d0a24]">5.0</span>
+                <span className="text-xs text-[#5b2535]/60 ml-1">· All verified guests</span>
               </div>
             </motion.div>
           </AnimatePresence>
@@ -202,7 +202,7 @@ function TheatreReviewsSection({ theatreSlug, accent }: { theatreSlug: string; a
                     <div className="flex items-center gap-3">
                       <img src={r.avatar} alt={r.name} className="h-9 w-9 rounded-full object-cover ring-2" style={{ '--tw-ring-color': accent + '55' } as React.CSSProperties} />
                       <div className="flex-1 min-w-0">
-                        <p className="font-black text-[#1a0840] text-sm truncate">{r.name}</p>
+                        <p className="font-black text-[#250514] text-sm truncate">{r.name}</p>
                         <div className="flex gap-0.5 mt-0.5">
                           {[1,2,3,4,5].map(s => <Star key={s} size={9} fill="#f59e0b" stroke="none" />)}
                         </div>
@@ -256,7 +256,7 @@ function TheatreReviewsSection({ theatreSlug, accent }: { theatreSlug: string; a
                 </div>
                 <div className="absolute top-0 inset-x-0 h-1" style={{ background: accent }} />
               </div>
-              <div className="flex items-center gap-4 px-6 py-4" style={{ background: 'linear-gradient(135deg,#1a0840,#2a0e4f)' }}>
+              <div className="flex items-center gap-4 px-6 py-4" style={{ background: 'linear-gradient(135deg,#250514,#3d0a24)' }}>
                 <img src={videoReview.avatar} alt="" className="h-10 w-10 rounded-full object-cover" />
                 <div className="flex-1">
                   <p className="text-white font-black text-sm">{videoReview.name}</p>

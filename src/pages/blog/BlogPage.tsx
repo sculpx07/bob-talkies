@@ -117,7 +117,7 @@ export default function BlogPage() {
               <span className="absolute left-5 top-5 rounded-full bg-[#f5d7a1] px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#4a2a00]">Featured</span>
             </div>
             <div className="relative flex flex-col justify-center p-7 text-white sm:p-10">
-              <span className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-[#d946ef]/25 blur-3xl" aria-hidden="true" />
+              <span className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-[#d9126a]/25 blur-3xl" aria-hidden="true" />
               <p className="relative text-[11px] font-bold uppercase tracking-[0.28em] text-[#f5d7a1]">{featured.category}</p>
               <h2 className="relative mt-3 font-display text-2xl font-semibold leading-tight !text-white sm:text-3xl lg:text-4xl">{featured.title}</h2>
               <p className="relative mt-4 line-clamp-3 text-sm leading-relaxed text-white/70 sm:text-base">{featured.excerpt}</p>
@@ -125,7 +125,7 @@ export default function BlogPage() {
                 <span className="flex items-center gap-1.5"><Calendar size={13} />{fmt(featured.publishedAt)}</span>
                 <span className="flex items-center gap-1.5"><Clock size={13} />{featured.readingTime} min read</span>
               </div>
-              <span className="relative mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-[linear-gradient(135deg,#6b2398,#d946ef)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_28px_rgba(217,70,239,0.35)] transition-transform group-hover:translate-x-1">
+              <span className="relative mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] px-6 py-3 text-sm font-bold text-white shadow-[0_12px_28px_rgba(217,70,239,0.35)] transition-transform group-hover:translate-x-1">
                 Read article <ArrowRight size={16} />
               </span>
             </div>
@@ -144,8 +144,8 @@ export default function BlogPage() {
               className={cn(
                 'rounded-full px-4 py-2 text-sm font-semibold transition-all',
                 category === c
-                  ? 'bg-[linear-gradient(135deg,#32105f,#6b2398)] text-white shadow-[0_8px_20px_rgba(50,16,95,0.3)]'
-                  : 'bg-white/70 text-[#5b4578] ring-1 ring-[#ecd9ec] hover:bg-white hover:text-[#32105f]',
+                  ? 'bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-white shadow-[0_8px_20px_rgba(50,16,95,0.3)]'
+                  : 'bg-white/70 text-[#5b2535] ring-1 ring-[#f5d5e0] hover:bg-white hover:text-[#5c1535]',
               )}
             >
               {c}
@@ -155,7 +155,7 @@ export default function BlogPage() {
 
         {/* Grid */}
         {rest.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-12 text-center text-sm text-[#7d7094]">No more articles in this category yet.</p>
+          <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-12 text-center text-sm text-[#7d4555]">No more articles in this category yet.</p>
         ) : (
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {rest.map((post, i) => (
@@ -168,7 +168,7 @@ export default function BlogPage() {
               >
                 <Link
                   to={`/blog/${post.slug}`}
-                  className="group flex h-full flex-col rounded-[1.75rem] border border-[#ecd9ec] bg-white/80 p-2 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_50px_rgba(107,35,152,0.16)]"
+                  className="group flex h-full flex-col rounded-[1.75rem] border border-[#f5d5e0] bg-white/80 p-2 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_50px_rgba(107,35,152,0.16)]"
                 >
                   {/* photo set inside the card with its own rounded corners */}
                   <div className="aspect-[4/3] overflow-hidden rounded-3xl">
@@ -176,13 +176,13 @@ export default function BlogPage() {
                   </div>
                   <div className="flex flex-1 flex-col px-3 pb-5 pt-6">
                     <div className="flex items-center gap-6 text-[15px] text-[#6a5f7d]">
-                      <span className="flex items-center gap-2"><Calendar size={16} className="text-[#8e39c7]" />{fmt(post.publishedAt)}</span>
-                      <span className="flex items-center gap-2"><Clock size={16} className="text-[#8e39c7]" />{post.readingTime} min read</span>
+                      <span className="flex items-center gap-2"><Calendar size={16} className="text-[#a81a3a]" />{fmt(post.publishedAt)}</span>
+                      <span className="flex items-center gap-2"><Clock size={16} className="text-[#a81a3a]" />{post.readingTime} min read</span>
                     </div>
-                    <hr className="my-4 border-[#f1e2f0]" />
-                    <h3 className="line-clamp-2 font-display text-2xl font-normal leading-snug text-[#2a0e4f]">{post.title}</h3>
-                    <p className="mt-3 line-clamp-3 flex-1 text-base leading-8 text-[#5b4578]">{post.excerpt}</p>
-                    <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#2a0e4f]">
+                    <hr className="my-4 border-[#f8dce4]" />
+                    <h3 className="line-clamp-2 font-display text-2xl font-normal leading-snug text-[#3d0a24]">{post.title}</h3>
+                    <p className="mt-3 line-clamp-3 flex-1 text-base leading-8 text-[#5b2535]">{post.excerpt}</p>
+                    <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#3d0a24]">
                       Read more <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                     </span>
                   </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck, Gift, Zap, RotateCcw, Star } from 'lucide-react'
@@ -136,13 +136,13 @@ export default function BookPage() {
     />,
     <AddonsStep key="addons" />,
     <div key="payment">
-      <h2 className="mb-5 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Review your booking</h2>
-      <dl className="mb-6 divide-y divide-[#f1e2f0] overflow-hidden rounded-3xl bg-white ring-1 ring-[#ecd9ec]">
+      <h2 className="mb-5 font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">Review your booking</h2>
+      <dl className="mb-6 divide-y divide-[#f8dce4] overflow-hidden rounded-3xl bg-white ring-1 ring-[#f5d5e0]">
         {reviewRows.map((r) => (
           <div key={r.label} className="flex items-center gap-3 px-5 py-3 text-sm">
-            <dt className="w-28 shrink-0 text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">{r.label}</dt>
-            <dd className="min-w-0 flex-1 truncate font-semibold text-[#2a0e4f]">{r.value}</dd>
-            <button type="button" onClick={() => (r.step < FIRST_STEP ? navigate('/', { state: { highlightPlan: true } }) : dispatch({ type: 'GO_STEP', step: r.step }))} className="shrink-0 rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-semibold text-[#6b2398] hover:bg-[#efd3e6]">Edit</button>
+            <dt className="w-28 shrink-0 text-[11px] font-bold uppercase tracking-wider text-[#7d4555]">{r.label}</dt>
+            <dd className="min-w-0 flex-1 truncate font-semibold text-[#3d0a24]">{r.value}</dd>
+            <button type="button" onClick={() => (r.step < FIRST_STEP ? navigate('/', { state: { highlightPlan: true } }) : dispatch({ type: 'GO_STEP', step: r.step }))} className="shrink-0 rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-semibold text-[#8b1a3a] hover:bg-[#efd3e6]">Edit</button>
           </div>
         ))}
       </dl>
@@ -224,8 +224,8 @@ export default function BookPage() {
                 exit={{ opacity: 0, y: -18 }}
                 transition={{ duration: 0.3 }}
               >
-                <p className="font-cursive text-3xl font-semibold text-[#6b2398] md:text-4xl">{STEP_HEADINGS[step]?.kicker}</p>
-                <h1 className="font-display text-3xl font-bold text-[#2a0e4f] md:text-5xl">{STEP_HEADINGS[step]?.title}</h1>
+                <p className="font-cursive text-3xl font-semibold text-[#8b1a3a] md:text-4xl">{STEP_HEADINGS[step]?.kicker}</p>
+                <h1 className="font-display text-3xl font-bold text-[#3d0a24] md:text-5xl">{STEP_HEADINGS[step]?.title}</h1>
               </motion.div>
             </AnimatePresence>
           </motion.div>
@@ -240,7 +240,7 @@ export default function BookPage() {
           </div>
 
           {step >= 4 && step < LAST_STEP && state.serverQuote && (
-            <p className="-mt-5 mb-6 text-center text-xs text-[#5b4578]">Note: pay only <strong className="text-[#6b2398]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve</p>
+            <p className="-mt-5 mb-6 text-center text-xs text-[#5b2535]">Note: pay only <strong className="text-[#8b1a3a]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve</p>
           )}
 
           <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -279,7 +279,7 @@ export default function BookPage() {
               className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 shadow-[0_20px_60px_rgba(107,35,152,0.14)] backdrop-blur-xl lg:sticky lg:top-28"
               aria-label="Your celebration"
             >
-              <div className="relative overflow-hidden bg-[linear-gradient(135deg,#32105f,#6b2398_60%,#d946ef)] p-5 text-white">
+              <div className="relative overflow-hidden bg-[linear-gradient(135deg,#5c1535,#8b1a3a_60%,#d9126a)] p-5 text-white">
                 <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">Your celebration</p>
                 <p className="mt-1 font-display text-2xl font-bold">
@@ -287,25 +287,25 @@ export default function BookPage() {
                 </p>
               </div>
               <ul className="space-y-3.5 p-5 text-sm">
-                <li className="flex items-center gap-3 text-[#2a0e4f]">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><Users size={16} /></span>
-                  <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Guests</span>{guests}</span>
+                <li className="flex items-center gap-3 text-[#3d0a24]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#8b1a3a]"><Users size={16} /></span>
+                  <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d4555]">Guests</span>{guests}</span>
                 </li>
-                <li className="flex items-center gap-3 text-[#2a0e4f]">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><CalendarDays size={16} /></span>
-                  <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Date</span>{prettyDate ?? <span className="text-[#7d7094]">Not chosen yet</span>}</span>
+                <li className="flex items-center gap-3 text-[#3d0a24]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#8b1a3a]"><CalendarDays size={16} /></span>
+                  <span><span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d4555]">Date</span>{prettyDate ?? <span className="text-[#7d4555]">Not chosen yet</span>}</span>
                 </li>
-                <li className="flex items-center gap-3 text-[#2a0e4f]">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#6b2398]"><Clapperboard size={16} /></span>
+                <li className="flex items-center gap-3 text-[#3d0a24]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f6e6ef] text-[#8b1a3a]"><Clapperboard size={16} /></span>
                   <span>
-                    <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d7094]">Theatre</span>
-                    {chosenTheatre ? chosenTheatre.name : <span className="text-[#7d7094]">Not chosen yet</span>}
+                    <span className="block text-[11px] font-bold uppercase tracking-wider text-[#7d4555]">Theatre</span>
+                    {chosenTheatre ? chosenTheatre.name : <span className="text-[#7d4555]">Not chosen yet</span>}
                   </span>
                   {step > 3 && (
                     <button
                       type="button"
                       onClick={() => dispatch({ type: 'GO_STEP', step: 3 })}
-                      className="ml-auto rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
+                      className="ml-auto rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-semibold text-[#8b1a3a] transition-colors hover:bg-[#efd3e6]"
                     >
                       Change
                     </button>
@@ -320,7 +320,7 @@ export default function BookPage() {
                 const pts = getPoints()
                 const bookings = getBookingCount()
                 return (
-                  <div className="mx-4 mb-3 overflow-hidden rounded-2xl border border-[#c9a84c]/30 bg-gradient-to-br from-[#fffaf0] to-[#fdf4e3]">
+                  <div className="mx-4 mb-3 overflow-hidden rounded-2xl border border-[#c9a84c]/30 bg-gradient-to-br from-[#fffaf0] to-[#fdf4f5]">
                     {/* header */}
                     <div className="flex items-center justify-between border-b border-[#c9a84c]/15 px-4 py-2.5">
                       <div className="flex items-center gap-2">
@@ -337,12 +337,12 @@ export default function BookPage() {
 
                     <ul className="px-4 py-3 space-y-2">
                       {/* 1. Refer & Earn — always first */}
-                      <li className="flex items-start gap-2 text-[11px] text-[#5b4578]/80 font-medium">
+                      <li className="flex items-start gap-2 text-[11px] text-[#5b2535]/80 font-medium">
                         <Users size={11} className="mt-0.5 shrink-0 text-[#c9a84c]" />
                         <span>Refer friends &amp; earn BOB credits when they book</span>
                       </li>
                       {/* 2. Repeat Guest Offers */}
-                      <li className="flex items-start gap-2 text-[11px] font-medium" style={{ color: bookings >= 2 ? '#2a7a4f' : '#5b4578cc' }}>
+                      <li className="flex items-start gap-2 text-[11px] font-medium" style={{ color: bookings >= 2 ? '#2a7a4f' : '#5b2535cc' }}>
                         <RotateCcw size={11} className="mt-0.5 shrink-0" style={{ color: bookings >= 2 ? '#34d399' : '#c9a84c' }} />
                         <span>
                           Repeat guest upgrades &amp; offers
@@ -350,7 +350,7 @@ export default function BookPage() {
                         </span>
                       </li>
                       {/* 3. Earn BOB Points */}
-                      <li className="flex items-start gap-2 text-[11px] text-[#5b4578]/80 font-medium">
+                      <li className="flex items-start gap-2 text-[11px] text-[#5b2535]/80 font-medium">
                         <Zap size={11} className="mt-0.5 shrink-0 text-[#c9a84c]" />
                         <span>
                           +{50} BOB Points on this booking
@@ -366,7 +366,7 @@ export default function BookPage() {
                       <button
                         type="button"
                         onClick={sharePlan}
-                        className="text-[10px] font-black text-[#6b2398] hover:underline"
+                        className="text-[10px] font-black text-[#8b1a3a] hover:underline"
                       >
                         Share &amp; refer →
                       </button>
@@ -375,12 +375,12 @@ export default function BookPage() {
                 )
               })()}
 
-              <div className="space-y-2.5 border-t border-[#f1e2f0] p-4">
+              <div className="space-y-2.5 border-t border-[#f8dce4] p-4">
                 <div className="grid grid-cols-2 gap-2.5">
                   <button
                     type="button"
                     onClick={sharePlan}
-                    className="flex items-center justify-center gap-1.5 rounded-full border border-[#32105f]/25 px-4 py-2.5 text-sm font-semibold text-[#32105f] transition-colors hover:bg-[#32105f]/5"
+                    className="flex items-center justify-center gap-1.5 rounded-full border border-[#5c1535]/25 px-4 py-2.5 text-sm font-semibold text-[#5c1535] transition-colors hover:bg-[#5c1535]/5"
                   >
                     <Share2 size={15} /> Share
                   </button>
@@ -389,7 +389,7 @@ export default function BookPage() {
                     onClick={toggleSave}
                     aria-pressed={saved}
                     className={`flex items-center justify-center gap-1.5 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors ${
-                      saved ? 'border-transparent bg-[#32105f] text-white' : 'border-[#32105f]/25 text-[#32105f] hover:bg-[#32105f]/5'
+                      saved ? 'border-transparent bg-[#5c1535] text-white' : 'border-[#5c1535]/25 text-[#5c1535] hover:bg-[#5c1535]/5'
                     }`}
                   >
                     {saved ? <><BookmarkCheck size={15} /> Saved</> : <><Bookmark size={15} /> Save</>}
@@ -398,7 +398,7 @@ export default function BookPage() {
                 <Link
                   to="/"
                   state={{ highlightPlan: true }}
-                  className="flex items-center justify-center gap-1.5 rounded-full bg-[#f6e6ef] px-4 py-2.5 text-sm font-semibold text-[#6b2398] transition-colors hover:bg-[#efd3e6]"
+                  className="flex items-center justify-center gap-1.5 rounded-full bg-[#f6e6ef] px-4 py-2.5 text-sm font-semibold text-[#8b1a3a] transition-colors hover:bg-[#efd3e6]"
                 >
                   <Pencil size={14} /> Edit details
                 </Link>

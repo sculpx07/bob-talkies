@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
@@ -398,7 +398,7 @@ function PersonaliseBanner({ reduce, inView }: { reduce: boolean | null; inView:
                   transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
                 />
               )}
-              <span className="grid h-full w-full place-items-center rounded-full bg-[linear-gradient(135deg,#fff1b8,#e6bb55_55%,#b8832a)] text-[#2a0e4f] shadow-[0_6px_16px_rgba(240,201,102,0.45),inset_0_1px_0_rgba(255,255,255,0.6)] transition-transform duration-300 group-hover:scale-110">
+              <span className="grid h-full w-full place-items-center rounded-full bg-[linear-gradient(135deg,#fff1b8,#e6bb55_55%,#b8832a)] text-[#49283A] shadow-[0_6px_16px_rgba(240,201,102,0.45),inset_0_1px_0_rgba(255,255,255,0.6)] transition-transform duration-300 group-hover:scale-110">
                 <motion.span
                   animate={reduce ? {} : { x: [0, 4, 0] }}
                   transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
@@ -527,7 +527,7 @@ export function ExperienceCategories() {
       {/* Ambient glow that follows the active tab */}
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute -top-24 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full blur-3xl"
+        className="pointer-events-none absolute -top-24 left-1/2 hidden h-[420px] w-[720px] -translate-x-1/2 rounded-full blur-3xl"
         animate={{ backgroundColor: active.glow, opacity: 0.12 }}
         transition={{ duration: 0.8 }}
       />
@@ -551,25 +551,18 @@ export function ExperienceCategories() {
           transition={{ duration: 0.6, ease: EASE }}
         >
           <div className="mb-1 flex items-center justify-center gap-2">
-            <Sparkles size={16} className="text-[#d4a94a]" />
-            <p className="font-cursive text-2xl text-[#c9933a] md:text-3xl">Every Experience</p>
-            <Sparkles size={16} className="text-[#d4a94a]" />
+            <p className="font-cursive text-2xl text-[#C69A55] md:text-3xl">Every Experience</p>
           </div>
-          <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-[#2a0e4f] md:text-5xl">
-            One Theatre.{' '}
+          <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-[#49283A] md:text-5xl">
+            One Theatre{' '}
             <span className="relative inline-block">
-              <span className="bg-gradient-to-r from-[#6b2398] via-[#a855f7] to-[#d4a94a] bg-clip-text text-transparent">
-                Endless Possibilities.
+              <span className="bg-gradient-to-r from-[#8b1a3a] via-[#a855f7] to-[#d4a94a] bg-clip-text text-transparent">
+                Endless Possibilities
               </span>
-              <motion.span
-                className="absolute -bottom-1 left-0 h-[3px] rounded-full bg-[#d4a94a]"
-                initial={{ width: 0 }}
-                animate={inView ? { width: '100%' } : {}}
-                transition={{ delay: 0.5, duration: 0.7, ease: 'easeOut' }}
-              />
+             
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-[#5b4578] md:text-base">
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-[#725968] md:text-base">
             Not just a place to watch movies. A space to celebrate, cheer, connect and create
             unforgettable experiences.
           </p>
@@ -599,13 +592,13 @@ export function ExperienceCategories() {
                   aria-selected={isActive}
                   onClick={() => changeCategory(c.id)}
                   className={`relative flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors md:px-5 ${
-                    isActive ? 'text-white' : 'text-[#3b1278] hover:text-[#6b2398]'
+                    isActive ? 'text-white' : 'text-[#5c1535] hover:text-[#8b1a3a]'
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="exp-tab-pill"
-                      className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,#2a0e4f,#5b1fa3)] shadow-[0_8px_20px_rgba(59,18,120,0.35)]"
+                      className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,#3d0a24,#7b1535)] shadow-[0_8px_20px_rgba(59,18,120,0.35)]"
                       transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                     />
                   )}
@@ -747,7 +740,7 @@ export function ExperienceCategories() {
                               />
                               <div className="absolute inset-x-0 bottom-0 p-3 md:p-4">
                                 {isFront && ev.tag && (
-                                  <span className="mb-1.5 inline-block rounded-full bg-[#f6e9b8] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#2a0e4f]">
+                                  <span className="mb-1.5 inline-block rounded-full bg-[#f6e9b8] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#49283A]">
                                     {ev.tag}
                                   </span>
                                 )}
@@ -818,7 +811,7 @@ export function ExperienceCategories() {
               <div className="mt-4 flex flex-wrap items-center gap-4">
                 <Link
                   to={`${BOOK_ROUTE}?occasion=${activeEvent.slug}`}
-                  className="group/btn relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[linear-gradient(135deg,#e8d48a,#c9a84c)] px-5 py-2.5 text-sm font-bold text-[#2a0e4f] shadow-[0_10px_24px_rgba(201,168,76,0.45)] transition-transform hover:scale-[1.04]"
+                  className="group/btn relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[linear-gradient(135deg,#e8d48a,#c9a84c)] px-5 py-2.5 text-sm font-bold text-[#49283A] shadow-[0_10px_24px_rgba(201,168,76,0.45)] transition-transform hover:scale-[1.04]"
                 >
                   <span className="pointer-events-none absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-white/50 transition-all duration-700 group-hover/btn:left-[130%]" />
                   <span className="relative">Book {activeEvent.label}</span>
@@ -863,7 +856,7 @@ export function ExperienceCategories() {
               <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#8f6420]">
                 {active.label} · {n} experiences
               </p>
-              <span className="hidden text-xs text-[#7d7094] sm:block">Tap an event to preview it</span>
+              <span className="hidden text-xs text-[#725968] sm:block">Tap an event to preview it</span>
             </div>
 
             <AnimatePresence mode="wait">
@@ -901,14 +894,14 @@ export function ExperienceCategories() {
                           <span
                             className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl transition-all duration-500 ${
                               isCurrent
-                                ? 'bg-[linear-gradient(135deg,#2a0e4f,#5b1fa3)] text-white'
-                                : 'bg-[linear-gradient(135deg,#f6e6ef,#efe3ff)] text-[#6b2398] group-hover:scale-105'
+                                ? 'bg-[linear-gradient(135deg,#3d0a24,#7b1535)] text-white'
+                                : 'bg-[linear-gradient(135deg,#f6e6ef,#efe3ff)] text-[#8b1a3a] group-hover:scale-105'
                             }`}
                           >
                             <Icon size={22} strokeWidth={1.8} />
                           </span>
                           <span className="min-w-0 flex-1">
-                            <span className="block truncate text-[15px] font-semibold text-[#2a0e4f]">{ev.label}</span>
+                            <span className="block truncate text-[15px] font-semibold text-[#49283A]">{ev.label}</span>
                             {ev.tag && (
                               <span className="mt-0.5 inline-block rounded-full bg-[#fff3d6] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#8f6420]">
                                 {ev.tag}
@@ -917,7 +910,7 @@ export function ExperienceCategories() {
                             <AnimatePresence initial={false}>
                               {isCurrent && (
                                 <motion.span
-                                  className="block overflow-hidden text-[13px] leading-snug text-[#5b4578]"
+                                  className="block overflow-hidden text-[13px] leading-snug text-[#725968]"
                                   initial={{ height: 0, opacity: 0 }}
                                   animate={{ height: 'auto', opacity: 1 }}
                                   exit={{ height: 0, opacity: 0 }}
@@ -933,7 +926,7 @@ export function ExperienceCategories() {
                           to={`${BOOK_ROUTE}?occasion=${ev.slug}`}
                           aria-label={`Book ${ev.label}`}
                           className={`grid w-14 shrink-0 place-items-center transition-colors ${
-                            isCurrent ? 'text-[#c9933a]' : 'text-[#c9933a]/50 hover:text-[#c9933a]'
+                            isCurrent ? 'text-[#C69A55]' : 'text-[#C69A55]/50 hover:text-[#C69A55]'
                           }`}
                         >
                           <ArrowRight size={18} />

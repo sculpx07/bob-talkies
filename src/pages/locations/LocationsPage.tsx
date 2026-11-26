@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Seo } from '@/components/seo/Seo'
 import { PageShell, SectionHeader } from '@/components/layout/PageShell'
@@ -126,7 +126,7 @@ export default function LocationsPage() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={label}
-              className="flex h-11 w-11 items-center justify-center rounded-full border-[1.5px] border-[#6b2398]/60 bg-transparent text-[#6b2398] hover:border-[#6b2398] hover:bg-[#6b2398] hover:text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-full border-[1.5px] border-[#8b1a3a]/60 bg-transparent text-[#8b1a3a] hover:border-[#8b1a3a] hover:bg-[#8b1a3a] hover:text-white"
             >
               <Icon size={20} />
             </motion.a>
@@ -140,19 +140,19 @@ export default function LocationsPage() {
             const Icon = c.icon
             const inner = (
               <>
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f6e6ef] text-[#6b2398]">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f6e6ef] text-[#8b1a3a]">
                   <Icon size={20} />
                 </span>
-                <h3 className="mt-5 text-lg font-semibold uppercase tracking-wide break-words text-[#2a0e4f]">{c.title}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-[#5b4578]">{c.text}</p>
-                <span className="mt-auto inline-flex items-center gap-3 pt-5 text-sm font-semibold text-[#6b2398]">
+                <h3 className="mt-5 text-lg font-semibold uppercase tracking-wide break-words text-[#3d0a24]">{c.title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-[#5b2535]">{c.text}</p>
+                <span className="mt-auto inline-flex items-center gap-3 pt-5 text-sm font-semibold text-[#8b1a3a]">
                   {c.cta}
                   <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1.5" />
                 </span>
               </>
             )
             const cls =
-              'group flex h-full flex-col rounded-3xl border border-[#ecd9ec] bg-white/80 p-6 shadow-[0_8px_24px_rgba(107,35,152,0.08)] backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(107,35,152,0.16)]'
+              'group flex h-full flex-col rounded-3xl border border-[#f5d5e0] bg-white/80 p-6 shadow-[0_8px_24px_rgba(107,35,152,0.08)] backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(107,35,152,0.16)]'
             return (
               <motion.li
                 key={c.title}
@@ -182,7 +182,7 @@ export default function LocationsPage() {
               whileInView={{ opacity: 1, y: 0, scale: 1, clipPath: 'inset(0 0 0% 0 round 2rem)' }}
               viewport={{ once: true, margin: '0px 0px -120px 0px' }}
               transition={{ duration: 1, ease: EASE }}
-              className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] border border-[#ecd9ec] bg-white/85 shadow-[0_20px_50px_rgba(107,35,152,0.14)] backdrop-blur lg:grid-cols-2"
+              className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] border border-[#f5d5e0] bg-white/85 shadow-[0_20px_50px_rgba(107,35,152,0.14)] backdrop-blur lg:grid-cols-2"
             >
               {/* Details */}
               <div className="flex flex-col p-7 md:p-10">
@@ -191,7 +191,7 @@ export default function LocationsPage() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={VIEW}
                   transition={{ duration: 0.8, delay: 0.25, ease: EASE }}
-                  className="font-display text-3xl font-bold leading-tight text-[#2a0e4f] md:text-4xl"
+                  className="font-display text-3xl font-bold leading-tight text-[#3d0a24] md:text-4xl"
                 >
                   {loc.name}
                 </motion.h2>
@@ -213,16 +213,16 @@ export default function LocationsPage() {
                           whileInView={{ scale: 1, rotate: 0 }}
                           viewport={VIEW}
                           transition={{ type: 'spring', stiffness: 260, damping: 14, delay: 0.5 + di * 0.13 }}
-                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#f6e6ef] text-[#6b2398]"
+                          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#f6e6ef] text-[#8b1a3a]"
                         >
                           <Icon size={20} />
                         </motion.span>
                         <div className="min-w-0">
-                          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#7d7094]">{d.label}</p>
+                          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#7d4555]">{d.label}</p>
                           {d.href ? (
-                            <a href={d.href} className="mt-0.5 block text-[15px] font-medium text-[#2a0e4f] hover:underline">{d.value}</a>
+                            <a href={d.href} className="mt-0.5 block text-[15px] font-medium text-[#3d0a24] hover:underline">{d.value}</a>
                           ) : (
-                            <p className="mt-0.5 text-[15px] font-medium leading-snug text-[#2a0e4f]">{d.value}</p>
+                            <p className="mt-0.5 text-[15px] font-medium leading-snug text-[#3d0a24]">{d.value}</p>
                           )}
                         </div>
                       </motion.li>
@@ -240,7 +240,7 @@ export default function LocationsPage() {
                   <Link
                     to="/"
                     state={{ highlightPlan: true }}
-                    className="inline-flex items-center justify-center rounded-full bg-[#32105f] px-6 py-2.5 text-sm font-medium text-white"
+                    className="inline-flex items-center justify-center rounded-full bg-[#5c1535] px-6 py-2.5 text-sm font-medium text-white"
                   >
                     Book a Theatre
                   </Link>

@@ -40,14 +40,14 @@ export function TheatreSlotStep() {
 
   return (
     <div>
-      <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Choose your theatre</h2>
-      <p className="mb-5 text-sm text-[#5b4578]">
-        {occasion ? <><strong className="text-[#2a0e4f]">{occasion.emoji} {occasion.label}</strong> · </> : null}
-        <strong className="text-[#2a0e4f]">{state.guests === 30 ? '30+' : state.guests} guests</strong> · <strong className="text-[#2a0e4f]">{state.date}</strong>
+      <h2 className="mb-1 font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">Choose your theatre</h2>
+      <p className="mb-5 text-sm text-[#5b2535]">
+        {occasion ? <><strong className="text-[#3d0a24]">{occasion.emoji} {occasion.label}</strong> · </> : null}
+        <strong className="text-[#3d0a24]">{state.guests === 30 ? '30+' : state.guests} guests</strong> · <strong className="text-[#3d0a24]">{state.date}</strong>
       </p>
 
       {listed.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d7094]">No theatres are available right now.</p>
+        <p className="rounded-2xl border border-dashed border-[#ddd0f5] px-4 py-10 text-center text-sm text-[#7d4555]">No theatres are available right now.</p>
       ) : (
         <div className="grid gap-7 sm:grid-cols-2">
           {listed.map((t, i) => (
@@ -96,8 +96,8 @@ function TheatreListingCard({
       className={cn(
         'flex flex-col overflow-hidden rounded-[2rem] bg-white transition-shadow',
         selected
-          ? 'shadow-[0_22px_50px_rgba(192,38,211,0.3)] ring-[3px] ring-[#c026d3]'
-          : 'shadow-[0_14px_34px_rgba(107,35,152,0.14)] ring-1 ring-[#ecd9ec]',
+          ? 'shadow-[0_22px_50px_rgba(192,38,211,0.3)] ring-[3px] ring-[#c0125a]'
+          : 'shadow-[0_14px_34px_rgba(107,35,152,0.14)] ring-1 ring-[#f5d5e0]',
       )}
     >
       {/* Photo carousel */}
@@ -136,21 +136,21 @@ function TheatreListingCard({
 
       {/* Details */}
       <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
-        <h3 className="font-display text-xl font-bold leading-tight text-[#2a0e4f]">{theatreTitle(theatre)}</h3>
+        <h3 className="font-display text-xl font-bold leading-tight text-[#3d0a24]">{theatreTitle(theatre)}</h3>
 
         <div className="mt-2.5">
-          <p className="text-base text-[#2a0e4f]">
-            <strong>{formatINR(price)} for {theatre.includedGuests} people</strong> <span className="text-sm text-[#7d7094]">(including taxes)</span>
+          <p className="text-base text-[#3d0a24]">
+            <strong>{formatINR(price)} for {theatre.includedGuests} people</strong> <span className="text-sm text-[#7d4555]">(including taxes)</span>
             <span className="ml-2 rounded-full bg-[#e7f7ee] px-2 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide text-emerald-700">Your date</span>
           </p>
         </div>
 
-        <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-[12.5px] leading-snug text-[#5b4578]">
-          <li className="flex items-center gap-2"><Users size={15} className="shrink-0 text-[#8e39c7]" />{`Max ${theatre.capacityMax} People`}{guests > theatre.capacityMax && <strong className="text-[#c2255c]"> (your group is larger)</strong>}</li>
-          <li className="flex items-center gap-2"><Palette size={15} className="shrink-0 text-[#8e39c7]" />Decor {site ? formatINR(site.pricing.decorationPricePaise) : '…'} extra</li>
-          <li className="flex items-center gap-2"><UserPlus size={15} className="shrink-0 text-[#8e39c7]" />Extra guests: {formatINR(theatre.extraGuestPricePaise)} each</li>
-          <li className="flex items-center gap-2"><Monitor size={15} className="shrink-0 text-[#8e39c7]" />{theatreSpec(theatre)}</li>
-          <li className="flex items-center gap-2"><Cake size={15} className="shrink-0 text-[#8e39c7]" />{ADD_ONS_NOTE}</li>
+        <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-[12.5px] leading-snug text-[#5b2535]">
+          <li className="flex items-center gap-2"><Users size={15} className="shrink-0 text-[#a81a3a]" />{`Max ${theatre.capacityMax} People`}{guests > theatre.capacityMax && <strong className="text-[#c2255c]"> (your group is larger)</strong>}</li>
+          <li className="flex items-center gap-2"><Palette size={15} className="shrink-0 text-[#a81a3a]" />Decor {site ? formatINR(site.pricing.decorationPricePaise) : '…'} extra</li>
+          <li className="flex items-center gap-2"><UserPlus size={15} className="shrink-0 text-[#a81a3a]" />Extra guests: {formatINR(theatre.extraGuestPricePaise)} each</li>
+          <li className="flex items-center gap-2"><Monitor size={15} className="shrink-0 text-[#a81a3a]" />{theatreSpec(theatre)}</li>
+          <li className="flex items-center gap-2"><Cake size={15} className="shrink-0 text-[#a81a3a]" />{ADD_ONS_NOTE}</li>
         </ul>
 
         {/* What's included (collapsed by default; does not affect slot selection) */}
@@ -158,7 +158,7 @@ function TheatreListingCard({
           type="button"
           onClick={() => setShowIncluded((v) => !v)}
           aria-expanded={showIncluded}
-          className="mt-3 inline-flex items-center gap-1.5 self-start text-[13px] font-semibold text-[#6b2398] hover:underline"
+          className="mt-3 inline-flex items-center gap-1.5 self-start text-[13px] font-semibold text-[#8b1a3a] hover:underline"
         >
           What's included in my booking?
           <ChevronRight size={14} className={cn('transition-transform', showIncluded && 'rotate-90')} />
@@ -166,12 +166,12 @@ function TheatreListingCard({
         {showIncluded && <BookingInclusions theatre={theatre} className="mt-2" />}
 
         {/* Time slots */}
-        <div className="mt-3.5 border-t border-[#f1e2f0] pt-3.5">
-          <p className="mb-2 text-sm font-bold text-[#2a0e4f]">Select time slot</p>
+        <div className="mt-3.5 border-t border-[#f8dce4] pt-3.5">
+          <p className="mb-2 text-sm font-bold text-[#3d0a24]">Select time slot</p>
           {isLoading ? (
             <div className="flex gap-2">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-12 w-24" rounded="lg" />)}</div>
           ) : slots.length === 0 ? (
-            <p className="text-sm text-[#7d7094]">No slots on this date.</p>
+            <p className="text-sm text-[#7d4555]">No slots on this date.</p>
           ) : (
             <div className="flex flex-wrap gap-2">
               {slots.map((slot) => {
@@ -187,20 +187,20 @@ function TheatreListingCard({
                     title={hot && !booked ? 'Filling fast' : undefined}
                     onClick={() => onPickSlot(slot.id)}
                     className={cn(
-                      'relative w-[5.2rem] rounded-xl border px-1 py-1.5 text-center text-[10.5px] font-semibold leading-snug transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c026d3]',
+                      'relative w-[5.2rem] rounded-xl border px-1 py-1.5 text-center text-[10.5px] font-semibold leading-snug transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c0125a]',
                       booked && 'cursor-not-allowed border-[#eee6f1] bg-[#faf6fb] text-[#b9aac9] line-through',
-                      !booked && !active && (hot ? 'border-[#f5a3c4] bg-[#fff6f9] text-[#c2255c] hover:border-[#c2255c]' : 'border-[#d9c4e3] bg-white text-[#32105f] hover:border-[#c026d3]'),
-                      active && 'border-transparent bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_6px_14px_rgba(107,35,152,0.35)]',
+                      !booked && !active && (hot ? 'border-[#f5a3c4] bg-[#fff6f9] text-[#c2255c] hover:border-[#c2255c]' : 'border-[#d9c4e3] bg-white text-[#5c1535] hover:border-[#c0125a]'),
+                      active && 'border-transparent bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] text-white shadow-[0_6px_14px_rgba(107,35,152,0.35)]',
                     )}
                   >
                     {formatTime(slot.start)} -<br />{formatTime(slot.end)}
                     <span className="mt-0.5 block text-[9px] font-bold leading-tight">
                       {!isWeekend && !booked && (
-                        <s className={cn('mr-0.5 opacity-50', active ? 'text-white' : 'text-[#9a8cae]')}>
+                        <s className={cn('mr-0.5 opacity-50', active ? 'text-white' : 'text-[#9a6575]')}>
                           {formatINR(theatre.weekendPricePaise)}
                         </s>
                       )}
-                      <span className={cn(active ? 'text-white/90' : booked ? 'text-[#b9aac9]' : !isWeekend ? 'text-[#c2255c]' : 'text-[#9a8cae]')}>
+                      <span className={cn(active ? 'text-white/90' : booked ? 'text-[#b9aac9]' : !isWeekend ? 'text-[#c2255c]' : 'text-[#9a6575]')}>
                         {formatINR(price)}
                       </span>
                     </span>
@@ -224,13 +224,13 @@ function TheatreListingCard({
                 className="overflow-hidden"
               >
                 <div className="mt-3.5 rounded-2xl bg-[#f3ecf8] p-3">
-                  <p className="mb-3 text-center text-xs text-[#5b4578]">
-                    You pay only <strong className="text-[#32105f]">{formatINR(reservePaise)}</strong> ({site?.pricing.advancePercent ?? '…'}%) to reserve the slot
+                  <p className="mb-3 text-center text-xs text-[#5b2535]">
+                    You pay only <strong className="text-[#5c1535]">{formatINR(reservePaise)}</strong> ({site?.pricing.advancePercent ?? '…'}%) to reserve the slot
                   </p>
                   <button
                     type="button"
                     onClick={onContinue}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,#32105f,#4a1a8a)] px-4 py-3.5 text-[15px] font-bold text-white shadow-[0_10px_22px_rgba(50,16,95,0.35)] transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[linear-gradient(135deg,#5c1535,#6b1535)] px-4 py-3.5 text-[15px] font-bold text-white shadow-[0_10px_22px_rgba(50,16,95,0.35)] transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
                   >
                     Add details, cakes, add-ons <ChevronRight size={16} />
                   </button>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useBooking } from '../../state/booking.context'
@@ -53,13 +53,13 @@ export function CouponStep({ embedded = false }: { embedded?: boolean }) {
   }
 
   return (
-    <div className={embedded ? 'mb-6 rounded-3xl bg-white/85 p-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] ring-1 ring-[#ecd9ec] sm:p-5' : undefined}>
+    <div className={embedded ? 'mb-6 rounded-3xl bg-white/85 p-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] ring-1 ring-[#f5d5e0] sm:p-5' : undefined}>
       {embedded ? (
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#6b2398]">Have a coupon?</p>
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#8b1a3a]">Have a coupon?</p>
       ) : (
         <>
-          <h2 className="mb-1 font-display text-3xl font-bold text-[#2a0e4f] md:text-4xl">Have a coupon?</h2>
-          <p className="mb-7 text-sm text-[#5b4578]">Apply a discount code to save on your booking. You can skip this step.</p>
+          <h2 className="mb-1 font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">Have a coupon?</h2>
+          <p className="mb-7 text-sm text-[#5b2535]">Apply a discount code to save on your booking. You can skip this step.</p>
         </>
       )}
 
@@ -71,7 +71,7 @@ export function CouponStep({ embedded = false }: { embedded?: boolean }) {
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 220, damping: 16 }}
-            className="relative flex items-center gap-4 overflow-hidden rounded-3xl bg-[linear-gradient(135deg,#32105f,#6b2398_60%,#d946ef)] p-5 text-white shadow-[0_18px_44px_rgba(107,35,152,0.35)]"
+            className="relative flex items-center gap-4 overflow-hidden rounded-3xl bg-[linear-gradient(135deg,#5c1535,#8b1a3a_60%,#d9126a)] p-5 text-white shadow-[0_18px_44px_rgba(107,35,152,0.35)]"
           >
             <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
             <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/20">
@@ -93,28 +93,28 @@ export function CouponStep({ embedded = false }: { embedded?: boolean }) {
           </motion.div>
         ) : (
           <motion.div key="form" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <div className="flex items-center gap-2 rounded-full border border-dashed border-[#d9b8e0] bg-[#fdf6ff] p-2 pl-5 focus-within:border-[#c026d3]">
-              <Tag size={18} className="shrink-0 text-[#8e39c7]" aria-hidden="true" />
+            <div className="flex items-center gap-2 rounded-full border border-dashed border-[#d9b8e0] bg-[#fdf6ff] p-2 pl-5 focus-within:border-[#c0125a]">
+              <Tag size={18} className="shrink-0 text-[#a81a3a]" aria-hidden="true" />
               <input
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
                 placeholder="ENTER CODE"
                 aria-label="Coupon code"
                 onKeyDown={(e) => e.key === 'Enter' && handleApply()}
-                className="min-w-0 flex-1 bg-transparent font-mono text-base font-bold tracking-[0.15em] text-[#32105f] outline-none placeholder:text-[#c9b3d3] sm:text-lg sm:tracking-[0.2em]"
+                className="min-w-0 flex-1 bg-transparent font-mono text-base font-bold tracking-[0.15em] text-[#5c1535] outline-none placeholder:text-[#c9b3d3] sm:text-lg sm:tracking-[0.2em]"
               />
               <button
                 type="button"
                 onClick={handleApply}
                 disabled={!code.trim() || isPending}
-                className="flex h-11 shrink-0 items-center gap-2 rounded-full bg-[#32105f] px-5 text-sm font-semibold text-white transition-opacity disabled:opacity-40 sm:px-6"
+                className="flex h-11 shrink-0 items-center gap-2 rounded-full bg-[#5c1535] px-5 text-sm font-semibold text-white transition-opacity disabled:opacity-40 sm:px-6"
               >
                 {isPending ? <Loader2 size={16} className="animate-spin" /> : 'Apply'}
               </button>
             </div>
             {errorMsg && <p className="mt-2 pl-5 text-sm text-[#c2255c]">{errorMsg}</p>}
 
-            <p className="mb-2 mt-6 text-xs font-bold uppercase tracking-[0.18em] text-[#7d7094]">Popular codes</p>
+            <p className="mb-2 mt-6 text-xs font-bold uppercase tracking-[0.18em] text-[#7d4555]">Popular codes</p>
             <div className="flex flex-wrap gap-3">
               {SUGGESTED_COUPONS.map((c, i) => (
                 <motion.button
@@ -125,7 +125,7 @@ export function CouponStep({ embedded = false }: { embedded?: boolean }) {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ type: 'spring', stiffness: 260, damping: 16, delay: 0.1 + i * 0.1 }}
                   whileHover={{ y: -3 }}
-                  className="rounded-2xl border border-dashed border-[#d9b8e0] bg-white px-4 py-2.5 font-mono text-sm font-bold tracking-widest text-[#6b2398] shadow-sm"
+                  className="rounded-2xl border border-dashed border-[#d9b8e0] bg-white px-4 py-2.5 font-mono text-sm font-bold tracking-widest text-[#8b1a3a] shadow-sm"
                 >
                   {c}
                 </motion.button>
@@ -136,7 +136,7 @@ export function CouponStep({ embedded = false }: { embedded?: boolean }) {
       </AnimatePresence>
 
       {!embedded && (
-        <p className="mt-8 text-xs text-[#7d7094]">
+        <p className="mt-8 text-xs text-[#7d4555]">
           Skipping this step? No worries — you can always add a coupon on the next screen before confirming.
         </p>
       )}

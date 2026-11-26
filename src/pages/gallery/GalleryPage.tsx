@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { AlbumViewer } from '@/components/ui/AlbumViewer'
 import { Seo } from '@/components/seo/Seo'
@@ -98,7 +98,7 @@ export default function GalleryPage() {
       <PageShell>
         <SectionHeader
           eyebrow="Sweet Memories"
-          eyebrowClassName="font-cursive normal-case tracking-normal text-3xl md:text-4xl font-semibold text-[#6b2398]"
+          eyebrowClassName="font-cursive normal-case tracking-normal text-3xl md:text-4xl font-semibold text-[#8b1a3a]"
           title="Our Captured Moment BOB Talkies"
           titleClassName="text-3xl md:text-5xl font-semibold"
           centered
@@ -109,7 +109,7 @@ export default function GalleryPage() {
           <div
             role="tablist"
             aria-label="Gallery categories"
-            className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-[#ecd9ec] bg-white/75 p-1.5 shadow-[0_10px_30px_rgba(107,35,152,0.12)] backdrop-blur [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-[#f5d5e0] bg-white/75 p-1.5 shadow-[0_10px_30px_rgba(107,35,152,0.12)] backdrop-blur [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {CATEGORIES.map((cat) => {
               const active = activeCategory === cat
@@ -122,8 +122,8 @@ export default function GalleryPage() {
                   className={cn(
                     'whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300',
                     active
-                      ? 'bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_8px_20px_rgba(107,35,152,0.35)]'
-                      : 'text-[#32105f] hover:bg-[#f6e6ef]',
+                      ? 'bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] text-white shadow-[0_8px_20px_rgba(107,35,152,0.35)]'
+                      : 'text-[#5c1535] hover:bg-[#f6e6ef]',
                   )}
                 >
                   {cat}
@@ -157,7 +157,7 @@ export default function GalleryPage() {
                         viewport={{ once: true, margin: '0px 0px -40px 0px' }}
                         transition={{ duration: 0.7, delay: ci * 0.1 + k * 0.06, ease: [0.22, 1, 0.36, 1] }}
                         whileHover={{ y: -6, scale: 1.04 }}
-                        className="group relative aspect-square w-full overflow-hidden rounded-xl shadow-[0_10px_26px_rgba(107,35,152,0.16)] focus-visible:outline-2 focus-visible:outline-[#c026d3] md:rounded-2xl"
+                        className="group relative aspect-square w-full overflow-hidden rounded-xl shadow-[0_10px_26px_rgba(107,35,152,0.16)] focus-visible:outline-2 focus-visible:outline-[#c0125a] md:rounded-2xl"
                         onClick={() => setAlbumIndex(i)}
                         aria-label={`View ${img.alt}`}
                       >

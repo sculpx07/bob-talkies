@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+﻿import { useRef, useState } from 'react'
 import {
   motion,
   AnimatePresence,
@@ -126,7 +126,7 @@ function FilmStrip({ p, side }: { p: MotionValue<number>; side: 'left' | 'right'
           y,
           background: 'rgba(42,14,79,0.07)',
           backgroundImage:
-            'repeating-linear-gradient(to bottom, transparent 0 14px, #fffaf4 14px 34px, transparent 34px 48px)',
+            'repeating-linear-gradient(to bottom, transparent 0 14px, #fff8f9 14px 34px, transparent 34px 48px)',
           backgroundSize: '14px 100%',
           backgroundRepeat: 'repeat-y',
           backgroundPosition: 'center',
@@ -194,7 +194,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
       className="relative"
       style={{
         height: reduce ? '100svh' : `${280 + n * 40}svh`,
-        background: 'linear-gradient(160deg,#fffaf4 0%,#fdf5e8 60%,#f8eedf 100%)',
+        background: 'linear-gradient(160deg,#fff8f9 0%,#fdf5f5 60%,#f8eedf 100%)',
       }}
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
@@ -240,7 +240,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
             <span className="text-xs font-black tracking-[0.25em] text-[#c9933a]">PERSONALISE YOUR SURPRISE</span>
           </motion.div>
 
-          <h1 className="font-display text-4xl font-black leading-[1.05] text-[#2a0e4f] sm:text-5xl md:text-6xl">
+          <h1 className="font-display text-4xl font-black leading-[1.05] text-[#3d0a24] sm:text-5xl md:text-6xl">
             <span className="block overflow-hidden pb-1">
               <motion.span
                 className="block"
@@ -273,7 +273,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.55 }}
-            className="mt-4 max-w-xl text-sm font-semibold leading-relaxed text-[#2a0e4f] md:text-lg"
+            className="mt-4 max-w-xl text-sm font-semibold leading-relaxed text-[#3d0a24] md:text-lg"
           >
             Your memories, your messages, your surprises. Turn a private theatre into a screen filled with stories you will never forget.
           </motion.p>
@@ -288,14 +288,14 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
               type="button"
               onClick={() => jumpTo(0)}
               className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-black text-white transition-all hover:scale-105 hover:brightness-110 md:px-7 md:py-3.5"
-              style={{ background: 'linear-gradient(135deg,#2a0e4f 0%,#5b1fa3 100%)' }}
+              style={{ background: 'linear-gradient(135deg,#3d0a24 0%,#7b1535 100%)' }}
             >
               Start the show <ArrowRight size={14} />
             </button>
             <Link
               to="/"
               state={{ highlightPlan: true }}
-              className="inline-flex items-center gap-2 rounded-full border-2 border-[#2a0e4f] bg-white/70 backdrop-blur-sm px-6 py-3 text-sm font-black text-[#2a0e4f] transition-all hover:bg-white/90 md:px-7 md:py-3.5"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-[#3d0a24] bg-white/70 backdrop-blur-sm px-6 py-3 text-sm font-black text-[#3d0a24] transition-all hover:bg-white/90 md:px-7 md:py-3.5"
             >
               Book my theatre
             </Link>
@@ -387,8 +387,8 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.35 }}
             >
-              <h2 className="text-lg font-black text-[#2a0e4f] md:text-2xl">{scene.title}</h2>
-              <p className="text-xs italic text-[#5b4578] md:text-sm" style={{ color: scene.color === '#fbbf24' ? '#a8780f' : undefined }}>
+              <h2 className="text-lg font-black text-[#3d0a24] md:text-2xl">{scene.title}</h2>
+              <p className="text-xs italic text-[#5b2535] md:text-sm" style={{ color: scene.color === '#fbbf24' ? '#a8780f' : undefined }}>
                 {scene.tagline}
               </p>
             </motion.div>
@@ -404,7 +404,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
                   aria-selected={i === idx}
                   aria-label={s.title}
                   onClick={() => jumpTo(i)}
-                  className="h-2 rounded-full transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2a0e4f]"
+                  className="h-2 rounded-full transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d0a24]"
                   style={{
                     width: i === idx ? 28 : 8,
                     background: i === idx ? '#c9a84c' : 'rgba(42,14,79,0.2)',
@@ -414,7 +414,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
             </div>
             <a
               href="#explore"
-              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-black text-[#2a0e4f] transition-all hover:brightness-110"
+              className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-black text-[#3d0a24] transition-all hover:brightness-110"
               style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)' }}
             >
               See all ideas <ArrowRight size={12} />
@@ -427,8 +427,8 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
           className="pointer-events-none absolute bottom-6 left-1/2 z-[5] flex -translate-x-1/2 flex-col items-center gap-2"
           style={{ opacity: hintOpacity }}
         >
-          <span className="text-[10px] font-semibold tracking-[0.25em] text-[#5b4578]">SCROLL TO START THE SHOW</span>
-          <div className="flex h-8 w-5 justify-center rounded-full border border-[#2a0e4f]/30 pt-1.5">
+          <span className="text-[10px] font-semibold tracking-[0.25em] text-[#5b2535]">SCROLL TO START THE SHOW</span>
+          <div className="flex h-8 w-5 justify-center rounded-full border border-[#3d0a24]/30 pt-1.5">
             <motion.span
               className="h-1.5 w-1 rounded-full bg-[#c9a84c]"
               animate={{ y: [0, 12, 0], opacity: [1, 0.2, 1] }}
@@ -602,7 +602,7 @@ function PreviewOverlay({ exp, onClose }: { exp: (typeof EXPERIENCES)[number]; o
         {/* info bar */}
         <div
           className="flex items-center justify-between gap-4 px-6 py-4"
-          style={{ background: 'linear-gradient(135deg,#1a0840,#2a0e4f)' }}
+          style={{ background: 'linear-gradient(135deg,#250514,#3d0a24)' }}
         >
           <div>
             <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: exp.color }}>{exp.num} — Personalised Experience</span>
@@ -612,7 +612,7 @@ function PreviewOverlay({ exp, onClose }: { exp: (typeof EXPERIENCES)[number]; o
           <Link
             to="/"
             state={{ highlightPlan: true }}
-            className="shrink-0 inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-black text-[#1a0840] hover:brightness-110 transition-all"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 text-xs font-black text-[#250514] hover:brightness-110 transition-all"
             style={{ background: exp.color }}
           >
             Book This <ArrowRight size={12} />
@@ -699,7 +699,7 @@ function ExploreSection() {
             className="text-center mb-14"
           >
             <motion.div
-              className="inline-flex items-center gap-2 mb-3 rounded-full border border-[#c9a84c]/30 bg-[#fffaf4] px-5 py-1.5"
+              className="inline-flex items-center gap-2 mb-3 rounded-full border border-[#c9a84c]/30 bg-[#fff8f9] px-5 py-1.5"
               whileHover={{ scale: 1.05 }}
             >
               <motion.span animate={{ rotate: [0, 20, -10, 20, 0] }} transition={{ duration: 2.5, repeat: Infinity }}>
@@ -708,9 +708,9 @@ function ExploreSection() {
               <span className="font-cursive text-lg text-[#c9933a]">All Surprises</span>
             </motion.div>
 
-            <h2 className="text-3xl md:text-4xl font-black text-[#2a0e4f] leading-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-[#3d0a24] leading-tight">
               What Can You Show on the{' '}
-              <span style={{ background:'linear-gradient(135deg,#2a0e4f,#8e39c7,#c9a84c)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
+              <span style={{ background:'linear-gradient(135deg,#3d0a24,#a81a3a,#c9a84c)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
                 Big Screen?
               </span>
             </h2>
@@ -781,7 +781,7 @@ function ExploreSection() {
 
                 {/* body */}
                 <div className="px-4 pt-3 pb-4">
-                  <h3 className="font-black text-[#1a0840] text-base mb-1 group-hover:text-[#5b1fa3] transition-colors">{exp.title}</h3>
+                  <h3 className="font-black text-[#250514] text-base mb-1 group-hover:text-[#7b1535] transition-colors">{exp.title}</h3>
                   <p className="text-[#4a2d6e] text-xs font-semibold italic leading-snug">{exp.tagline}</p>
                 </div>
 
@@ -804,7 +804,7 @@ function ExploreSection() {
               <Link
                 to="/" state={{ highlightPlan: true }}
                 className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full px-10 py-4 text-sm font-black text-white"
-                style={{ background:'linear-gradient(135deg,#2a0e4f 0%,#5b1fa3 60%,#8e39c7 100%)', boxShadow:'0 8px 32px rgba(91,31,163,0.35)' }}
+                style={{ background:'linear-gradient(135deg,#3d0a24 0%,#7b1535 60%,#a81a3a 100%)', boxShadow:'0 8px 32px rgba(91,31,163,0.35)' }}
               >
                 <span aria-hidden className="pointer-events-none absolute inset-y-0 -left-full w-1/2 -skew-x-12 bg-white/20 transition-all duration-700 group-hover:left-[130%]" />
                 <span className="relative">Book My Theatre &amp; Plan My Surprise</span>
@@ -831,9 +831,9 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   return (
     <div className="border-b border-[#f0e6cc] last:border-0">
       <button onClick={() => setOpen(!open)} className="w-full flex items-start justify-between gap-4 py-4 text-left">
-        <span className="text-[#2a0e4f] font-semibold text-sm">{q}</span>
+        <span className="text-[#3d0a24] font-semibold text-sm">{q}</span>
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} className="shrink-0 mt-0.5">
-          <ChevronDown size={16} className="text-[#5b4578]" />
+          <ChevronDown size={16} className="text-[#5b2535]" />
         </motion.span>
       </button>
       <AnimatePresence initial={false}>
@@ -843,7 +843,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <p className="pb-4 text-[#5b4578] text-sm leading-relaxed">{a}</p>
+            <p className="pb-4 text-[#5b2535] text-sm leading-relaxed">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -879,7 +879,7 @@ export default function PersonalisePage() {
         <section
           ref={stepsRef}
           className="relative py-16 md:py-24 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg,#1a0840 0%,#2a0e4f 50%,#1e0a3c 100%)' }}
+          style={{ background: 'linear-gradient(135deg,#250514 0%,#3d0a24 50%,#200510 100%)' }}
         >
           {/* animated star particles */}
           <style>{`
@@ -891,7 +891,7 @@ export default function PersonalisePage() {
 
           {/* bg glow orbs */}
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute top-0 left-1/4 h-72 w-72 rounded-full bg-[#7c3aed]/20 blur-3xl" style={{ animation:'hiw-orb 6s ease-in-out infinite' }} />
+            <div className="absolute top-0 left-1/4 h-72 w-72 rounded-full bg-[#9b1a3a]/20 blur-3xl" style={{ animation:'hiw-orb 6s ease-in-out infinite' }} />
             <div className="absolute bottom-0 right-1/4 h-56 w-56 rounded-full bg-[#c9a84c]/15 blur-3xl" style={{ animation:'hiw-orb 7s ease-in-out infinite 1s' }} />
             <div className="absolute top-1/2 right-10 h-40 w-40 rounded-full bg-[#f472b6]/12 blur-2xl" style={{ animation:'hiw-orb 5s ease-in-out infinite 2s' }} />
           </div>
@@ -942,7 +942,7 @@ export default function PersonalisePage() {
 
                   {/* step number badge */}
                   <motion.div
-                    className="absolute -top-3 -right-2 flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-black text-[#1a0840]"
+                    className="absolute -top-3 -right-2 flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-black text-[#250514]"
                     style={{ background:'linear-gradient(135deg,#c9a84c,#eed98a)', animation:`hiw-num 0.5s ease-out ${0.15*i + 0.3}s both` }}
                   >
                     {i + 1}
@@ -995,7 +995,7 @@ export default function PersonalisePage() {
               className="text-center mb-10"
             >
               <p className="font-cursive text-xl text-[#c9933a] mb-0.5">Common Questions</p>
-              <h2 className="text-2xl md:text-3xl font-black text-[#2a0e4f]">Frequently Asked</h2>
+              <h2 className="text-2xl md:text-3xl font-black text-[#3d0a24]">Frequently Asked</h2>
               <motion.div className="mx-auto mt-3 h-[3px] w-10 rounded-full bg-[#c9a84c]"
                 initial={{ width: 0 }} animate={faqInView ? { width: 40 } : {}} transition={{ delay: 0.3 }} />
             </motion.div>
@@ -1013,7 +1013,7 @@ export default function PersonalisePage() {
         {/* ── Final CTA ────────────────────────────────────────────────────── */}
         <section
           className="py-16 md:py-24 relative overflow-hidden"
-          style={{ background: 'linear-gradient(160deg,#2a0e4f 0%,#3d1575 50%,#2a0e4f 100%)' }}
+          style={{ background: 'linear-gradient(160deg,#3d0a24 0%,#6b1535 50%,#3d0a24 100%)' }}
         >
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#c9a84c]/10 blur-3xl translate-x-1/2 -translate-y-1/2" />
@@ -1031,7 +1031,7 @@ export default function PersonalisePage() {
               <Link
                 to="/"
                 state={{ highlightPlan: true }}
-                className="inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-black text-[#2a0e4f] transition-all hover:brightness-110 hover:scale-105"
+                className="inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-black text-[#3d0a24] transition-all hover:brightness-110 hover:scale-105"
                 style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)' }}
               >
                 Plan My Surprise <ArrowRight size={14} />

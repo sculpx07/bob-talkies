@@ -1,12 +1,16 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUp } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
+import { isVibeHallFabHidden } from './VibeHallFab'
 
 const SHOW_AFTER_PX = 400
 
 /** Plain round "back to top" button. Sits just above the WhatsApp button. */
 export function ScrollToTop() {
   const [visible, setVisible] = useState(false)
+  // when the Vibe Hall icon is hidden on this page, drop down to the normal spot above WhatsApp
+  const lowered = isVibeHallFabHidden(useLocation().pathname)
 
   useEffect(() => {
     const update = () => setVisible(window.scrollY > SHOW_AFTER_PX)
@@ -28,8 +32,8 @@ export function ScrollToTop() {
           transition={{ type: 'spring', stiffness: 320, damping: 22 }}
           whileHover={{ y: -4, scale: 1.08 }}
           whileTap={{ scale: 0.92 }}
-          // desktop: directly above the WhatsApp button (bottom-6 + 56px button + 16px gap); mobile: above the bottom bar
-          className="fixed bottom-24 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-[#32105f] text-white shadow-[0_10px_24px_rgba(50,16,95,0.35)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c026d3]/40 md:right-6 md:h-14 md:w-14"
+          // stack (bottom to top, 16px gaps): WhatsApp (desktop) -> Vibe Hall icon -> this button; on mobile it sits above the Vibe Hall icon
+          className={`fixed ${lowered ? 'bottom-24 md:bottom-24' : 'bottom-40 md:bottom-[10.5rem]'} right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-[#5c1535] text-white shadow-[0_10px_24px_rgba(50,16,95,0.35)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#c0125a]/40 md:right-6 md:h-14 md:w-14`}
         >
           <ArrowUp size={22} strokeWidth={2.5} aria-hidden="true" />
         </motion.button>

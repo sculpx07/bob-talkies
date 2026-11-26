@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
@@ -18,8 +18,8 @@ export function FlowButton({ text = 'Modern Button', to, onClick, variant = 'out
     'group relative inline-flex items-center gap-1 overflow-hidden rounded-[100px] border-[1.5px] pl-6 pr-11 py-2.5 text-sm font-semibold cursor-pointer',
     'transition-all duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:rounded-[12px] active:scale-[0.95]',
     solid
-      ? 'border-[#32105f] bg-[#32105f] text-white'
-      : 'border-[#32105f]/40 bg-transparent text-[#32105f]',
+      ? 'border-[#5c1535] bg-[#5c1535] text-white'
+      : 'border-[#5c1535]/40 bg-transparent text-[#5c1535]',
     className,
   )
 
@@ -30,7 +30,7 @@ export function FlowButton({ text = 'Modern Button', to, onClick, variant = 'out
         aria-hidden="true"
         className={cn(
           'absolute w-4 h-4 left-[-25%] fill-none z-[9] group-hover:left-4 transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]',
-          solid ? 'stroke-white' : 'stroke-[#32105f]',
+          solid ? 'stroke-white' : 'stroke-[#5c1535]',
         )}
       />
       {/* Text */}
@@ -50,7 +50,7 @@ export function FlowButton({ text = 'Modern Button', to, onClick, variant = 'out
         aria-hidden="true"
         className={cn(
           'absolute w-4 h-4 right-5 fill-none z-[9] group-hover:right-[-25%] transition-all duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]',
-          solid ? 'stroke-white' : 'stroke-[#32105f]',
+          solid ? 'stroke-white' : 'stroke-[#5c1535]',
         )}
       />
     </>

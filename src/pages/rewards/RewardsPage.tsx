@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+﻿import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Seo } from '@/components/seo/Seo'
 import { PageShell } from '@/components/layout/PageShell'
@@ -6,7 +6,7 @@ import { ArrowRight, Gift, Users, Cake, RotateCcw, Zap, Calendar, Star } from 'l
 
 const PERKS = [
   { icon: Gift,      title: 'Earn BOB Points',    desc: 'Earn reward points on eligible bookings and redeem them for benefits.', accent: '#c9a84c', badge: 'Points' },
-  { icon: Users,     title: 'Refer & Earn',       desc: 'Refer friends and receive BOB credits when they complete eligible bookings.', accent: '#8e39c7', badge: 'Credits' },
+  { icon: Users,     title: 'Refer & Earn',       desc: 'Refer friends and receive BOB credits when they complete eligible bookings.', accent: '#a81a3a', badge: 'Credits' },
   { icon: Cake,      title: 'Birthday Specials',  desc: 'Exclusive birthday-month offers and surprises just for you.', accent: '#e879a0', badge: 'Birthday' },
   { icon: RotateCcw, title: 'Repeat Guest Offers', desc: 'Special rewards and upgrades for returning customers who love BOB Talkies.', accent: '#10b981', badge: 'Loyalty' },
   { icon: Zap,       title: 'Early Access',       desc: 'Priority access to new experiences, seasonal themes and special events.', accent: '#f59e0b', badge: 'Priority' },
@@ -30,7 +30,7 @@ export default function RewardsPage() {
             <div>
               <motion.div
                 initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-                className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 ring-1 ring-[#ecd9ec] backdrop-blur"
+                className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 ring-1 ring-[#f5d5e0] backdrop-blur"
               >
                 <Gift size={13} className="text-[#c9933a]" />
                 <span className="text-xs font-black uppercase tracking-[0.2em] text-[#c9933a]">BOB Rewards Programme</span>
@@ -38,15 +38,15 @@ export default function RewardsPage() {
 
               <motion.h1
                 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.6, ease: EASE }}
-                className="mb-5 text-4xl font-black leading-[1.05] text-[#2a0e4f] md:text-6xl"
+                className="mb-5 text-4xl font-black leading-[1.05] text-[#3d0a24] md:text-6xl"
               >
                 Book More.{' '}
-                <span className="bg-[linear-gradient(90deg,#8e39c7,#d946ef_50%,#c9933a)] bg-clip-text text-transparent">Earn More.</span>
+                <span className="bg-[linear-gradient(90deg,#a81a3a,#d9126a_50%,#c9933a)] bg-clip-text text-transparent">Earn More.</span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16, duration: 0.5 }}
-                className="mb-8 max-w-xl text-lg leading-relaxed text-[#5b4578]"
+                className="mb-8 max-w-xl text-lg leading-relaxed text-[#5b2535]"
               >
                 Every booking gets you closer to something special. Discover all the ways BOB Talkies rewards your loyalty.
               </motion.p>
@@ -55,10 +55,10 @@ export default function RewardsPage() {
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24, duration: 0.5 }}
                 className="flex flex-wrap items-center gap-4"
               >
-                <Link to="/book" className="group inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#32105f,#6b2398)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5">
+                <Link to="/book" className="group inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5">
                   Book &amp; Start Earning <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
                 </Link>
-                <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-white/80 px-7 py-3.5 text-sm font-bold text-[#2a0e4f] ring-1 ring-[#d9c4e3] backdrop-blur transition-colors hover:bg-white">
+                <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-white/80 px-7 py-3.5 text-sm font-bold text-[#3d0a24] ring-1 ring-[#d9c4e3] backdrop-blur transition-colors hover:bg-white">
                   Know More
                 </Link>
               </motion.div>
@@ -71,7 +71,7 @@ export default function RewardsPage() {
             >
               <motion.div
                 animate={{ y: [0, -12, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#32105f_0%,#5a1f9a_60%,#8e39c7_100%)] p-7 text-white shadow-[0_34px_70px_rgba(50,16,95,0.4)]"
+                className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#5c1535_0%,#5a1f9a_60%,#a81a3a_100%)] p-7 text-white shadow-[0_34px_70px_rgba(50,16,95,0.4)]"
               >
                 <motion.span
                   className="pointer-events-none absolute -left-1/2 top-0 h-full w-1/3 -skew-x-12 bg-white/10"
@@ -95,7 +95,7 @@ export default function RewardsPage() {
               {[{ t: '+50 pts', c: '-right-4 top-6' }, { t: 'Birthday 🎂', c: '-left-6 top-1/2' }, { t: 'Refer & Earn', c: 'right-2 -bottom-4' }].map((chip, i) => (
                 <motion.span
                   key={chip.t}
-                  className={`absolute ${chip.c} rounded-full bg-white px-4 py-2 text-xs font-bold text-[#2a0e4f] shadow-[0_10px_24px_rgba(107,35,152,0.2)] ring-1 ring-[#f0e1f3]`}
+                  className={`absolute ${chip.c} rounded-full bg-white px-4 py-2 text-xs font-bold text-[#3d0a24] shadow-[0_10px_24px_rgba(107,35,152,0.2)] ring-1 ring-[#f8dce4]`}
                   animate={{ y: [0, -9, 0] }} transition={{ duration: 4 + i, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
                 >
                   {chip.t}
@@ -117,15 +117,15 @@ export default function RewardsPage() {
                     initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }}
                     transition={{ delay: (i % 3) * 0.08, duration: 0.55, ease: EASE }}
                     whileHover={{ y: -8 }}
-                    className="group relative overflow-hidden rounded-[1.75rem] bg-white/85 p-7 shadow-[0_14px_36px_rgba(107,35,152,0.1)] ring-1 ring-[#f0e1f3] backdrop-blur"
+                    className="group relative overflow-hidden rounded-[1.75rem] bg-white/85 p-7 shadow-[0_14px_36px_rgba(107,35,152,0.1)] ring-1 ring-[#f8dce4] backdrop-blur"
                   >
-                    <span className="pointer-events-none absolute -right-3 -top-5 font-display text-8xl font-bold leading-none text-[#f6eefb] transition-colors group-hover:text-[#efdcfa]" aria-hidden="true">{i + 1}</span>
+                    <span className="pointer-events-none absolute -right-3 -top-5 font-display text-8xl font-bold leading-none text-[#fce8f0] transition-colors group-hover:text-[#efdcfa]" aria-hidden="true">{i + 1}</span>
                     <span className="relative flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow-lg transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110" style={{ background: `linear-gradient(135deg, ${perk.accent}, ${perk.accent}bb)` }}>
                       <Icon size={24} />
                     </span>
                     <span className="relative mt-5 inline-block rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest" style={{ background: perk.accent + '1f', color: perk.accent }}>{perk.badge}</span>
-                    <h3 className="relative mt-3 text-lg font-bold text-[#1a0840]">{perk.title}</h3>
-                    <p className="relative mt-2 text-sm leading-relaxed text-[#5b4578]">{perk.desc}</p>
+                    <h3 className="relative mt-3 text-lg font-bold text-[#250514]">{perk.title}</h3>
+                    <p className="relative mt-2 text-sm leading-relaxed text-[#5b2535]">{perk.desc}</p>
                   </motion.div>
                 )
               })}
@@ -138,7 +138,7 @@ export default function RewardsPage() {
           <div className="mx-auto max-w-5xl px-4 md:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.6, ease: EASE }}
-              className="relative overflow-hidden rounded-[2.5rem] bg-[linear-gradient(120deg,#4a1a8a_0%,#6b2398_55%,#8e39c7_100%)] px-8 py-12 text-center shadow-[0_26px_60px_rgba(74,26,138,0.35)] md:px-16 md:py-14"
+              className="relative overflow-hidden rounded-[2.5rem] bg-[linear-gradient(120deg,#6b1535_0%,#8b1a3a_55%,#a81a3a_100%)] px-8 py-12 text-center shadow-[0_26px_60px_rgba(74,26,138,0.35)] md:px-16 md:py-14"
             >
               <motion.span className="pointer-events-none absolute -left-10 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[#f5bd61]/25 blur-2xl" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 8, repeat: Infinity }} aria-hidden="true" />
               <span className="pointer-events-none absolute -bottom-24 right-20 h-64 w-96 rounded-[50%] bg-white/10" aria-hidden="true" />
@@ -150,7 +150,7 @@ export default function RewardsPage() {
                 <p className="mx-auto mb-8 max-w-lg text-sm text-white/80 md:text-base">
                   No sign-up required. Book any experience at BOB Talkies and your rewards start accumulating automatically.
                 </p>
-                <Link to="/book" className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-bold text-[#2a0e4f] shadow-[0_12px_28px_rgba(0,0,0,0.25)] transition-transform hover:scale-105">
+                <Link to="/book" className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-bold text-[#3d0a24] shadow-[0_12px_28px_rgba(0,0,0,0.25)] transition-transform hover:scale-105">
                   Book Now <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>

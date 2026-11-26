@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -26,18 +26,18 @@ const DetailsSchema = z.object({
 })
 type DetailsForm = z.infer<typeof DetailsSchema>
 
-const field = '!rounded-2xl !border-[#ecd9ec] !bg-white !py-3 !text-[#2a0e4f] placeholder:!text-[#b0a0c8] hover:!border-[#c58be6] focus:!border-[#c026d3] focus:!ring-2 focus:!ring-[#c026d3]/25'
+const field = '!rounded-2xl !border-[#f5d5e0] !bg-white !py-3 !text-[#3d0a24] placeholder:!text-[#b0a0c8] hover:!border-[#c58be6] focus:!border-[#c0125a] focus:!ring-2 focus:!ring-[#c0125a]/25'
 
 function Counter({ label, value, min, max, onChange }: { label: string; value: number; min: number; max: number; onChange: (n: number) => void }) {
   return (
     <div>
-      <p className="mb-1.5 text-sm font-semibold text-[#2a0e4f]">{label}</p>
-      <div className="inline-flex items-center rounded-2xl bg-white ring-1 ring-[#ecd9ec]">
-        <button type="button" onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min} aria-label={`Decrease ${label}`} className="flex h-11 w-11 items-center justify-center rounded-l-2xl text-[#6b2398] transition-colors hover:bg-[#f6e6ef] disabled:opacity-30">
+      <p className="mb-1.5 text-sm font-semibold text-[#3d0a24]">{label}</p>
+      <div className="inline-flex items-center rounded-2xl bg-white ring-1 ring-[#f5d5e0]">
+        <button type="button" onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min} aria-label={`Decrease ${label}`} className="flex h-11 w-11 items-center justify-center rounded-l-2xl text-[#8b1a3a] transition-colors hover:bg-[#f6e6ef] disabled:opacity-30">
           <Minus size={16} />
         </button>
-        <span className="w-12 text-center text-base font-bold tabular-nums text-[#2a0e4f]" aria-live="polite">{value}</span>
-        <button type="button" onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max} aria-label={`Increase ${label}`} className="flex h-11 w-11 items-center justify-center rounded-r-2xl text-[#6b2398] transition-colors hover:bg-[#f6e6ef] disabled:opacity-30">
+        <span className="w-12 text-center text-base font-bold tabular-nums text-[#3d0a24]" aria-live="polite">{value}</span>
+        <button type="button" onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max} aria-label={`Increase ${label}`} className="flex h-11 w-11 items-center justify-center rounded-r-2xl text-[#8b1a3a] transition-colors hover:bg-[#f6e6ef] disabled:opacity-30">
           <Plus size={16} />
         </button>
       </div>
@@ -117,22 +117,22 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
 
   return (
     <div>
-      <button type="button" onClick={onBack} className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#6b2398] hover:underline">
+      <button type="button" onClick={onBack} className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#8b1a3a] hover:underline">
         ← Back
       </button>
 
       {/* Overview */}
-      <div className="rounded-3xl bg-[#f6eefb] p-5">
-        <h2 className="mb-3 font-display text-2xl font-bold text-[#2a0e4f]">Overview</h2>
-        <ul className="grid gap-2.5 text-[15px] text-[#3b1278] sm:grid-cols-2">
-          <li className="flex items-center gap-3"><Clapperboard size={17} className="text-[#8e39c7]" />{theatre ? `${theatre.name} Theatre` : '—'}</li>
-          <li className="flex items-center gap-3"><MapPin size={17} className="text-[#8e39c7]" />Kukatpally, Hyderabad</li>
-          <li className="flex items-center gap-3"><CalendarDays size={17} className="text-[#8e39c7]" />{prettyDate}</li>
-          <li className="flex items-center gap-3"><Clock size={17} className="text-[#8e39c7]" />{slot ? `${formatTime(slot.start)} - ${formatTime(slot.end)}` : '—'}</li>
+      <div className="rounded-3xl bg-[#fce8f0] p-5">
+        <h2 className="mb-3 font-display text-2xl font-bold text-[#3d0a24]">Overview</h2>
+        <ul className="grid gap-2.5 text-[15px] text-[#5c1535] sm:grid-cols-2">
+          <li className="flex items-center gap-3"><Clapperboard size={17} className="text-[#a81a3a]" />{theatre ? `${theatre.name} Theatre` : '—'}</li>
+          <li className="flex items-center gap-3"><MapPin size={17} className="text-[#a81a3a]" />Kukatpally, Hyderabad</li>
+          <li className="flex items-center gap-3"><CalendarDays size={17} className="text-[#a81a3a]" />{prettyDate}</li>
+          <li className="flex items-center gap-3"><Clock size={17} className="text-[#a81a3a]" />{slot ? `${formatTime(slot.start)} - ${formatTime(slot.end)}` : '—'}</li>
         </ul>
       </div>
 
-      <h3 className="mb-4 mt-7 font-display text-2xl font-bold text-[#2a0e4f]">Booking Details</h3>
+      <h3 className="mb-4 mt-7 font-display text-2xl font-bold text-[#3d0a24]">Booking Details</h3>
 
       <form onSubmit={handleSubmit(onNext)} className="space-y-5" noValidate>
         <Input label="Booking Name" required placeholder="Type here" error={errors.name?.message} className={field} {...register('name')} />
@@ -141,20 +141,20 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
           <Counter label="People (Above 10 yrs)" value={state.guests} min={1} max={Math.max(1, capacity - state.kids)} onChange={(n) => dispatch({ type: 'SET_PEOPLE', guests: n })} />
           <Counter label="Kids (3-10 yrs)" value={state.kids} min={0} max={Math.max(0, capacity - state.guests)} onChange={(n) => dispatch({ type: 'SET_KIDS', kids: n })} />
         </div>
-        {theatre && <p className="-mt-2 text-xs text-[#7d7094]">{theatre.name} holds up to {theatre.capacityMax} guests.</p>}
+        {theatre && <p className="-mt-2 text-xs text-[#7d4555]">{theatre.name} holds up to {theatre.capacityMax} guests.</p>}
 
         <Input label="WhatsApp Number" required placeholder="Type here" inputMode="numeric" maxLength={10} error={errors.mobile?.message} className={field} {...register('mobile')} />
         <Input label="Email ID" required type="email" placeholder="Type here" error={errors.email?.message} className={field} {...register('email')} />
 
         <div>
-          <label htmlFor="decoration" className="mb-1.5 block text-sm font-semibold text-[#2a0e4f]">
+          <label htmlFor="decoration" className="mb-1.5 block text-sm font-semibold text-[#3d0a24]">
             Do you want decoration (just {site ? formatINR(site.pricing.decorationPricePaise) : '…'})? <span className="text-[#c2255c]">*</span>
           </label>
           <select
             id="decoration"
             value={state.decoration ? 'yes' : 'no'}
             onChange={(e) => dispatch({ type: 'SET_DECORATION', decoration: e.target.value === 'yes' })}
-            className="h-12 w-full rounded-2xl border border-[#ecd9ec] bg-white px-4 text-[15px] text-[#2a0e4f] outline-none focus:border-[#c026d3] focus:ring-2 focus:ring-[#c026d3]/25"
+            className="h-12 w-full rounded-2xl border border-[#f5d5e0] bg-white px-4 text-[15px] text-[#3d0a24] outline-none focus:border-[#c0125a] focus:ring-2 focus:ring-[#c0125a]/25"
           >
             <option value="yes">Yes</option>
             <option value="no">No</option>
@@ -167,9 +167,9 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
 
         <div className="space-y-2 rounded-2xl bg-[#fdf6ff] p-4">
           <label className="flex cursor-pointer items-start gap-3">
-            <input type="checkbox" className="mt-0.5 h-4 w-4 rounded accent-[#6b2398]" {...register('consentTnC')} />
-            <span className="text-sm text-[#5b4578]">
-              I agree to the <a href="/terms" target="_blank" className="font-semibold text-[#6b2398] hover:underline">Terms & Conditions</a> and <a href="/refund-policy" target="_blank" className="font-semibold text-[#6b2398] hover:underline">Refund Policy</a>
+            <input type="checkbox" className="mt-0.5 h-4 w-4 rounded accent-[#8b1a3a]" {...register('consentTnC')} />
+            <span className="text-sm text-[#5b2535]">
+              I agree to the <a href="/terms" target="_blank" className="font-semibold text-[#8b1a3a] hover:underline">Terms & Conditions</a> and <a href="/refund-policy" target="_blank" className="font-semibold text-[#8b1a3a] hover:underline">Refund Policy</a>
               <span className="ml-1 text-[#c2255c]" aria-hidden="true">*</span>
             </span>
           </label>
@@ -179,16 +179,16 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
               type="checkbox"
               checked={state.consentWhatsapp}
               onChange={(e) => dispatch({ type: 'SET_CUSTOMER', name: state.customerName, mobile: state.customerMobile, email: state.customerEmail, instructions: state.specialInstructions, consentTnC: state.consentTnC, consentWhatsapp: e.target.checked })}
-              className="mt-0.5 h-4 w-4 rounded accent-[#6b2398]"
+              className="mt-0.5 h-4 w-4 rounded accent-[#8b1a3a]"
             />
-            <span className="text-sm text-[#5b4578]">Send my booking confirmation and updates via WhatsApp</span>
+            <span className="text-sm text-[#5b2535]">Send my booking confirmation and updates via WhatsApp</span>
           </label>
         </div>
 
         {otpSent && (
           <motion.div
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            className="space-y-3 rounded-3xl bg-[linear-gradient(135deg,#32105f,#6b2398_60%,#d946ef)] p-5 text-white"
+            className="space-y-3 rounded-3xl bg-[linear-gradient(135deg,#5c1535,#8b1a3a_60%,#d9126a)] p-5 text-white"
           >
             <p className="flex items-center gap-2 text-sm text-white/90"><MessageSquare size={16} /> Enter the 6-digit OTP sent to your mobile</p>
             <div className="rounded-full bg-white p-1.5">
@@ -197,7 +197,7 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
                 value={otp} onChange={(e) => { setOtpError(''); setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)) }}
                 readOnly={verifying}
                 inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="------" aria-label="OTP"
-                className="h-11 w-full bg-transparent px-4 text-center font-mono text-xl font-bold tracking-[0.5rem] text-[#32105f] outline-none placeholder:text-[#d6c5de] read-only:opacity-60"
+                className="h-11 w-full bg-transparent px-4 text-center font-mono text-xl font-bold tracking-[0.5rem] text-[#5c1535] outline-none placeholder:text-[#d6c5de] read-only:opacity-60"
               />
             </div>
             <p className="text-xs text-white/70" aria-live="polite">
@@ -215,7 +215,7 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
           disabled={sending || otpSent}
           className={cn(
             'h-14 w-full rounded-full text-base font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.35)] transition-all',
-            'bg-[linear-gradient(135deg,#32105f,#4a1a8a)] hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60',
+            'bg-[linear-gradient(135deg,#5c1535,#6b1535)] hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60',
           )}
         >
           {sending ? 'Sending OTP…' : otpSent ? 'Enter the OTP above' : 'Next step'}

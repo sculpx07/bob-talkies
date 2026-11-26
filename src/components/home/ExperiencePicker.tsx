@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { getOccasionBySlug } from '@/content/occasions'
@@ -46,7 +46,7 @@ function Card({ pick, index }: { pick: Pick; index: number }) {
           <span className="rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold tracking-wider backdrop-blur-md ring-1 ring-white/30">
             {String(index + 1).padStart(2, '0')}
           </span>
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#32105f] shadow-lg transition-transform duration-500 group-hover:rotate-45 group-hover:scale-110">
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#5c1535] shadow-lg transition-transform duration-500 group-hover:rotate-45 group-hover:scale-110">
             <ArrowUpRight size={18} />
           </span>
         </div>
@@ -76,10 +76,10 @@ export function ExperiencePicker() {
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <p className="mb-2 font-cursive text-2xl text-[#c9933a]">Choose an experience</p>
-            <h2 id="experience-picker-heading" className="font-display text-3xl font-medium leading-tight text-[#2a0e4f] md:text-5xl">Not just a theatre, your occasion made special</h2>
+            <p className="mb-2 font-cursive text-2xl text-[#C69A55]">Choose an experience</p>
+            <h2 id="experience-picker-heading" className="font-display text-3xl font-medium leading-tight text-[#49283A] md:text-5xl">Not just a theatre, your occasion made special</h2>
           </div>
-          <p className="max-w-xs text-[#5b4578]">Pick what you are celebrating and see the services that go with it.</p>
+          <p className="max-w-xs text-[#725968]">Pick what you are celebrating and see the services that go with it.</p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:auto-rows-[280px] lg:grid-cols-12 lg:gap-5">

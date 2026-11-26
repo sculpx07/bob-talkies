@@ -1,4 +1,4 @@
-import { OCCASIONS } from '@/content/occasions'
+﻿import { OCCASIONS } from '@/content/occasions'
 import { useState, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link, NavLink, useLocation } from 'react-router-dom'
@@ -28,7 +28,7 @@ function MyBookingsLink({ navText, heroDark }: { navText: string; heroDark: bool
         'hidden sm:flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition-all',
         heroDark
           ? 'border-white/30 text-white hover:bg-white/10'
-          : 'border-[#32105f]/25 text-[#32105f] hover:bg-[#32105f]/5',
+          : 'border-[#5c1535]/25 text-[#5c1535] hover:bg-[#5c1535]/5',
       )}
     >
       <Ticket size={14} />
@@ -52,9 +52,9 @@ export function Header() {
   }, [])
 
   // over the dark hero video (home page, before scrolling) the menu turns white so it stays readable
-  const heroDark = false // the hero no longer has a dark video behind the menu
-  const navText = heroDark ? 'text-white' : 'text-[#32105f]'
-  const navLine = heroDark ? 'after:bg-white' : 'after:bg-[#32105f]'
+  const heroDark = location.pathname === "/" && !scrolled // the home hero image is dark, so the menu is white until the page scrolls
+  const navText = heroDark ? 'text-white' : 'text-[#5c1535]'
+  const navLine = heroDark ? 'after:bg-white' : 'after:bg-[#5c1535]'
 
   useEffect(() => {
     setMobileOpen(false)
@@ -85,7 +85,7 @@ export function Header() {
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
         // pages that open on a dark hero need the light header background from the start so the nav stays readable
         (scrolled || /^\/(celebrations\/.+|personalise)/.test(location.pathname))
-          ? 'bg-[#fffaf4]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(50,16,95,0.08)]'
+          ? 'bg-[#fff8f9]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(50,16,95,0.08)]'
           : 'bg-transparent',
       )}
     >
@@ -93,7 +93,7 @@ export function Header() {
         <div className="flex items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="shrink-0 justify-self-start" aria-label="BOB Talkies home">
-            <img src="/logo.png" alt="BOB Talkies" className={cn('h-12 md:h-16 w-auto transition-[filter] duration-300', heroDark && 'brightness-0 invert')} />
+            <img src="/logo 2.png" alt="BOB Talkies" className="h-16 md:h-19 w-auto" />
           </Link>
 
           {/* Desktop nav */}
@@ -120,20 +120,20 @@ export function Header() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -8, scale: 0.97 }}
                         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                        className="absolute left-1/2 top-full z-50 mt-2 w-[400px] -translate-x-1/2 origin-top overflow-hidden rounded-2xl bg-white shadow-[0_26px_60px_rgba(50,16,95,0.22)] ring-1 ring-[#f0e1f3]"
+                        className="absolute left-1/2 top-full z-50 mt-2 w-[400px] -translate-x-1/2 origin-top overflow-hidden rounded-2xl bg-white shadow-[0_26px_60px_rgba(50,16,95,0.22)] ring-1 ring-[#f8dce4]"
                       >
                         <div className="flex items-center justify-between border-b border-[#f3e8f8] px-4 py-2.5">
                           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9933a]">Celebrations</p>
-                          <Link to="/celebrations" className="text-xs font-semibold text-[#6b2398] hover:underline">View all</Link>
+                          <Link to="/celebrations" className="text-xs font-semibold text-[#8b1a3a] hover:underline">View all</Link>
                         </div>
                         <div className="grid grid-cols-2 gap-0.5 p-2">
                           {OCCASION_LINKS.map((o) => (
                             <Link
                               key={o.to}
                               to={o.to}
-                              className="group flex items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] font-medium text-[#3b2a55] transition-colors hover:bg-[#f6eefb] hover:text-[#2a0e4f]"
+                              className="group flex items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] font-medium text-[#3b2a55] transition-colors hover:bg-[#fce8f0] hover:text-[#3d0a24]"
                             >
-                              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#f6eefb] text-sm transition-transform duration-200 group-hover:scale-110 group-hover:bg-white">{o.emoji}</span>
+                              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#fce8f0] text-sm transition-transform duration-200 group-hover:scale-110 group-hover:bg-white">{o.emoji}</span>
                               <span className="truncate">{o.label}</span>
                             </Link>
                           ))}
@@ -151,6 +151,7 @@ export function Header() {
                       'px-2.5 py-2 text-sm font-medium leading-6', navText,
                       'relative after:absolute after:left-2.5 after:right-2.5 after:bottom-0 after:h-[2px] after:rounded-full', navLine, 'after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-in-out hover:after:origin-left hover:after:scale-x-100',
                       isActive && 'after:scale-x-100 after:origin-left',
+                      isActive && heroDark && '!text-[#f5d7a1] after:!bg-[#f5d7a1]',
                     )
                   }
                 >
@@ -166,9 +167,14 @@ export function Header() {
             <Link
               to="/"
               state={{ highlightPlan: true }}
-              className="group relative hidden sm:inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-2.5 text-sm font-black text-white whitespace-nowrap transition-all duration-300 hover:scale-105"
+              className={cn(
+                'group relative hidden sm:inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-2.5 text-sm font-black whitespace-nowrap transition-all duration-300 hover:scale-105',
+                heroDark ? 'text-[#2a0e4f]' : 'text-white',
+              )}
               style={{
-                background: 'linear-gradient(135deg,#32105f 0%,#5b1fa3 100%)',
+                background: heroDark
+                  ? 'linear-gradient(135deg,#f5d7a1 0%,#e0a94a 55%,#c9933a 100%)'
+                  : 'linear-gradient(135deg,#5c1535 0%,#7b1535 100%)',
                 boxShadow: '0 0 0 0 rgba(91,31,163,0.5)',
                 animation: 'bob-btn-pulse 2.4s ease-in-out infinite',
               }}
@@ -191,14 +197,16 @@ export function Header() {
                 'hidden sm:flex items-center justify-center rounded-full w-9 h-9 transition-all duration-200 ring-1',
                 savedPlan
                   ? 'bg-[#c9a84c]/20 text-[#c9933a] ring-[#c9a84c]/60 hover:bg-[#c9a84c]/35'
-                  : 'bg-[#32105f]/8 text-[#32105f] ring-[#32105f]/20 hover:bg-[#32105f]/12',
+                  : heroDark
+                    ? 'bg-white/10 text-white ring-white/30 hover:bg-white/20'
+                    : 'bg-[#5c1535]/8 text-[#5c1535] ring-[#5c1535]/20 hover:bg-[#5c1535]/12',
               )}
             >
               <Bookmark size={17} strokeWidth={2.2} fill={savedPlan ? '#c9a84c' : 'none'} />
             </button>
 
             <button
-              className={cn('lg:hidden p-2 transition-colors', heroDark ? 'text-white' : 'text-[#32105f] hover:text-[#6b2398]')}
+              className={cn('lg:hidden p-2 transition-colors', heroDark ? 'text-white' : 'text-[#5c1535] hover:text-[#8b1a3a]')}
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-expanded={mobileOpen}
               aria-label="Toggle mobile menu"

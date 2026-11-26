@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+﻿import { useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Users, Monitor, Volume2, ChevronLeft, ChevronRight, Check, MapPin, Calendar, Clock, ArrowRight, Star, Play } from 'lucide-react'
 import { format, addMonths, parseISO, getDay } from 'date-fns'
@@ -42,7 +42,7 @@ function StaggerGrid({ children, className }: { children: React.ReactNode; class
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-6">
-      <h2 className="font-display text-xl font-bold text-[#2a0e4f] whitespace-nowrap">{children}</h2>
+      <h2 className="font-display text-xl font-bold text-[#3d0a24] whitespace-nowrap">{children}</h2>
       <div className="flex-1 h-px bg-gradient-to-r from-[#c9a84c]/40 to-transparent" />
     </div>
   )
@@ -137,20 +137,20 @@ export default function TheatreDetailPage() {
       <div className="fixed bottom-0 left-0 right-0 z-30 hidden md:block bg-white/95 backdrop-blur-md border-t border-[#e8d5a3] shadow-[0_-4px_20px_rgba(50,16,95,0.08)]">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <span className="font-display text-lg font-bold text-[#2a0e4f]">{theatre.name}</span>
+            <span className="font-display text-lg font-bold text-[#3d0a24]">{theatre.name}</span>
             <span className="h-4 w-px bg-[#e8d5a3]" />
-            <span className="text-sm text-[#5b4578]/60">{guestRangeText(theatre, 'guests')}</span>
+            <span className="text-sm text-[#5b2535]/60">{guestRangeText(theatre, 'guests')}</span>
           </div>
           <div className="flex items-center gap-5">
             <PriceTag paise={theatre.startingPricePaise} />
-            <Link to={`/book?theatre=${theatre.id}`} className="inline-flex items-center gap-2 rounded-full bg-[#32105f] text-white text-sm font-bold px-6 py-2.5 hover:bg-[#4a1a8a] transition-colors shadow-[0_4px_16px_rgba(50,16,95,0.25)]">
+            <Link to={`/book?theatre=${theatre.id}`} className="inline-flex items-center gap-2 rounded-full bg-[#5c1535] text-white text-sm font-bold px-6 py-2.5 hover:bg-[#6b1535] transition-colors shadow-[0_4px_16px_rgba(50,16,95,0.25)]">
               Book Now <ArrowRight size={14} />
             </Link>
           </div>
         </div>
       </div>
 
-      <PageShell fullWidth className="pb-24 bg-[#fffaf4]">
+      <PageShell fullWidth className="pb-24 bg-[#fff8f9]">
 
         {/* ── Hero ── */}
         <div className="relative">
@@ -243,7 +243,7 @@ export default function TheatreDetailPage() {
               <motion.div key={s.label} variants={fadeUp} transition={{ duration: 0.4 }}
                 className="flex items-center gap-2 text-sm">
                 <span className="text-[#c9a84c]">{s.icon}</span>
-                <span className="text-[#2a0e4f] font-medium">{s.label}</span>
+                <span className="text-[#3d0a24] font-medium">{s.label}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -259,7 +259,7 @@ export default function TheatreDetailPage() {
               {/* About */}
               <RevealSection>
                 <SectionTitle>About this Theatre</SectionTitle>
-                <p className="text-[#5b4578]/80 leading-relaxed text-base">
+                <p className="text-[#5b2535]/80 leading-relaxed text-base">
                   {theatre.description || `${theatreSpec(theatre)}. ${theatre.tagline}.`}
                 </p>
               </RevealSection>
@@ -271,7 +271,7 @@ export default function TheatreDetailPage() {
                   {theatreFacts(theatre).map((f) => (
                     <motion.li key={f} variants={fadeUp} transition={{ duration: 0.35 }}
                       whileHover={{ y: -3, boxShadow: '0 6px 20px rgba(201,168,76,0.15)' }}
-                      className="flex items-center gap-2.5 bg-white rounded-xl px-4 py-3 border border-[#f0e6cc] text-sm text-[#2a0e4f] font-medium shadow-sm list-none cursor-default">
+                      className="flex items-center gap-2.5 bg-white rounded-xl px-4 py-3 border border-[#f0e6cc] text-sm text-[#3d0a24] font-medium shadow-sm list-none cursor-default">
                       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#c9a84c]/15 border border-[#c9a84c]/30">
                         <Check size={11} className="text-[#c9a84c]" />
                       </span>
@@ -308,13 +308,13 @@ export default function TheatreDetailPage() {
                 return (
                   <RevealSection>
                     <div className="flex items-center gap-3 mb-2">
-                      <h2 className="font-display text-xl font-bold text-[#2a0e4f] whitespace-nowrap">Guest Reviews</h2>
+                      <h2 className="font-display text-xl font-bold text-[#3d0a24] whitespace-nowrap">Guest Reviews</h2>
                       <div className="flex-1 h-px bg-gradient-to-r from-[#c9a84c]/40 to-transparent" />
                     </div>
                     <div className="flex items-center gap-2 mb-6">
                       {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="#c9a84c" stroke="none" />)}
-                      <span className="text-sm font-black text-[#2a0e4f]">5.0</span>
-                      <span className="text-xs text-[#5b4578]/50 ml-1">· Verified guests</span>
+                      <span className="text-sm font-black text-[#3d0a24]">5.0</span>
+                      <span className="text-xs text-[#5b2535]/50 ml-1">· Verified guests</span>
                     </div>
                     <StaggerGrid className="grid sm:grid-cols-2 gap-5">
                       {reviews.map((r, i) => (
@@ -348,7 +348,7 @@ export default function TheatreDetailPage() {
                             <div className="flex items-center gap-3 mb-3">
                               <img src={r.avatar} alt={r.name} className="h-9 w-9 rounded-full object-cover ring-2 ring-[#c9a84c]/30" />
                               <div>
-                                <p className="font-black text-[#1a0840] text-sm">{r.name}</p>
+                                <p className="font-black text-[#250514] text-sm">{r.name}</p>
                                 <div className="flex gap-0.5 mt-0.5">{[1,2,3,4,5].map(s => <Star key={s} size={9} fill="#f59e0b" stroke="none" />)}</div>
                               </div>
                             </div>
@@ -413,7 +413,7 @@ export default function TheatreDetailPage() {
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}>
               <div className="sticky top-24 bg-white rounded-2xl border border-[#f0e6cc] shadow-[0_8px_32px_rgba(50,16,95,0.08)] overflow-hidden">
                 {/* Header */}
-                <div className="bg-[#32105f] px-5 py-4">
+                <div className="bg-[#5c1535] px-5 py-4">
                   <h3 className="font-display text-lg font-bold text-white">Check Availability</h3>
                   <p className="text-white/60 text-xs mt-0.5">Pick a date to see open slots</p>
                 </div>
@@ -423,16 +423,16 @@ export default function TheatreDetailPage() {
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <button onClick={() => setCurrentMonth(format(addMonths(parseISO(`${currentMonth}-01`), -1), 'yyyy-MM'))}
-                        className="p-1.5 rounded-lg text-[#5b4578]/50 hover:text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
+                        className="p-1.5 rounded-lg text-[#5b2535]/50 hover:text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
                         aria-label="Previous month"><ChevronLeft size={16} /></button>
-                      <span className="text-sm font-bold text-[#2a0e4f]">{format(parseISO(`${currentMonth}-01`), 'MMMM yyyy')}</span>
+                      <span className="text-sm font-bold text-[#3d0a24]">{format(parseISO(`${currentMonth}-01`), 'MMMM yyyy')}</span>
                       <button onClick={() => setCurrentMonth(format(addMonths(parseISO(`${currentMonth}-01`), 1), 'yyyy-MM'))}
-                        className="p-1.5 rounded-lg text-[#5b4578]/50 hover:text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
+                        className="p-1.5 rounded-lg text-[#5b2535]/50 hover:text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
                         aria-label="Next month"><ChevronRight size={16} /></button>
                     </div>
                     <div className="grid grid-cols-7 text-center mb-1">
                       {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                        <span key={i} className="text-[9px] text-[#5b4578]/40 py-1 font-bold uppercase tracking-widest">{d}</span>
+                        <span key={i} className="text-[9px] text-[#5b2535]/40 py-1 font-bold uppercase tracking-widest">{d}</span>
                       ))}
                     </div>
                     <div className="grid grid-cols-7 gap-y-0.5">
@@ -450,12 +450,12 @@ export default function TheatreDetailPage() {
                               isSelected
                                 ? 'bg-[#c9a84c] text-white shadow-[0_2px_8px_rgba(201,168,76,0.4)]'
                                 : isUnavail
-                                ? 'text-[#5b4578]/20 cursor-not-allowed'
+                                ? 'text-[#5b2535]/20 cursor-not-allowed'
                                 : day.status === 'high_demand'
                                 ? 'text-orange-500 hover:bg-orange-50'
                                 : day.status === 'offer_date'
                                 ? 'text-[#c9a84c] hover:bg-[#c9a84c]/10'
-                                : 'text-[#2a0e4f]/70 hover:bg-[#c9a84c]/10 hover:text-[#2a0e4f]'
+                                : 'text-[#3d0a24]/70 hover:bg-[#c9a84c]/10 hover:text-[#3d0a24]'
                             }`}
                           >
                             {parseInt(day.date.split('-')[2])}
@@ -469,7 +469,7 @@ export default function TheatreDetailPage() {
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <Calendar size={13} className="text-[#c9a84c]" />
-                      <span className="text-sm font-bold text-[#2a0e4f]">{format(parseISO(selectedDate), 'dd MMM yyyy')}</span>
+                      <span className="text-sm font-bold text-[#3d0a24]">{format(parseISO(selectedDate), 'dd MMM yyyy')}</span>
                     </div>
                     {slotsLoading ? (
                       <div className="space-y-2">
@@ -483,10 +483,10 @@ export default function TheatreDetailPage() {
                             to={`/book?theatre=${theatre.id}&date=${selectedDate}&slot=${slot.id}`}
                             className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all ${
                               slot.status === 'booked' || slot.status === 'held'
-                                ? 'border-[#f0e6cc] text-[#5b4578]/30 cursor-not-allowed pointer-events-none bg-[#fafafa]'
+                                ? 'border-[#f0e6cc] text-[#5b2535]/30 cursor-not-allowed pointer-events-none bg-[#fafafa]'
                                 : slot.status === 'high_demand'
-                                ? 'border-orange-200 bg-orange-50 text-[#2a0e4f] hover:bg-orange-100'
-                                : 'border-[#f0e6cc] hover:border-[#c9a84c] hover:bg-[#c9a84c]/5 text-[#2a0e4f]'
+                                ? 'border-orange-200 bg-orange-50 text-[#3d0a24] hover:bg-orange-100'
+                                : 'border-[#f0e6cc] hover:border-[#c9a84c] hover:bg-[#c9a84c]/5 text-[#3d0a24]'
                             }`}
                           >
                             <span className="flex items-center gap-2">
@@ -506,16 +506,16 @@ export default function TheatreDetailPage() {
                   {/* Book CTA */}
                   <div className="pt-4 border-t border-[#f0e6cc]">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs text-[#5b4578]/50">Starting from</span>
+                      <span className="text-xs text-[#5b2535]/50">Starting from</span>
                       <PriceTag paise={theatre.startingPricePaise} />
                     </div>
                     <Link
                       to={`/book?theatre=${theatre.id}&date=${selectedDate}`}
-                      className="flex items-center justify-center gap-2 w-full rounded-xl bg-[#32105f] text-white text-sm font-bold py-3 hover:bg-[#4a1a8a] transition-colors shadow-[0_4px_16px_rgba(50,16,95,0.22)]"
+                      className="flex items-center justify-center gap-2 w-full rounded-xl bg-[#5c1535] text-white text-sm font-bold py-3 hover:bg-[#6b1535] transition-colors shadow-[0_4px_16px_rgba(50,16,95,0.22)]"
                     >
                       Book Now <ArrowRight size={14} />
                     </Link>
-                    <p className="text-center text-[10px] text-[#5b4578]/40 mt-2">No advance payment required</p>
+                    <p className="text-center text-[10px] text-[#5b2535]/40 mt-2">No advance payment required</p>
                   </div>
                 </div>
               </div>

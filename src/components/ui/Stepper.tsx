@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+﻿import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
@@ -33,7 +33,7 @@ export function Stepper({ steps, currentStep, className, onStepClick }: StepperP
               <span className="relative flex h-9 w-9 items-center justify-center">
                 {active && (
                   <motion.span
-                    className="absolute inset-0 rounded-full bg-[#d946ef]/40"
+                    className="absolute inset-0 rounded-full bg-[#d9126a]/40"
                     animate={{ scale: [1, 1.7], opacity: [0.7, 0] }}
                     transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
                     aria-hidden="true"
@@ -46,9 +46,9 @@ export function Stepper({ steps, currentStep, className, onStepClick }: StepperP
                   transition={{ type: 'spring', stiffness: 380, damping: 14 }}
                   className={cn(
                     'relative flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold',
-                    done && 'bg-[#32105f] text-white group-hover:bg-[#6b2398]',
-                    active && 'bg-[linear-gradient(135deg,#6b2398,#d946ef)] text-white shadow-[0_8px_20px_rgba(107,35,152,0.4)]',
-                    !done && !active && 'border border-[#ecd9ec] bg-white text-[#7d7094]',
+                    done && 'bg-[#5c1535] text-white group-hover:bg-[#8b1a3a]',
+                    active && 'bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] text-white shadow-[0_8px_20px_rgba(107,35,152,0.4)]',
+                    !done && !active && 'border border-[#f5d5e0] bg-white text-[#7d4555]',
                   )}
                   aria-current={active ? 'step' : undefined}
                 >
@@ -58,23 +58,23 @@ export function Stepper({ steps, currentStep, className, onStepClick }: StepperP
               <span
                 className={cn(
                   'whitespace-nowrap text-[11px] font-medium',
-                  active ? 'block font-semibold text-[#6b2398]' : cn('hidden sm:block', done ? 'text-[#32105f]' : 'text-[#7d7094]'),
+                  active ? 'block font-semibold text-[#8b1a3a]' : cn('hidden sm:block', done ? 'text-[#5c1535]' : 'text-[#7d4555]'),
                 )}
               >
                 {step.label}
               </span>
             </button>
             {i < steps.length - 1 && (
-              <div className="relative mx-1 mt-[17px] h-1 min-w-2 flex-1 overflow-hidden rounded-full bg-[#ecd9ec]">
+              <div className="relative mx-1 mt-[17px] h-1 min-w-2 flex-1 overflow-hidden rounded-full bg-[#f5d5e0]">
                 <motion.div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#6b2398,#d946ef)]"
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#8b1a3a,#d9126a)]"
                   initial={false}
                   animate={{ width: i < currentStep ? '100%' : '0%' }}
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 />
                 {i === currentStep && (
                   <motion.span
-                    className="absolute inset-y-0 w-1/3 rounded-full bg-gradient-to-r from-transparent via-[#d946ef]/60 to-transparent"
+                    className="absolute inset-y-0 w-1/3 rounded-full bg-gradient-to-r from-transparent via-[#d9126a]/60 to-transparent"
                     animate={{ left: ['-35%', '105%'] }}
                     transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
                     aria-hidden="true"
