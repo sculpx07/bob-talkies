@@ -53,17 +53,17 @@ export function BobPromise() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <p className="font-cursive text-2xl md:text-3xl text-[#C69A55] mb-1">The BOB Promise</p>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#49283A] leading-tight mb-2">
+          <p className="font-cursive text-2xl md:text-3xl text-[#c9933a] mb-1">The BOB Promise</p>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#3d0a24] leading-tight mb-2">
             We Promise You Peace of Mind
           </h2>
           <motion.div
-            className="mx-auto mt-3 h-[3px] rounded-full bg-[#C69A55]"
+            className="mx-auto mt-3 h-[3px] rounded-full bg-[#d4a94a]"
             initial={{ width: 0 }}
             animate={inView ? { width: 40 } : {}}
             transition={{ delay: 0.3, duration: 0.5 }}
           />
-          <p className="mt-3 text-[#725968] text-sm max-w-sm mx-auto">
+          <p className="mt-3 text-[#5b2535] text-sm max-w-sm mx-auto">
             From the moment you book to the last memory you make, every detail is in our hands.
           </p>
         </motion.div>
@@ -92,8 +92,8 @@ export function BobPromise() {
                   <Icon size={20} style={{ color: '#c9a84c' }} strokeWidth={1.8} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-[#49283A] text-base mb-1">{p.title}</h3>
-                  <p className="text-[#725968] text-sm leading-relaxed">{p.desc}</p>
+                  <h3 className="font-bold text-[#3d0a24] text-base mb-1">{p.title}</h3>
+                  <p className="text-[#5b2535] text-sm leading-relaxed">{p.desc}</p>
                 </div>
               </motion.div>
             )

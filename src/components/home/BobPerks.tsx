@@ -44,7 +44,7 @@ export function BobPerks() {
           transition={{ duration: 75, repeat: Infinity, ease: 'linear' }}
         />
         <motion.span
-          className="absolute left-1/3 top-0 h-64 w-64 rounded-full bg-[#C69A55]/12 blur-3xl"
+          className="absolute left-1/3 top-0 h-64 w-64 rounded-full bg-[#d4a94a]/12 blur-3xl"
           animate={{ x: [0, 60, 0], y: [0, 40, 0] }}
           transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
         />
@@ -76,11 +76,11 @@ export function BobPerks() {
         >
           <div className="mb-0.5 flex items-center justify-center gap-2">
             <Sparkles size={15} className="text-[#d4a94a]" />
-            <p className="font-cursive text-xl text-[#C69A55]">The BOB Family</p>
+            <p className="font-cursive text-xl text-[#c9933a]">The BOB Family</p>
           </div>
-          <h2 className="text-2xl font-black text-[#49283A] md:text-3xl">Club Benefits &amp; Our Promise</h2>
+          <h2 className="text-2xl font-black text-white md:text-3xl">Club Benefits &amp; Our Promise</h2>
           <motion.div
-            className="mx-auto mt-3 h-[3px] rounded-full bg-[#C69A55]"
+            className="mx-auto mt-3 h-[3px] rounded-full bg-[#d4a94a]"
             initial={{ width: 0 }}
             animate={inView ? { width: 40 } : {}}
             transition={{ delay: 0.3, duration: 0.5 }}
@@ -94,7 +94,7 @@ export function BobPerks() {
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ delay: 0.08, duration: 0.7 }}
           >
-            <p className="mb-6 flex items-center gap-3 text-xs font-black uppercase tracking-[0.3em] text-[#C69A55]">
+            <p className="mb-6 flex items-center gap-3 text-xs font-black uppercase tracking-[0.3em] text-[#c9933a]">
               The BOB Club
             </p>
 
@@ -125,7 +125,7 @@ export function BobPerks() {
                 <p className="relative mt-1 text-xs text-white/75">Start earning rewards today</p>
                 <Link
                   to="/book"
-                  className="group relative mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#49283A] shadow-lg transition-transform hover:scale-105"
+                  className="group relative mt-3 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#3d0a24] shadow-lg transition-transform hover:scale-105"
                 >
                   Join Now <ArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
                 </Link>
@@ -154,8 +154,8 @@ export function BobPerks() {
                       <span className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)] shadow-md">
                         <Icon size={19} strokeWidth={1.8} style={{ color: b.color }} />
                       </span>
-                      <p className="text-[13px] font-bold leading-tight text-[#49283A]">{b.title}</p>
-                      <p className="mt-1 text-[11px] leading-snug text-[#725968]">{b.desc}</p>
+                      <p className="text-[13px] font-bold leading-tight text-[#3d0a24]">{b.title}</p>
+                      <p className="mt-1 text-[11px] leading-snug text-[#5b2535]">{b.desc}</p>
                     </motion.div>
                   </motion.div>
                 )
@@ -172,8 +172,8 @@ export function BobPerks() {
                       <span className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)]">
                         <Icon size={19} strokeWidth={1.8} style={{ color: b.color }} />
                       </span>
-                      <p className="text-[13px] font-bold text-[#49283A]">{b.title}</p>
-                      <p className="mt-1 text-[11px] leading-snug text-[#725968]">{b.desc}</p>
+                      <p className="text-[13px] font-bold text-[#3d0a24]">{b.title}</p>
+                      <p className="mt-1 text-[11px] leading-snug text-[#5b2535]">{b.desc}</p>
                     </div>
                   )
                 })}
@@ -183,7 +183,7 @@ export function BobPerks() {
                   <p className="text-sm font-bold">Join The BOB Club</p>
                   <p className="mt-0.5 text-xs text-white/75">Start earning rewards today</p>
                 </div>
-                <Link to="/book" className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#49283A]">
+                <Link to="/book" className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-bold text-[#3d0a24]">
                   Join Now <ArrowRight size={12} />
                 </Link>
               </div>
@@ -196,7 +196,7 @@ export function BobPerks() {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.12, duration: 0.6 }}
           >
-            <p className="mb-7 flex items-center gap-3 text-xs font-black uppercase tracking-[0.3em] text-[#C69A55]">
+            <p className="mb-7 flex items-center gap-3 text-xs font-black uppercase tracking-[0.3em] text-[#c9933a]">
               The BOB Promise 
             </p>
             <ul className="grid gap-x-6 gap-y-7 sm:grid-cols-2">
@@ -223,9 +223,9 @@ export function BobPerks() {
                       </span>
                     </span>
                     <span className="relative min-w-0">
-                      <span className="block text-[11px] font-black tracking-[0.25em] text-[#C69A55]" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-                      <span className="relative mt-0.5 block text-[15px] font-bold leading-tight text-[#49283A]">{pr.title}</span>
-                      <span className="relative mt-1 block text-sm leading-snug text-[#725968]">{pr.desc}</span>
+                      <span className="block text-[11px] font-black tracking-[0.25em] text-[#c9933a]" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="relative mt-0.5 block text-[15px] font-bold leading-tight text-white">{pr.title}</span>
+                      <span className="relative mt-1 block text-sm leading-snug text-white/70">{pr.desc}</span>
                     </span>
                   </motion.li>
                 )

@@ -217,7 +217,22 @@ export default function HomePage() {
         canonical="/"
       />
 
-      <div className="home-champagne">
+      <div
+        className="home-champagne"
+        style={{
+          // magenta-plum glow gradient (from the reference swatch), tiled down the page; first 600px eases in from the hero's dark base
+          backgroundColor: '#430948',
+          backgroundImage: [
+            'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+            'radial-gradient(ellipse 48% 22% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+            'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+            'radial-gradient(ellipse 50% 20% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+            'radial-gradient(ellipse 36% 14% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+          ].join(','),
+          backgroundSize: '100% 600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px',
+          backgroundRepeat: 'no-repeat, repeat-y, repeat-y, repeat-y, repeat-y',
+        }}
+      >
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <HeroBackdropImage />
@@ -251,15 +266,15 @@ export default function HomePage() {
           <div id="plan" className="relative mx-auto w-full max-w-4xl scroll-mt-28 font-['Jost',sans-serif]">
             {/* Left rays */}
             <div className="pointer-events-none absolute left-0 top-1/2 hidden -translate-x-9 -translate-y-1/2 flex-col items-center gap-[9px] md:flex" aria-hidden="true">
-              <span className="block h-[2.5px] w-6 rotate-[30deg] rounded-full bg-[#C69A55]" />
-              <span className="block h-[2.5px] w-7 rounded-full bg-[#C69A55]" />
-              <span className="block h-[2.5px] w-6 -rotate-[30deg] rounded-full bg-[#C69A55]" />
+              <span className="block h-[2.5px] w-6 rotate-[30deg] rounded-full bg-[#d4a94a]" />
+              <span className="block h-[2.5px] w-7 rounded-full bg-[#d4a94a]" />
+              <span className="block h-[2.5px] w-6 -rotate-[30deg] rounded-full bg-[#d4a94a]" />
             </div>
             {/* Right rays (mirrored) */}
             <div className="pointer-events-none absolute right-0 top-1/2 hidden translate-x-9 -translate-y-1/2 flex-col items-center gap-[9px] md:flex" aria-hidden="true">
-              <span className="block h-[2.5px] w-6 -rotate-[30deg] rounded-full bg-[#C69A55]" />
-              <span className="block h-[2.5px] w-7 rounded-full bg-[#C69A55]" />
-              <span className="block h-[2.5px] w-6 rotate-[30deg] rounded-full bg-[#C69A55]" />
+              <span className="block h-[2.5px] w-6 -rotate-[30deg] rounded-full bg-[#d4a94a]" />
+              <span className="block h-[2.5px] w-7 rounded-full bg-[#d4a94a]" />
+              <span className="block h-[2.5px] w-6 rotate-[30deg] rounded-full bg-[#d4a94a]" />
             </div>
 
             {/* Gold border shell */}
@@ -372,7 +387,7 @@ export default function HomePage() {
                   </button>
                 </div>
                 {(!selectedOccasion || !date) && (
-                  <p className="mt-3 text-xs text-[#725968]">Choose an occasion and a date to see available theatres.</p>
+                  <p className="mt-3 text-xs text-[#5b2535]">Choose an occasion and a date to see available theatres.</p>
                 )}
               </div>
             </div>
@@ -474,17 +489,17 @@ export default function HomePage() {
                   <Clapperboard size={28} className="text-[#8b1a3a]" strokeWidth={1.8} />
                   <Sparkles size={11} className="text-[#d4a94a] absolute -top-1.5 -right-1.5" />
                 </div>
-                <p className="font-cursive text-2xl md:text-3xl text-[#C69A55]">Limited Time</p>
+                <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Limited Time</p>
               </div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight">
-                <span className="text-[#49283A]">Current </span>
-                <span className="text-[#9b1a3a]">Offers</span>
+                <span className="text-white">Current </span>
+                <span className="text-[#ff9bb8]">Offers</span>
               </h2>
-              <div className="mt-2 h-[3px] w-10 rounded-full bg-[#C69A55]" />
+              <div className="mt-2 h-[3px] w-10 rounded-full bg-[#d4a94a]" />
             </div>
             <Link
               to="/offers"
-              className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#5c1535]/50 px-4 py-2 text-xs font-semibold text-[#5c1535] hover:bg-[#5c1535]/5 transition-colors mt-1"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-[#f5d7a1]/60 px-4 py-2 text-xs font-semibold text-[#f5d7a1] hover:bg-white/10 transition-colors mt-1"
             >
               View All <ChevronRight size={14} />
             </Link>
@@ -558,14 +573,14 @@ export default function HomePage() {
               <PartyPopper size={26} className="text-[#8b1a3a]" strokeWidth={1.8} />
               <Sparkles size={10} className="text-[#d4a94a] absolute -top-1.5 -right-1.5" />
             </motion.div>
-            <p className="font-cursive text-2xl md:text-3xl text-[#C69A55]">Every Occasion</p>
+            <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Every Occasion</p>
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight">
-            <span className="text-[#49283A]">Choose Your </span>
-            <span className="text-[#9b1a3a]">Celebration</span>
+            <span className="text-white">Choose Your </span>
+            <span className="text-[#ff9bb8]">Celebration</span>
           </h2>
           <motion.div
-            className="mt-2 h-[3px] rounded-full bg-[#C69A55]"
+            className="mt-2 h-[3px] rounded-full bg-[#d4a94a]"
             initial={{ width: 0 }}
             animate={celInView ? { width: 40 } : {}}
             transition={{ delay: 0.3, duration: 0.5, ease: 'easeOut' }}
@@ -606,7 +621,7 @@ export default function HomePage() {
                   <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
                     <p className="text-[9px] font-black uppercase tracking-[0.28em] text-white/60 mb-0.5">{c.sub}</p>
                     <p className="font-display text-lg font-bold text-white leading-tight">{c.label}</p>
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#49283A] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#3d0a24] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
                       Book Now <ArrowRight size={9} />
                     </span>
                   </div>
@@ -651,7 +666,7 @@ export default function HomePage() {
                   <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
                     <p className="text-[9px] font-black uppercase tracking-[0.28em] text-white/60 mb-0.5">{c.sub}</p>
                     <p className="font-display text-lg font-bold text-white leading-tight">{c.label}</p>
-                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#49283A] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
+                    <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-[#3d0a24] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 shadow">
                       Book Now <ArrowRight size={9} />
                     </span>
                   </div>
@@ -705,7 +720,7 @@ export default function HomePage() {
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="text-[#c9a84c] text-xs font-bold uppercase tracking-[0.28em] mb-3">Find Us</p>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-black text-[#49283A] leading-tight mb-4">Visit BOB Talkies</h2>
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">Visit BOB Talkies</h2>
             <motion.div className="mx-auto h-[3px] rounded-full bg-gradient-to-r from-[#c9a84c] to-[#eed98a]"
               initial={{ width: 0 }} animate={locationInView ? { width: 64 } : {}} transition={{ delay: 0.3, duration: 0.5 }} />
           </motion.div>
@@ -720,12 +735,12 @@ export default function HomePage() {
             {/* Info panel */}
             <div className="flex flex-col justify-between p-6 md:p-10">
               <div>
-                <h3 className="font-display text-3xl md:text-4xl font-bold text-[#49283A] mb-7">BOB Talkies — Kukatpally</h3>
+                <h3 className="font-display text-3xl md:text-4xl font-bold text-[#3d0a24] mb-7">BOB Talkies — Kukatpally</h3>
                 <div className="space-y-5">
                   {[
-                    { icon: <MapPin size={20} className="text-[#8b1a3a]" />, label: 'Address', content: <p className="text-[#49283A] leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
-                    { icon: <Phone size={20} className="text-[#8b1a3a]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${config.whatsappNumber}`} className="text-[#49283A] hover:text-[#8b1a3a] transition-colors">+91 {config.whatsappNumber.slice(2)}</a> },
-                    { icon: <CalendarDays size={20} className="text-[#8b1a3a]" />, label: 'Operating Hours', content: <><p className="text-[#49283A]">10:00 AM – 1:00 AM</p><p className="text-[#8f6420] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
+                    { icon: <MapPin size={20} className="text-[#8b1a3a]" />, label: 'Address', content: <p className="text-[#3d0a24] leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
+                    { icon: <Phone size={20} className="text-[#8b1a3a]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${config.whatsappNumber}`} className="text-[#3d0a24] hover:text-[#8b1a3a] transition-colors">+91 {config.whatsappNumber.slice(2)}</a> },
+                    { icon: <CalendarDays size={20} className="text-[#8b1a3a]" />, label: 'Operating Hours', content: <><p className="text-[#3d0a24]">10:00 AM – 1:00 AM</p><p className="text-[#8f6420] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
                   ].map((item, i) => (
                     <motion.div key={item.label} className="flex items-start gap-4"
                       initial={{ opacity: 0, x: -20 }}
@@ -736,7 +751,7 @@ export default function HomePage() {
                         {item.icon}
                       </div>
                       <div>
-                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#725968] mb-0.5">{item.label}</p>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#5b2535] mb-0.5">{item.label}</p>
                         {item.content}
                       </div>
                     </motion.div>

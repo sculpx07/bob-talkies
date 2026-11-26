@@ -45,12 +45,12 @@ export function InstagramSection() {
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <div className="mb-10 flex flex-col items-start justify-between gap-5 md:flex-row md:items-end">
           <div>
-            <p className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#C69A55]"><InstagramIcon size={16} /> Instagram</p>
-            <h2 className="font-display text-3xl font-medium leading-tight text-[#49283A] md:text-4xl">Follow us on Instagram</h2>
-            <p className="mt-2 text-[#725968]">Real celebrations, decor ideas and surprises from our guests — <span className="font-semibold text-[#8b1a3a]">@{HANDLE}</span></p>
+            <p className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#c9933a]"><InstagramIcon size={16} /> Instagram</p>
+            <h2 className="font-display text-3xl font-medium leading-tight text-white md:text-4xl">Follow us on Instagram</h2>
+            <p className="mt-2 text-white/80">Real celebrations, decor ideas and surprises from our guests — <span className="font-semibold text-[#f5d7a1]">@{HANDLE}</span></p>
           </div>
           <div className="flex items-center gap-3">
-            <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-6 text-sm font-bold text-white shadow-[0_12px_26px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5">
+            <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full bg-[linear-gradient(135deg,#c9933a,#e8b95c)] !text-[#3d0a24] px-6 text-sm font-bold text-white shadow-[0_12px_26px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5">
               <InstagramIcon size={16} /> Follow
             </a>
           </div>
@@ -74,7 +74,7 @@ export function InstagramSection() {
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)] p-[2px]">
                   <img src="/logo.png" alt="" className="h-full w-full rounded-full bg-white object-contain p-0.5" />
                 </span>
-                <span className="flex min-w-0 flex-1 items-center gap-1 text-sm font-semibold text-[#49283A]"><span className="truncate">{HANDLE}</span><BadgeCheck size={15} className="shrink-0 text-[#3b82f6]" /></span>
+                <span className="flex min-w-0 flex-1 items-center gap-1 text-sm font-semibold text-[#3d0a24]"><span className="truncate">{HANDLE}</span><BadgeCheck size={15} className="shrink-0 text-[#3b82f6]" /></span>
                 <span className="text-lg leading-none text-[#9a6575]">···</span>
               </div>
 
@@ -87,7 +87,7 @@ export function InstagramSection() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 px-4 py-3.5 text-[#49283A]">
+              <div className="flex items-center gap-4 px-4 py-3.5 text-[#3d0a24]">
                 <IgHeart /><IgComment /><IgShare />
                 <span className="ml-auto"><IgSave /></span>
               </div>

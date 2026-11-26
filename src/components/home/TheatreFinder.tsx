@@ -108,19 +108,19 @@ export function TheatreFinder() {
         >
           <div className="mb-1 flex items-center justify-center gap-2">
             <Sparkles size={18} className="text-[#d4a94a]" />
-            <p className="font-cursive text-2xl text-[#C69A55] md:text-3xl">Experience Finder</p>
+            <p className="font-cursive text-2xl text-[#c9933a] md:text-3xl">Experience Finder</p>
           </div>
           <h2 className="mb-2 text-2xl font-black leading-tight md:text-3xl lg:text-4xl">
-            <span className="text-[#49283A]">What Are You </span>
-            <span className="text-[#a81a3a]">Planning Today?</span>
+            <span className="text-white">What Are You </span>
+            <span className="text-[#ff9bb8]">Planning Today?</span>
           </h2>
           <motion.div
-            className="mx-auto mt-3 h-[3px] rounded-full bg-[#C69A55]"
+            className="mx-auto mt-3 h-[3px] rounded-full bg-[#d4a94a]"
             initial={{ width: 0 }}
             animate={inView ? { width: 40 } : {}}
             transition={{ delay: 0.3, duration: 0.5 }}
           />
-          <p className="mx-auto mt-3 max-w-sm text-sm text-[#725968]/80">
+          <p className="mx-auto mt-3 max-w-sm text-sm text-white/80">
             Tell us your group size and occasion — we'll find the best theatre for you.
           </p>
         </motion.div>
@@ -166,8 +166,8 @@ export function TheatreFinder() {
 
           {/* Perforation + notches */}
           <span className="pointer-events-none absolute left-[280px] top-0 hidden h-full w-0 border-l-2 border-dashed border-[#f0d0dc] md:block" aria-hidden="true" />
-          <span className="pointer-events-none absolute left-[280px] -top-3 hidden h-6 w-6 -translate-x-1/2 rounded-full bg-[#F5EBDD] md:block" aria-hidden="true" />
-          <span className="pointer-events-none absolute -bottom-3 left-[280px] hidden h-6 w-6 -translate-x-1/2 rounded-full bg-[#F5EBDD] md:block" aria-hidden="true" />
+          <span className="pointer-events-none absolute left-[280px] -top-3 hidden h-6 w-6 -translate-x-1/2 rounded-full bg-[#faf3e6] md:block" aria-hidden="true" />
+          <span className="pointer-events-none absolute -bottom-3 left-[280px] hidden h-6 w-6 -translate-x-1/2 rounded-full bg-[#faf3e6] md:block" aria-hidden="true" />
 
           {/* Main: occasion + quick start + action */}
           <div className="p-7 md:p-8">
@@ -177,7 +177,7 @@ export function TheatreFinder() {
                 <button
                   key={o}
                   onClick={() => { setOccasion(o); setShowResult(false) }}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${occasion === o ? 'bg-[linear-gradient(135deg,#5c1535,#a81a3a)] text-white shadow-[0_8px_20px_rgba(50,16,95,0.28)]' : 'bg-[#fce8f0] text-[#725968] hover:bg-[#efe0f8]'}`}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${occasion === o ? 'bg-[linear-gradient(135deg,#5c1535,#a81a3a)] text-white shadow-[0_8px_20px_rgba(50,16,95,0.28)]' : 'bg-[#fce8f0] text-[#5b2535] hover:bg-[#efe0f8]'}`}
                 >
                   {o}
                 </button>
@@ -185,7 +185,7 @@ export function TheatreFinder() {
             </div>
 
             <div className="mt-6 border-t border-dashed border-[#f0d0dc] pt-5">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#C69A55]">Quick Start</p>
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#c9933a]">Quick Start</p>
               <div className="flex flex-wrap gap-2">
                 {QUICK_PICKS.map(qp => (
                   <button
@@ -230,9 +230,9 @@ export function TheatreFinder() {
                 </div>
                 <div className="flex-1 p-6 md:p-7">
                   <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-[#a81a3a]">Our Recommendation</p>
-                  <h3 className="mb-1 text-2xl font-black text-[#49283A]">{result.name}</h3>
-                  <p className="mb-3 text-sm text-[#725968]">{result.capacity}</p>
-                  <p className="mb-5 text-sm leading-relaxed text-[#725968]">{result.desc}</p>
+                  <h3 className="mb-1 text-2xl font-black text-[#3d0a24]">{result.name}</h3>
+                  <p className="mb-3 text-sm text-[#5b2535]">{result.capacity}</p>
+                  <p className="mb-5 text-sm leading-relaxed text-[#5b2535]">{result.desc}</p>
                   <Link
                     to={`/theatres/${result.slug}`}
                     className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-6 py-2.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(50,16,95,0.28)] transition-transform hover:-translate-y-0.5"
@@ -258,7 +258,7 @@ export function TheatreFinder() {
                 <Link
                   key={t.slug}
                   to={`/theatres/${t.slug}`}
-                  className="rounded-full bg-white/80 px-4 py-2 text-sm text-[#49283A] ring-1 ring-[#f5d5e0] backdrop-blur transition-transform hover:scale-105"
+                  className="rounded-full bg-white/80 px-4 py-2 text-sm text-[#3d0a24] ring-1 ring-[#f5d5e0] backdrop-blur transition-transform hover:scale-105"
                 >
                   {t.name}
                   <span className="ml-1.5 text-xs text-[#9a6575]">{t.capacity}</span>
