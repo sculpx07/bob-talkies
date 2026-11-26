@@ -104,8 +104,7 @@ export function FeaturedTheatres() {
       <motion.div
         className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 md:px-6 lg:grid-cols-[minmax(0,440px)_1fr] lg:gap-10"
         initial={reduce ? false : { opacity: 0, y: 28 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '0px 0px -10% 0px' }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
         {/* ── Left copy ── */}
