@@ -76,14 +76,14 @@ export function BobClub() {
         >
           <div className="flex items-center justify-center gap-2 mb-1">
             <Sparkles size={18} className="text-[#d4a94a]" />
-            <p className="font-cursive text-2xl md:text-3xl text-[#C69A55]">The BOB Club</p>
+            <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">The BOB Club</p>
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight mb-2">
             <span className="text-white">Once a BOB Guest, </span>
             <span className="text-[#c9a84c]">Always a BOB Guest.</span>
           </h2>
           <motion.div
-            className="mx-auto mt-3 h-[3px] rounded-full bg-[#C69A55]"
+            className="mx-auto mt-3 h-[3px] rounded-full bg-[#d4a94a]"
             initial={{ width: 0 }}
             animate={inView ? { width: 40 } : {}}
             transition={{ delay: 0.3, duration: 0.5 }}
@@ -147,7 +147,7 @@ export function BobClub() {
             </div>
             <Link
               to="/book"
-              className="shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#49283A] transition-all hover:brightness-110 hover:scale-105 active:scale-95"
+              className="shrink-0 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#3d0a24] transition-all hover:brightness-110 hover:scale-105 active:scale-95"
               style={{ background: 'linear-gradient(135deg,#c9a84c,#eed98a 50%,#c9a84c)' }}
             >
               Join The BOB Club <ArrowRight size={14} />

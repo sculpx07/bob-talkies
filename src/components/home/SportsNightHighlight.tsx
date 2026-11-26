@@ -50,7 +50,7 @@ export function SportsNightHighlight() {
             </p>
             <Link
               to="/book?occasion=sports-screening"
-              className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#49283A] transition-all hover:brightness-110 hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-black text-[#3d0a24] transition-all hover:brightness-110 hover:scale-105 active:scale-95"
               style={{ background: 'linear-gradient(135deg,#fbbf24,#fde68a 50%,#fbbf24)' }}
             >
               Plan Your Sports Night <ArrowRight size={14} />

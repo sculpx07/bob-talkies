@@ -118,11 +118,13 @@ export function HeroBackdropImage() {
 
   return (
     <div
-      className="hero-curve pointer-events-none absolute inset-0 overflow-hidden"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
       style={{
         containerType: 'size',
-        // solid deep purple hero base (no fade mask), ended by the curved ivory edge at the bottom
-        background: 'linear-gradient(180deg, #2a0430 0%, #3d0a43 55%, #4a0b4e 100%)',
+        // deep purple hero base; its bottom fades into the page gradient below (same colour at the join)
+        background: 'linear-gradient(180deg, #2a0430 0%, #3d0a43 55%, #2a0430 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+        maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
       }}
       aria-hidden="true"
     >
@@ -131,15 +133,6 @@ export function HeroBackdropImage() {
           0%, 100% { transform: scale(1);     filter: drop-shadow(0 0 6px rgba(255,205,110,0.35)) drop-shadow(0 0 16px rgba(255,190,80,0.18)); }
           50%      { transform: scale(1.035); filter: drop-shadow(0 0 14px rgba(255,214,130,0.9)) drop-shadow(0 0 34px rgba(255,190,80,0.5)); }
         }
-        /* the hero ends in a soft curve; whatever is behind (the page background) shows below it */
-        .hero-curve { --curve-h: 32px;
-          -webkit-mask-image: linear-gradient(#000,#000), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L0 30 C280 6 520 4 760 20 C1020 38 1240 30 1440 10 L1440 0 Z' fill='%23000'/%3E%3C/svg%3E");
-          mask-image: linear-gradient(#000,#000), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 0 L0 30 C280 6 520 4 760 20 C1020 38 1240 30 1440 10 L1440 0 Z' fill='%23000'/%3E%3C/svg%3E");
-          -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-          -webkit-mask-size: 100% calc(100% - var(--curve-h) + 1px), 100% var(--curve-h);
-          mask-size: 100% calc(100% - var(--curve-h) + 1px), 100% var(--curve-h);
-          -webkit-mask-position: top, bottom; mask-position: top, bottom; }
-        @media (min-width: 768px) { .hero-curve { --curve-h: 56px; } }
         .hero-screen-logo { transform-origin: 50% 50%; }
         .hero-screen-logo.is-on { animation: heroLogoBreath 4s ease-in-out infinite; will-change: transform, filter; }
         /* incoming slide fades in on top while the outgoing one stays fully opaque beneath it, then drops out: no dark dip */
