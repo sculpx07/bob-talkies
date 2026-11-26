@@ -140,7 +140,7 @@ export function ReviewsSection() {
                     {on && (
                       <motion.span layoutId="review-chip" className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)] shadow-[0_8px_20px_rgba(50,16,95,0.3)]" transition={{ type: 'spring', stiffness: 380, damping: 30 }} />
                     )}
-                    {!on && <span className="absolute inset-0 rounded-full bg-white" />}
+                    {!on && <span className="absolute inset-0 rounded-full glass-card" />}
                     <span className="relative">{f}</span>
                   </button>
                 )
@@ -158,9 +158,9 @@ export function ReviewsSection() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ delay: i * 0.05, duration: 0.4 }}
                     whileHover={{ y: -6 }}
-                    className={`relative flex flex-col overflow-hidden rounded-[1.75rem] bg-white/85 p-6 shadow-[0_14px_36px_rgba(107,35,152,0.1)] ring-1 ring-[#f8dce4] backdrop-blur ${i % 2 === 1 ? 'sm:mt-8' : ''}`}
+                    className={`relative flex flex-col overflow-hidden rounded-[1.75rem] glass-card bg-white/85 p-6 shadow-[0_14px_36px_rgba(107,35,152,0.1)] ring-1 ring-[#f8dce4] backdrop-blur`}
                   >
-                    <Quote size={44} strokeWidth={0} fill="#f1e3fa" className="pointer-events-none absolute right-5 top-5" aria-hidden="true" />
+                    <Quote size={44} strokeWidth={0} fill="rgba(255,255,255,0.22)" className="pointer-events-none absolute right-5 top-5" aria-hidden="true" />
                     <div className="relative mb-4 flex gap-0.5">
                       {Array.from({ length: r.rating }).map((_, st) => (
                         <svg key={st} width="14" height="14" viewBox="0 0 24 24" fill="#e0a13a" stroke="none">
@@ -168,8 +168,8 @@ export function ReviewsSection() {
                         </svg>
                       ))}
                     </div>
-                    <p className="relative flex-1 pr-8 text-[15px] leading-relaxed text-[#3b2a55] line-clamp-5">{r.text}</p>
-                    <div className="relative mt-5 flex items-center gap-3 border-t border-[#f3e8f8] pt-4">
+                    <p className="relative flex-1 pr-8 text-[15px] leading-relaxed text-white/90 line-clamp-5">{r.text}</p>
+                    <div className="relative mt-5 flex items-center gap-3 border-t border-white/20 pt-4">
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] text-sm font-bold text-white">{r.avatar}</span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">

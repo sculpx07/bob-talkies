@@ -193,7 +193,7 @@ export function ExperienceHighlights() {
                   </motion.div>
 
                   <motion.div
-                    className="absolute bottom-8 right-0 w-[48%] rounded-[1.75rem] bg-white p-7 shadow-[0_26px_60px_rgba(107,35,152,0.25)] ring-1 ring-[#f8dce4]"
+                    className="absolute bottom-8 right-0 w-[48%] rounded-[1.75rem] glass-card bg-white p-7 shadow-[0_26px_60px_rgba(107,35,152,0.25)] ring-1 ring-[#f8dce4]"
                     initial={{ opacity: 0, y: 32 }}
                     animate={inView ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: 0.28, duration: 0.38, ease: [0.22, 1, 0.36, 1] }}

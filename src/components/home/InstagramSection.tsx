@@ -68,7 +68,7 @@ export function InstagramSection() {
               rel="noopener noreferrer"
               aria-hidden={i >= POSTS.length ? true : undefined}
               tabIndex={i >= POSTS.length ? -1 : undefined}
-              className="group mr-5 w-[270px] shrink-0 overflow-hidden rounded-[1.75rem] bg-white shadow-[0_18px_44px_rgba(107,35,152,0.16)] ring-1 ring-[#f8dce4] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_26px_60px_rgba(107,35,152,0.26)]"
+              className="group mr-5 w-[270px] shrink-0 overflow-hidden rounded-[1.75rem] glass-card bg-white shadow-[0_18px_44px_rgba(107,35,152,0.16)] ring-1 ring-[#f8dce4] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_26px_60px_rgba(107,35,152,0.26)]"
             >
               <div className="flex items-center gap-2.5 px-4 py-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)] p-[2px]">

@@ -880,8 +880,8 @@ export function ExperienceCategories() {
                       }}
                       className={`group relative overflow-hidden rounded-2xl border transition-[border-color,box-shadow,background-color] duration-500 lg:flex lg:min-h-[68px] lg:flex-col lg:justify-center ${isCurrent ? 'lg:[flex:1.5_1_0%]' : 'lg:[flex:1_1_0%]'} ${
                         isCurrent
-                          ? 'border-[#c9a84c]/70 bg-white shadow-[0_14px_32px_rgba(107,35,152,0.16)]'
-                          : 'border-[#efe3cd] bg-white/80 shadow-[0_2px_10px_rgba(107,35,152,0.05)] hover:border-[#c9a84c]/50'
+                          ? 'border-[#c9a84c]/70 glass-card bg-white shadow-[0_14px_32px_rgba(107,35,152,0.16)]'
+                          : 'border-[#efe3cd] glass-card bg-white/80 shadow-[0_2px_10px_rgba(107,35,152,0.05)] hover:border-[#c9a84c]/50'
                       }`}
                     >
                       <div className="flex items-stretch">
