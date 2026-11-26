@@ -29,7 +29,7 @@ export function PriceSummary({ compact }: PriceSummaryProps) {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className={cn(!compact && 'overflow-hidden rounded-3xl bg-white shadow-[0_16px_44px_rgba(107,35,152,0.14)] ring-1 ring-[#f5d5e0]')}
+      className={cn(!compact && 'bk-glass-card overflow-hidden rounded-3xl')}
     >
       {!compact && (
         <div className="relative overflow-hidden bg-[linear-gradient(135deg,#5c1535,#8b1a3a_55%,#d9126a)] px-6 py-5">

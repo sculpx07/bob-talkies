@@ -28,7 +28,17 @@ export default function PassPage() {
   return (
     <>
       <Seo title="Your Booking Pass" description="Digital pass for your BOB Talkies booking." noindex />
-      <div className="flex min-h-screen items-center justify-center px-4 pb-10 pt-24 md:pt-28">
+      <div className="flex min-h-screen items-center justify-center px-4 pb-10 pt-24 md:pt-28" style={{
+          backgroundColor: '#430948',
+          backgroundImage: [
+            'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+            'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+            'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+            'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+          ].join(','),
+          backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+          backgroundRepeat: 'repeat-y, repeat-y, repeat-y, no-repeat',
+        }}>
         {isLoading ? (
           <div className="w-full max-w-4xl">
             <Skeleton className="h-[300px] w-full" rounded="lg" />

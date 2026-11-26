@@ -55,6 +55,17 @@ export default function MyBookingDetailPage() {
   return (
     <>
       <Seo title="Booking Details" description="View your BOB Talkies booking details." noindex />
+      <div style={{
+        backgroundColor: '#430948',
+        backgroundImage: [
+          'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+          'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+          'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+          'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+        ].join(','),
+        backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+        backgroundRepeat: 'repeat-y, repeat-y, repeat-y, no-repeat',
+      }}>
       <PageShell>
         {isLoading ? (
           <div className="mx-auto max-w-3xl space-y-4">
@@ -163,10 +174,11 @@ export default function MyBookingDetailPage() {
                 <MessageCircle size={16} /> Support on WhatsApp
               </a>
             </div>
-            <p className="mt-4 text-center text-xs text-[#7d4555]">To reschedule or cancel, contact us on WhatsApp.</p>
+            <p className="mt-4 text-center text-xs text-white/80">To reschedule or cancel, contact us on WhatsApp.</p>
           </motion.div>
         ) : null}
       </PageShell>
+      </div>
     </>
   )
 }

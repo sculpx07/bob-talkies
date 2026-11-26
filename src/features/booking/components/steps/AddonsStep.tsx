@@ -73,7 +73,6 @@ export function AddonsStep() {
           <section key={category}>
             <h3 className="mb-3 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.18em] text-[#8b1a3a]">
               {CATEGORY_LABELS[category]}
-              <span className="h-px flex-1 bg-gradient-to-r from-[#e3cbe6] to-transparent" />
             </h3>
             <div className="grid gap-3 sm:grid-cols-2">
               {shown.filter((a) => a.category === category).map((addon, i) => (
@@ -131,7 +130,7 @@ function AddonCard({ addon, selected, onToggle, index }: { addon: Addon; selecte
       <span className="flex min-w-0 flex-1 flex-col gap-2">
         <span className="text-[15px] font-semibold leading-snug text-[#3d0a24]">{addon.name}</span>
         <span className="flex items-center gap-2">
-          <span className="rounded-full bg-[#fff1d6] px-3 py-1 text-sm font-bold text-[#8f6420]">{formatINR(addon.pricePaise)}</span>
+          <span className="rounded-full bg-[linear-gradient(135deg,#f5d7a1_0%,#e0a94a_55%,#c9933a_100%)] px-3 py-1 text-sm font-bold !text-[#3d0a24]">{formatINR(addon.pricePaise)}</span>
           {onOffer && <s className="text-xs tabular-nums text-[#9a6575]">{formatINR(addon.originalPricePaise!)}</s>}
         </span>
       </span>
@@ -139,7 +138,7 @@ function AddonCard({ addon, selected, onToggle, index }: { addon: Addon; selecte
       <span
         className={cn(
           'flex h-8 w-8 shrink-0 items-center justify-center self-start rounded-full transition-all duration-300',
-          selected ? 'bg-[#c0125a] text-white' : 'bg-[#f6e6ef] text-[#8b1a3a]',
+          selected ? 'bg-[#c0125a] text-white' : 'bg-[linear-gradient(135deg,#f5d7a1_0%,#e0a94a_55%,#c9933a_100%)] !text-[#3d0a24]',
         )}
         aria-hidden="true"
       >

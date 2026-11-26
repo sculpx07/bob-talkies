@@ -40,7 +40,17 @@ export default function BookSuccessPage() {
   return (
     <>
       <Seo title="Booking Confirmed" description="Your private theatre booking is confirmed." noindex />
-      <div className="relative flex min-h-screen items-center justify-center px-4 pb-16 pt-24 md:pt-28">
+      <div className="relative flex min-h-screen items-center justify-center px-4 pb-16 pt-24 md:pt-28" style={{
+          backgroundColor: '#430948',
+          backgroundImage: [
+            'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+            'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+            'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+            'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+          ].join(','),
+          backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+          backgroundRepeat: 'repeat-y, repeat-y, repeat-y, no-repeat',
+        }}>
         {confirmed && CONFETTI.map((d, i) => (
           <motion.span
             key={i}
@@ -63,8 +73,8 @@ export default function BookSuccessPage() {
           ) : !confirmed ? (
             <div className="text-center">
               <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-[#c0125a] border-t-transparent" />
-              <p className="mb-2 font-display text-2xl font-bold text-[#3d0a24]">Verifying your payment…</p>
-              <p className="text-sm text-[#5b2535]">Please wait while we confirm your booking. This usually takes a few seconds.</p>
+              <p className="mb-2 font-display text-2xl font-bold text-white">Verifying your payment…</p>
+              <p className="text-sm text-white/80">Please wait while we confirm your booking. This usually takes a few seconds.</p>
             </div>
           ) : (
             <>
@@ -88,7 +98,7 @@ export default function BookSuccessPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.7, ease: EASE }}
-                  className="font-cursive text-3xl font-semibold text-[#8b1a3a] md:text-4xl"
+                  className="font-cursive text-3xl font-semibold text-[#F5C76A] md:text-4xl"
                 >
                   Hooray!
                 </motion.p>
@@ -96,7 +106,7 @@ export default function BookSuccessPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.7, ease: EASE }}
-                  className="font-display text-4xl font-bold text-[#3d0a24] md:text-5xl"
+                  className="font-display text-4xl font-bold text-white md:text-5xl"
                 >
                   Booking Confirmed
                 </motion.h1>
@@ -104,7 +114,7 @@ export default function BookSuccessPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
-                  className="mt-2 text-[#5b2535]"
+                  className="mt-2 text-white/85"
                 >
                   Your private theatre experience is all set. Get ready to celebrate!
                 </motion.p>
@@ -182,14 +192,15 @@ export default function BookSuccessPage() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.2, duration: 0.7, ease: EASE }}
-                  className="mt-5 flex items-center gap-4 rounded-3xl bg-white/85 p-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] ring-1 ring-[#f5d5e0]"
+                  className="mt-5 flex items-center gap-4 rounded-2xl bg-white/10 p-4"
+
                 >
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#5c1535] text-white"><QrCode size={22} aria-hidden="true" /></span>
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#f5d7a1,#e0a94a_55%,#c9933a)] !text-[#3d0a24]"><QrCode size={22} aria-hidden="true" /></span>
                   <div className="flex-1">
-                    <p className="font-semibold text-[#3d0a24]">Your Digital Pass</p>
-                    <p className="text-xs text-[#7d4555]">Show this at the venue for entry</p>
+                    <p className="font-semibold text-white">Your Digital Pass</p>
+                    <p className="text-xs text-white/75">Show this at the venue for entry</p>
                   </div>
-                  <Link to={`/pass/${booking.passToken}`} className="group flex items-center gap-1.5 rounded-full bg-[#5c1535] px-4 py-2 text-sm font-medium text-white">
+                  <Link to={`/pass/${booking.passToken}`} className="group flex items-center gap-1.5 rounded-full bg-[linear-gradient(135deg,#f5d7a1,#e0a94a_55%,#c9933a)] px-4 py-2 text-sm font-semibold !text-[#3d0a24]">
                     View <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                   </Link>
                 </motion.div>
@@ -204,7 +215,7 @@ export default function BookSuccessPage() {
               >
                 <Link
                   to={`/my-booking/${booking.id}`}
-                  className="flex items-center justify-center rounded-full border border-[#5c1535]/40 px-6 py-3 text-sm font-semibold text-[#5c1535] transition-colors hover:bg-[#5c1535]/5"
+                  className="flex items-center justify-center rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
                 >
                   View Booking
                 </Link>
@@ -274,8 +285,8 @@ export default function BookSuccessPage() {
 
               {/* Upsell */}
               <div className="mt-9">
-                <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#8b1a3a]">Add more to your experience</p>
-                <div className="grid grid-cols-2 gap-3">
+                <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#F5C76A]">Add more to your experience</p>
+                <div className="flex flex-wrap gap-2">
                   {['Premium Decoration', 'Photographer', 'Surprise Cake', 'LED Name Board'].map((item, i) => (
                     <motion.div
                       key={item}
@@ -286,7 +297,8 @@ export default function BookSuccessPage() {
                     >
                       <Link
                         to={`/my-booking/${booking.id}`}
-                        className="block rounded-2xl bg-white/85 p-3.5 text-center text-sm font-semibold text-[#5c1535] shadow-sm ring-1 ring-[#f5d5e0] transition-shadow hover:shadow-[0_10px_24px_rgba(107,35,152,0.15)]"
+                        className="block rounded-full border border-white/25 bg-white/5 px-4 py-2 text-center text-xs font-semibold text-white/90 transition-colors hover:bg-white/15"
+
                       >
                         + {item}
                       </Link>

@@ -83,8 +83,8 @@ export function Header() {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-        // pages that open on a dark hero need the light header background from the start so the nav stays readable
-        (scrolled || /^\/(celebrations\/.+|personalise)/.test(location.pathname))
+        // transparent over the plum / dark-hero pages; pages with a light background get the plum bar from the start so the white menu stays readable
+        (scrolled || !/^\/($|theatres|celebrations\/|personalise|rewards|gallery|book$|book\/success|pass\/|my-booking|vibe-hall)/.test(location.pathname))
           ? 'bg-[#430948]/90 backdrop-blur-md'
           : 'bg-transparent',
       )}

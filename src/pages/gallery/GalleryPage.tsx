@@ -89,7 +89,32 @@ export default function GalleryPage() {
       : GALLERY_IMAGES.filter((i) => i.category === activeCategory).slice(0, TILE_COUNT)
 
   return (
-    <>
+    <div
+      className="relative"
+      style={{
+        // same magenta-plum background as the home page
+        backgroundColor: '#430948',
+        backgroundImage: [
+          'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+          'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+          'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+          'radial-gradient(ellipse 36% 8% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+          'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+        ].join(','),
+        backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+        backgroundRepeat: 'repeat-y, repeat-y, repeat-y, repeat-y, no-repeat',
+      }}
+    >
+      {/* unique backdrop: two film-strip rails down the sides of the gallery; fully inside the page and faded at the top and bottom, so nothing is cut */}
+      <style>{`
+        @keyframes gl-up { from { background-position-y: 0; } to { background-position-y: -34px; } }
+        @keyframes gl-down { from { background-position-y: 0; } to { background-position-y: 34px; } }
+        @media (prefers-reduced-motion: reduce) { [style*="gl-up"], [style*="gl-down"] { animation: none !important; } }
+      `}</style>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-24 z-0 h-[820px] hidden md:block" style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)' }}>
+        <div className="absolute left-3 inset-y-0 w-9 md:left-8 md:w-12" style={{ backgroundImage: 'linear-gradient(to bottom, rgba(245,199,106,0.30) 0 16px, transparent 16px 34px)', backgroundSize: '12px 34px', backgroundRepeat: 'repeat-y', backgroundPositionX: 'center', animation: 'gl-up 3s linear infinite', borderLeft: '1px solid rgba(245,199,106,0.16)', borderRight: '1px solid rgba(245,199,106,0.16)' }} />
+        <div className="absolute right-3 inset-y-0 w-9 md:right-8 md:w-12" style={{ backgroundImage: 'linear-gradient(to bottom, rgba(245,199,106,0.30) 0 16px, transparent 16px 34px)', backgroundSize: '12px 34px', backgroundRepeat: 'repeat-y', backgroundPositionX: 'center', animation: 'gl-down 3s linear infinite', borderLeft: '1px solid rgba(245,199,106,0.16)', borderRight: '1px solid rgba(245,199,106,0.16)' }} />
+      </div>
       <Seo
         title="Gallery | BOB Talkies Private Theatre"
         description="See photos and videos from real celebrations at BOB Talkies — birthdays, anniversaries, proposals and more."
@@ -98,9 +123,9 @@ export default function GalleryPage() {
       <PageShell>
         <SectionHeader
           eyebrow="Sweet Memories"
-          eyebrowClassName="font-cursive normal-case tracking-normal text-3xl md:text-4xl font-semibold text-[#8b1a3a]"
+          eyebrowClassName="font-cursive normal-case tracking-normal text-3xl md:text-4xl font-semibold text-[#F5C76A]"
           title="Our Captured Moment BOB Talkies"
-          titleClassName="text-3xl md:text-5xl font-semibold"
+          titleClassName="text-3xl md:text-5xl font-semibold !text-white"
           centered
         />
 
@@ -109,7 +134,7 @@ export default function GalleryPage() {
           <div
             role="tablist"
             aria-label="Gallery categories"
-            className="flex max-w-full gap-1 overflow-x-auto rounded-full border border-[#f5d5e0] bg-white/75 p-1.5 shadow-[0_10px_30px_rgba(107,35,152,0.12)] backdrop-blur [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex max-w-full gap-1 overflow-x-auto rounded-full bg-white/10 p-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.3)] backdrop-blur [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {CATEGORIES.map((cat) => {
               const active = activeCategory === cat
@@ -123,7 +148,7 @@ export default function GalleryPage() {
                     'whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300',
                     active
                       ? 'bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] text-white shadow-[0_8px_20px_rgba(107,35,152,0.35)]'
-                      : 'text-[#5c1535] hover:bg-[#f6e6ef]',
+                      : 'text-white/85 hover:bg-white/10',
                   )}
                 >
                   {cat}
@@ -157,7 +182,7 @@ export default function GalleryPage() {
                         viewport={{ once: true, margin: '0px 0px -40px 0px' }}
                         transition={{ duration: 0.7, delay: ci * 0.1 + k * 0.06, ease: [0.22, 1, 0.36, 1] }}
                         whileHover={{ y: -6, scale: 1.04 }}
-                        className="group relative aspect-square w-full overflow-hidden rounded-xl shadow-[0_10px_26px_rgba(107,35,152,0.16)] focus-visible:outline-2 focus-visible:outline-[#c0125a] md:rounded-2xl"
+                        className="group relative aspect-square w-full overflow-hidden rounded-xl shadow-[0_10px_26px_rgba(0,0,0,0.35)] focus-visible:outline-2 focus-visible:outline-[#c0125a] md:rounded-2xl"
                         onClick={() => setAlbumIndex(i)}
                         aria-label={`View ${img.alt}`}
                       >
@@ -179,6 +204,6 @@ export default function GalleryPage() {
         {/* Album viewer */}
         <AlbumViewer photos={filtered} index={albumIndex} onClose={() => setAlbumIndex(null)} onChange={setAlbumIndex} />
       </PageShell>
-    </>
+    </div>
   )
 }

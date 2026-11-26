@@ -223,10 +223,10 @@ export default function HomePage() {
           // magenta-plum glow gradient (from the reference swatch), tiled down the page; first 600px eases in from the hero's dark base
           backgroundColor: '#430948',
           backgroundImage: [
-            'radial-gradient(ellipse 48% 22% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+            'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
             'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
-            'radial-gradient(ellipse 50% 20% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
-            'radial-gradient(ellipse 36% 14% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+            'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+            'radial-gradient(ellipse 36% 8% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
             'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
           ].join(','),
           backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
