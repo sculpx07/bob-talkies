@@ -45,14 +45,14 @@ export function OfferTicket({ offer, index = 0 }: { offer: Offer; index?: number
       <span className="pointer-events-none absolute inset-y-0 -left-1/2 z-10 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 transition-all duration-700 group-hover:left-[130%] group-hover:opacity-100" aria-hidden="true" />
 
       {/* Gold stub */}
-      <div className="relative flex w-[82px] shrink-0 flex-col items-center justify-center bg-[linear-gradient(160deg,#7a5a0a,#c9a84c_52%,#eed98a)] px-3 py-6 text-center">
+      <div className="relative flex w-[92px] shrink-0 flex-col items-center justify-center bg-[linear-gradient(160deg,#7a5a0a,#c9a84c_52%,#eed98a)] px-2 py-6 text-center">
         {/* top notch */}
         <span className="absolute -right-[11px] -top-[11px] h-[22px] w-[22px] rounded-full bg-[#fdf5e4]" aria-hidden="true" />
         {/* bottom notch */}
         <span className="absolute -right-[11px] -bottom-[11px] h-[22px] w-[22px] rounded-full bg-[#fdf5e4]" aria-hidden="true" />
 
         <p className="text-[8px] font-black uppercase tracking-[0.22em] text-[#3a2800]/65 leading-none">Save</p>
-        <p className="mt-1 font-display text-[32px] font-black leading-none text-[#1a1000] tabular-nums">
+        <p className="mt-1 font-display font-black leading-none text-[#1a1000] tabular-nums" style={{ fontSize: amount >= 1000 ? 22 : amount >= 100 && flat ? 27 : 32 }}>
           <CountUp to={amount} prefix={flat ? '₹' : ''} suffix={flat ? '' : '%'} />
         </p>
         <p className="mt-1 text-[8px] font-black uppercase tracking-[0.22em] text-[#3a2800]/65 leading-none">OFF</p>

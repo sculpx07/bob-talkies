@@ -412,28 +412,34 @@ export default function HomePage() {
 
       {/* FeaturedTheatres — #160438 → #2e0c62 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', top: '20%', right: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <FeaturedTheatres />
       </div>
 
       {/* ExperienceCategories — #2e0c62 → #0d0220 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', bottom: '10%', left: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,50,220,0.12) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><ExperienceCategories /></SectionReveal>
       </div>
 
       {/* ExperiencePicker — #0d0220 → #1a0640 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', top: '30%', right: '-5%', width: 460, height: 460, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><ExperiencePicker /></SectionReveal>
       </div>
 
       {/* Offers — #1a0640 → #3a0e72 */}
       {(offersLoading || (offers && offers.length > 0)) && (
         <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', bottom: '5%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(210,45,125,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="curtain">
-        <Section bg="base" className="relative overflow-hidden">
+        <Section bg="base" className="relative overflow-hidden pb-2 md:pb-2">
+          {/* unique backdrop: wide warm stage-light glow centred above the cards; masked to zero at the top and bottom so no edge is ever cut */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-0"
+            style={{
+              background: 'radial-gradient(ellipse 48% 42% at 50% 34%, rgba(214,120,150,0.32) 0%, rgba(176,70,120,0.16) 45%, transparent 100%), radial-gradient(ellipse 30% 28% at 50% 30%, rgba(245,199,106,0.20) 0%, transparent 100%)',
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 75%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 30%, black 75%, transparent 100%)',
+            }}
+          />
           {/* ── Celebration background ── */}
           {/* Floating balloons */}
           {[
@@ -513,7 +519,7 @@ export default function HomePage() {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <div className="relative">
-                  <Clapperboard size={28} className="text-[#8b1a3a]" strokeWidth={1.8} />
+                  <Clapperboard size={28} className="text-[#F5C76A]" strokeWidth={1.8} />
                   <Sparkles size={11} className="text-[#d4a94a] absolute -top-1.5 -right-1.5" />
                 </div>
                 <p className="font-cursive text-2xl md:text-3xl text-[#c9933a]">Limited Time</p>
@@ -583,10 +589,19 @@ export default function HomePage() {
 
       {/* Celebrations — #3a0e72 → #110230 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', top: '15%', right: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+      {/* unique backdrop: soft gold sunburst rays fanning out behind the heading; the radial mask hits zero before every edge, so nothing is cut */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[560px]"
+        style={{
+          background: 'repeating-conic-gradient(from 0deg at 50% 40%, rgba(245,199,106,0.13) 0deg 2.5deg, transparent 2.5deg 11deg)',
+          maskImage: 'radial-gradient(ellipse 46% 36% at 50% 40%, black 0%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 46% 36% at 50% 40%, black 0%, transparent 100%)',
+        }}
+      />
       {/* Choose Your Celebration */}
       <SectionReveal style="zoom">
-      <Section bg="base">
+      <Section bg="base" className="pt-16 md:pt-20">
         {/* Section header */}
         <motion.div
           ref={celRevealRef}
@@ -714,55 +729,46 @@ export default function HomePage() {
 
       {/* ExperienceHighlights — #110230 → #280a56 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', bottom: '5%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,50,220,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="tilt"><ExperienceHighlights /></SectionReveal>
       </div>
 
       {/* VibeHallSpotlight — #280a56 → #060118 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(100,20,200,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><VibeHallSpotlight /></SectionReveal>
       </div>
 
       {/* CelebrationGallery — #060118 → #180438 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', top: '20%', right: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><CelebrationGallery /></SectionReveal>
       </div>
 
       {/* PersonaliseSurprise — #180438 → #2e0c62 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', bottom: '5%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="curtain"><PersonaliseSurpriseSection /></SectionReveal>
       </div>
 
       {/* ReviewsSection — #2e0c62 → #0d0220 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', top: '15%', right: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,50,220,0.11) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="zoom"><ReviewsSection /></SectionReveal>
       </div>
 
       {/* TheatreFinder — #0d0220 → #1e0648 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', bottom: '5%', right: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="unfold"><TheatreFinder /></SectionReveal>
       </div>
 
       {/* BobPerks — #1e0648 → #0a0120 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', top: '20%', left: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><BobPerks /></SectionReveal>
       </div>
 
       {/* InstagramSection — #0a0120 → #260856 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', bottom: '5%', right: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,40,220,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="slide"><InstagramSection /></SectionReveal>
       </div>
 
       {/* Location — #260856 → #0d0220 */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div aria-hidden style={{ position: 'absolute', top: '20%', left: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(130,50,220,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
       <SectionReveal style="tilt">
       <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

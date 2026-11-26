@@ -90,18 +90,13 @@ export function PersonaliseSurpriseSection() {
 
   return (
     <section ref={ref} className="relative overflow-x-clip py-14 md:py-20">
-      <motion.span
-        className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#d4a94a]/12 blur-3xl"
-        animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-        aria-hidden="true"
-      />
-      <motion.span
-        className="pointer-events-none absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-[#f5bd61]/20 blur-3xl"
-        animate={{ x: [0, -40, 0], y: [0, -30, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
-        aria-hidden="true"
-      />
+      {/* unique backdrop: camera-viewfinder corner brackets framing the section (small, fully inside, never cut) */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+        <span className="absolute h-8 w-8 border-[#F5C76A]/45 md:h-11 md:w-11 left-3 top-3 md:left-6 md:top-6 border-l-2 border-t-2 rounded-tl-xl" />
+        <span className="absolute h-8 w-8 border-[#F5C76A]/45 md:h-11 md:w-11 right-3 top-3 md:right-6 md:top-6 border-r-2 border-t-2 rounded-tr-xl" />
+        <span className="absolute h-8 w-8 border-[#F5C76A]/45 md:h-11 md:w-11 bottom-3 left-3 md:bottom-6 md:left-6 border-b-2 border-l-2 rounded-bl-xl" />
+        <span className="absolute h-8 w-8 border-[#F5C76A]/45 md:h-11 md:w-11 bottom-3 right-3 md:bottom-6 md:right-6 border-b-2 border-r-2 rounded-br-xl" />
+      </div>
 
       <div className="relative mx-auto max-w-7xl px-4 md:px-6">
         {/* Header */}

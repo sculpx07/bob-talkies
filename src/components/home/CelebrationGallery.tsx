@@ -49,8 +49,24 @@ export function CelebrationGallery() {
   }, [inView, total])
 
   return (
-    <section ref={sectionRef} className="py-10 md:py-14">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
+    <section ref={sectionRef} className="relative overflow-hidden py-10 md:py-14">
+      {/* unique backdrop: camera-flash glints (four-point sparkles) over a soft pool of light; every shape sits well inside the section, so nothing is ever cut */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0" style={{ background: 'radial-gradient(ellipse 40% 36% at 50% 52%, rgba(245,199,106,0.10) 0%, transparent 100%)' }} />
+      <svg aria-hidden="true" viewBox="0 0 1000 300" preserveAspectRatio="xMidYMid slice" className="pointer-events-none absolute inset-0 z-0 h-full w-full" style={{ maskImage: 'linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%), linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%), linear-gradient(to right, transparent 0%, black 14%, black 86%, transparent 100%)', maskComposite: 'intersect', WebkitMaskComposite: 'source-in' }}>
+        <g fill="#FFE3A0">
+          <path d="M0 -14.4 Q0 0 14.4 0 Q0 0 0 14.4 Q0 0 -14.4 0 Q0 0 0 -14.4Z" transform="translate(70 66)" opacity="0.55" />
+          <path d="M0 -9.600000000000001 Q0 0 9.600000000000001 0 Q0 0 0 9.600000000000001 Q0 0 -9.600000000000001 0 Q0 0 0 -9.600000000000001Z" transform="translate(150 222)" opacity="0.4" />
+          <path d="M0 -11.200000000000001 Q0 0 11.200000000000001 0 Q0 0 0 11.200000000000001 Q0 0 -11.200000000000001 0 Q0 0 0 -11.200000000000001Z" transform="translate(270 36)" opacity="0.45" />
+          <path d="M0 -16 Q0 0 16 0 Q0 0 0 16 Q0 0 -16 0 Q0 0 0 -16Z" transform="translate(380 252)" opacity="0.5" />
+          <path d="M0 -9.600000000000001 Q0 0 9.600000000000001 0 Q0 0 0 9.600000000000001 Q0 0 -9.600000000000001 0 Q0 0 0 -9.600000000000001Z" transform="translate(490 54)" opacity="0.4" />
+          <path d="M0 -12.8 Q0 0 12.8 0 Q0 0 0 12.8 Q0 0 -12.8 0 Q0 0 0 -12.8Z" transform="translate(580 240)" opacity="0.45" />
+          <path d="M0 -16 Q0 0 16 0 Q0 0 0 16 Q0 0 -16 0 Q0 0 0 -16Z" transform="translate(680 30)" opacity="0.55" />
+          <path d="M0 -11.200000000000001 Q0 0 11.200000000000001 0 Q0 0 0 11.200000000000001 Q0 0 -11.200000000000001 0 Q0 0 0 -11.200000000000001Z" transform="translate(780 228)" opacity="0.4" />
+          <path d="M0 -14.4 Q0 0 14.4 0 Q0 0 0 14.4 Q0 0 -14.4 0 Q0 0 0 -14.4Z" transform="translate(880 72)" opacity="0.5" />
+          <path d="M0 -9.600000000000001 Q0 0 9.600000000000001 0 Q0 0 0 9.600000000000001 Q0 0 -9.600000000000001 0 Q0 0 0 -9.600000000000001Z" transform="translate(940 210)" opacity="0.4" />
+        </g>
+      </svg>
+      <div className="relative max-w-7xl mx-auto px-4 md:px-6">
 
         {/* Header */}
         <motion.div
@@ -59,7 +75,7 @@ export function CelebrationGallery() {
           transition={{ duration: 0.35 }}
           className="flex items-center gap-2 mb-6"
         >
-          <Camera size={14} className="text-[#8b1a3a]" />
+          <Camera size={14} className="text-[#d4a94a]" />
           <p className="font-cursive text-xl text-[#c9933a]">Real Moments, Real Memories</p>
           <span className="h-px flex-1 max-w-[40px] bg-[#d4a94a]/40" />
           <span className="text-[10px] font-black uppercase tracking-widest text-white/60">Recent Celebrations</span>
