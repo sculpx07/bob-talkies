@@ -223,16 +223,30 @@ export default function HomePage() {
           // magenta-plum glow gradient (from the reference swatch), tiled down the page; first 600px eases in from the hero's dark base
           backgroundColor: '#430948',
           backgroundImage: [
-            'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
             'radial-gradient(ellipse 48% 22% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
             'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
             'radial-gradient(ellipse 50% 20% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
             'radial-gradient(ellipse 36% 14% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+            'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
           ].join(','),
-          backgroundSize: '100% 600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px',
-          backgroundRepeat: 'no-repeat, repeat-y, repeat-y, repeat-y, repeat-y',
+          backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+          backgroundRepeat: 'repeat-y, repeat-y, repeat-y, repeat-y, no-repeat',
         }}
       >
+      <style>{`
+        /* shared glassmorphism card look for the home sections (dark wine glass, thin gold edge) */
+        .home-champagne .glass-card {
+          background: linear-gradient(160deg, rgba(255,255,255,0.14) 0%, rgba(135,0,79,0.30) 45%, rgba(59,0,42,0.42) 100%) !important;
+          -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
+          border: 1px solid rgba(245,199,106,0.42) !important;
+          box-shadow: 0 12px 32px rgba(0,0,0,0.32), 0 0 22px rgba(245,199,106,0.14), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+          --tw-ring-shadow: 0 0 #0000 !important;
+        }
+        .home-champagne .glass-card [class*="text-[#3d0a24]"], .home-champagne .glass-card [class*="text-[#5c1535]"] { color: #fff !important; }
+        .home-champagne .glass-card [class*="text-[#5b2535]"], .home-champagne .glass-card [class*="text-[#7d4555]"], .home-champagne .glass-card [class*="text-[#9a6575]"] { color: rgba(255,255,255,0.78) !important; }
+        .home-champagne .glass-card [class*="text-[#8f6420]"], .home-champagne .glass-card [class*="text-[#8b1a3a]"] { color: #F5C76A !important; }
+        .home-champagne .glass-card [class*="bg-[#fce8f0]"], .home-champagne .glass-card [class*="bg-[#fff3d6]"], .home-champagne .glass-card [class*="bg-[#fff7e8]"] { background: rgba(255,255,255,0.12) !important; border-color: rgba(245,199,106,0.35) !important; }
+      `}</style>
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <HeroBackdropImage />
@@ -397,26 +411,26 @@ export default function HomePage() {
       </section>
 
       {/* FeaturedTheatres — #160438 → #2e0c62 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#160438 0%,#2e0c62 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '20%', right: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <FeaturedTheatres />
       </div>
 
       {/* ExperienceCategories — #2e0c62 → #0d0220 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#2e0c62 0%,#0d0220 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', bottom: '10%', left: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,50,220,0.12) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><ExperienceCategories /></SectionReveal>
       </div>
 
       {/* ExperiencePicker — #0d0220 → #1a0640 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#0d0220 0%,#1a0640 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '30%', right: '-5%', width: 460, height: 460, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><ExperiencePicker /></SectionReveal>
       </div>
 
       {/* Offers — #1a0640 → #3a0e72 */}
       {(offersLoading || (offers && offers.length > 0)) && (
-        <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#1a0640 0%,#3a0e72 100%)' }}>
+        <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', bottom: '5%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(210,45,125,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="curtain">
         <Section bg="base" className="relative overflow-hidden">
@@ -568,7 +582,7 @@ export default function HomePage() {
 
 
       {/* Celebrations — #3a0e72 → #110230 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#3a0e72 0%,#110230 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '15%', right: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
       {/* Choose Your Celebration */}
       <SectionReveal style="zoom">
@@ -699,55 +713,55 @@ export default function HomePage() {
       </div>
 
       {/* ExperienceHighlights — #110230 → #280a56 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#110230 0%,#280a56 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', bottom: '5%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,50,220,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="tilt"><ExperienceHighlights /></SectionReveal>
       </div>
 
       {/* VibeHallSpotlight — #280a56 → #060118 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#280a56 0%,#060118 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(100,20,200,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><VibeHallSpotlight /></SectionReveal>
       </div>
 
       {/* CelebrationGallery — #060118 → #180438 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#060118 0%,#180438 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '20%', right: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><CelebrationGallery /></SectionReveal>
       </div>
 
       {/* PersonaliseSurprise — #180438 → #2e0c62 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#180438 0%,#2e0c62 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', bottom: '5%', left: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="curtain"><PersonaliseSurpriseSection /></SectionReveal>
       </div>
 
       {/* ReviewsSection — #2e0c62 → #0d0220 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#2e0c62 0%,#0d0220 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '15%', right: '-5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,50,220,0.11) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="zoom"><ReviewsSection /></SectionReveal>
       </div>
 
       {/* TheatreFinder — #0d0220 → #1e0648 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#0d0220 0%,#1e0648 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', bottom: '5%', right: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="unfold"><TheatreFinder /></SectionReveal>
       </div>
 
       {/* BobPerks — #1e0648 → #0a0120 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#1e0648 0%,#0a0120 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '20%', left: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="rise"><BobPerks /></SectionReveal>
       </div>
 
       {/* InstagramSection — #0a0120 → #260856 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#0a0120 0%,#260856 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', bottom: '5%', right: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(150,40,220,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
         <SectionReveal style="slide"><InstagramSection /></SectionReveal>
       </div>
 
       {/* Location — #260856 → #0d0220 */}
-      <div style={{ position: 'relative', overflow: 'hidden', background: 'linear-gradient(180deg,#260856 0%,#0d0220 100%)' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div aria-hidden style={{ position: 'absolute', top: '20%', left: '-5%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(130,50,220,0.09) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
       <SectionReveal style="tilt">
       <section ref={locationRevealRef} className="py-16 md:py-24 relative overflow-hidden">

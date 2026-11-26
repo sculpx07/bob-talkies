@@ -149,7 +149,7 @@ export function BobPerks() {
                     <motion.div
                       animate={{ y: [0, -7, 0] }}
                       transition={{ duration: 4 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
-                      className="rounded-3xl bg-white p-3.5 text-center shadow-[0_14px_34px_rgba(107,35,152,0.14)] ring-1 ring-[#f8dce4]"
+                      className="rounded-3xl glass-card bg-white p-3.5 text-center shadow-[0_14px_34px_rgba(107,35,152,0.14)] ring-1 ring-[#f8dce4]"
                     >
                       <span className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)] shadow-md">
                         <Icon size={19} strokeWidth={1.8} style={{ color: b.color }} />
@@ -168,7 +168,7 @@ export function BobPerks() {
                 {BENEFITS.map(b => {
                   const Icon = b.icon
                   return (
-                    <div key={b.title} className="rounded-3xl bg-white p-4 text-center shadow-[0_12px_30px_rgba(107,35,152,0.12)] ring-1 ring-[#f8dce4]">
+                    <div key={b.title} className="rounded-3xl glass-card bg-white p-4 text-center shadow-[0_12px_30px_rgba(107,35,152,0.12)] ring-1 ring-[#f8dce4]">
                       <span className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)]">
                         <Icon size={19} strokeWidth={1.8} style={{ color: b.color }} />
                       </span>

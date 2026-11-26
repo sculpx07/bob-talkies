@@ -85,7 +85,7 @@ export function Header() {
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
         // pages that open on a dark hero need the light header background from the start so the nav stays readable
         (scrolled || /^\/(celebrations\/.+|personalise)/.test(location.pathname))
-          ? 'bg-[#1a0438]/90 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.5)]'
+          ? 'bg-[#430948]/90 backdrop-blur-md'
           : 'bg-transparent',
       )}
     >

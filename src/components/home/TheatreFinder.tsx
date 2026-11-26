@@ -130,7 +130,7 @@ export function TheatreFinder() {
           initial={{ opacity: 0, y: 32, rotate: -1.5 }}
           animate={inView ? { opacity: 1, y: 0, rotate: 0 } : {}}
           transition={{ delay: 0.1, duration: 0.7 }}
-          className="relative mb-8 grid overflow-hidden rounded-[2rem] bg-white shadow-[0_28px_70px_rgba(107,35,152,0.2)] md:grid-cols-[280px_1fr]"
+          className="relative mb-8 grid overflow-hidden rounded-[2rem] glass-card bg-white shadow-[0_28px_70px_rgba(107,35,152,0.2)] md:grid-cols-[280px_1fr]"
         >
           {/* Stub: guests */}
           <div className="relative bg-[linear-gradient(160deg,#5c1535_0%,#8b1a3a_100%)] p-7 text-white">
@@ -218,7 +218,7 @@ export function TheatreFinder() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.45 }}
-              className="overflow-hidden rounded-[2rem] bg-white shadow-[0_24px_60px_rgba(107,35,152,0.18)] ring-1 ring-[#f8dce4]"
+              className="overflow-hidden rounded-[2rem] glass-card bg-white shadow-[0_24px_60px_rgba(107,35,152,0.18)] ring-1 ring-[#f8dce4]"
             >
               <div className="flex flex-col sm:flex-row">
                 <div className="relative h-44 shrink-0 overflow-hidden sm:h-auto sm:w-60">

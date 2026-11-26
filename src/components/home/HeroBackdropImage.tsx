@@ -128,9 +128,9 @@ export function HeroBackdropImage() {
       style={{
         containerType: 'size',
         // deep purple hero base; its bottom fades into the page gradient below (same colour at the join)
-        background: 'linear-gradient(180deg, #2a0430 0%, #3d0a43 55%, #2a0430 100%)',
-        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
-        maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+        background: 'linear-gradient(180deg, #2a0430 0%, #3d0a43 55%, #430948 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
+        maskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
       }}
       aria-hidden="true"
     >
