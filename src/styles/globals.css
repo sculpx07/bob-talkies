@@ -34,7 +34,7 @@
   }
 
   body {
-    background-color: var(--bg-base);
+    background-color: #0a0120;
     background-image: url('/bg.png');
     background-size: cover;
     background-position: center top;
