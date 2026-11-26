@@ -179,17 +179,17 @@ export function PaymentStep() {
               whileTap={{ scale: 0.98 }}
               className={`relative rounded-3xl p-5 text-left transition-shadow duration-300 ${
                 active
-                  ? 'bg-[linear-gradient(135deg,#faf0ff,#fff)] shadow-[0_16px_38px_rgba(192,38,211,0.28)] ring-2 ring-[#c0125a]'
-                  : 'bg-white/85 shadow-[0_8px_24px_rgba(107,35,152,0.1)] ring-1 ring-[#f5d5e0]'
+                  ? 'bk-glass-card border-2 border-[#F5C76A]'
+                  : 'bk-glass-card border-2 border-transparent'
               }`}
             >
               <span
                 className={`absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors ${
-                  active ? 'border-[#c0125a] bg-[#c0125a]' : 'border-[#d9b8e0]'
+                  active ? 'border-[#F5C76A] bg-[#F5C76A]' : 'border-white/40'
                 }`}
                 aria-hidden="true"
               >
-                {active && <Check size={13} strokeWidth={3} className="text-white" />}
+                {active && <Check size={13} strokeWidth={3} className="!text-[#3d0a24]" />}
               </span>
               <p className="text-sm font-semibold text-[#5b2535]">{o.title}</p>
               <p className="mt-1 text-3xl font-bold tabular-nums text-[#5c1535]">{formatINR(o.amount)}</p>
@@ -200,7 +200,7 @@ export function PaymentStep() {
       </div>
 
       {/* Security notice */}
-      <div className="mt-5 flex items-center gap-2 rounded-2xl bg-[#e7f7ee] px-4 py-3 text-xs text-emerald-800">
+      <div className="mt-5 flex items-center gap-2 rounded-2xl bg-emerald-400/20 px-4 py-3 text-xs text-emerald-200">
         <Shield size={15} className="shrink-0 text-emerald-600" aria-hidden="true" />
         Payments are secured by Razorpay. We never store your card details.
       </div>

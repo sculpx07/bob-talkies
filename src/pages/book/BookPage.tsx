@@ -139,7 +139,7 @@ export default function BookPage() {
     <AddonsStep key="addons" />,
     <div key="payment">
       <h2 className="mb-5 font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">Review your booking</h2>
-      <dl className="mb-6 divide-y divide-[#f8dce4] overflow-hidden rounded-3xl bg-white ring-1 ring-[#f5d5e0]">
+      <dl className="mb-6 bk-glass-card divide-y divide-white/15 overflow-hidden rounded-3xl">
         {reviewRows.map((r) => (
           <div key={r.label} className="flex items-center gap-3 px-5 py-3 text-sm">
             <dt className="w-28 shrink-0 text-[11px] font-bold uppercase tracking-wider text-[#7d4555]">{r.label}</dt>
@@ -203,13 +203,88 @@ export default function BookPage() {
 
   return (
     <>
+      <style>{`
+        /* step card: dark wine glass like the home cards; dark text inside flips to light, inputs stay white */
+        .book-glass {
+          background: linear-gradient(160deg, rgba(255,255,255,0.14) 0%, rgba(135,0,79,0.30) 45%, rgba(59,0,42,0.42) 100%);
+          -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
+          box-shadow: 0 12px 34px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+        .book-glass, .book-glass * { color: rgba(255,255,255,0.92); }
+        .book-glass :is(h1,h2,h3,h4,strong,legend) { color: #fff; }
+        .book-glass [class*="text-[#8b1a3a]"], .book-glass [class*="text-[#c0125a]"], .book-glass [class*="text-[#c2255c]"], .book-glass [class*="text-[#a81a3a]"] { color: #F5C76A !important; }
+        .book-glass [class*="bg-white"], .book-glass [class*="bg-white"] *, .book-glass input, .book-glass textarea, .book-glass select, .book-glass [class*="bg-[#fff"], .book-glass [class*="bg-[#fff"] *, .book-glass [class*="bg-[#fdf"], .book-glass [class*="bg-[#fdf"] *, .book-glass [class*="bg-[#faf"], .book-glass [class*="bg-[#faf"] * { color: #3d0a24 !important; }
+        .book-glass [class*="bg-white"] [class*="text-[#8b1a3a]"], .book-glass [class*="bg-white"] [class*="text-[#c2255c]"], .book-glass [class*="bg-[#fdf"] [class*="text-[#8b1a3a]"] { color: #8b1a3a !important; }
+        .book-glass [class*="bg-[#fce8f0]"], .book-glass [class*="bg-[#fff6f9]"] { background: rgba(255,255,255,0.12) !important; }
+        /* glass inputs */
+        .book-glass input, .book-glass textarea, .book-glass select, .book-glass [class*="inline-flex"][class*="bg-white"][class*="ring-1"] {
+          background: rgba(255,255,255,0.12) !important;
+          -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+          border: 0 !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.18) !important;
+          color: #fff !important;
+        }
+        .book-glass [class*="inline-flex"][class*="bg-white"][class*="ring-1"], .book-glass [class*="inline-flex"][class*="bg-white"][class*="ring-1"] * { color: #fff !important; }
+        .book-glass input:focus, .book-glass textarea:focus, .book-glass select:focus { border-color: #F5C76A !important; box-shadow: 0 0 0 2px rgba(245,199,106,0.3) !important; outline: none; }
+        .book-glass :is(div,section,form,label) :is(input,textarea,select):not([type="checkbox"]):not([type="radio"]) { color: #fff !important; }
+        .book-glass [class*="bg-white"]:not([class*="inline-flex"]) input, .book-glass [class*="bg-[#fff"] input { background: transparent !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none; color: #3d0a24 !important; }
+        .book-glass [class*="bg-white"]:not([class*="inline-flex"]) input::placeholder, .book-glass [class*="bg-[#fff"] input::placeholder { color: #9a85b0 !important; }
+        /* coupon box, code field, popular chips, terms row: same glass */
+        .book-glass [class*="bg-white/85"], .book-glass [class*="bg-[#fdf6ff]"], .book-glass [class*="bg-white"][class*="border-dashed"] {
+          background: rgba(255,255,255,0.10) !important;
+          -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.18) !important;
+          --tw-ring-shadow: 0 0 #0000 !important;
+        }
+        .book-glass [class*="border-dashed"] { border-color: rgba(245,199,106,0.55) !important; }
+        .book-glass [class*="bg-white/85"] *, .book-glass [class*="bg-[#fdf6ff]"] *, .book-glass [class*="border-dashed"] { color: #fff !important; }
+        .book-glass [class*="bg-white/85"] [class*="text-[#8b1a3a]"], .book-glass [class*="bg-white/85"] [class*="font-mono"][class*="text-[#8b1a3a]"] { color: #F5C76A !important; }
+        .book-glass [class*="bg-white/85"] input { background: transparent !important; backdrop-filter: none; border: 0 !important; box-shadow: none !important; color: #fff !important; }
+        .book-glass [class*="bg-white/85"] input::placeholder { color: rgba(255,255,255,0.5) !important; }
+        .book-glass [class*="bg-white/85"] button[class*="bg-[#5c1535]"] { background: linear-gradient(135deg,#f5d7a1,#c9933a) !important; color: #3d0a24 !important; }
+        .book-glass [class*="bg-white/85"] button[class*="bg-[#5c1535]"] * { color: #3d0a24 !important; }
+        .book-glass [class*="bg-[#fdf6ff]"] a[class][class*="font-semibold"][class*="text-[#8b1a3a]"], .book-glass [class*="bg-[#fdf6ff]"] a[class][class*="text-"], .book-glass [class*="bg-[#fdf6ff]"] a[class][class*="text-"] * { color: #F5C76A !important; }
+        .book-glass [class*="bg-[#fdf6ff]"] input[type="checkbox"] { accent-color: #F5C76A; }
+        .book-glass [class*="bg-white/85"] button[class*="bg-[#5c1535]"]:disabled { opacity: 0.7; }
+        /* OTP pill: glass, visible digits */
+        .book-glass [class*="rounded-full"][class*="bg-white"][class*="p-1.5"] { background: rgba(255,255,255,0.12) !important; backdrop-filter: blur(10px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2) !important; }
+        .book-glass input[aria-label="OTP"] { color: #fff !important; background: transparent !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none; -webkit-text-fill-color: #fff; }
+        .book-glass input[aria-label="OTP"]::placeholder { color: rgba(255,255,255,0.45) !important; -webkit-text-fill-color: rgba(255,255,255,0.45); }
+        .book-glass [class*="bg-emerald-400/20"], .book-glass [class*="bg-emerald-400/20"] * { color: #a7f3d0 !important; }
+        /* review + price summary cards: glass */
+        .bk-glass-card { background: linear-gradient(160deg, rgba(255,255,255,0.14) 0%, rgba(135,0,79,0.30) 45%, rgba(59,0,42,0.42) 100%); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); box-shadow: 0 12px 34px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3); }
+        .bk-glass-card, .bk-glass-card * { color: rgba(255,255,255,0.92); }
+        .bk-glass-card [class*="bg-[#f6e6ef]"], .bk-glass-card [class*="bg-[#fff1d6]"], .bk-glass-card [class*="bg-[#fce8f0]"] { background: rgba(255,255,255,0.12) !important; }
+        .bk-glass-card [class*="bg-[#f6e6ef]"] { color: #F5C76A !important; }
+        .bk-glass-card [class*="bg-clip-text"] { background-image: linear-gradient(135deg,#f5d7a1,#e0a94a 55%,#c9933a) !important; -webkit-text-fill-color: transparent; color: transparent !important; }
+        .bk-glass-card [class*="text-[#8b1a3a]"], .bk-glass-card [class*="text-[#8f6420]"] { color: #F5C76A !important; }
+        .bk-glass-card [class*="border-dashed"] { border-color: rgba(255,255,255,0.3) !important; }
+        .book-glass select option { color: #3d0a24; background: #fff; }
+        .book-glass input[type="checkbox"], .book-glass input[type="radio"] { backdrop-filter: none; }
+        .book-glass input::placeholder, .book-glass textarea::placeholder { color: rgba(255,255,255,0.55) !important; }
+      `}</style>
       <Seo
         title="Book Your Private Theatre"
         description="Book a private theatre at BOB Talkies in Hyderabad. Customise your celebration step by step."
         canonical="/book"
         noindex
       />
-      <div className="min-h-screen pt-20 md:pt-28 pb-12">
+      <div
+        className="min-h-screen pt-20 md:pt-28 pb-12"
+        style={{
+          // same magenta-plum background as the home page
+          backgroundColor: '#430948',
+          backgroundImage: [
+            'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+            'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+            'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+            'radial-gradient(ellipse 36% 8% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+            'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+          ].join(','),
+          backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+          backgroundRepeat: 'repeat-y, repeat-y, repeat-y, repeat-y, no-repeat',
+        }}
+      >
         <div className="mx-auto max-w-[1440px] px-4 md:px-8">
           {/* Heading */}
           <motion.div
@@ -226,14 +301,14 @@ export default function BookPage() {
                 exit={{ opacity: 0, y: -18 }}
                 transition={{ duration: 0.3 }}
               >
-                <p className="font-cursive text-3xl font-semibold text-[#8b1a3a] md:text-4xl">{STEP_HEADINGS[step]?.kicker}</p>
-                <h1 className="font-display text-3xl font-bold text-[#3d0a24] md:text-5xl">{STEP_HEADINGS[step]?.title}</h1>
+                <p className="font-cursive text-3xl font-semibold text-[#F5C76A] md:text-4xl">{STEP_HEADINGS[step]?.kicker}</p>
+                <h1 className="font-display text-3xl font-bold text-white md:text-5xl">{STEP_HEADINGS[step]?.title}</h1>
               </motion.div>
             </AnimatePresence>
           </motion.div>
 
           {/* Stepper */}
-          <div className="mx-auto mb-8 max-w-3xl overflow-x-auto rounded-3xl border border-white/70 bg-white/60 px-4 py-4 shadow-[0_10px_30px_rgba(107,35,152,0.1)] backdrop-blur-xl">
+          <div className="mx-auto mb-8 max-w-3xl overflow-x-auto rounded-3xl border border-[#f5d7a1]/40 bg-[linear-gradient(135deg,#5c1535,#7b1a52_60%,#8b1a3a)] px-4 py-4 shadow-[0_14px_36px_rgba(0,0,0,0.35)]">
             <Stepper
               steps={visibleSteps}
               currentStep={stageOf(step)}
@@ -242,13 +317,13 @@ export default function BookPage() {
           </div>
 
           {step >= 4 && step < LAST_STEP && state.serverQuote && (
-            <p className="-mt-5 mb-6 text-center text-xs text-[#5b2535]">Note: pay only <strong className="text-[#8b1a3a]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve</p>
+            <p className="-mt-5 mb-6 text-center text-xs text-white/85">Note: pay only <strong className="text-[#F5C76A]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve</p>
           )}
 
           <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
             <div className="min-w-0">
             {/* Step content */}
-            <div className="rounded-[2rem] border border-white/70 bg-white/65 p-5 shadow-[0_20px_60px_rgba(107,35,152,0.12)] backdrop-blur-xl md:p-10">
+            <div className={step === 3 ? 'p-1 md:p-2' : 'book-glass rounded-[2rem] p-5 md:p-10'}>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={step}
@@ -278,7 +353,7 @@ export default function BookPage() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 shadow-[0_20px_60px_rgba(107,35,152,0.14)] backdrop-blur-xl lg:sticky lg:top-28"
+              className="overflow-hidden rounded-[2rem] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-xl lg:sticky lg:top-28"
               aria-label="Your celebration"
             >
               <div className="relative overflow-hidden bg-[linear-gradient(135deg,#5c1535,#8b1a3a_60%,#d9126a)] p-5 text-white">

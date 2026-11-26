@@ -102,7 +102,7 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
             onClick={() => setTab(id)}
             className={cn(
               'rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
-              tab === id ? 'bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-white shadow-[0_8px_18px_rgba(50,16,95,0.3)]' : 'bg-[#f3ecf8] text-[#5b2535] hover:bg-[#eadcf5]',
+              tab === id ? 'bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-white shadow-[0_8px_18px_rgba(50,16,95,0.3)]' : 'bg-white/15 text-white hover:bg-white/25',
             )}
           >
             {label}
@@ -134,7 +134,7 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
                 <span
                   className={cn(
                     'relative block aspect-square w-full overflow-hidden rounded-2xl transition-all',
-                    size ? 'ring-[3px] ring-[#c0125a] shadow-[0_14px_30px_rgba(192,38,211,0.3)]' : 'ring-1 ring-[#f5d5e0] group-focus-visible:ring-2 group-focus-visible:ring-[#c0125a]',
+                    size ? 'ring-[3px] ring-[#c0125a] shadow-[0_14px_30px_rgba(192,38,211,0.3)]' : 'group-focus-visible:ring-2 group-focus-visible:ring-[#c0125a]',
                   )}
                 >
                   <CakePhoto cake={cake} index={i} className="transition-transform duration-500 group-hover:scale-105" />

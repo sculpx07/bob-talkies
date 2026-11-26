@@ -76,7 +76,7 @@ function PageBackground() {
   // vertical background-position (%) that puts row BG_ROWS_START of the image at the top of a band
   const bandPosY = ((1536 * BG_ROWS_START) / (1536 - bandH)) * 100
   return (
-    <div className="hidden md:block absolute inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
+    <div className="hidden md:block absolute inset-0 -z-10 overflow-hidden pointer-events-none bg-[#fdf4ee]" aria-hidden="true">
       {Array.from({ length: 24 }, (_, i) => (
         <div
           key={i}
@@ -85,7 +85,8 @@ function PageBackground() {
             backgroundImage: "url('/bg.png')",
             backgroundSize: '100% auto',
             backgroundPosition: i === 0 ? 'center top' : `center ${bandPosY}%`,
-            transform: i % 2 ? 'scaleY(-1)' : undefined,
+            transform: i % 2 ? "scaleY(-1)" : undefined,
+            marginBottom: -1,
           }}
         />
       ))}

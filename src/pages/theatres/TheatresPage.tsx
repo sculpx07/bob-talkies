@@ -134,7 +134,7 @@ function TheatreReviewsSection({ theatreSlug, accent }: { theatreSlug: string; a
                 <span className="h-px flex-1 max-w-[40px]" style={{ background: accent }} />
                 <span className="text-xs font-black uppercase tracking-widest" style={{ color: accent }}>Guest Reviews</span>
               </div>
-              <h2 className="text-2xl md:text-3xl font-black text-[#3d0a24]">
+              <h2 className="text-2xl md:text-3xl font-black text-white">
                 What Guests Loved About{' '}
                 <span style={{ background: `linear-gradient(135deg,${accent},${accent}99)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   This Theatre
@@ -142,8 +142,8 @@ function TheatreReviewsSection({ theatreSlug, accent }: { theatreSlug: string; a
               </h2>
               <div className="flex items-center gap-2 mt-2">
                 {[1,2,3,4,5].map(s => <Star key={s} size={14} fill={accent} stroke="none" />)}
-                <span className="text-sm font-black text-[#3d0a24]">5.0</span>
-                <span className="text-xs text-[#5b2535]/60 ml-1">· All verified guests</span>
+                <span className="text-sm font-black text-white">5.0</span>
+                <span className="text-xs text-white/60 ml-1">· All verified guests</span>
               </div>
             </motion.div>
           </AnimatePresence>
@@ -315,7 +315,21 @@ export default function TheatresPage() {
   const id      = getIdentity(current)
 
   return (
-    <>
+    <div
+      style={{
+        // same magenta-plum background as the home page
+        backgroundColor: '#430948',
+        backgroundImage: [
+          'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+          'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+          'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+          'radial-gradient(ellipse 36% 8% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+          'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+        ].join(','),
+        backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+        backgroundRepeat: 'repeat-y, repeat-y, repeat-y, repeat-y, no-repeat',
+      }}
+    >
       <Seo
         title="Our Private Theatres | BOB Talkies Hyderabad"
         description="Explore 5 premium private theatres in Hyderabad — from intimate 2-person suites to grand 40-person celebration halls. 4K, Dolby Atmos, full decoration and photography."
@@ -339,17 +353,19 @@ export default function TheatresPage() {
 
       <PageShell fullWidth>
         {isError ? (
-          <div className="min-h-screen bg-bg-navy flex items-center justify-center px-4">
+          <div className="min-h-screen flex items-center justify-center px-4">
             <ErrorState title="Failed to Load Theatres" retry={refetch} />
           </div>
         ) : isLoading || !current ? (
-          <div className="min-h-screen bg-bg-navy animate-pulse" aria-busy="true" aria-label="Loading theatres" />
+          <div className="min-h-screen animate-pulse" aria-busy="true" aria-label="Loading theatres" />
         ) : (
           <section
             className="tp-hero relative min-h-screen w-full overflow-hidden bg-bg-navy text-white"
             aria-roledescription="carousel"
             aria-label="Private theatres"
           >
+            {/* hero photo fades into the page plum at the bottom, like the home page */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-40" style={{ background: 'linear-gradient(to bottom, rgba(67,9,72,0), #430948)' }} />
             {/* ── Background images (cross-fade) ── */}
             {theatres!.map((t, i) => {
               const tid = getIdentity(t)
@@ -709,6 +725,6 @@ export default function TheatresPage() {
           />
         )}
       </PageShell>
-    </>
+    </div>
   )
 }

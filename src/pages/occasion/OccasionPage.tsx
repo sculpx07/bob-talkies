@@ -70,9 +70,24 @@ const heroRef = useRef<HTMLElement>(null)
         <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
       </Helmet>
 
-      <div className="pb-24">
+      <div
+        className="pb-24"
+        style={{
+          // same magenta-plum background as the home page
+          backgroundColor: '#430948',
+          backgroundImage: [
+            'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+            'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+            'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+            'radial-gradient(ellipse 36% 8% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+            'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+          ].join(','),
+          backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+          backgroundRepeat: 'repeat-y, repeat-y, repeat-y, repeat-y, no-repeat',
+        }}
+      >
         {/* Hero */}
-        <section ref={heroRef} className="relative flex min-h-[72vh] items-end overflow-hidden px-4 pb-14 pt-32 md:px-6 md:pb-20">
+        <section ref={heroRef} className="relative flex min-h-[72vh] items-end overflow-hidden px-4 pb-14 pt-32 md:px-6 md:pb-20" style={{ maskImage: 'linear-gradient(to bottom, black 84%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 84%, transparent 100%)' }}>
           <motion.img
             src={occasion.heroImage}
             alt=""
@@ -83,8 +98,6 @@ const heroRef = useRef<HTMLElement>(null)
             className="absolute inset-0 h-[125%] w-full object-cover"
           />
           <span className="absolute inset-0 bg-gradient-to-t from-[#1b0b3a]/95 via-[#1b0b3a]/55 to-[#1b0b3a]/25" />
-          <motion.span className="pointer-events-none absolute -right-20 top-24 h-72 w-72 rounded-full bg-[#d9126a]/30 blur-3xl" animate={{ x: [0, -40, 0], y: [0, 30, 0] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }} aria-hidden="true" />
-          <motion.span className="pointer-events-none absolute -left-16 bottom-10 h-60 w-60 rounded-full bg-[#f5bd61]/25 blur-3xl" animate={{ x: [0, 40, 0], y: [0, -30, 0] }} transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }} aria-hidden="true" />
           <motion.div style={{ y: textY, opacity: textOpacity }} className="relative z-10 mx-auto w-full max-w-6xl text-white">
             <motion.span
               initial={{ opacity: 0, scale: 0 }}
@@ -144,11 +157,11 @@ const heroRef = useRef<HTMLElement>(null)
         {/* About + features */}
         <section className="mx-auto mt-14 grid max-w-6xl items-center gap-8 px-4 md:mt-20 md:grid-cols-2 md:gap-12 md:px-6">
           <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={VIEW} transition={{ duration: 0.9, ease: EASE }}>
-            <motion.p initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={VIEW} transition={{ duration: 0.7, ease: EASE }} className="font-cursive text-2xl text-[#8b1a3a] md:text-3xl">{occasion.label}</motion.p>
-            <h2 className="font-display text-3xl font-semibold leading-tight text-[#3d0a24] md:text-5xl">
+            <motion.p initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={VIEW} transition={{ duration: 0.7, ease: EASE }} className="font-cursive text-2xl text-[#F5C76A] md:text-3xl">{occasion.label}</motion.p>
+            <h2 className="font-display text-3xl font-semibold leading-tight text-white md:text-5xl">
               The Perfect {occasion.label} Experience
             </h2>
-            <p className="mt-4 leading-relaxed text-[#5b2535]">{occasion.description}</p>
+            <p className="mt-4 leading-relaxed text-white/80">{occasion.description}</p>
             <ul className="mt-6 space-y-3">
               {occasion.features.map((f, i) => (
                 <motion.li
@@ -157,9 +170,9 @@ const heroRef = useRef<HTMLElement>(null)
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={VIEW}
                   transition={{ delay: 0.15 + i * 0.1, duration: 0.6, ease: EASE }}
-                  className="flex items-start gap-3 text-sm text-[#3d0a24] md:text-[15px]"
+                  className="flex items-start gap-3 text-sm text-white md:text-[15px]"
                 >
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#e7f7ee] text-emerald-600">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-400/20 text-emerald-300">
                     <Check size={12} strokeWidth={3} />
                   </span>
                   {f}
@@ -185,8 +198,8 @@ const heroRef = useRef<HTMLElement>(null)
         {/* Recommended theatres */}
         <section className="mx-auto mt-20 max-w-6xl px-4 md:mt-28 md:px-6">
           <div className="mb-8 text-center">
-            <motion.p initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={VIEW} transition={{ duration: 0.7, ease: EASE }} className="font-cursive text-2xl text-[#8b1a3a] md:text-3xl">Recommended</motion.p>
-            <motion.h2 initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }} whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }} viewport={VIEW} transition={{ duration: 0.8, ease: EASE }} className="font-display text-3xl font-semibold text-[#3d0a24] md:text-5xl">Best Theatres for {occasion.label}</motion.h2>
+            <motion.p initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={VIEW} transition={{ duration: 0.7, ease: EASE }} className="font-cursive text-2xl text-[#F5C76A] md:text-3xl">Recommended</motion.p>
+            <motion.h2 initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }} whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }} viewport={VIEW} transition={{ duration: 0.8, ease: EASE }} className="font-display text-3xl font-semibold text-white md:text-5xl">Best Theatres for {occasion.label}</motion.h2>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {theatresLoading
@@ -208,7 +221,7 @@ const heroRef = useRef<HTMLElement>(null)
                         <p className="line-clamp-1 text-sm text-white/80">{t.tagline}</p>
                         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
                           <span className="rounded-full bg-white/15 px-2.5 py-1 backdrop-blur">{guestRangeText(t, 'guests')}</span>
-                          <span className="ml-auto rounded-full bg-[#f5d7a1] px-3 py-1 font-bold text-[#4a2a00]">from {formatINR(t.startingPricePaise)}</span>
+                          <span className="ml-auto rounded-full bg-[linear-gradient(135deg,#f5d7a1_0%,#e0a94a_55%,#c9933a_100%)] px-3 py-1 font-bold text-[#4a2a00]">from {formatINR(t.startingPricePaise)}</span>
                         </div>
                       </div>
                     </Link>
@@ -221,11 +234,11 @@ const heroRef = useRef<HTMLElement>(null)
         {services.length > 0 && (
           <section className="mx-auto mt-20 max-w-6xl px-4 md:mt-28 md:px-6">
             <div className="mb-8 text-center">
-              <p className="font-cursive text-2xl text-[#8b1a3a] md:text-3xl">Make it yours</p>
-              <h2 className="font-display text-3xl font-semibold text-[#3d0a24] md:text-5xl">Services for Your {occasion.label}</h2>
-              <p className="mx-auto mt-3 max-w-xl text-[#5b2535]">Add these while booking. Availability and prices are shown in the add-ons step.</p>
+              <p className="font-cursive text-2xl text-[#F5C76A] md:text-3xl">Make it yours</p>
+              <h2 className="font-display text-3xl font-semibold text-white md:text-5xl">Services for Your {occasion.label}</h2>
+              <p className="mx-auto mt-3 max-w-xl text-white/80">Add these while booking. Availability and prices are shown in the add-ons step.</p>
             </div>
-            <OccasionServiceList groups={services} />
+            <OccasionServiceList groups={services} tone="dark" />
             <div className="mt-8 text-center">
               <Link to="/" state={{ highlightPlan: true }} className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-8 py-3 text-sm font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)]">
                 Book This Experience <ArrowRight size={15} />
@@ -238,8 +251,8 @@ const heroRef = useRef<HTMLElement>(null)
         {occasion.faqs.length > 0 && (
           <section className="mx-auto mt-20 max-w-3xl px-4 md:mt-28 md:px-6">
             <div className="mb-6 text-center">
-              <motion.p initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={VIEW} transition={{ duration: 0.7, ease: EASE }} className="font-cursive text-2xl text-[#8b1a3a] md:text-3xl">FAQ</motion.p>
-              <motion.h2 initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }} whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }} viewport={VIEW} transition={{ duration: 0.8, ease: EASE }} className="font-display text-3xl font-semibold text-[#3d0a24] md:text-5xl">{occasion.label} FAQs</motion.h2>
+              <motion.p initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={VIEW} transition={{ duration: 0.7, ease: EASE }} className="font-cursive text-2xl text-[#F5C76A] md:text-3xl">FAQ</motion.p>
+              <motion.h2 initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }} whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }} viewport={VIEW} transition={{ duration: 0.8, ease: EASE }} className="font-display text-3xl font-semibold text-white md:text-5xl">{occasion.label} FAQs</motion.h2>
             </div>
             <Accordion items={occasion.faqs.map((f, i) => ({ ...f, id: `faq-${i}` }))} />
           </section>
@@ -251,7 +264,7 @@ const heroRef = useRef<HTMLElement>(null)
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={VIEW}
           transition={{ duration: 0.9, ease: EASE }}
-          className="relative mx-4 mt-20 overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#5c1535,#8b1a3a_60%,#d9126a)] p-8 text-center text-white shadow-[0_24px_60px_rgba(107,35,152,0.35)] md:mx-auto md:mt-28 md:max-w-4xl md:p-12"
+          className="relative mx-4 mt-20 overflow-hidden rounded-[2rem] bg-[linear-gradient(120deg,#3B002A_0%,#6a0a5e_50%,#87004F_100%)] p-8 text-center text-white shadow-[0_24px_60px_rgba(0,0,0,0.4)] md:mx-auto md:mt-28 md:max-w-4xl md:p-12"
         >
           <span className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
           <h2 className="relative font-display text-3xl font-semibold !text-white md:text-4xl">Ready to Plan Your {occasion.label}?</h2>

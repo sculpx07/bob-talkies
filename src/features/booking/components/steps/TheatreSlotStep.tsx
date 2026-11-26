@@ -40,10 +40,10 @@ export function TheatreSlotStep() {
 
   return (
     <div>
-      <h2 className="mb-1 font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">Choose your theatre</h2>
-      <p className="mb-5 text-sm text-[#5b2535]">
-        {occasion ? <><strong className="text-[#3d0a24]">{occasion.emoji} {occasion.label}</strong> · </> : null}
-        <strong className="text-[#3d0a24]">{state.guests === 30 ? '30+' : state.guests} guests</strong> · <strong className="text-[#3d0a24]">{state.date}</strong>
+      <h2 className="mb-1 font-display text-3xl font-bold text-white md:text-4xl">Choose your theatre</h2>
+      <p className="mb-5 text-sm text-white/80">
+        {occasion ? <><strong className="text-white">{occasion.emoji} {occasion.label}</strong> · </> : null}
+        <strong className="text-white">{state.guests === 30 ? '30+' : state.guests} guests</strong> · <strong className="text-white">{state.date}</strong>
       </p>
 
       {listed.length === 0 ? (
@@ -99,7 +99,7 @@ function TheatreListingCard({
         'flex flex-col overflow-hidden rounded-[2rem] bg-white transition-shadow',
         selected
           ? 'shadow-[0_22px_50px_rgba(192,38,211,0.3)] ring-[3px] ring-[#c0125a]'
-          : 'shadow-[0_14px_34px_rgba(107,35,152,0.14)] ring-1 ring-[#f5d5e0]',
+          : 'shadow-[0_14px_34px_rgba(0,0,0,0.3)]',
       )}
     >
       {/* Photo carousel */}

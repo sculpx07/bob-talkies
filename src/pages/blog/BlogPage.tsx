@@ -114,7 +114,7 @@ export default function BlogPage() {
             <div className="relative h-64 overflow-hidden sm:h-80 lg:h-auto lg:min-h-[420px]">
               <img src={featured.coverImage} alt={featured.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <span className="absolute inset-0 bg-gradient-to-t from-[#1b0b3a]/50 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-[#1b0b3a]/40" />
-              <span className="absolute left-5 top-5 rounded-full bg-[#f5d7a1] px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#4a2a00]">Featured</span>
+              <span className="absolute left-5 top-5 rounded-full bg-[linear-gradient(135deg,#f5d7a1_0%,#e0a94a_55%,#c9933a_100%)] px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#4a2a00]">Featured</span>
             </div>
             <div className="relative flex flex-col justify-center p-7 text-white sm:p-10">
               <span className="pointer-events-none absolute -right-16 -top-16 h-52 w-52 rounded-full bg-[#d9126a]/25 blur-3xl" aria-hidden="true" />

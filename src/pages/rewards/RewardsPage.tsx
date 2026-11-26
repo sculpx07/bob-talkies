@@ -6,7 +6,7 @@ import { ArrowRight, Gift, Users, Cake, RotateCcw, Zap, Calendar, Star } from 'l
 
 const PERKS = [
   { icon: Gift,      title: 'Earn BOB Points',    desc: 'Earn reward points on eligible bookings and redeem them for benefits.', accent: '#c9a84c', badge: 'Points' },
-  { icon: Users,     title: 'Refer & Earn',       desc: 'Refer friends and receive BOB credits when they complete eligible bookings.', accent: '#a81a3a', badge: 'Credits' },
+  { icon: Users,     title: 'Refer & Earn',       desc: 'Refer friends and receive BOB credits when they complete eligible bookings.', accent: '#e0457b', badge: 'Credits' },
   { icon: Cake,      title: 'Birthday Specials',  desc: 'Exclusive birthday-month offers and surprises just for you.', accent: '#e879a0', badge: 'Birthday' },
   { icon: RotateCcw, title: 'Repeat Guest Offers', desc: 'Special rewards and upgrades for returning customers who love BOB Talkies.', accent: '#10b981', badge: 'Loyalty' },
   { icon: Zap,       title: 'Early Access',       desc: 'Priority access to new experiences, seasonal themes and special events.', accent: '#f59e0b', badge: 'Priority' },
@@ -17,7 +17,32 @@ const EASE = [0.22, 1, 0.36, 1] as const
 
 export default function RewardsPage() {
   return (
-    <>
+    <div
+      className="rewards-plum"
+      style={{
+        // same magenta-plum background as the home page
+        backgroundColor: '#430948',
+        backgroundImage: [
+          'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+          'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+          'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+          'radial-gradient(ellipse 36% 8% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+          'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+        ].join(','),
+        backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+        backgroundRepeat: 'repeat-y, repeat-y, repeat-y, repeat-y, no-repeat',
+      }}
+    >
+      <style>{`
+        .rewards-plum .glass-card {
+          background: linear-gradient(160deg, rgba(255,255,255,0.14) 0%, rgba(135,0,79,0.30) 45%, rgba(59,0,42,0.42) 100%) !important;
+          -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
+          border: 1.5px solid rgba(245,199,106,0.62) !important;
+          box-shadow: 0 12px 34px rgba(0,0,0,0.4), 0 0 26px rgba(245,199,106,0.22), 0 0 18px rgba(135,0,79,0.35), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 0 22px rgba(255,255,255,0.05) !important;
+          --tw-ring-shadow: 0 0 #0000 !important;
+        }
+        .rewards-plum .glass-card [class*="text-[#5b2535]"] { color: rgba(255,255,255,0.78) !important; }
+      `}</style>
       <Seo
         title="BOB Rewards — Earn Points, Perks & More | BOB Talkies"
         description="Join the BOB Rewards programme. Earn points on bookings, refer friends for credits, enjoy birthday specials and exclusive early access."
@@ -26,11 +51,30 @@ export default function RewardsPage() {
       <PageShell className="!pt-0 md:!pt-0">
         {/* ── Hero: text left, floating points card right ── */}
         <section className="relative overflow-hidden pb-14 pt-20 md:pb-20 md:pt-24">
+          {/* unique backdrop: gold loyalty orbits circling the points card; small, centred and masked to nothing at the edges, so nothing is ever cut */}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 600 600"
+            className="pointer-events-none absolute right-[2%] top-1/2 z-0 hidden h-[560px] w-[560px] -translate-y-1/2 md:block lg:right-[5%]"
+            style={{ maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 55%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 55%, transparent 100%)' }}
+          >
+            <g transform="translate(300 300)"><g fill="none" stroke="#F5C76A" strokeWidth="1.2">
+              <ellipse rx="280" ry="105" transform="rotate(-20)" strokeOpacity="0.4" />
+              <ellipse rx="235" ry="82" transform="rotate(16)" strokeOpacity="0.3" strokeDasharray="3 8" strokeLinecap="round" />
+              <ellipse rx="190" ry="60" transform="rotate(-48)" strokeOpacity="0.22" />
+            </g></g>
+            <g fill="#FFE3A0">
+              <circle cx="60" cy="372" r="5" opacity="0.85" />
+              <circle cx="536" cy="232" r="4" opacity="0.7" />
+              <circle cx="352" cy="62" r="3.5" opacity="0.65" />
+              <circle cx="205" cy="548" r="4" opacity="0.6" />
+            </g>
+          </svg>
           <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 md:grid-cols-[1.1fr_1fr] md:px-8">
             <div>
               <motion.div
                 initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-                className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 ring-1 ring-[#f5d5e0] backdrop-blur"
+                className="glass-card mb-5 inline-flex items-center gap-2 rounded-full px-4 py-1.5"
               >
                 <Gift size={13} className="text-[#c9933a]" />
                 <span className="text-xs font-black uppercase tracking-[0.2em] text-[#c9933a]">BOB Rewards Programme</span>
@@ -38,15 +82,15 @@ export default function RewardsPage() {
 
               <motion.h1
                 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.6, ease: EASE }}
-                className="mb-5 text-4xl font-black leading-[1.05] text-[#3d0a24] md:text-6xl"
+                className="mb-5 text-4xl font-black leading-[1.05] text-white md:text-6xl"
               >
                 Book More.{' '}
-                <span className="bg-[linear-gradient(90deg,#a81a3a,#d9126a_50%,#c9933a)] bg-clip-text text-transparent">Earn More.</span>
+                <span className="bg-[linear-gradient(90deg,#ff9bb8,#F5C76A_60%,#E8A83E)] bg-clip-text text-transparent">Earn More.</span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16, duration: 0.5 }}
-                className="mb-8 max-w-xl text-lg leading-relaxed text-[#5b2535]"
+                className="mb-8 max-w-xl text-lg leading-relaxed text-white/85"
               >
                 Every booking gets you closer to something special. Discover all the ways BOB Talkies rewards your loyalty.
               </motion.p>
@@ -58,7 +102,7 @@ export default function RewardsPage() {
                 <Link to="/book" className="group inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5">
                   Book &amp; Start Earning <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
                 </Link>
-                <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-white/80 px-7 py-3.5 text-sm font-bold text-[#3d0a24] ring-1 ring-[#d9c4e3] backdrop-blur transition-colors hover:bg-white">
+                <Link to="/contact" className="glass-card inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition-colors hover:brightness-125">
                   Know More
                 </Link>
               </motion.div>
@@ -117,14 +161,13 @@ export default function RewardsPage() {
                     initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }}
                     transition={{ delay: (i % 3) * 0.08, duration: 0.55, ease: EASE }}
                     whileHover={{ y: -8 }}
-                    className="group relative overflow-hidden rounded-[1.75rem] bg-white/85 p-7 shadow-[0_14px_36px_rgba(107,35,152,0.1)] ring-1 ring-[#f8dce4] backdrop-blur"
+                    className="glass-card group relative overflow-hidden rounded-[1.75rem] p-7"
                   >
-                    <span className="pointer-events-none absolute -right-3 -top-5 font-display text-8xl font-bold leading-none text-[#fce8f0] transition-colors group-hover:text-[#efdcfa]" aria-hidden="true">{i + 1}</span>
                     <span className="relative flex h-14 w-14 items-center justify-center rounded-2xl text-white shadow-lg transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110" style={{ background: `linear-gradient(135deg, ${perk.accent}, ${perk.accent}bb)` }}>
                       <Icon size={24} />
                     </span>
                     <span className="relative mt-5 inline-block rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest" style={{ background: perk.accent + '1f', color: perk.accent }}>{perk.badge}</span>
-                    <h3 className="relative mt-3 text-lg font-bold text-[#250514]">{perk.title}</h3>
+                    <h3 className="relative mt-3 text-lg font-bold text-white">{perk.title}</h3>
                     <p className="relative mt-2 text-sm leading-relaxed text-[#5b2535]">{perk.desc}</p>
                   </motion.div>
                 )
@@ -138,10 +181,10 @@ export default function RewardsPage() {
           <div className="mx-auto max-w-5xl px-4 md:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.6, ease: EASE }}
-              className="relative overflow-hidden rounded-[2.5rem] bg-[linear-gradient(120deg,#6b1535_0%,#8b1a3a_55%,#a81a3a_100%)] px-8 py-12 text-center shadow-[0_26px_60px_rgba(74,26,138,0.35)] md:px-16 md:py-14"
+              className="relative overflow-hidden rounded-[2.5rem] bg-[linear-gradient(120deg,#3B002A_0%,#6a0a5e_50%,#87004F_100%)] px-8 py-12 text-center shadow-[0_26px_60px_rgba(0,0,0,0.4)] md:px-16 md:py-14"
             >
-              <motion.span className="pointer-events-none absolute -left-10 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[#f5bd61]/25 blur-2xl" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 8, repeat: Infinity }} aria-hidden="true" />
-              <span className="pointer-events-none absolute -bottom-24 right-20 h-64 w-96 rounded-[50%] bg-white/10" aria-hidden="true" />
+              <motion.span className="pointer-events-none absolute -left-10 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[#F5C76A]/12 blur-2xl" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 8, repeat: Infinity }} aria-hidden="true" />
+              <span className="pointer-events-none absolute -bottom-24 right-20 h-64 w-96 rounded-[50%] bg-white/5" aria-hidden="true" />
               <div className="relative">
                 <p className="mb-3 text-xs font-black uppercase tracking-[0.3em] text-[#f5d7a1]">Start Today</p>
                 <h2 className="mb-4 text-2xl font-black !text-white md:text-4xl">
@@ -158,6 +201,6 @@ export default function RewardsPage() {
           </div>
         </section>
       </PageShell>
-    </>
+    </div>
   )
 }

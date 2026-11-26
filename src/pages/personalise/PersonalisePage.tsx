@@ -40,13 +40,16 @@ function VideoBg() {
         preload="auto"
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ filter: 'saturate(1.2) brightness(1.1) contrast(1.05)' }}
+        style={{ filter: 'saturate(1.1) brightness(0.9) contrast(1.05)' }}
       >
         <source src="/Hero%20section.mp4" type="video/mp4" />
       </video>
 
       {/* thin warm tint — video stays vivid, text stays readable */}
-      <div className="absolute inset-0" style={{ background: 'rgba(255,245,232,0.42)' }} />
+      <div className="absolute inset-0" style={{ background: 'rgba(42,4,48,0.55)' }} />
+
+      {/* plum fade behind the (transparent) navbar so the white menu stays readable */}
+      <div className="absolute inset-x-0 top-0 h-32" style={{ background: 'linear-gradient(to bottom, rgba(42,4,48,0.92) 0%, rgba(67,9,72,0.6) 55%, rgba(67,9,72,0) 100%)' }} />
 
       {/* centre-clear vignette — edges darken softly */}
       <div
@@ -240,7 +243,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
             <span className="text-xs font-black tracking-[0.25em] text-[#c9933a]">PERSONALISE YOUR SURPRISE</span>
           </motion.div>
 
-          <h1 className="font-display text-4xl font-black leading-[1.05] text-[#3d0a24] sm:text-5xl md:text-6xl">
+          <h1 className="font-display text-4xl font-black leading-[1.05] text-white sm:text-5xl md:text-6xl">
             <span className="block overflow-hidden pb-1">
               <motion.span
                 className="block"
@@ -255,7 +258,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
               <motion.span
                 className="block"
                 style={{
-                  backgroundImage: 'linear-gradient(90deg,#8a6010,#c9a84c 45%,#8a6010)',
+                  backgroundImage: 'linear-gradient(90deg,#E8A83E,#FFE3A0 50%,#E8A83E)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   filter: 'drop-shadow(0 2px 8px rgba(201,168,76,0.55)) drop-shadow(0 0px 2px rgba(0,0,0,0.3))',
@@ -273,7 +276,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.55 }}
-            className="mt-4 max-w-xl text-sm font-semibold leading-relaxed text-[#3d0a24] md:text-lg"
+            className="mt-4 max-w-xl text-sm font-semibold leading-relaxed text-white/90 md:text-lg"
           >
             Your memories, your messages, your surprises. Turn a private theatre into a screen filled with stories you will never forget.
           </motion.p>
@@ -295,7 +298,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
             <Link
               to="/"
               state={{ highlightPlan: true }}
-              className="inline-flex items-center gap-2 rounded-full border-2 border-[#3d0a24] bg-white/70 backdrop-blur-sm px-6 py-3 text-sm font-black text-[#3d0a24] transition-all hover:bg-white/90 md:px-7 md:py-3.5"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-white/70 bg-white/10 backdrop-blur-sm px-6 py-3 text-sm font-black text-white transition-all hover:bg-white/20 md:px-7 md:py-3.5"
             >
               Book my theatre
             </Link>
@@ -303,7 +306,7 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
         </motion.div>
 
         {/* ── The screen ── */}
-        <div className="pointer-events-none absolute inset-0 z-[4] flex items-center justify-center">
+        <div className="pointer-events-none absolute inset-0 z-[4] flex items-center justify-center pt-10 md:pt-24">
           <motion.div
             className="relative overflow-hidden bg-[#1a0b33]"
             style={{
@@ -387,8 +390,8 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.35 }}
             >
-              <h2 className="text-lg font-black text-[#3d0a24] md:text-2xl">{scene.title}</h2>
-              <p className="text-xs italic text-[#5b2535] md:text-sm" style={{ color: scene.color === '#fbbf24' ? '#a8780f' : undefined }}>
+              <h2 className="text-lg font-black text-white md:text-2xl">{scene.title}</h2>
+              <p className="text-xs italic text-white/85 md:text-sm">
                 {scene.tagline}
               </p>
             </motion.div>
@@ -404,10 +407,10 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
                   aria-selected={i === idx}
                   aria-label={s.title}
                   onClick={() => jumpTo(i)}
-                  className="h-2 rounded-full transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3d0a24]"
+                  className="h-2 rounded-full transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   style={{
                     width: i === idx ? 28 : 8,
-                    background: i === idx ? '#c9a84c' : 'rgba(42,14,79,0.2)',
+                    background: i === idx ? '#c9a84c' : 'rgba(255,255,255,0.35)',
                   }}
                 />
               ))}
@@ -427,8 +430,8 @@ export function PersonaliseHero({ experiences }: { experiences: Scene[] }) {
           className="pointer-events-none absolute bottom-6 left-1/2 z-[5] flex -translate-x-1/2 flex-col items-center gap-2"
           style={{ opacity: hintOpacity }}
         >
-          <span className="text-[10px] font-semibold tracking-[0.25em] text-[#5b2535]">SCROLL TO START THE SHOW</span>
-          <div className="flex h-8 w-5 justify-center rounded-full border border-[#3d0a24]/30 pt-1.5">
+          <span className="text-[10px] font-semibold tracking-[0.25em] text-white/80">SCROLL TO START THE SHOW</span>
+          <div className="flex h-8 w-5 justify-center rounded-full border border-white/40 pt-1.5">
             <motion.span
               className="h-1.5 w-1 rounded-full bg-[#c9a84c]"
               animate={{ y: [0, 12, 0], opacity: [1, 0.2, 1] }}
@@ -657,11 +660,6 @@ function ExploreSection() {
         `}</style>
 
         {/* ambient blobs */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-24 left-1/4 h-80 w-80 rounded-full bg-[#a78bfa]/12 blur-3xl" />
-          <div className="absolute top-1/2 right-10 h-64 w-64 rounded-full bg-[#f472b6]/10 blur-3xl" />
-          <div className="absolute bottom-10 left-10 h-56 w-56 rounded-full bg-[#c9a84c]/14 blur-3xl" />
-        </div>
 
         {/* floating surprise emojis */}
         {CONFETTI.map((c, i) => (
@@ -699,7 +697,7 @@ function ExploreSection() {
             className="text-center mb-14"
           >
             <motion.div
-              className="inline-flex items-center gap-2 mb-3 rounded-full border border-[#c9a84c]/30 bg-[#fff8f9] px-5 py-1.5"
+              className="inline-flex items-center gap-2 mb-3 rounded-full border border-[#c9a84c]/30 bg-white/10 px-5 py-1.5"
               whileHover={{ scale: 1.05 }}
             >
               <motion.span animate={{ rotate: [0, 20, -10, 20, 0] }} transition={{ duration: 2.5, repeat: Infinity }}>
@@ -708,9 +706,9 @@ function ExploreSection() {
               <span className="font-cursive text-lg text-[#c9933a]">All Surprises</span>
             </motion.div>
 
-            <h2 className="text-3xl md:text-4xl font-black text-[#3d0a24] leading-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
               What Can You Show on the{' '}
-              <span style={{ background:'linear-gradient(135deg,#3d0a24,#a81a3a,#c9a84c)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
+              <span style={{ background:'linear-gradient(135deg,#ff9bb8,#F5C76A)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
                 Big Screen?
               </span>
             </h2>
@@ -829,11 +827,11 @@ function ExploreSection() {
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border-b border-[#f0e6cc] last:border-0">
+    <div className="border-b border-white/15 last:border-0">
       <button onClick={() => setOpen(!open)} className="w-full flex items-start justify-between gap-4 py-4 text-left">
-        <span className="text-[#3d0a24] font-semibold text-sm">{q}</span>
+        <span className="text-white font-semibold text-sm">{q}</span>
         <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }} className="shrink-0 mt-0.5">
-          <ChevronDown size={16} className="text-[#5b2535]" />
+          <ChevronDown size={16} className="text-white/70" />
         </motion.span>
       </button>
       <AnimatePresence initial={false}>
@@ -843,7 +841,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <p className="pb-4 text-[#5b2535] text-sm leading-relaxed">{a}</p>
+            <p className="pb-4 text-white/80 text-sm leading-relaxed">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -860,14 +858,28 @@ export default function PersonalisePage() {
   const faqInView   = useInView(faqRef,   { once: true, margin: '-60px' })
 
   return (
-    <>
+    <div
+      style={{
+        // same magenta-plum background as the home page
+        backgroundColor: '#430948',
+        backgroundImage: [
+          'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+          'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+          'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+          'radial-gradient(ellipse 36% 8% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+          'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+        ].join(','),
+        backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+        backgroundRepeat: 'repeat-y, repeat-y, repeat-y, repeat-y, no-repeat',
+      }}
+    >
       <Seo
         title="Personalise Your Surprise | BOB Talkies — Private Theatre Hyderabad"
         description="Create unforgettable personalised screen experiences — from birthday surprises and proposals to memory reels and video wishes on the big private theatre screen."
         canonical="/personalise"
       />
 
-      <PageShell fullWidth>
+      <PageShell fullWidth className="!pt-0 md:!pt-0">
 
         {/* ── Hero (scroll-pinned) ── */}
         <PersonaliseHero experiences={EXPERIENCES} />
@@ -879,7 +891,7 @@ export default function PersonalisePage() {
         <section
           ref={stepsRef}
           className="relative py-16 md:py-24 overflow-hidden"
-          style={{ background: 'linear-gradient(135deg,#250514 0%,#3d0a24 50%,#200510 100%)' }}
+          style={{ background: 'transparent' }}
         >
           {/* animated star particles */}
           <style>{`
@@ -890,11 +902,6 @@ export default function PersonalisePage() {
           `}</style>
 
           {/* bg glow orbs */}
-          <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute top-0 left-1/4 h-72 w-72 rounded-full bg-[#9b1a3a]/20 blur-3xl" style={{ animation:'hiw-orb 6s ease-in-out infinite' }} />
-            <div className="absolute bottom-0 right-1/4 h-56 w-56 rounded-full bg-[#c9a84c]/15 blur-3xl" style={{ animation:'hiw-orb 7s ease-in-out infinite 1s' }} />
-            <div className="absolute top-1/2 right-10 h-40 w-40 rounded-full bg-[#f472b6]/12 blur-2xl" style={{ animation:'hiw-orb 5s ease-in-out infinite 2s' }} />
-          </div>
 
           {/* floating star dots */}
           {[
@@ -995,15 +1002,15 @@ export default function PersonalisePage() {
               className="text-center mb-10"
             >
               <p className="font-cursive text-xl text-[#c9933a] mb-0.5">Common Questions</p>
-              <h2 className="text-2xl md:text-3xl font-black text-[#3d0a24]">Frequently Asked</h2>
-              <motion.div className="mx-auto mt-3 h-[3px] w-10 rounded-full bg-[#c9a84c]"
+              <h2 className="text-2xl md:text-3xl font-black text-white">Frequently Asked</h2>
+              <motion.div className="mx-auto mt-3 h-[3px] w-10 rounded-full bg-[linear-gradient(90deg,#f5d7a1,#c9933a)]"
                 initial={{ width: 0 }} animate={faqInView ? { width: 40 } : {}} transition={{ delay: 0.3 }} />
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={faqInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.1 }}
-              className="rounded-3xl border border-[#f0e6cc] bg-white px-6 py-2"
-              style={{ boxShadow: '0 4px 20px rgba(42,14,79,0.07)' }}
+              className="rounded-3xl bg-[linear-gradient(160deg,rgba(255,255,255,0.14),rgba(135,0,79,0.30)_45%,rgba(59,0,42,0.42))] px-6 py-2 backdrop-blur-md"
+              style={{ boxShadow: '0 12px 32px rgba(0,0,0,0.32)' }}
             >
               {FAQS.map(faq => <FaqItem key={faq.q} q={faq.q} a={faq.a} />)}
             </motion.div>
@@ -1013,18 +1020,17 @@ export default function PersonalisePage() {
         {/* ── Final CTA ────────────────────────────────────────────────────── */}
         <section
           className="py-16 md:py-24 relative overflow-hidden"
-          style={{ background: 'linear-gradient(160deg,#3d0a24 0%,#6b1535 50%,#3d0a24 100%)' }}
+          style={{ background: 'transparent' }}
         >
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#c9a84c]/10 blur-3xl translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-[#a78bfa]/10 blur-3xl -translate-x-1/3 translate-y-1/3" />
-          </div>
-          <div className="relative max-w-2xl mx-auto px-4 md:px-8 text-center">
+          {/* unique backdrop: theatre-curtain folds draping in from both sides, fading toward the centre and at the top and bottom, so nothing is cut */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 w-[30%] md:w-[24%]" style={{ backgroundImage: 'repeating-linear-gradient(90deg, rgba(245,199,106,0.14) 0px, rgba(245,199,106,0.02) 22px, rgba(245,199,106,0.14) 44px)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%), linear-gradient(to right, black 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%), linear-gradient(to right, black 0%, transparent 100%)', maskComposite: 'intersect', WebkitMaskComposite: 'source-in' }} />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-[30%] md:w-[24%]" style={{ backgroundImage: 'repeating-linear-gradient(90deg, rgba(245,199,106,0.14) 0px, rgba(245,199,106,0.02) 22px, rgba(245,199,106,0.14) 44px)', maskImage: 'linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%), linear-gradient(to left, black 0%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%), linear-gradient(to left, black 0%, transparent 100%)', maskComposite: 'intersect', WebkitMaskComposite: 'source-in' }} />
+          <div className="relative mx-auto max-w-2xl px-4 md:px-8 text-center">
             <div className="text-5xl mb-6">🎁</div>
             <h2 className="font-display text-3xl md:text-4xl font-black text-white leading-tight mb-4">
               Some Surprises Deserve the Big Screen.
             </h2>
-            <p className="text-white/55 text-base max-w-md mx-auto mb-10">
+            <p className="text-white/85 text-base max-w-md mx-auto mb-10">
               Bring your memories. Bring your idea. We'll help you make the moment unforgettable.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1038,7 +1044,7 @@ export default function PersonalisePage() {
               </Link>
               <a
                 href="#explore"
-                className="inline-flex items-center gap-2 rounded-full border border-white/25 px-8 py-4 text-sm font-semibold text-white/80 hover:bg-white/10 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-white/50 px-8 py-4 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
               >
                 Explore All Surprises
               </a>
@@ -1047,6 +1053,6 @@ export default function PersonalisePage() {
         </section>
 
       </PageShell>
-    </>
+    </div>
   )
 }

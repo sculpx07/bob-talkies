@@ -62,37 +62,37 @@ export function SavedDrawer() {
             role="dialog"
             aria-modal="true"
             aria-label="Saved for later"
-            className="fixed right-0 top-0 z-[61] flex h-full w-full max-w-[440px] flex-col bg-white shadow-[-20px_0_60px_rgba(50,16,95,0.25)]"
+            className="fixed right-0 top-0 z-[61] flex h-full w-full max-w-[440px] flex-col bg-[#430948] shadow-[-20px_0_60px_rgba(0,0,0,0.5)]"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 260, damping: 30 }}
           >
-            <div className="flex items-start justify-between border-b border-[#f8dce4] px-6 py-5">
+            <div className="flex items-start justify-between border-b border-white/15 px-6 py-5">
               <div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f6e6ef] px-3 py-1 text-xs font-bold text-[#8b1a3a]">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-[#F5C76A]">
                   <Bookmark size={12} /> Saved for later
                 </span>
-                <p className="mt-3 font-display text-3xl font-bold text-[#3d0a24]">Saved Plan</p>
-                <p className="mt-1 text-sm text-[#5b2535]">Your celebration plan, ready when you are</p>
+                <p className="mt-3 font-display text-3xl font-bold text-white">Saved Plan</p>
+                <p className="mt-1 text-sm text-white/80">Your celebration plan, ready when you are</p>
               </div>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close"
-                className="flex h-10 w-10 items-center justify-center rounded-full text-[#5c1535] transition-colors hover:bg-[#f6e6ef]"
+                className="flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/15"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto bg-[#fdf9ff] p-5">
+            <div className="flex-1 overflow-y-auto bg-transparent p-5">
               {plan ? (
                 <motion.article
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                  className="rounded-3xl bg-white p-4 shadow-[0_10px_30px_rgba(107,35,152,0.12)] ring-1 ring-[#f5d5e0]"
+                  className="rounded-3xl bg-white/10 p-4"
                 >
                   <div className="flex gap-4">
                     <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-[#f6e6ef]">
@@ -105,7 +105,7 @@ export function SavedDrawer() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
-                        <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs font-medium text-[#a81a3a]">
+                        <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs font-medium text-[#F5C76A]">
                           <span className="flex items-center gap-1"><Users size={12} /> {plan.guests} guests</span>
                           <span className="flex items-center gap-1"><CalendarDays size={12} /> {pretty}</span>
                         </p>
@@ -113,47 +113,47 @@ export function SavedDrawer() {
                           type="button"
                           onClick={remove}
                           aria-label="Remove saved plan"
-                          className="shrink-0 rounded-full p-1.5 text-[#7d4555] transition-colors hover:bg-[#fff0f5] hover:text-[#c2255c]"
+                          className="shrink-0 rounded-full p-1.5 text-white/70 transition-colors hover:bg-white/15 hover:text-white"
                         >
                           <Trash2 size={16} />
                         </button>
                       </div>
-                      <p className="mt-1 font-display text-xl font-bold leading-snug text-[#3d0a24]">
+                      <p className="mt-1 font-display text-xl font-bold leading-snug text-white">
                         {theatre ? theatre.name : 'Theatre not chosen yet'}
                       </p>
                       {pkg && (
-                        <p className="text-sm text-[#5b2535]">
-                          {pkg.name} package · <span className="font-semibold text-[#5c1535]">{formatINR(pkg.pricePaise)}</span>
+                        <p className="text-sm text-white/80">
+                          {pkg.name} package · <span className="font-semibold text-[#F5C76A]">{formatINR(pkg.pricePaise)}</span>
                         </p>
                       )}
                     </div>
                   </div>
 
-                  {pkg && <p className="mt-3 text-sm leading-relaxed text-[#5b2535]">{pkg.description}</p>}
+                  {pkg && <p className="mt-3 text-sm leading-relaxed text-white/80">{pkg.description}</p>}
                   {pkg && (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {pkg.inclusions.slice(0, 3).map((inc) => (
-                        <span key={inc} className="rounded-full bg-[#f6e6ef] px-3 py-1 text-[11px] font-medium text-[#8b1a3a]">{inc}</span>
+                        <span key={inc} className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-medium text-[#F5C76A]">{inc}</span>
                       ))}
                       {pkg.inclusions.length > 3 && (
-                        <span className="rounded-full bg-[#f6e6ef] px-3 py-1 text-[11px] font-medium text-[#8b1a3a]">+{pkg.inclusions.length - 3} more</span>
+                        <span className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-medium text-[#F5C76A]">+{pkg.inclusions.length - 3} more</span>
                       )}
                     </div>
                   )}
 
-                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-dashed border-[#e3cbe6] pt-4">
+                  <div className="mt-4 flex items-center justify-between gap-3 border-t border-dashed border-white/25 pt-4">
                     <a
                       href={wa}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 rounded-full border border-[#5c1535]/25 px-4 py-2 text-sm font-semibold text-[#5c1535] transition-colors hover:bg-[#5c1535]/5"
+                      className="flex items-center gap-1.5 rounded-full border border-white/40 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/10"
                     >
                       <MessageCircle size={15} /> Enquire
                     </a>
                     <button
                       type="button"
                       onClick={() => { setOpen(false); resume() }}
-                      className="group flex items-center gap-1.5 rounded-full bg-[#5c1535] px-5 py-2 text-sm font-semibold text-white"
+                      className="group flex items-center gap-1.5 rounded-full bg-[linear-gradient(135deg,#f5d7a1,#e0a94a_55%,#c9933a)] px-5 py-2 text-sm font-semibold text-[#3d0a24]"
                     >
                       Continue booking
                       <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -161,16 +161,16 @@ export function SavedDrawer() {
                   </div>
                 </motion.article>
               ) : (
-                <div className="mt-16 text-center text-sm text-[#7d4555]">
-                  <Bookmark size={32} className="mx-auto mb-3 text-[#d9b8e0]" />
+                <div className="mt-16 text-center text-sm text-white/80">
+                  <Bookmark size={32} className="mx-auto mb-3 text-[#F5C76A]" />
                   Nothing saved yet. Tap Save on the booking page to keep your plan here.
                 </div>
               )}
             </div>
 
-            <div className="border-t border-[#f8dce4] px-6 py-4 text-center text-sm text-[#7d4555]">
+            <div className="border-t border-white/15 px-6 py-4 text-center text-sm text-white/80">
               Need custom arrangements?{' '}
-              <a href={wa} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#8b1a3a] hover:underline">Chat with us</a>
+              <a href={wa} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#F5C76A] hover:underline">Chat with us</a>
             </div>
           </motion.aside>
         </>

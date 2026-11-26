@@ -176,27 +176,38 @@ export default function MyBookingPage() {
     return (
       <>
         <Seo title="My Booking" description="View and manage your BOB Talkies bookings." canonical="/my-booking" />
+        <div style={{
+        backgroundColor: '#430948',
+        backgroundImage: [
+          'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+          'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+          'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+          'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+        ].join(','),
+        backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+        backgroundRepeat: 'repeat-y, repeat-y, repeat-y, no-repeat',
+      }}>
         <PageShell>
           <motion.div
             initial={{ opacity: 0, y: 36, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mx-auto max-w-md overflow-hidden rounded-[2rem] bg-white p-8 text-[#3d0a24] shadow-[0_30px_80px_rgba(107,35,152,0.2)] ring-1 ring-[#f8dce4] sm:p-10"
+            className="relative mx-auto max-w-md overflow-hidden rounded-[2rem] p-8 text-white sm:p-10" style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)', backdropFilter: 'blur(24px) saturate(160%)', WebkitBackdropFilter: 'blur(24px) saturate(160%)', border: '1px solid rgba(255,255,255,0.14)', boxShadow: '0 30px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.18)' }}
           >
             <div className="relative">
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fce8f0] ring-1 ring-[#f5d5e0]">
-                <Ticket size={26} className="text-[#8b1a3a]" />
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/15">
+                <Ticket size={26} className="text-[#F5C76A]" />
               </span>
               <p className="mt-6 text-[11px] font-bold uppercase tracking-[0.3em] text-[#c9933a]">My Bookings</p>
-              <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-[#3d0a24]">Access Your Bookings</h1>
-              <p className="mt-2 text-sm text-[#5b2535]">Enter your mobile number to view your upcoming and past bookings.</p>
+              <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-white">Access Your Bookings</h1>
+              <p className="mt-2 text-sm text-white/80">Enter your mobile number to view your upcoming and past bookings.</p>
 
               {/* step progress */}
               <div className="mt-6 flex items-center gap-2" aria-hidden="true">
                 {[0, 1].map((i) => (
-                  <span key={i} className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-[#f8dce4]">
+                  <span key={i} className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-white/20">
                     <motion.span
-                      className="absolute inset-y-0 left-0 rounded-full bg-[linear-gradient(90deg,#8b1a3a,#d9126a)]"
+                      className="absolute inset-y-0 left-0 rounded-full bg-[linear-gradient(90deg,#f5d7a1,#c9933a)]"
                       initial={false}
                       animate={{ width: authState === 'otp_sent' || i === 0 ? '100%' : '0%' }}
                       transition={{ duration: 0.5 }}
@@ -204,13 +215,13 @@ export default function MyBookingPage() {
                   </span>
                 ))}
               </div>
-              <p className="mt-2 text-xs font-semibold text-[#7d4555]">{authState === 'otp_sent' ? 'Step 2 of 2 · Verify OTP' : 'Step 1 of 2 · Mobile number'}</p>
+              <p className="mt-2 text-xs font-semibold text-white/75">{authState === 'otp_sent' ? 'Step 2 of 2 · Verify OTP' : 'Step 1 of 2 · Mobile number'}</p>
 
               <div className="mt-6 space-y-4 text-left">
                 <div>
-                  <label htmlFor="mb-mobile" className="mb-1.5 block text-sm font-medium text-[#3d0a24]">Mobile Number</label>
+                  <label htmlFor="mb-mobile" className="mb-1.5 block text-sm font-medium text-white">Mobile Number</label>
                   <div className="relative">
-                    <Phone size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#a81a3a]" />
+                    <Phone size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#F5C76A]" />
                     <input
                       id="mb-mobile"
                       placeholder="10-digit mobile number"
@@ -218,7 +229,7 @@ export default function MyBookingPage() {
                       maxLength={10}
                       value={mobile}
                       onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
-                      className="w-full rounded-2xl border border-[#f5d5e0] bg-[#fff7f0] py-3.5 pl-11 pr-4 text-[#160730] placeholder:text-[#b0a0c8] outline-none transition-colors focus:border-[#c0125a] focus:ring-2 focus:ring-[#c0125a]/25"
+                      className="w-full rounded-2xl border border-white/25 bg-white/10 py-3.5 pl-11 pr-4 text-white backdrop-blur placeholder:text-white/50 outline-none transition-colors focus:ring-2 focus:ring-[#F5C76A]/40"
                     />
                   </div>
                   {mobileError && <p role="alert" className="mt-1.5 text-xs text-[#c2255c]">{mobileError}</p>}
@@ -226,7 +237,7 @@ export default function MyBookingPage() {
 
                 {authState === 'otp_sent' && (
                   <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
-                    <label htmlFor="mb-otp" className="mb-1.5 block text-sm font-medium text-[#3d0a24]">Enter OTP</label>
+                    <label htmlFor="mb-otp" className="mb-1.5 block text-sm font-medium text-white">Enter OTP</label>
                     <input
                       id="mb-otp"
                       placeholder="------"
@@ -234,9 +245,9 @@ export default function MyBookingPage() {
                       maxLength={6}
                       value={otp}
                       onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                      className="w-full rounded-2xl border border-[#c4b5fd] bg-[#ede8ff] py-3.5 text-center font-mono text-2xl tracking-[0.6rem] text-[#5c1535] placeholder:text-[#b0a0c8] outline-none transition-colors focus:border-[#c0125a] focus:ring-2 focus:ring-[#c0125a]/25"
+                      className="w-full rounded-2xl border-0 bg-white/10 py-3.5 text-center font-mono text-2xl tracking-[0.6rem] text-white backdrop-blur placeholder:text-white/50 outline-none transition-colors focus:border-[#c0125a] focus:ring-2 focus:ring-[#c0125a]/25"
                     />
-                    {otpError ? <p role="alert" className="mt-1.5 text-xs text-[#c2255c]">{otpError}</p> : <p className="mt-1.5 text-xs text-[#7d4555]">Use 123456 in test mode</p>}
+                    {otpError ? <p role="alert" className="mt-1.5 text-xs text-[#c2255c]">{otpError}</p> : <p className="mt-1.5 text-xs text-white/70">Use 123456 in test mode</p>}
                   </motion.div>
                 )}
 
@@ -245,7 +256,7 @@ export default function MyBookingPage() {
                     type="button"
                     disabled={mobile.length < 10 || sendingOtp}
                     onClick={() => { setMobileError(''); sendOtp(mobile) }}
-                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-base font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-50"
+                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#f5d7a1,#e0a94a_55%,#c9933a)] text-base font-bold !text-[#3d0a24] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60 disabled:saturate-50"
                   >
                     {sendingOtp ? 'Sending…' : <>Send OTP <ArrowRight size={17} /></>}
                   </button>
@@ -254,7 +265,7 @@ export default function MyBookingPage() {
                     type="button"
                     disabled={otp.length < 6 || verifyingOtp}
                     onClick={() => { setOtpError(''); verifyOtp({ mobile, otp }) }}
-                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-base font-bold text-white shadow-[0_14px_30px_rgba(50,16,95,0.3)] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-50"
+                    className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#f5d7a1,#e0a94a_55%,#c9933a)] text-base font-bold !text-[#3d0a24] transition-all hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60 disabled:saturate-50"
                   >
                     {verifyingOtp ? 'Checking…' : <>Verify & View Bookings <ArrowRight size={17} /></>}
                   </button>
@@ -263,6 +274,7 @@ export default function MyBookingPage() {
             </div>
           </motion.div>
         </PageShell>
+        </div>
       </>
     )
   }
@@ -270,8 +282,19 @@ export default function MyBookingPage() {
   return (
     <>
       <Seo title="My Bookings" description="View and manage your BOB Talkies bookings." canonical="/my-booking" noindex />
+      <div style={{
+        backgroundColor: '#430948',
+        backgroundImage: [
+          'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+          'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+          'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+          'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+        ].join(','),
+        backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+        backgroundRepeat: 'repeat-y, repeat-y, repeat-y, no-repeat',
+      }}>
       <PageShell>
-        <SectionHeader eyebrow="My Account" title="Your Bookings" className="!mb-6 md:!mb-6" eyebrowClassName="!tracking-normal" titleClassName="!font-medium" />
+        <SectionHeader eyebrow="My Account" title="Your Bookings" className="!mb-6 md:!mb-6" eyebrowClassName="!tracking-normal !text-[#F5C76A]" titleClassName="!font-medium !text-white" />
         <div className="mb-6"><RewardsSidebar bookingCount={bookings.length} /></div>
         <div className="grid grid-cols-1 items-stretch gap-6">
           {/* Bookings list */}
@@ -366,6 +389,7 @@ export default function MyBookingPage() {
 
         </div>
       </PageShell>
+      </div>
     </>
   )
 }

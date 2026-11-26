@@ -217,7 +217,7 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
         )}
         {otpError && <p role="alert" className="text-sm text-[#c2255c]">{otpError}</p>}
         {state.verifiedMobile && state.verifiedMobile === getValues('mobile') && (
-          <p className="flex items-center gap-2 rounded-2xl bg-[#e7f7ee] px-4 py-3 text-sm font-semibold text-emerald-700"><Check size={16} /> Mobile verified</p>
+          <p className="flex items-center gap-2 rounded-2xl bg-emerald-400/20 px-4 py-3 text-sm font-semibold text-emerald-200"><Check size={16} /> Mobile verified</p>
         )}
 
         <button
