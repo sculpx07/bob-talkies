@@ -239,11 +239,11 @@ export default function HomePage() {
         .home-champagne .glass-card [class*="bg-[#fce8f0]"], .home-champagne .glass-card [class*="bg-[#fff3d6]"], .home-champagne .glass-card [class*="bg-[#fff7e8]"] { background: rgba(255,255,255,0.12) !important; border-color: rgba(245,199,106,0.35) !important; }
       `}</style>
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: '75vh' }}>
         <HeroBackdropImage />
         <div className="film-grain absolute inset-0 pointer-events-none" aria-hidden="true" />
 
-        <div className="relative z-10 w-full min-w-0 text-center px-4 max-w-[1600px] mx-auto pt-24">
+        <div className="relative z-10 w-full min-w-0 text-center px-4 max-w-[1600px] mx-auto" style={{ paddingTop: '9.3125rem' }}>
           <div className="md:pl-14 md:text-left">
           <Badge variant="gold" className="mb-6 !border-0 !text-sm md:!text-lg !font-medium !text-[#f5d7a1] px-4 py-1.5 md:px-5 md:py-2 font-['Jost',sans-serif]">
             <Sparkles size={12} />
@@ -262,13 +262,10 @@ export default function HomePage() {
               </span>
             </span>
           </h1>
-          <p className="mb-8 text-sm md:text-base text-white/85 max-w-lg mx-auto md:mx-0 leading-relaxed">
-            From intimate celebrations to exclusive screenings and grand gatherings, experience entertainment your way at BOB Talkies.
-          </p>
           </div>
 
           {/* Plan your party — desktop pill (matches design) */}
-          <div id="plan" className="relative mx-auto w-full max-w-4xl scroll-mt-28 font-['Jost',sans-serif]">
+          <div id="plan" className="relative mx-auto w-full max-w-4xl scroll-mt-28 font-['Jost',sans-serif] mt-28" style={{ marginTop: '7.5rem' }}>
             {/* Left rays */}
             <div className="pointer-events-none absolute left-0 top-1/2 hidden -translate-x-9 -translate-y-1/2 flex-col items-center gap-[9px] md:flex" aria-hidden="true">
               <span className="block h-[2.5px] w-6 rotate-[30deg] rounded-full bg-[#d4a94a]" />
