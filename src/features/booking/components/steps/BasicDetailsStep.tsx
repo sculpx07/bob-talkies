@@ -17,6 +17,7 @@ import { useSiteConfig } from '@/features/site/api'
 import { formatINR } from '@/lib/utils/currency'
 import { useRequestOtp, useVerifyOtp } from '@/features/auth/api'
 import { isSignedInAs } from '@/features/auth/session'
+import { draftDetails } from '../../draft'
 
 const DetailsSchema = z.object({
   name: z.string().trim().min(2, 'Please enter the booking name'),
@@ -74,6 +75,14 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
     resolver: zodResolver(DetailsSchema),
     defaultValues: { name: state.customerName, mobile: state.customerMobile, email: state.customerEmail, personalMessage: state.personalMessage ?? '', consentTnC: state.consentTnC },
   })
+
+  // report what is typed so far, so an unfinished booking is still saved as a lead (see draft.ts)
+  useEffect(() => {
+    const report = (v: Partial<DetailsForm>) => draftDetails.set({ name: v.name ?? '', mobile: v.mobile ?? '', email: v.email ?? '', personalMessage: v.personalMessage ?? '' })
+    report(getValues())
+    const sub = watch((v) => report(v))
+    return () => sub.unsubscribe()
+  }, [watch, getValues])
 
   const requestOtp = useRequestOtp()
   const verify = useVerifyOtp()

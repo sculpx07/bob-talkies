@@ -9,7 +9,8 @@ import { useDisclosure } from '@/admin/hooks/useDisclosure'
 import { useUrlFilters } from '@/admin/hooks/useUrlFilters'
 import { formatDateTime, timeAgo } from '@/admin/lib/utils/date'
 import { cn } from '@/admin/lib/utils/cn'
-import { useLeadStats, useLeads } from '../api'
+import { useLeadCrmState, useLeadStats, useLeads } from '../api'
+import { CrmStatusBadge } from '../components/CrmLeadStatus'
 import { LEAD_SOURCE_LABELS, LEAD_STATUS_BADGE, LEAD_STATUS_ORDER, PRIORITY_BADGE } from '../constants'
 import { LeadFormModal } from '../components/LeadModals'
 import type { LeadListItem, LeadSource, LeadStatus } from '../types'
@@ -18,7 +19,8 @@ import { PERMISSIONS } from '@/admin/types/permissions'
 
 const isOverdue = (l: LeadListItem) => Boolean(l.followUpAt && new Date(l.followUpAt) <= new Date() && ['new', 'contacted', 'follow_up'].includes(l.status))
 
-const columns: Column<LeadListItem>[] = [
+/** While the CRM manages leads, status and owner come from the CRM. */
+const buildColumns = (crmManaged: boolean): Column<LeadListItem>[] => [
   {
     key: 'name',
     header: 'Lead',
@@ -35,8 +37,12 @@ const columns: Column<LeadListItem>[] = [
   },
   { key: 'message', header: 'Message', hideOnMobile: true, cell: (l) => <p className="line-clamp-2 max-w-sm text-xs text-slate-600">{l.message || '—'}</p> },
   { key: 'source', header: 'Source', hideOnMobile: true, cell: (l) => <span className="text-xs">{LEAD_SOURCE_LABELS[l.source]}</span> },
-  { key: 'status', header: 'Status', cell: (l) => <StatusBadge status={l.status} map={LEAD_STATUS_BADGE} /> },
-  { key: 'assigned', header: 'Assigned', hideOnMobile: true, cell: (l) => l.assignedTo?.name ?? <span className="text-slate-400">—</span> },
+  crmManaged
+    ? { key: 'status', header: 'CRM status', cell: (l) => <CrmStatusBadge crm={l.crm} /> }
+    : { key: 'status', header: 'Status', cell: (l) => <StatusBadge status={l.status} map={LEAD_STATUS_BADGE} /> },
+  crmManaged
+    ? { key: 'assigned', header: 'CRM owner', hideOnMobile: true, cell: (l) => l.crm?.owner?.name ?? <span className="text-slate-400">—</span> }
+    : { key: 'assigned', header: 'Assigned', hideOnMobile: true, cell: (l) => l.assignedTo?.name ?? <span className="text-slate-400">—</span> },
   {
     key: 'followUpAt',
     header: 'Follow up',
@@ -55,6 +61,7 @@ export default function LeadsPage() {
   const navigate = useNavigate()
   const add = useDisclosure()
   const stats = useLeadStats()
+  const crmManaged = useLeadCrmState().data ?? false
   const [f, setFilters, reset] = useUrlFilters({ page: 1, status: 'open', search: '', assignedTo: '', source: '', followUp: '', sort: '-createdAt' })
 
   const query = useLeads({
@@ -80,7 +87,7 @@ export default function LeadsPage() {
     <>
       <PageHeader
         title="Leads"
-        description="Enquiries from the website form, phone and WhatsApp."
+        description="Enquiries from the website forms, phone and WhatsApp, and booking forms left before paying."
         actions={<Can permission={PERMISSIONS.LEADS_CREATE}><Button leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Log enquiry</Button></Can>}
       />
 
@@ -112,7 +119,7 @@ export default function LeadsPage() {
           </div>
         </div>
         <DataTable
-          columns={columns}
+          columns={buildColumns(crmManaged)}
           rows={query.data?.leads}
           rowKey={(l) => l.id}
           loading={query.isLoading || query.isPlaceholderData}

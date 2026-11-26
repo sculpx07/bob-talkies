@@ -10,6 +10,8 @@ export interface NavItem {
   icon: LucideIcon
   /** needed to see the item and open its page */
   permission: Permission
+  /** hidden while leads are worked on in Sculpx CRM (Settings → CRM, sync on) */
+  hideWhenCrmManaged?: boolean
   /** shown on the placeholder page until the module is built */
   description: string
 }
@@ -30,7 +32,7 @@ export const NAV_SECTIONS: NavSection[] = [
     title: 'Operations',
     items: [
       { label: 'Bookings', path: '/bookings', icon: CalendarDays, permission: P.BOOKINGS_VIEW, description: 'Day board, booking list, manual bookings, payments, reschedules and cancellations.' },
-      { label: 'Leads', path: '/leads', icon: UserRound, permission: P.LEADS_VIEW, description: 'Enquiries from the website and phone, follow-ups and conversions.' },
+      { label: 'Leads', path: '/leads', icon: UserRound, permission: P.LEADS_VIEW, hideWhenCrmManaged: true, description: 'Enquiries from the website and phone, follow-ups and conversions.' },
       { label: 'Reports', path: '/reports', icon: BarChart3, permission: P.REPORTS_VIEW, description: 'Revenue, collections, occupancy, add-ons, offers and leads, with CSV export.' },
     ],
   },

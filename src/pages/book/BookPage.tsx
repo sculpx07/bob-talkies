@@ -22,6 +22,7 @@ import { BookingSummaryCard } from '@/features/booking/components/BookingSummary
 import { PaymentStep } from '@/features/booking/components/steps/PaymentStep'
 import { trackEvent } from '@/features/tracking/events'
 import { useAddons, useTheatres } from '@/features/catalog/api'
+import { useDraftAutosave } from '@/features/booking/draft'
 
 /* Occasion, guests and date are chosen on the home page finder, so this booking
    flow starts at the theatre step (index 3). Stages: theatre, basic details,
@@ -62,6 +63,7 @@ function canProceed(step: number, state: ReturnType<typeof useBooking>['state'])
 
 export default function BookPage() {
   const { state, dispatch } = useBooking()
+  useDraftAutosave(state) // unfinished bookings are kept as leads
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { toast } = useToast()

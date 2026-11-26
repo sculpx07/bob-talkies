@@ -8,6 +8,7 @@ import { useSettings } from '../api'
 import { HistoryTab } from '../components/HistoryTab'
 import { SettingsForm } from '../components/SettingsForm'
 import { PaymentSettingsPanel } from '../payments/PaymentSettingsPanel'
+import { CrmSettingsPanel } from '../crm/CrmSettingsPanel'
 
 export default function SettingsPage() {
   const { can } = useAuth()
@@ -33,6 +34,8 @@ export default function SettingsPage() {
           items={[
             { value: 'settings', label: 'Settings', content: <SettingsForm settings={s} canEdit={can(PERMISSIONS.SETTINGS_EDIT)} /> },
             { value: 'payments', label: 'Payments', content: <PaymentSettingsPanel canEdit={can(PERMISSIONS.SETTINGS_PAYMENTS)} /> },
+            // the CRM connection holds a secret, so it has its own permission
+            ...(can(PERMISSIONS.SETTINGS_INTEGRATIONS) ? [{ value: 'crm', label: 'CRM', content: <CrmSettingsPanel canEdit /> }] : []),
             { value: 'history', label: 'Change history', content: <HistoryTab /> },
           ]}
         />

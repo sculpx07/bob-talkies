@@ -53,6 +53,7 @@ export const PERMISSIONS = {
   SETTINGS_VIEW: 'settings.view',
   SETTINGS_EDIT: 'settings.edit',
   SETTINGS_PAYMENTS: 'settings.payments',
+  SETTINGS_INTEGRATIONS: 'settings.integrations',
 
   STAFF_VIEW: 'staff.view',
   STAFF_MANAGE: 'staff.manage',

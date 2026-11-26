@@ -36,6 +36,7 @@ export const LEAD_SOURCE_LABELS: Record<LeadSource, string> = {
   walk_in: 'Walk-in',
   referral: 'Referral',
   other: 'Other',
+  unfinished_booking: 'Unfinished booking',
 }
 
 /** Sources staff can pick when logging an enquiry by hand. */

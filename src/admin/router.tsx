@@ -6,6 +6,7 @@ import { AdminLayout } from './components/layout/AdminLayout'
 import { NAV_ITEMS } from './components/layout/nav'
 import { PERMISSIONS, type Permission } from './types/permissions'
 import { NotFoundPage, RouteErrorPage } from './features/placeholder/ErrorPages'
+import { HideWhenCrmManaged } from './features/leads/components/HideWhenCrmManaged'
 
 // Pages load on demand, so the first screen stays small.
 const LoginPage = lazy(() => import('./features/auth/pages/LoginPage'))
@@ -90,8 +91,8 @@ const builtRoutes: RouteObject[] = [
   {
     path: 'leads',
     children: [
-      { index: true, element: guard([P.LEADS_VIEW], <LeadsPage />) },
-      { path: ':id', element: guard([P.LEADS_VIEW], <LeadDetailPage />) },
+      { index: true, element: guard([P.LEADS_VIEW], <HideWhenCrmManaged><LeadsPage /></HideWhenCrmManaged>) },
+      { path: ':id', element: guard([P.LEADS_VIEW], <HideWhenCrmManaged><LeadDetailPage /></HideWhenCrmManaged>) },
     ],
   },
   { path: 'reports', element: guard([P.REPORTS_VIEW], <ReportsPage />) },

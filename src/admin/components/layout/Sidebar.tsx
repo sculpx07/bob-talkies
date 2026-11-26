@@ -2,10 +2,14 @@ import { NavLink } from 'react-router-dom'
 import { useAuth } from '@/admin/auth/AuthProvider'
 import { cn } from '@/admin/lib/utils/cn'
 import { BRAND, NAV_SECTIONS } from './nav'
+import { useLeadCrmState } from '@/admin/features/leads/api'
+import { PERMISSIONS } from '@/admin/types/permissions'
 
 /** Navigation list; used fixed on desktop and inside a drawer on mobile. */
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const { can } = useAuth()
+  // Leads are worked on in Sculpx CRM while the CRM sync is on
+  const crmManaged = useLeadCrmState(can(PERMISSIONS.LEADS_VIEW)).data ?? false
 
   return (
     <nav className="flex h-full flex-col bg-white" aria-label="Main">
@@ -16,7 +20,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       <div className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
         {NAV_SECTIONS.map((section, i) => {
-          const items = section.items.filter((item) => can(item.permission))
+          const items = section.items.filter((item) => can(item.permission) && !(item.hideWhenCrmManaged && crmManaged))
           if (!items.length) return null
           return (
             <div key={section.title ?? i}>

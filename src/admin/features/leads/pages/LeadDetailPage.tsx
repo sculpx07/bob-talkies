@@ -16,7 +16,8 @@ import { errorMessage } from '@/admin/lib/api/errors'
 import { formatDate, formatDateTime, formatTime, timeAgo } from '@/admin/lib/utils/date'
 import { formatPaise } from '@/admin/lib/utils/money'
 import { cn } from '@/admin/lib/utils/cn'
-import { useAddLeadActivity, useAssignLead, useDeleteLead, useLead } from '../api'
+import { useAddLeadActivity, useAssignLead, useDeleteLead, useLead, useLeadCrmState } from '../api'
+import { CrmLeadCard, CrmStatusBadge } from '../components/CrmLeadStatus'
 import { ACTIVITY_LABELS, LEAD_SOURCE_LABELS, LEAD_STATUS_BADGE, LEAD_TRANSITIONS, MANUAL_ACTIVITY_TYPES, OPEN_LEAD_STATUSES, PRIORITY_BADGE } from '../constants'
 import { LeadFormModal, LeadStatusModal, LinkBookingModal } from '../components/LeadModals'
 import type { Lead } from '../types'
@@ -53,6 +54,8 @@ export default function LeadDetailPage() {
   const toast = useToast()
   const { can } = useAuth()
   const query = useLead(id)
+  // while the CRM manages leads: status, owner and notes are changed there
+  const crmManaged = useLeadCrmState().data ?? false
   const staff = useStaffOptions()
   const assign = useAssignLead()
   const remove = useDeleteLead()
@@ -66,7 +69,7 @@ export default function LeadDetailPage() {
   if (query.error || !detail) return <ErrorState error={query.error} retry={() => query.refetch()} title="Could not load this lead" />
   const { lead, otherLeads, bookings } = detail
   const open = OPEN_LEAD_STATUSES.includes(lead.status)
-  const canChangeStatus = LEAD_TRANSITIONS[lead.status].length > 0
+  const canChangeStatus = !crmManaged && LEAD_TRANSITIONS[lead.status].length > 0
   const overdue = open && lead.followUpAt && new Date(lead.followUpAt) <= new Date()
 
   const moreItems: MenuItem[] = [
@@ -82,7 +85,7 @@ export default function LeadDetailPage() {
         back={{ to: '/leads', label: 'Leads' }}
         description={
           <span className="flex flex-wrap items-center gap-2">
-            <StatusBadge status={lead.status} map={LEAD_STATUS_BADGE} />
+            {crmManaged ? <CrmStatusBadge crm={lead.crm} /> : <StatusBadge status={lead.status} map={LEAD_STATUS_BADGE} />}
             {lead.priority !== 'normal' && <Badge tone={PRIORITY_BADGE[lead.priority].tone}>{PRIORITY_BADGE[lead.priority].label} priority</Badge>}
             <span>{LEAD_SOURCE_LABELS[lead.source]} · received {formatDateTime(lead.createdAt)}</span>
           </span>
@@ -129,7 +132,9 @@ export default function LeadDetailPage() {
           <Card>
             <CardHeader title="Activity" description="Calls, messages, notes and every change." />
             <CardBody className="space-y-4">
-              <ActivityComposer lead={lead} />
+              {crmManaged
+                ? <p className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">Calls, notes and status changes are logged in Sculpx CRM; comments made there appear here.</p>
+                : <ActivityComposer lead={lead} />}
               <ol className="space-y-3 border-l border-slate-200 pl-4">
                 {[...lead.activity].reverse().map((a, i) => (
                   <li key={i} className="relative text-sm">
@@ -139,7 +144,7 @@ export default function LeadDetailPage() {
                       {a.type === 'status_change' && a.to && <span className="font-normal text-slate-600"> {a.from ? `${LEAD_STATUS_BADGE[a.from].label} → ` : ''}{LEAD_STATUS_BADGE[a.to].label}</span>}
                     </p>
                     {a.text && <p className="whitespace-pre-line text-slate-600">{a.text}</p>}
-                    <p className="text-xs text-slate-500">{formatDateTime(a.at)} · {a.by?.name ?? 'Customer'}</p>
+                    <p className="text-xs text-slate-500">{formatDateTime(a.at)} · {a.by?.name ?? (a.via === 'crm' ? 'Sculpx CRM' : 'Customer')}</p>
                   </li>
                 ))}
               </ol>
@@ -162,7 +167,7 @@ export default function LeadDetailPage() {
             </CardBody>
           </Card>
 
-          <Card>
+          {crmManaged ? <CrmLeadCard crm={lead.crm} /> : <Card>
             <CardHeader title="Assigned to" />
             <CardBody>
               <Select
@@ -177,7 +182,7 @@ export default function LeadDetailPage() {
                 })}
               />
             </CardBody>
-          </Card>
+          </Card>}
 
           <Card>
             <CardHeader title="Same customer" description={`Everything from ${lead.mobile}`} />

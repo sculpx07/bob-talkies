@@ -15,6 +15,7 @@ import { formatPaise } from '@/admin/lib/utils/money'
 import { cn } from '@/admin/lib/utils/cn'
 import { format, parseISO } from 'date-fns'
 import { useBookingsOn, useLeadStats } from '../api'
+import { useLeadCrmState } from '@/admin/features/leads/api'
 
 const scheduleColumns: Column<BookingListItem>[] = [
   { key: 'time', header: 'Time', cell: (b) => <span className="font-medium text-slate-900">{formatTime(b.slotStart)}</span>, className: 'w-24' },
@@ -107,6 +108,8 @@ export default function DashboardPage() {
   const seesBookings = can(PERMISSIONS.BOOKINGS_VIEW)
   const seesReports = can(PERMISSIONS.REPORTS_VIEW)
   const bookings = useBookingsOn(today, seesBookings)
+  // the leads card is left out while leads are worked on in Sculpx CRM
+  const crmManaged = useLeadCrmState().data ?? false
   const leads = useLeadStats()
   const overview = useReportOverview()
   const last30 = useReportSummary(presetRange('last30'), seesReports)
@@ -126,8 +129,8 @@ export default function DashboardPage() {
           hint="Payments recorded today" />
         <StatCard label="Still to collect" value={formatPaise(o?.unpaidUpcoming.amountPaise ?? 0)} icon={<IndianRupee />} tone={o?.unpaidUpcoming.count ? 'warning' : 'neutral'} loading={overview.isLoading}
           hint={o && `${o.unpaidUpcoming.count} upcoming booking${o.unpaidUpcoming.count === 1 ? '' : 's'} with a balance`} />
-        <StatCard label="Open leads" value={leads.data?.open ?? 0} icon={leads.data?.dueFollowUps ? <AlarmClock /> : <UserRound />} tone={leads.data?.dueFollowUps ? 'warning' : 'neutral'} loading={leads.isLoading} to="/leads"
-          hint={leads.data && `${leads.data.dueFollowUps} follow-up${leads.data.dueFollowUps === 1 ? '' : 's'} due · ${leads.data.unassignedOpen} not assigned`} />
+        {!crmManaged && <StatCard label="Open leads" value={leads.data?.open ?? 0} icon={leads.data?.dueFollowUps ? <AlarmClock /> : <UserRound />} tone={leads.data?.dueFollowUps ? 'warning' : 'neutral'} loading={leads.isLoading} to="/leads"
+          hint={leads.data && `${leads.data.dueFollowUps} follow-up${leads.data.dueFollowUps === 1 ? '' : 's'} due · ${leads.data.unassignedOpen} not assigned`} />}
       </div>
 
       <div className={cn('mt-6 grid gap-6', seesReports && 'xl:grid-cols-2')}>

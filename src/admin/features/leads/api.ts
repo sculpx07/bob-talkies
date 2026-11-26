@@ -30,6 +30,16 @@ export function useLeadStats() {
 }
 
 /** A lead with its related enquiries and bookings; skipped when `id` is empty. */
+/** true while leads are worked on in Sculpx CRM: status, owner and notes are changed there */
+export function useLeadCrmState(enabled = true) {
+  return useQuery({
+    queryKey: [...leadKeys.all, 'crm-state'],
+    queryFn: () => api.get<{ managed: boolean }>('/leads/crm-state').then((r) => r.managed),
+    staleTime: 60_000,
+    enabled,
+  })
+}
+
 export function useLead(id: string) {
   return useQuery({
     queryKey: leadKeys.detail(id),

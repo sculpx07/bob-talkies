@@ -4,7 +4,7 @@ import type { BookingStatus } from '@/admin/features/bookings/types'
 /** Lead shapes from the bob-admin backend (src/models/lead.model.js). */
 
 export type LeadStatus = 'new' | 'contacted' | 'follow_up' | 'converted' | 'lost' | 'spam'
-export type LeadSource = 'contact_page' | 'website' | 'vibe_hall_enquiry' | 'phone' | 'whatsapp' | 'instagram' | 'walk_in' | 'referral' | 'other'
+export type LeadSource = 'contact_page' | 'website' | 'vibe_hall_enquiry' | 'phone' | 'whatsapp' | 'instagram' | 'walk_in' | 'referral' | 'other' | 'unfinished_booking'
 export type LeadPriority = 'low' | 'normal' | 'high'
 export type LeadActivityType = 'created' | 'note' | 'call' | 'whatsapp' | 'email' | 'status_change' | 'assigned' | 'converted'
 
@@ -14,10 +14,23 @@ export interface LeadActivity {
   from: LeadStatus | null
   to: LeadStatus | null
   by: UserRef | null
+  /** 'crm' = came from Sculpx CRM */
+  via?: string
   at: string
 }
 
 /** A row in the inbox (no activity). */
+/** What Sculpx CRM says about the lead (sent back by the CRM). */
+export interface LeadCrm {
+  status: { code: string; name: string; color: string | null } | null
+  owner: { name: string; email: string } | null
+  priority: string
+  followUpAt: string | null
+  /** the lead's page in the CRM */
+  url: string
+  updatedAt: string | null
+}
+
 export interface LeadListItem {
   id: string
   name: string
@@ -32,6 +45,8 @@ export interface LeadListItem {
   assignedTo: UserRef | null
   followUpAt: string | null
   lostReason: string
+  /** set once the CRM has sent this lead back */
+  crm?: LeadCrm | null
   createdAt: string
   updatedAt: string
 }
