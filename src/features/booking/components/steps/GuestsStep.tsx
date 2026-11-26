@@ -1,16 +1,13 @@
 import { motion } from 'framer-motion'
 import { Users } from 'lucide-react'
-import { useQuery } from '@tanstack/react-query'
 import { useBooking } from '../../state/booking.context'
 import { GUEST_OPTIONS } from '@/lib/constants'
-import { theatreKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
-import type { Theatre } from '@/schemas/theatre'
 import { cn } from '@/lib/utils/cn'
+import { useTheatres } from '@/features/catalog/api'
 
 export function GuestsStep() {
   const { state, dispatch } = useBooking()
-  const { data: theatres = [] } = useQuery({ queryKey: theatreKeys.list(), queryFn: () => api.get<Theatre[]>('/theatres') })
+  const { data: theatres = [] } = useTheatres()
   const fits = theatres.filter((t) => t.capacityMin <= state.guests && t.capacityMax >= state.guests)
 
   return (

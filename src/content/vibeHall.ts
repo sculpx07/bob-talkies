@@ -1,5 +1,3 @@
-import { THEATRE_LISTING } from './theatreListing'
-
 /** Shown wherever a detail has not been confirmed by the business yet. */
 export const CONFIRM_TEXT = 'Confirm with our team'
 
@@ -34,12 +32,3 @@ export const GROUP_PACKAGES: GroupPackage[] = []
  */
 export interface CateringOption { id: string; name: string; description: string }
 export const CATERING_OPTIONS: CateringOption[] = []
-
-/** Verified Vibe Hall facts (bobtalkies.com listing page + FAQ). */
-const info = THEATRE_LISTING['vibe-hall']
-export const VIBE_HALL_FACTS = {
-  guestRange: '20–40 guests', // FAQ and theatre record agree
-  includedGuests: info.includedGuests,
-  duration: info.durationNote ?? CONFIRM_TEXT,
-  spec: info.spec,
-}

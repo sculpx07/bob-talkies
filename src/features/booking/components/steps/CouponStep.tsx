@@ -14,7 +14,15 @@ export function CouponStep({ embedded = false }: { embedded?: boolean }) {
   const [appliedMsg, setAppliedMsg] = useState('')
 
   const { mutate: validate, isPending } = useMutation({
-    mutationFn: (c: string) => bookingApi.validateCoupon(c, state.theatreId ?? undefined),
+    mutationFn: (c: string) =>
+      bookingApi.validateCoupon(c, {
+        theatreId: state.theatreId ?? undefined,
+        slotId: state.slotId ?? undefined,
+        date: state.date ?? undefined,
+        guests: state.guests + state.kids,
+        decoration: state.decoration,
+        addonIds: state.addonIds,
+      }),
     onSuccess: (data, c) => {
       dispatch({ type: 'SET_COUPON', couponCode: c })
       const disc =

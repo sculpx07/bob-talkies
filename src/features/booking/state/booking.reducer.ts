@@ -64,6 +64,7 @@ export type BookingAction =
   | { type: 'GO_STEP'; step: number }
   | { type: 'NEXT_STEP' }
   | { type: 'PREV_STEP' }
+  | { type: 'CLEAR_BOOKING' }
   | { type: 'RESET' }
 
 export const initialBookingState: BookingState = {
@@ -96,6 +97,9 @@ export const initialBookingState: BookingState = {
   verifiedMobile: null,
 }
 
+/** The held booking (if any) no longer matches the selection: the next "Pay" creates a new one. */
+const newBooking = { bookingId: null, slotHoldExpiresAt: null }
+
 const downstreamReset = {
   theatreId: null, theatreSlug: null, slotId: null, packageId: null,
   addonIds: [] as string[], serverQuote: null, bookingId: null, slotHoldExpiresAt: null,
@@ -108,17 +112,17 @@ export function bookingReducer(state: BookingState, action: BookingAction): Book
     case 'SET_GUESTS': return action.guests === state.guests ? state : { ...state, guests: action.guests, ...downstreamReset }
     case 'SET_LOCATION': return { ...state, locationId: action.locationId }
     case 'SET_DATE': return action.date === state.date ? state : { ...state, date: action.date, ...downstreamReset }
-    case 'SET_THEATRE_SLOT': return { ...state, theatreId: action.theatreId, theatreSlug: action.theatreSlug, slotId: action.slotId }
+    case 'SET_THEATRE_SLOT': return { ...state, theatreId: action.theatreId, theatreSlug: action.theatreSlug, slotId: action.slotId, ...newBooking }
     case 'SET_PACKAGE': return { ...state, packageId: action.packageId }
     case 'TOGGLE_ADDON': {
       const has = state.addonIds.includes(action.addonId)
-      return { ...state, addonIds: has ? state.addonIds.filter((id) => id !== action.addonId) : [...state.addonIds, action.addonId] }
+      return { ...state, addonIds: has ? state.addonIds.filter((id) => id !== action.addonId) : [...state.addonIds, action.addonId], ...newBooking }
     }
-    case 'SET_ADDONS': return { ...state, addonIds: action.addonIds }
+    case 'SET_ADDONS': return { ...state, addonIds: action.addonIds, ...newBooking }
     case 'SET_ADDON_REQUEST': return { ...state, addonRequest: action.text }
     case 'SET_PERSONAL_MESSAGE': return { ...state, personalMessage: action.text }
     case 'SET_CUSTOM_REQUEST': return { ...state, customRequest: action.text }
-    case 'SET_COUPON': return { ...state, couponCode: action.couponCode }
+    case 'SET_COUPON': return { ...state, couponCode: action.couponCode, ...newBooking }
     case 'SET_CUSTOMER': return {
       ...state,
       customerName: action.name, customerMobile: action.mobile,
@@ -128,14 +132,15 @@ export function bookingReducer(state: BookingState, action: BookingAction): Book
     case 'SET_BOOKING_ID': return { ...state, bookingId: action.bookingId, slotHoldExpiresAt: action.expiresAt }
     case 'SET_SERVER_QUOTE': return { ...state, serverQuote: action.quote }
     // editing the head-count after a theatre is chosen keeps the theatre (the form clamps it to capacity)
-    case 'SET_PEOPLE': return { ...state, guests: action.guests, serverQuote: null }
-    case 'SET_KIDS': return { ...state, kids: action.kids, serverQuote: null }
-    case 'SET_DECORATION': return { ...state, decoration: action.decoration, serverQuote: null }
+    case 'SET_PEOPLE': return { ...state, guests: action.guests, serverQuote: null, ...newBooking }
+    case 'SET_KIDS': return { ...state, kids: action.kids, serverQuote: null, ...newBooking }
+    case 'SET_DECORATION': return { ...state, decoration: action.decoration, serverQuote: null, ...newBooking }
     case 'SET_VERIFIED_MOBILE': return { ...state, verifiedMobile: action.mobile }
     case 'SET_PAY_FULL': return { ...state, payFull: action.payFull }
     case 'GO_STEP': return { ...state, step: action.step }
     case 'NEXT_STEP': return { ...state, step: state.step + 1 }
     case 'PREV_STEP': return { ...state, step: Math.max(0, state.step - 1) }
+    case 'CLEAR_BOOKING': return { ...state, ...newBooking }
     case 'RESET': return { ...initialBookingState }
     default: return state
   }

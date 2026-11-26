@@ -1,9 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
-import { api } from '@/lib/api/client'
-import { addonKeys } from '@/lib/api/queryKeys'
 import type { Addon } from '@/schemas/addon'
 import { formatINR } from '@/lib/utils/currency'
 import { CATEGORY_LABEL, OCCASION_SERVICE_CATEGORIES } from '@/content/experienceServices'
+import { useAddons } from '@/features/catalog/api'
 
 export interface OccasionServiceGroup {
   key: string
@@ -15,10 +13,7 @@ export interface OccasionServiceGroup {
 
 /** Real add-on categories (from the add-on catalogue) relevant to an occasion. Empty while loading or if none exist. */
 export function useOccasionServices(slug: string): { groups: OccasionServiceGroup[]; isLoading: boolean } {
-  const { data, isLoading } = useQuery({
-    queryKey: addonKeys.list(undefined),
-    queryFn: () => api.get<Addon[]>('/addons'),
-  })
+  const { data, isLoading } = useAddons()
 
   const available = (data ?? []).filter((a) => a.isAvailable && !a.isOutOfStock)
   const byCategory = new Map<string, Addon[]>()

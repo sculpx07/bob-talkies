@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { ArrowRight, Check, Monitor, Users, Clock, Volume2, UtensilsCrossed, MessageCircle, Send } from 'lucide-react'
 import { Seo } from '@/components/seo/Seo'
@@ -10,15 +10,15 @@ import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { PartySelect } from '@/components/ui/PartySelect'
 import { useToast } from '@/components/ui/Toast'
-import { api } from '@/lib/api/client'
-import { theatreKeys } from '@/lib/api/queryKeys'
-import type { Theatre } from '@/schemas/theatre'
 import { trackEvent } from '@/features/tracking/events'
 import { getLastTouchUTM } from '@/features/tracking/utm'
-import { config } from '@/lib/config'
+import { useTheatres } from '@/features/catalog/api'
+import { leadApi } from '@/features/leads/api'
+import { guestRangeText, theatreSpec } from '@/features/catalog/theatre'
 import {
-  CATERING_OPTIONS, CONFIRM_TEXT, EVENT_TYPES, GROUP_PACKAGES, VIBE_HALL_EXPERIENCES, VIBE_HALL_FACTS,
+  CATERING_OPTIONS, CONFIRM_TEXT, EVENT_TYPES, GROUP_PACKAGES, VIBE_HALL_EXPERIENCES,
 } from '@/content/vibeHall'
+import { useWhatsappNumber } from '@/features/site/api'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const VIEW = { once: true, margin: '0px 0px -60px 0px' }
@@ -42,11 +42,12 @@ function scrollToEnquiry() {
 }
 
 export default function VibeHallPage() {
+  const whatsappNumber = useWhatsappNumber()
   const { toast } = useToast()
   const [submitted, setSubmitted] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
 
-  const { data: theatres } = useQuery({ queryKey: theatreKeys.list(), queryFn: () => api.get<Theatre[]>('/theatres') })
+  const { data: theatres } = useTheatres()
   const vibe = theatres?.find((t) => t.slug === 'vibe-hall')
   const hero = vibe?.images?.[0] ?? FALLBACK_HERO
 
@@ -68,7 +69,7 @@ export default function VibeHallPage() {
         `Preferred date: ${d.date || 'Not specified'}`,
         `Additional requirements: ${d.requirements?.trim() || 'None'}`,
       ].join('\n')
-      return api.post('/leads', {
+      return leadApi.submit({
         name: d.name,
         mobile: d.mobile,
         email: d.email,
@@ -88,12 +89,14 @@ export default function VibeHallPage() {
     onError: () => toast('error', 'Could not send your enquiry', 'Please try again or reach us on WhatsApp.'),
   })
 
-  const waLink = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent('Hi! I would like to enquire about a corporate / group event at Vibe Hall.')}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hi! I would like to enquire about a corporate / group event at Vibe Hall.')}`
+  // facts from the Vibe Hall record in Admin → Theatres
+  const seating = vibe ? [vibe.seatingType, ...vibe.facilities].filter(Boolean).join(', ') : ''
   const facts = [
-    { icon: <Users size={20} />, label: 'Guests', value: VIBE_HALL_FACTS.guestRange },
-    { icon: <Monitor size={20} />, label: 'Screen & visuals', value: VIBE_HALL_FACTS.spec },
-    { icon: <Volume2 size={20} />, label: 'Package', value: `${VIBE_HALL_FACTS.duration}, includes ${VIBE_HALL_FACTS.includedGuests} guests` },
-    { icon: <Clock size={20} />, label: 'Seating & other facilities', value: CONFIRM_TEXT, pending: true },
+    { icon: <Users size={20} />, label: 'Guests', value: vibe ? guestRangeText(vibe, 'guests') : '…' },
+    { icon: <Monitor size={20} />, label: 'Screen & visuals', value: vibe ? theatreSpec(vibe) : '…' },
+    { icon: <Volume2 size={20} />, label: 'Package', value: vibe ? `${vibe.durationNote || CONFIRM_TEXT}, includes ${vibe.includedGuests} guests` : '…' },
+    { icon: <Clock size={20} />, label: 'Seating & other facilities', value: seating || CONFIRM_TEXT, pending: !seating },
   ]
 
   return (

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { Seo } from '@/components/seo/Seo'
 import { Button } from '@/components/ui/Button'
@@ -8,14 +8,14 @@ import { Input } from '@/components/ui/Input'
 import { Badge } from '@/components/ui/Badge'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { PageShell, SectionHeader } from '@/components/layout/PageShell'
-import { api } from '@/lib/api/client'
 import { formatDate, formatTime } from '@/lib/utils/date'
 import { formatINR } from '@/lib/utils/currency'
 import { Phone, Ticket, Calendar, ChevronRight, Star, Gift, Users, RotateCcw, Bookmark, ArrowRight, Share2 } from 'lucide-react'
-import type { Booking } from '@/schemas/booking'
 import { getPoints, getBookingCount, buildReferralUrl } from '@/lib/utils/bobRewards'
 import { useSavedPlan } from '@/features/booking/useSavedPlan'
 import { OCCASIONS } from '@/content/occasions'
+import { useRequestOtp, useVerifyOtp } from '@/features/auth/api'
+import { bookingApi } from '@/features/booking/api'
 
 type AuthState = 'idle' | 'otp_sent' | 'authenticated'
 
@@ -139,25 +139,29 @@ export default function MyBookingPage() {
   const [mobileError, setMobileError] = useState('')
   const [otpError, setOtpError] = useState('')
 
-  const { mutate: sendOtp, isPending: sendingOtp } = useMutation({
-    mutationFn: (m: string) => api.post('/auth/otp/request', { mobile: m }),
-    onSuccess: () => setAuthState('otp_sent'),
-    onError: () => setMobileError('Could not send OTP. Please try again.'),
-  })
+  const requestOtp = useRequestOtp()
+  const verify = useVerifyOtp()
+  const sendingOtp = requestOtp.isPending
+  const verifyingOtp = verify.isPending
 
-  const { mutate: verifyOtp, isPending: verifyingOtp } = useMutation({
-    mutationFn: ({ mobile, otp }: { mobile: string; otp: string }) =>
-      api.post<{ token: string }>('/auth/otp/verify', { mobile, otp }),
-    onSuccess: (data) => {
-      setToken(data.token)
-      setAuthState('authenticated')
-    },
-    onError: () => setOtpError('Invalid OTP. Use 123456 for testing.'),
-  })
+  const sendOtp = (m: string) =>
+    requestOtp.mutate(m, {
+      onSuccess: () => setAuthState('otp_sent'),
+      onError: (e) => setMobileError(e.message || 'Could not send OTP. Please try again.'),
+    })
+
+  const verifyOtp = (vars: { mobile: string; otp: string }) =>
+    verify.mutate(vars, {
+      onSuccess: (data) => {
+        setToken(data.token)
+        setAuthState('authenticated')
+      },
+      onError: (e) => setOtpError(e.message || 'Invalid OTP. Please try again.'),
+    })
 
   const { data: bookingsData, isLoading } = useQuery({
     queryKey: ['my-bookings', token],
-    queryFn: () => api.get<{ data: Booking[] }>('/me/bookings', token),
+    queryFn: () => bookingApi.myBookings(token),
     enabled: authState === 'authenticated',
   })
 

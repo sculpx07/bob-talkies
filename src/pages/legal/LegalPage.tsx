@@ -1,6 +1,7 @@
 import { useParams, useLocation } from 'react-router-dom'
 import { Seo } from '@/components/seo/Seo'
 import { PageShell } from '@/components/layout/PageShell'
+import { useContact } from '@/features/site/api'
 
 const LEGAL_CONTENT: Record<string, { title: string; seoTitle: string; lastUpdated: string; sections: { heading: string; body: string }[] }> = {
   terms: {
@@ -123,6 +124,7 @@ const LEGAL_CONTENT: Record<string, { title: string; seoTitle: string; lastUpdat
 }
 
 export default function LegalPage() {
+  const contact = useContact()
   const { slug: paramSlug } = useParams<{ slug: string }>()
   const location = useLocation()
   // Support both /legal/:slug and flat routes like /terms, /privacy, /refund-policy
@@ -162,9 +164,9 @@ export default function LegalPage() {
           <div className="mt-14 pt-8 border-t border-border-subtle">
             <p className="text-xs text-text-muted">
               For any questions about this {content.title.toLowerCase()}, contact us at{' '}
-              <a href="mailto:hello@bobtalkies.com" className="text-gold-400 hover:underline">hello@bobtalkies.com</a>{' '}
+              <a href={`mailto:${contact.email}`} className="text-gold-400 hover:underline">{contact.email}</a>{' '}
               or WhatsApp{' '}
-              <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="text-gold-400 hover:underline">+91 98765 43210</a>.
+              <a href={`https://wa.me/${contact.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="text-gold-400 hover:underline">{contact.phone || `+${contact.whatsappNumber}`}</a>.
             </p>
           </div>
         </div>

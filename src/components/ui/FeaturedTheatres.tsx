@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, ChevronRight, MapPin } from 'lucide-react'
-import { api } from '@/lib/api/client'
-import { theatreKeys } from '@/lib/api/queryKeys'
 import { cn } from '@/lib/utils/cn'
-import type { Theatre } from '@/schemas/theatre'
+import { useTheatres } from '@/features/catalog/api'
 
 function locationLabel(locationId: string) {
   const name = locationId.replace(/^loc-/, '').replace(/-/g, ' ')
@@ -22,10 +19,7 @@ const IDENTITY: Record<string, { accent: string; glow: string; gradient: string;
 const FALLBACK = IDENTITY['delight']
 
 export function FeaturedTheatres() {
-  const { data: theatres = [] } = useQuery({
-    queryKey: theatreKeys.list(),
-    queryFn: () => api.get<Theatre[]>('/theatres'),
-  })
+  const { data: theatres = [] } = useTheatres()
   const featured = theatres.filter((t) => t.images[0]).slice(0, 5)
 
   const sectionRef  = useRef<HTMLElement>(null)

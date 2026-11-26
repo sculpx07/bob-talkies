@@ -1,17 +1,11 @@
-import { useQuery } from '@tanstack/react-query'
-import { offerKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
-import type { Offer } from '@/schemas/offer'
 import { Seo } from '@/components/seo/Seo'
 import { OfferTicket } from '@/components/ui/OfferTicket'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { PageShell, SectionHeader } from '@/components/layout/PageShell'
+import { useOffers } from '@/features/catalog/api'
 
 export default function OffersPage() {
-  const { data: offers = [], isLoading } = useQuery({
-    queryKey: offerKeys.list(),
-    queryFn: () => api.get<Offer[]>('/offers'),
-  })
+  const { data: offers = [], isLoading } = useOffers()
 
   return (
     <>

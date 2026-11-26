@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { ArrowRight, MessageCircle, Ticket, Users, Clock, MapPin } from 'lucide-react'
 import { useBookingStatus } from '@/features/booking/hooks/useBookingStatus'
@@ -8,13 +7,11 @@ import { Seo } from '@/components/seo/Seo'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui/EmptyState'
 import { PageShell } from '@/components/layout/PageShell'
-import { theatreKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
-import type { Theatre } from '@/schemas/theatre'
 import { formatTime } from '@/lib/utils/date'
 import { formatINR } from '@/lib/utils/currency'
 import { cn } from '@/lib/utils/cn'
-import { config } from '@/lib/config'
+import { useTheatres } from '@/features/catalog/api'
+import { useWhatsappNumber } from '@/features/site/api'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const NOTCH = 16 // px radius of the ticket cut-outs
@@ -42,11 +39,12 @@ function Barcode({ value }: { value: string }) {
 }
 
 export default function MyBookingDetailPage() {
+  const whatsappNumber = useWhatsappNumber()
   const { bookingId } = useParams()
   const { data: booking, isLoading, isError, refetch } = useBookingStatus(bookingId ?? null)
-  const { data: theatres = [] } = useQuery({ queryKey: theatreKeys.list(), queryFn: () => api.get<Theatre[]>('/theatres') })
+  const { data: theatres = [] } = useTheatres()
   const theatre = theatres.find((t) => t.id === booking?.theatreId)
-  const waLink = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(`Hi! I need help with my booking ${bookingId}.`)}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! I need help with my booking ${bookingId}.`)}`
 
   const d = booking ? new Date(`${booking.date}T00:00:00`) : null
   const paidPct = booking && booking.totalPaise > 0 ? Math.min(100, Math.round((booking.advancePaidPaise / booking.totalPaise) * 100)) : 0

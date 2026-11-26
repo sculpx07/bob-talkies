@@ -8,8 +8,8 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { formatINR } from '@/lib/utils/currency'
 import { formatDate, formatTime } from '@/lib/utils/date'
 import { Check, Calendar, MapPin, MessageCircle, QrCode, Users, ArrowRight, Sparkles, Gift, Share2, Star } from 'lucide-react'
-import { config } from '@/lib/config'
 import { awardBookingPoints, buildReferralUrl } from '@/lib/utils/bobRewards'
+import { useWhatsappNumber } from '@/features/site/api'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const CONFETTI = [
@@ -19,6 +19,7 @@ const CONFETTI = [
 ]
 
 export default function BookSuccessPage() {
+  const whatsappNumber = useWhatsappNumber()
   const { bookingId } = useParams()
   const { dispatch } = useBooking()
   useEffect(() => { dispatch({ type: 'RESET' }) }, [dispatch])
@@ -34,7 +35,7 @@ export default function BookSuccessPage() {
     setReward(awardBookingPoints())
   }, [booking, bookingId])
 
-  const waLink = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(`Hi! I just booked a private theatre (Booking ID: ${bookingId}). Need help with my booking.`)}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! I just booked a private theatre (Booking ID: ${bookingId}). Need help with my booking.`)}`
   const confirmed = booking?.status === 'CONFIRMED'
 
   return (

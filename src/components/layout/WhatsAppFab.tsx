@@ -1,15 +1,16 @@
 import { MessageCircle } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
-import { config } from '@/lib/config'
 import { useTrackEvent } from '@/features/tracking/events'
+import { useWhatsappNumber } from '@/features/site/api'
 
 export function WhatsAppFab() {
+  const whatsappNumber = useWhatsappNumber()
   const location = useLocation()
   const trackEvent = useTrackEvent()
   const pageMsg = encodeURIComponent(
     `Hi! I'm on the ${location.pathname === '/' ? 'homepage' : location.pathname} page and would like to know more about BOB Talkies.`,
   )
-  const waLink = `https://wa.me/${config.whatsappNumber}?text=${pageMsg}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${pageMsg}`
 
   return (
     <a

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button'
 import { Link } from 'react-router-dom'
 import { FAQS, FAQ_CATEGORIES, type FaqCategory } from '@/content/faqs'
 import { cn } from '@/lib/utils/cn'
+import { useWhatsappNumber } from '@/features/site/api'
 
 const JSON_LD = {
   '@context': 'https://schema.org',
@@ -19,6 +20,7 @@ const JSON_LD = {
 }
 
 export default function FaqPage() {
+  const whatsappNumber = useWhatsappNumber()
   const [activeCategory, setActiveCategory] = useState<FaqCategory | 'all'>('all')
   const categories = Object.entries(FAQ_CATEGORIES) as [FaqCategory, string][]
   const filtered = activeCategory === 'all' ? FAQS : FAQS.filter((f) => f.category === activeCategory)
@@ -78,7 +80,7 @@ export default function FaqPage() {
               <Link to="/contact">Contact Us</Link>
             </Button>
             <Button asChild variant="whatsapp">
-              <a href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER ?? '919876543210'}`} target="_blank" rel="noopener noreferrer">
+              <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer">
                 Chat on WhatsApp
               </a>
             </Button>

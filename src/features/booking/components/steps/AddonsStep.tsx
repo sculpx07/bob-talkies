@@ -1,14 +1,12 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { Check, Plus } from 'lucide-react'
-import { addonKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
 import type { Addon, AddonCategory } from '@/schemas/addon'
 import { useBooking } from '../../state/booking.context'
 import { formatINR } from '@/lib/utils/currency'
 import { cn } from '@/lib/utils/cn'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { useAddons } from '@/features/catalog/api'
 
 // section headings, as on https://bobtalkies.com/add-on/
 const CATEGORY_LABELS: Record<AddonCategory, string> = {
@@ -31,10 +29,7 @@ const TILES = ['from-[#fbe3ec] to-[#f6c9dc]', 'from-[#f3e6ff] to-[#dcc4f5]', 'fr
 export function AddonsStep() {
   const { state, dispatch } = useBooking()
 
-  const { data: addons = [], isLoading } = useQuery({
-    queryKey: addonKeys.list(state.theatreId ?? undefined),
-    queryFn: () => api.get<Addon[]>(`/addons${state.theatreId ? `?theatreId=${state.theatreId}` : ''}`),
-  })
+  const { data: addons = [], isLoading } = useAddons(state.theatreId)
 
   const shown = addons.filter((a) => a.category !== 'cake' && a.category !== 'decoration')
   const categories = [...new Set(shown.map((a) => a.category))] as AddonCategory[] // keeps the page order

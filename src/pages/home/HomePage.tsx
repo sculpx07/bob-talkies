@@ -1,7 +1,6 @@
 ﻿import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, MapPin, Phone, MessageCircle, Sparkles, PartyPopper, CalendarDays, Users, Clapperboard, ArrowRight } from 'lucide-react'
 import { Seo } from '@/components/seo/Seo'
 import { ReviewsSection } from '@/components/home/ReviewsSection'
@@ -27,12 +26,9 @@ import { Card, CardBody } from '@/components/ui/Card'
 import { PriceTag } from '@/components/ui/PriceTag'
 import { Skeleton, TheatreCardSkeleton } from '@/components/ui/Skeleton'
 import { Section, SectionHeader } from '@/components/layout/PageShell'
-import { api } from '@/lib/api/client'
-import { theatreKeys, offerKeys } from '@/lib/api/queryKeys'
 import { OCCASIONS } from '@/content/occasions'
-import { config } from '@/lib/config'
-import type { Theatre } from '@/schemas/theatre'
-import type { Offer } from '@/schemas/offer'
+import { useOffers, useTheatres } from '@/features/catalog/api'
+import { useWhatsappNumber } from '@/features/site/api'
 
 const OCCASION_QUICK = OCCASIONS.map((o) => ({ label: o.label, slug: o.slug, emoji: o.emoji }))
 
@@ -58,6 +54,7 @@ const CEL_ROW2 = [
 ]
 
 export default function HomePage() {
+  const whatsappNumber = useWhatsappNumber()
   const navigate = useNavigate()
   const { dispatch: bookingDispatch } = useBooking()
   const resetBooking = () => bookingDispatch({ type: 'RESET' })
@@ -133,15 +130,9 @@ export default function HomePage() {
     return () => { c1(); c2() }
   }, [])
 
-  const { data: theatres, isLoading: theatresLoading } = useQuery({
-    queryKey: theatreKeys.list(),
-    queryFn: () => api.get<Theatre[]>('/theatres'),
-  })
+  const { data: theatres, isLoading: theatresLoading } = useTheatres()
 
-  const { data: offers, isLoading: offersLoading } = useQuery({
-    queryKey: offerKeys.list(),
-    queryFn: () => api.get<Offer[]>('/offers'),
-  })
+  const { data: offers, isLoading: offersLoading } = useOffers()
 
   useEffect(() => {
     const el = offersScrollRef.current
@@ -711,7 +702,7 @@ export default function HomePage() {
                 <div className="space-y-5">
                   {[
                     { icon: <MapPin size={20} className="text-[#6b2398]" />, label: 'Address', content: <p className="text-[#2a0e4f] leading-relaxed">BOB Talkies, Kukatpally,<br />Hyderabad, Telangana 500072</p> },
-                    { icon: <Phone size={20} className="text-[#6b2398]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${config.whatsappNumber}`} className="text-[#2a0e4f] hover:text-[#6b2398] transition-colors">+91 {config.whatsappNumber.slice(2)}</a> },
+                    { icon: <Phone size={20} className="text-[#6b2398]" />, label: 'Phone & WhatsApp', content: <a href={`tel:+${whatsappNumber}`} className="text-[#2a0e4f] hover:text-[#6b2398] transition-colors">+91 {whatsappNumber.slice(2)}</a> },
                     { icon: <CalendarDays size={20} className="text-[#6b2398]" />, label: 'Operating Hours', content: <><p className="text-[#2a0e4f]">10:00 AM – 1:00 AM</p><p className="text-[#8f6420] text-xs mt-0.5 font-semibold">Open 365 Days</p></> },
                   ].map((item, i) => (
                     <motion.div key={item.label} className="flex items-start gap-4"
@@ -735,7 +726,7 @@ export default function HomePage() {
                   <Link to="/book">Book a Theatre</Link>
                 </Button>
                 <Button asChild variant="whatsapp" size="lg" className="w-full sm:w-auto">
-                  <a href={`https://wa.me/${config.whatsappNumber}`} target="_blank" rel="noopener noreferrer">
+                  <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer">
                     <MessageCircle size={18} /> WhatsApp
                   </a>
                 </Button>

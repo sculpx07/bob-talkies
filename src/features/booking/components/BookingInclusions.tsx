@@ -1,10 +1,6 @@
 import { useState, type ReactNode } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Clock, Users, Monitor, UtensilsCrossed, Palette, Gift, UserPlus, ShieldCheck, ChevronDown, Check } from 'lucide-react'
-import { addonKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
-import type { Addon } from '@/schemas/addon'
 import type { Theatre } from '@/schemas/theatre'
 import {
   CANCELLATION_LINES, CONFIRM_TEXT, getCapacityLines, getDecorationLines, getDurationLines, getExtraGuestLines,
@@ -12,7 +8,8 @@ import {
 } from '@/content/bookingInclusions'
 import { CATEGORY_LABEL } from '@/content/experienceServices'
 import { cn } from '@/lib/utils/cn'
-
+import { useAddons } from '@/features/catalog/api'
+import { useSiteConfig } from '@/features/site/api'
 
 interface Row { id: string; icon: ReactNode; title: string; lines: InclusionLine[] }
 
@@ -21,10 +18,8 @@ export function BookingInclusions({ theatre, className }: { theatre: Theatre; cl
   const [open, setOpen] = useState<string | null>(null)
 
   // real add-on catalogue for this theatre (same query the add-ons step uses)
-  const { data: addons } = useQuery({
-    queryKey: addonKeys.list(theatre.id),
-    queryFn: () => api.get<Addon[]>(`/addons?theatreId=${theatre.id}`),
-  })
+  const { data: addons } = useAddons(theatre.id)
+  const { data: site } = useSiteConfig()
 
   const categories = [...new Set((addons ?? []).filter((a) => a.isAvailable).map((a) => a.category))]
   const addonLines: InclusionLine[] = categories.length
@@ -32,13 +27,13 @@ export function BookingInclusions({ theatre, className }: { theatre: Theatre; cl
     : [{ text: CONFIRM_TEXT, pending: true }]
 
   const rows: Row[] = [
-    { id: 'duration', icon: <Clock size={16} />, title: 'Theatre duration', lines: getDurationLines(theatre.slug) },
-    { id: 'capacity', icon: <Users size={16} />, title: 'Guest capacity', lines: getCapacityLines(theatre.slug) },
-    { id: 'screen', icon: <Monitor size={16} />, title: 'Screen & sound', lines: getScreenSoundLines(theatre.slug) },
+    { id: 'duration', icon: <Clock size={16} />, title: 'Theatre duration', lines: getDurationLines(theatre) },
+    { id: 'capacity', icon: <Users size={16} />, title: 'Guest capacity', lines: getCapacityLines(theatre) },
+    { id: 'screen', icon: <Monitor size={16} />, title: 'Screen & sound', lines: getScreenSoundLines(theatre) },
     { id: 'food', icon: <UtensilsCrossed size={16} />, title: 'Food', lines: getFoodLines() },
-    { id: 'decor', icon: <Palette size={16} />, title: 'Decoration', lines: getDecorationLines() },
+    { id: 'decor', icon: <Palette size={16} />, title: 'Decoration', lines: getDecorationLines(site?.pricing.decorationPricePaise) },
     { id: 'addons', icon: <Gift size={16} />, title: 'Add-on options', lines: addonLines },
-    { id: 'extra', icon: <UserPlus size={16} />, title: 'Extra guest charges', lines: getExtraGuestLines() },
+    { id: 'extra', icon: <UserPlus size={16} />, title: 'Extra guest charges', lines: getExtraGuestLines(theatre) },
   ]
   // hidden until the business confirms which cancellation / rescheduling policy applies
   if (CANCELLATION_LINES) rows.push({ id: 'policy', icon: <ShieldCheck size={16} />, title: 'Cancellation & rescheduling', lines: CANCELLATION_LINES })

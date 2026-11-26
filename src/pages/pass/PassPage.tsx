@@ -2,18 +2,13 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { ArrowRight, CalendarDays, Clock, Clapperboard, Users, BadgeCheck, ShieldCheck } from 'lucide-react'
-import { api } from '@/lib/api/client'
+import { bookingApi } from '@/features/booking/api'
 import { Seo } from '@/components/seo/Seo'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui/EmptyState'
 import { formatDate, formatTime } from '@/lib/utils/date'
 import { formatINR } from '@/lib/utils/currency'
 
-interface PassData {
-  id: string; theatreName: string; date: string; slotStart: string; slotEnd: string;
-  guests: number; customerName: string; packageName?: string; totalPaise: number;
-  balancePaise: number; status: string; qrCode: string;
-}
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -21,7 +16,7 @@ export default function PassPage() {
   const { token } = useParams()
   const { data: pass, isLoading, isError, refetch } = useQuery({
     queryKey: ['pass', token],
-    queryFn: () => api.get<PassData>(`/passes/${token}`),
+    queryFn: () => bookingApi.getPass(token!),
     enabled: Boolean(token),
   })
 

@@ -1,15 +1,16 @@
 import { useState } from 'react'
-import { useQuery, useQueries } from '@tanstack/react-query'
+import { useQueries } from '@tanstack/react-query'
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isBefore, startOfDay, parseISO } from 'date-fns'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useBooking } from '../../state/booking.context'
 import type { CalendarDay } from '../../hooks/useAvailability'
 import { useSlots } from '../../hooks/useAvailability'
-import { availabilityKeys, theatreKeys } from '@/lib/api/queryKeys'
+import { availabilityKeys } from '@/lib/api/queryKeys'
 import { api } from '@/lib/api/client'
 import type { Theatre } from '@/schemas/theatre'
 import { cn } from '@/lib/utils/cn'
 import { formatTime } from '@/lib/utils/date'
+import { useTheatres } from '@/features/catalog/api'
 
 /** Live slot availability for one theatre on the chosen date (real API data only). */
 function TheatreAvailability({ theatre, date }: { theatre: Theatre; date: string }) {
@@ -39,7 +40,7 @@ export function DateStep() {
   const [currentMonth, setCurrentMonth] = useState(() => (state.date ? parseISO(state.date) : new Date()))
   const month = format(currentMonth, 'yyyy-MM')
 
-  const { data: theatres = [] } = useQuery({ queryKey: theatreKeys.list(), queryFn: () => api.get<Theatre[]>('/theatres') })
+  const { data: theatres = [] } = useTheatres()
   const eligible = theatres.filter((t) => t.capacityMin <= state.guests && t.capacityMax >= state.guests)
 
   const calendars = useQueries({

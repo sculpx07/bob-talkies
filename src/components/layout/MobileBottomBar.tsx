@@ -1,11 +1,12 @@
 import { Link, useLocation, NavLink } from 'react-router-dom'
 import { MessageCircle, Ticket } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { config } from '@/lib/config'
 import { useTrackEvent } from '@/features/tracking/events'
 import { cn } from '@/lib/utils/cn'
+import { useWhatsappNumber } from '@/features/site/api'
 
 export function MobileBottomBar() {
+  const whatsappNumber = useWhatsappNumber()
   const location = useLocation()
   const trackEvent = useTrackEvent()
 
@@ -15,7 +16,7 @@ export function MobileBottomBar() {
   }
 
   const waMsg = encodeURIComponent(`Hi! I saw your website (${location.pathname}) and would like to know more about BOB Talkies.`)
-  const waLink = `https://wa.me/${config.whatsappNumber}?text=${waMsg}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${waMsg}`
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-bg-elevated/95 backdrop-blur-md border-t border-border-subtle px-4 py-3 safe-area-bottom">

@@ -44,6 +44,7 @@ const Search = lazy_(() => import('@/pages/search/SearchPage'))
 const Book = lazy_(() => import('@/pages/book/BookPage'))
 const BookSuccess = lazy_(() => import('@/pages/book-success/BookSuccessPage'))
 const BookFailed = lazy_(() => import('@/pages/book-failed/BookFailedPage'))
+const TestPayment = lazy_(() => import('@/pages/test-payment/TestPaymentPage'))
 const MyBooking = lazy_(() => import('@/pages/my-booking/MyBookingPage'))
 const MyBookingDetail = lazy_(() => import('@/pages/my-booking/MyBookingDetailPage'))
 const Pass = lazy_(() => import('@/pages/pass/PassPage'))
@@ -128,6 +129,8 @@ export const router = createBrowserRouter([
       { path: 'book', element: <Book /> },
       { path: 'book/success/:bookingId', element: <BookSuccess /> },
       { path: 'book/failed/:bookingId', element: <BookFailed /> },
+      // payment gateway stand-in while the backend uses the 'dev' payment provider
+      { path: 'book/test-payment/:bookingId', element: <TestPayment /> },
       { path: 'my-booking', element: <MyBooking /> },
       { path: 'my-booking/:bookingId', element: <MyBookingDetail /> },
       { path: 'pass/:token', element: <Pass /> },

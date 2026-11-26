@@ -1,34 +1,29 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { getDay, parseISO } from 'date-fns'
 import {
   ChevronLeft, ChevronRight, Users, Monitor, Zap, Palette, UserPlus, Cake,
 } from 'lucide-react'
-import { theatreKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
 import type { Theatre } from '@/schemas/theatre'
 import { useBooking } from '../../state/booking.context'
 import { useSlots } from '../../hooks/useAvailability'
 import { OCCASIONS } from '@/content/occasions'
-import { THEATRE_LISTING, DECOR_PRICE_INR, LISTING_NOTES } from '@/content/theatreListing'
 import { formatINR } from '@/lib/utils/currency'
 import { formatTime } from '@/lib/utils/date'
-import { ADVANCE_PAYMENT_PERCENT } from '@/lib/constants'
 import { cn } from '@/lib/utils/cn'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { BookingInclusions } from '../BookingInclusions'
-import { CONFIRM_TEXT, getVerifiedCapacity } from '@/content/bookingInclusions'
+import { ADD_ONS_NOTE } from '@/content/bookingInclusions'
+import { useTheatres } from '@/features/catalog/api'
+import { theatreSpec, theatreTitle } from '@/features/catalog/theatre'
+import { useSiteConfig } from '@/features/site/api'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
 export function TheatreSlotStep() {
   const { state, dispatch } = useBooking()
 
-  const { data: theatres = [], isLoading } = useQuery({
-    queryKey: theatreKeys.list(),
-    queryFn: () => api.get<Theatre[]>('/theatres'),
-  })
+  const { data: theatres = [], isLoading } = useTheatres()
 
   const occasion = OCCASIONS.find((o) => o.slug === state.occasion)
   // every theatre is listed, whatever occasion, guests or date was chosen on the home page
@@ -82,15 +77,14 @@ function TheatreListingCard({
   const [img, setImg] = useState(0)
   const [showIncluded, setShowIncluded] = useState(false)
   const { data: slots = [], isLoading } = useSlots(theatre.id, date)
-  const info = THEATRE_LISTING[theatre.slug]
-  const verifiedCapacity = getVerifiedCapacity(theatre.slug) // display only; booking maths still uses theatre data
+  const { data: site } = useSiteConfig()
   const dow = getDay(parseISO(date))
   const isWeekend = dow === 0 || dow === 6
   const price = isWeekend ? theatre.weekendPricePaise : theatre.weekdayPricePaise // price for the chosen date
-  const extraGuests = Math.max(0, guests - (info?.includedGuests ?? 0))
+  const extraGuests = Math.max(0, guests - theatre.includedGuests)
   const selected = selectedSlotId !== null
-  // advance to reserve the slot: ADVANCE_PAYMENT_PERCENT of theatre price + extra guests (before tax and add-ons)
-  const reservePaise = Math.round(((price + extraGuests * theatre.extraGuestPricePaise) * ADVANCE_PAYMENT_PERCENT) / 100)
+  // advance to reserve the slot: the advance % (Settings) of theatre price + extra guests (before tax and add-ons)
+  const reservePaise = Math.round(((price + extraGuests * theatre.extraGuestPricePaise) * (site?.pricing.advancePercent ?? 0)) / 100)
   const n = theatre.images.length
   const go = (d: number) => setImg((i) => (i + d + n) % n)
 
@@ -142,21 +136,21 @@ function TheatreListingCard({
 
       {/* Details */}
       <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
-        <h3 className="font-display text-xl font-bold leading-tight text-[#2a0e4f]">{info?.displayName ?? theatre.name}</h3>
+        <h3 className="font-display text-xl font-bold leading-tight text-[#2a0e4f]">{theatreTitle(theatre)}</h3>
 
         <div className="mt-2.5">
           <p className="text-base text-[#2a0e4f]">
-            <strong>{formatINR(price)} for {info?.includedGuests ?? '—'} people</strong> <span className="text-sm text-[#7d7094]">(including taxes)</span>
+            <strong>{formatINR(price)} for {theatre.includedGuests} people</strong> <span className="text-sm text-[#7d7094]">(including taxes)</span>
             <span className="ml-2 rounded-full bg-[#e7f7ee] px-2 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide text-emerald-700">Your date</span>
           </p>
         </div>
 
         <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-[12.5px] leading-snug text-[#5b4578]">
-          <li className="flex items-center gap-2"><Users size={15} className="shrink-0 text-[#8e39c7]" />{verifiedCapacity ? `Max ${verifiedCapacity[1]} People` : `Max capacity: ${CONFIRM_TEXT}`}{verifiedCapacity && guests > theatre.capacityMax && <strong className="text-[#c2255c]"> (your group is larger)</strong>}</li>
-          <li className="flex items-center gap-2"><Palette size={15} className="shrink-0 text-[#8e39c7]" />Decor ₹{DECOR_PRICE_INR} extra</li>
-          <li className="flex items-center gap-2"><UserPlus size={15} className="shrink-0 text-[#8e39c7]" />Extra guest charges: {CONFIRM_TEXT}</li>
-          <li className="flex items-center gap-2"><Monitor size={15} className="shrink-0 text-[#8e39c7]" />{info?.spec ?? `${theatre.screenSize} ${theatre.resolution} screen, ${theatre.soundSystem}`}</li>
-          <li className="flex items-center gap-2"><Cake size={15} className="shrink-0 text-[#8e39c7]" />{LISTING_NOTES.addOns}</li>
+          <li className="flex items-center gap-2"><Users size={15} className="shrink-0 text-[#8e39c7]" />{`Max ${theatre.capacityMax} People`}{guests > theatre.capacityMax && <strong className="text-[#c2255c]"> (your group is larger)</strong>}</li>
+          <li className="flex items-center gap-2"><Palette size={15} className="shrink-0 text-[#8e39c7]" />Decor {site ? formatINR(site.pricing.decorationPricePaise) : '…'} extra</li>
+          <li className="flex items-center gap-2"><UserPlus size={15} className="shrink-0 text-[#8e39c7]" />Extra guests: {formatINR(theatre.extraGuestPricePaise)} each</li>
+          <li className="flex items-center gap-2"><Monitor size={15} className="shrink-0 text-[#8e39c7]" />{theatreSpec(theatre)}</li>
+          <li className="flex items-center gap-2"><Cake size={15} className="shrink-0 text-[#8e39c7]" />{ADD_ONS_NOTE}</li>
         </ul>
 
         {/* What's included (collapsed by default; does not affect slot selection) */}
@@ -231,8 +225,7 @@ function TheatreListingCard({
               >
                 <div className="mt-3.5 rounded-2xl bg-[#f3ecf8] p-3">
                   <p className="mb-3 text-center text-xs text-[#5b4578]">
-                    You pay only <strong className="text-[#32105f]">{formatINR(reservePaise)}</strong> ({ADVANCE_PAYMENT_PERCENT}%) to reserve the slot
-                    {extraGuests > 0 && <span className="mt-0.5 block text-[11px] text-[#8f6420]">Provisional: extra guest rate is still to be confirmed.</span>}
+                    You pay only <strong className="text-[#32105f]">{formatINR(reservePaise)}</strong> ({site?.pricing.advancePercent ?? '…'}%) to reserve the slot
                   </p>
                   <button
                     type="button"

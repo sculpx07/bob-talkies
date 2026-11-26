@@ -1,20 +1,17 @@
 import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Bookmark, CalendarDays, MessageCircle, Trash2, Users, X } from 'lucide-react'
-import { api } from '@/lib/api/client'
-import { packageKeys, theatreKeys } from '@/lib/api/queryKeys'
-import { config } from '@/lib/config'
 import { formatINR } from '@/lib/utils/currency'
 import { OCCASIONS } from '@/content/occasions'
 import { SAVED_EVENT, useSavedPlan } from '@/features/booking/useSavedPlan'
-import type { Package } from '@/schemas/package'
-import type { Theatre } from '@/schemas/theatre'
+import { usePackages, useTheatres } from '@/features/catalog/api'
+import { useWhatsappNumber } from '@/features/site/api'
 
 export const OPEN_SAVED_EVENT = 'bob-open-saved'
 
 /** Right-hand "Saved for later" panel. Open it with window.dispatchEvent(new Event(OPEN_SAVED_EVENT)). */
 export function SavedDrawer() {
+  const whatsappNumber = useWhatsappNumber()
   const [open, setOpen] = useState(false)
   const { plan, resume } = useSavedPlan()
 
@@ -31,16 +28,8 @@ export function SavedDrawer() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
-  const { data: theatres = [] } = useQuery({
-    queryKey: theatreKeys.list(),
-    queryFn: () => api.get<Theatre[]>('/theatres'),
-    enabled: open,
-  })
-  const { data: packages = [] } = useQuery({
-    queryKey: packageKeys.list(plan?.theatreId ?? undefined),
-    queryFn: () => api.get<Package[]>(`/packages${plan?.theatreId ? `?theatreId=${plan.theatreId}` : ''}`),
-    enabled: open && Boolean(plan),
-  })
+  const { data: theatres = [] } = useTheatres({ enabled: open })
+  const { data: packages = [] } = usePackages(plan?.theatreId, { enabled: open && Boolean(plan) })
 
   const theatre = theatres.find((t) => t.id === plan?.theatreId) ?? null
   const pkg = packages.find((p) => p.id === plan?.packageId) ?? null
@@ -52,7 +41,7 @@ export function SavedDrawer() {
     window.dispatchEvent(new Event(SAVED_EVENT))
   }
 
-  const wa = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(
+  const wa = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     `Hi! I'd like to know more about my saved plan: ${occ?.label ?? ''}${theatre ? ` at ${theatre.name}` : ''}${pkg ? `, ${pkg.name} package` : ''} on ${pretty} for ${plan?.guests} guests.`,
   )}`
 

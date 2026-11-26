@@ -7,7 +7,7 @@ import { applyServerErrors } from '@/admin/lib/forms'
 import { formatPaise, rupeesToPaise } from '@/admin/lib/utils/money'
 import { useUpdateSettings } from '../api'
 import { formatSettingValue, settingLabel } from '../labels'
-import { diffSettings, settingsFormSchema, settingsToForm, type SettingsFormValues } from '../schema'
+import { SETTINGS_SECTIONS, diffSettings, settingsFormSchema, settingsToForm, type SettingsFormValues } from '../schema'
 import type { SettingChange, Settings } from '../types'
 
 const num = { valueAsNumber: true } as const
@@ -59,7 +59,7 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
       setPending(null)
     } catch (err) {
       setPending(null)
-      setFormErrors(applyServerErrors(err, setError, ['pricing', 'booking', 'contact'], (f) => f.replace(/decorationPricePaise$/, 'decorationPrice')))
+      setFormErrors(applyServerErrors(err, setError, SETTINGS_SECTIONS, (f) => f.replace(/decorationPricePaise$/, 'decorationPrice')))
     }
   }
 
@@ -135,6 +135,15 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
               {(f) => <Textarea {...f} rows={2} {...register('contact.address')} />}
             </FormField>
           </FullWidth>
+        </FormSection>
+
+        <FormSection title="Reviews" description="The overall rating on the website's Reviews page, e.g. “4.9 · 847 reviews on Google”. Copy it from your Google Business profile.">
+          <FormField label="Google rating" required hint="0 to 5, one decimal" error={e.reviews?.googleRating?.message}>
+            {(f) => <Input {...f} type="number" min={0} max={5} step="0.1" trailing="★" {...register('reviews.googleRating', num)} />}
+          </FormField>
+          <FormField label="Number of Google reviews" required error={e.reviews?.googleReviewCount?.message}>
+            {(f) => <Input {...f} type="number" min={0} {...register('reviews.googleReviewCount', num)} />}
+          </FormField>
         </FormSection>
       </fieldset>
 

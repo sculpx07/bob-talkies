@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useQuery } from '@tanstack/react-query'
 import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck, Gift, Zap, RotateCcw, Star } from 'lucide-react'
 import { getPoints, getBookingCount, buildReferralUrl } from '@/lib/utils/bobRewards'
 import { SAVED_KEY, SAVED_EVENT } from '@/features/booking/useSavedPlan'
 import { useToast } from '@/components/ui/Toast'
-import { addonKeys, theatreKeys } from '@/lib/api/queryKeys'
 import { useSlots } from '@/features/booking/hooks/useAvailability'
 import { formatTime } from '@/lib/utils/date'
-import type { Addon } from '@/schemas/addon'
-import { api } from '@/lib/api/client'
 import { formatINR } from '@/lib/utils/currency'
-import type { Theatre } from '@/schemas/theatre'
 import { OCCASIONS } from '@/content/occasions'
 import { Stepper } from '@/components/ui/Stepper'
 import { Seo } from '@/components/seo/Seo'
@@ -22,11 +17,11 @@ import { TheatreSlotStep } from '@/features/booking/components/steps/TheatreSlot
 import { AddonsStep } from '@/features/booking/components/steps/AddonsStep'
 import { BasicDetailsStep } from '@/features/booking/components/steps/BasicDetailsStep'
 import { CakeStep } from '@/features/booking/components/steps/CakeStep'
-import { hasExtraGuestLine } from '@/content/bookingInclusions'
 import { PersonalisedMessageSummary } from '@/features/booking/components/PersonalisedMessage'
 import { BookingSummaryCard } from '@/features/booking/components/BookingSummaryCard'
 import { PaymentStep } from '@/features/booking/components/steps/PaymentStep'
 import { trackEvent } from '@/features/tracking/events'
+import { useAddons, useTheatres } from '@/features/catalog/api'
 
 /* Occasion, guests and date are chosen on the home page finder, so this booking
    flow starts at the theatre step (index 3). Stages: theatre, basic details,
@@ -96,18 +91,11 @@ export default function BookPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [state.step])
 
-  const { data: allTheatres = [] } = useQuery({
-    queryKey: theatreKeys.list(),
-    queryFn: () => api.get<Theatre[]>('/theatres'),
-  })
+  const { data: allTheatres = [] } = useTheatres()
   const chosenTheatre = allTheatres.find((t) => t.id === state.theatreId) ?? null
 
   // data for the "what you picked" summary shown in the bottom bar
-  const { data: addonList = [] } = useQuery({
-    queryKey: addonKeys.list(state.theatreId ?? undefined),
-    queryFn: () => api.get<Addon[]>(`/addons${state.theatreId ? `?theatreId=${state.theatreId}` : ''}`),
-    enabled: Boolean(state.theatreId),
-  })
+  const { data: addonList = [] } = useAddons(state.theatreId, { enabled: Boolean(state.theatreId) })
   const { data: slotList = [] } = useSlots(state.theatreId, state.date)
   const chosenSlot = slotList.find((sl) => sl.id === state.slotId) ?? null
   const chosenAddons = addonList.filter((ad) => state.addonIds.includes(ad.id))
@@ -252,7 +240,7 @@ export default function BookPage() {
           </div>
 
           {step >= 4 && step < LAST_STEP && state.serverQuote && (
-            <p className="-mt-5 mb-6 text-center text-xs text-[#5b4578]">Note: pay only <strong className="text-[#6b2398]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve{hasExtraGuestLine(state.serverQuote.lineItems) && <span className="text-[#8f6420]"> (provisional until the extra guest rate is confirmed)</span>}</p>
+            <p className="-mt-5 mb-6 text-center text-xs text-[#5b4578]">Note: pay only <strong className="text-[#6b2398]">{formatINR(state.serverQuote.advancePaise)}</strong> advance to reserve</p>
           )}
 
           <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">

@@ -1,6 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
-import { reviewKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
 import { Seo } from '@/components/seo/Seo'
 import { PageShell, SectionHeader } from '@/components/layout/PageShell'
 import { Rating } from '@/components/ui/Rating'
@@ -9,21 +6,10 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { Button } from '@/components/ui/Button'
 import { Link } from 'react-router-dom'
 import { Star } from 'lucide-react'
-
-interface ReviewData {
-  averageRating: number
-  totalCount: number
-  data: Array<{
-    id: string; name: string; rating: number; text: string;
-    occasion: string; theatreName: string; date: string;
-  }>
-}
+import { useReviews } from '@/features/catalog/api'
 
 export default function ReviewsPage() {
-  const { data, isLoading } = useQuery({
-    queryKey: reviewKeys.list(),
-    queryFn: () => api.get<ReviewData>('/reviews'),
-  })
+  const { data, isLoading } = useReviews()
 
   return (
     <>

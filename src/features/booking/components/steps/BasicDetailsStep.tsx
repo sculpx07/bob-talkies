@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { CalendarDays, Check, Clapperboard, Clock, MapPin, Minus, MessageSquare, Plus } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
@@ -10,14 +9,13 @@ import { useBooking } from '../../state/booking.context'
 import { useSlots } from '../../hooks/useAvailability'
 import { CouponStep } from './CouponStep'
 import { PersonalisedMessage } from '../PersonalisedMessage'
-import { getVerifiedCapacity } from '@/content/bookingInclusions'
 import { Input } from '@/components/ui/Input'
-import { api } from '@/lib/api/client'
-import { theatreKeys } from '@/lib/api/queryKeys'
-import type { Theatre } from '@/schemas/theatre'
 import { formatTime } from '@/lib/utils/date'
-import { DECOR_PRICE_INR } from '@/content/theatreListing'
 import { cn } from '@/lib/utils/cn'
+import { useTheatres } from '@/features/catalog/api'
+import { useSiteConfig } from '@/features/site/api'
+import { formatINR } from '@/lib/utils/currency'
+import { useRequestOtp, useVerifyOtp } from '@/features/auth/api'
 
 const DetailsSchema = z.object({
   name: z.string().trim().min(2, 'Please enter the booking name'),
@@ -53,7 +51,8 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
   const [otp, setOtp] = useState('')
   const [otpError, setOtpError] = useState('')
 
-  const { data: theatres = [] } = useQuery({ queryKey: theatreKeys.list(), queryFn: () => api.get<Theatre[]>('/theatres') })
+  const { data: theatres = [] } = useTheatres()
+  const { data: site } = useSiteConfig()
   const theatre = theatres.find((t) => t.id === state.theatreId)
   const { data: slots = [] } = useSlots(state.theatreId, state.date)
   const slot = slots.find((s) => s.id === state.slotId)
@@ -75,20 +74,25 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
     defaultValues: { name: state.customerName, mobile: state.customerMobile, email: state.customerEmail, personalMessage: state.personalMessage ?? '', consentTnC: state.consentTnC },
   })
 
-  const { mutate: sendOtp, isPending: sending } = useMutation({
-    mutationFn: (mobile: string) => api.post('/auth/otp/request', { mobile }),
-    onSuccess: () => { setOtpSent(true); setOtpError('') },
-    onError: (e: Error) => setOtpError(e.message),
-  })
-  const { mutate: verifyOtp, isPending: verifying } = useMutation({
-    mutationFn: ({ mobile, code }: { mobile: string; code: string }) => api.post('/auth/otp/verify', { mobile, otp: code }),
-    onSuccess: () => {
-      dispatch({ type: 'SET_VERIFIED_MOBILE', mobile: getValues('mobile') })
-      onDone()
-    },
-    // a wrong code clears the box so it can simply be retyped
-    onError: (e: Error) => { setOtpError(e.message); setOtp('') },
-  })
+  const requestOtp = useRequestOtp()
+  const verify = useVerifyOtp()
+  const sending = requestOtp.isPending
+  const verifying = verify.isPending
+
+  const sendOtp = (mobile: string) =>
+    requestOtp.mutate(mobile, {
+      onSuccess: () => { setOtpSent(true); setOtpError('') },
+      onError: (e) => setOtpError(e.message),
+    })
+  const verifyOtp = ({ mobile, code }: { mobile: string; code: string }) =>
+    verify.mutate({ mobile, otp: code }, {
+      onSuccess: () => {
+        dispatch({ type: 'SET_VERIFIED_MOBILE', mobile: getValues('mobile') })
+        onDone()
+      },
+      // a wrong code clears the box so it can simply be retyped
+      onError: (e) => { setOtpError(e.message); setOtp('') },
+    })
 
   // no Verify button: the code is checked as soon as the 6th digit is entered
   useEffect(() => {
@@ -137,14 +141,14 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
           <Counter label="People (Above 10 yrs)" value={state.guests} min={1} max={Math.max(1, capacity - state.kids)} onChange={(n) => dispatch({ type: 'SET_PEOPLE', guests: n })} />
           <Counter label="Kids (3-10 yrs)" value={state.kids} min={0} max={Math.max(0, capacity - state.guests)} onChange={(n) => dispatch({ type: 'SET_KIDS', kids: n })} />
         </div>
-        {theatre && getVerifiedCapacity(theatre.slug) && <p className="-mt-2 text-xs text-[#7d7094]">{theatre.name} holds up to {getVerifiedCapacity(theatre.slug)![1]} guests.</p>}
+        {theatre && <p className="-mt-2 text-xs text-[#7d7094]">{theatre.name} holds up to {theatre.capacityMax} guests.</p>}
 
         <Input label="WhatsApp Number" required placeholder="Type here" inputMode="numeric" maxLength={10} error={errors.mobile?.message} className={field} {...register('mobile')} />
         <Input label="Email ID" required type="email" placeholder="Type here" error={errors.email?.message} className={field} {...register('email')} />
 
         <div>
           <label htmlFor="decoration" className="mb-1.5 block text-sm font-semibold text-[#2a0e4f]">
-            Do you want decoration (just ₹{DECOR_PRICE_INR})? <span className="text-[#c2255c]">*</span>
+            Do you want decoration (just {site ? formatINR(site.pricing.decorationPricePaise) : '…'})? <span className="text-[#c2255c]">*</span>
           </label>
           <select
             id="decoration"

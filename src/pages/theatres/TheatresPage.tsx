@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { guestRangeText, getVerifiedFacilities, CONFIRM_TEXT } from '@/content/bookingInclusions'
-import { useQuery } from '@tanstack/react-query'
+import { guestRangeText, theatreFacts } from '@/features/catalog/theatre'
+import { CONFIRM_TEXT } from '@/content/bookingInclusions'
 import { ChevronLeft, ChevronRight, Ticket, X, Pause, Play, Images, Star } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Seo } from '@/components/seo/Seo'
 import { PriceTag } from '@/components/ui/PriceTag'
 import { ErrorState } from '@/components/ui/EmptyState'
 import { PageShell } from '@/components/layout/PageShell'
-import { api } from '@/lib/api/client'
-import { theatreKeys } from '@/lib/api/queryKeys'
 import type { Theatre } from '@/schemas/theatre'
+import { useTheatres } from '@/features/catalog/api'
 
 const AUTOPLAY_MS = 7000
 const CONDENSED = "'Bebas Neue', 'Oswald', 'Anton', 'Arial Narrow', sans-serif"
@@ -278,10 +277,7 @@ function TheatreReviewsSection({ theatreSlug, accent }: { theatreSlug: string; a
 }
 
 export default function TheatresPage() {
-  const { data: theatres, isLoading, isError, refetch } = useQuery({
-    queryKey: theatreKeys.list(),
-    queryFn: () => api.get<Theatre[]>('/theatres'),
-  })
+  const { data: theatres, isLoading, isError, refetch } = useTheatres()
 
   const [active, setActive]         = useState(0)
   const [showDetails, setShowDetails] = useState(false)
@@ -419,7 +415,7 @@ export default function TheatresPage() {
                 />
 
                 <p className="tp-rise text-base text-white/90 md:text-lg" style={{ animationDelay: '.12s' }}>
-                  {guestRangeText(current.slug)} · {current.screenSize}
+                  {guestRangeText(current)} · {current.screenSize}
                 </p>
 
                 <h1
@@ -531,7 +527,7 @@ export default function TheatresPage() {
                             style={{ background: uid.accent }}
                           />
                           <p className="text-[10px] text-white/75">
-                            {guestRangeText(theatre.slug)}
+                            {guestRangeText(theatre)}
                           </p>
                           <p
                             className="mt-1 text-xl uppercase leading-[1.05] tracking-wide text-white"
@@ -657,7 +653,7 @@ export default function TheatresPage() {
                     { label: 'Screen',     value: current?.screenSize },
                     { label: 'Resolution', value: current?.resolution },
                     { label: 'Sound',      value: current?.soundSystem },
-                    { label: 'Seating',    value: CONFIRM_TEXT },
+                    { label: 'Seating',    value: current?.seatingType || CONFIRM_TEXT },
                   ].map(s => (
                     <div key={s.label}>
                       <p className="text-[9px] uppercase tracking-widest mb-1" style={{ color: `${id.accent}99` }}>{s.label}</p>
@@ -667,7 +663,7 @@ export default function TheatresPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  {[...getVerifiedFacilities(current?.slug ?? ''), `Other facilities: ${CONFIRM_TEXT}`].map(f => (
+                  {(current ? theatreFacts(current) : []).map(f => (
                     <span
                       key={f}
                       className="text-[11px] rounded-full px-3 py-1"

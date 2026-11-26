@@ -1,66 +1,51 @@
-import { useState, useRef } from 'react'
+import { useMemo, useState, useRef } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Users, ChevronRight, Sparkles, Minus, Plus } from 'lucide-react'
 import { CinemaFloatBackground } from './CinemaFloatBackground'
+import { useTheatres } from '@/features/catalog/api'
+import { guestRangeText } from '@/features/catalog/theatre'
+import type { Theatre } from '@/schemas/theatre'
 
-const THEATRES = [
-  {
-    slug: 'delight',
-    name: 'Delight',
-    label: 'INTIMATE',
-    capacity: '1–4 guests',
-    minGuests: 1,
-    maxGuests: 4,
-    desc: "BOB Talkies' most intimate space — perfect for couples and solo celebrations.",
-    image: '/images/delight.jpg',
-    accent: '#f43f5e',
-  },
-  {
-    slug: 'heavens',
-    name: 'Heavens',
-    label: 'STYLISH',
-    capacity: '4–10 guests',
-    minGuests: 4,
-    maxGuests: 10,
-    desc: 'A stylish private theatre designed for small groups and special occasions.',
-    image: '/images/heavens.jpg',
-    accent: '#a78bfa',
-  },
-  {
-    slug: 'filmdom',
-    name: 'Filmdom',
-    label: 'CINEMATIC',
-    capacity: '6–13 guests',
-    minGuests: 6,
-    maxGuests: 13,
-    desc: 'Cinema-grade screen and immersive sound for your most cinematic moments.',
-    image: '/images/filmdom.jpg',
-    accent: '#fbbf24',
-  },
-  {
-    slug: 'cosmos',
-    name: 'Cosmos',
-    label: 'GRAND',
-    capacity: '8–20 guests',
-    minGuests: 8,
-    maxGuests: 20,
-    desc: 'A grand private theatre for larger gatherings and unforgettable celebrations.',
-    image: '/images/cosmos.jpg',
-    accent: '#818cf8',
-  },
-  {
-    slug: 'vibe-hall',
-    name: 'Vibe Hall',
-    label: 'PARTY HALL',
-    capacity: '20–40 guests',
-    minGuests: 20,
-    maxGuests: 40,
-    desc: "Hyderabad's only private party hall with a cinema-grade screen.",
-    image: '/images/vibe-hall.jpg',
-    accent: '#34d399',
-  },
-]
+/**
+ * Look of each theatre in the finder (badge, colour, fallback photo). Names,
+ * capacity, description and photos come from the theatres in the admin panel.
+ */
+const LOOK: Record<string, { label: string; accent: string; image: string }> = {
+  delight: { label: 'INTIMATE', accent: '#f43f5e', image: '/images/delight.jpg' },
+  heavens: { label: 'STYLISH', accent: '#a78bfa', image: '/images/heavens.jpg' },
+  filmdom: { label: 'CINEMATIC', accent: '#fbbf24', image: '/images/filmdom.jpg' },
+  cosmos: { label: 'GRAND', accent: '#818cf8', image: '/images/cosmos.jpg' },
+  'vibe-hall': { label: 'PARTY HALL', accent: '#34d399', image: '/images/vibe-hall.jpg' },
+}
+const DEFAULT_LOOK = { label: 'PRIVATE THEATRE', accent: '#a78bfa', image: '' }
+
+interface FinderTheatre {
+  slug: string
+  name: string
+  label: string
+  capacity: string
+  minGuests: number
+  maxGuests: number
+  desc: string
+  image: string
+  accent: string
+}
+
+function toFinderTheatre(t: Theatre): FinderTheatre {
+  const look = LOOK[t.slug] ?? DEFAULT_LOOK
+  return {
+    slug: t.slug,
+    name: t.name,
+    label: look.label,
+    capacity: guestRangeText(t, 'guests'),
+    minGuests: t.capacityMin,
+    maxGuests: t.capacityMax,
+    desc: t.tagline || t.description,
+    image: t.images[0] ?? look.image,
+    accent: look.accent,
+  }
+}
 
 const OCCASIONS = ['Birthday', 'Anniversary', 'Proposal', 'Baby Shower', 'Friends Night', 'Sports Night', 'Movie Night', 'Corporate', 'Other']
 
@@ -72,10 +57,11 @@ const QUICK_PICKS = [
   { label: 'Corporate Team Event',        guests: 20, occasion: 'Corporate'    },
 ]
 
-function recommend(guests: number) {
-  const exact = THEATRES.filter(t => guests >= t.minGuests && guests <= t.maxGuests)
+function recommend(theatres: FinderTheatre[], guests: number): FinderTheatre | null {
+  if (!theatres.length) return null
+  const exact = theatres.filter(t => guests >= t.minGuests && guests <= t.maxGuests)
   if (exact.length > 0) return exact[0]
-  return THEATRES.reduce((best, t) => {
+  return theatres.reduce((best, t) => {
     const tMid = (t.minGuests + t.maxGuests) / 2
     const bMid = (best.minGuests + best.maxGuests) / 2
     return Math.abs(tMid - guests) < Math.abs(bMid - guests) ? t : best
@@ -90,7 +76,9 @@ export function TheatreFinder() {
   const [occasion, setOccasion] = useState('Birthday')
   const [showResult, setShowResult] = useState(false)
 
-  const result = recommend(guests)
+  const { data } = useTheatres()
+  const theatres = useMemo(() => (data ?? []).map(toFinderTheatre), [data])
+  const result = recommend(theatres, guests)
   const setG = (n: number) => { setGuests(Math.min(40, Math.max(1, n))); setShowResult(false) }
 
   return (
@@ -212,7 +200,7 @@ export function TheatreFinder() {
 
         {/* Result */}
         <AnimatePresence>
-          {showResult && (
+          {showResult && result && (
             <motion.div
               initial={{ opacity: 0, y: 24, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -254,7 +242,7 @@ export function TheatreFinder() {
               exit={{ opacity: 0 }}
               className="flex flex-wrap justify-center gap-2"
             >
-              {THEATRES.map(t => (
+              {theatres.map(t => (
                 <Link
                   key={t.slug}
                   to={`/theatres/${t.slug}`}

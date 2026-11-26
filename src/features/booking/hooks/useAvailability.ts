@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { availabilityKeys } from '@/lib/api/queryKeys'
 import { api } from '@/lib/api/client'
+import { withQuery } from '@/lib/api/query'
 import { format } from 'date-fns'
 
+/** Slots and calendar from the backend (bob-admin GET /public/availability), built from Admin → Slots & calendar. */
 export interface Slot {
   id: string
   start: string
@@ -20,7 +22,7 @@ export function useSlots(theatreId: string | null, date: string | null) {
   return useQuery({
     queryKey: availabilityKeys.slots(theatreId ?? '', date ?? ''),
     queryFn: () =>
-      api.get<Slot[]>(`/availability?theatre=${theatreId}&date=${date}`),
+      api.get<Slot[]>(withQuery('/availability', { theatre: theatreId, date })),
     enabled: Boolean(theatreId && date),
     staleTime: 30_000,
   })
@@ -31,7 +33,7 @@ export function useCalendar(theatreId: string | null, month?: string) {
   return useQuery({
     queryKey: availabilityKeys.calendar(theatreId ?? '', m),
     queryFn: () =>
-      api.get<CalendarDay[]>(`/availability/calendar?theatre=${theatreId}&month=${m}`),
+      api.get<CalendarDay[]>(withQuery('/availability/calendar', { theatre: theatreId, month: m })),
     enabled: Boolean(theatreId),
     staleTime: 60_000,
   })

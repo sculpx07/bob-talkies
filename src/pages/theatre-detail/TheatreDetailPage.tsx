@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 import { Users, Monitor, Volume2, ChevronLeft, ChevronRight, Check, MapPin, Calendar, Clock, ArrowRight, Star, Play } from 'lucide-react'
 import { format, addMonths, parseISO, getDay } from 'date-fns'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
@@ -9,13 +8,12 @@ import { PriceTag } from '@/components/ui/PriceTag'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui/EmptyState'
 import { PageShell } from '@/components/layout/PageShell'
-import { api } from '@/lib/api/client'
-import { theatreKeys, availabilityKeys } from '@/lib/api/queryKeys'
 import { formatINR } from '@/lib/utils/currency'
 import { formatTime } from '@/lib/utils/date'
-import type { Theatre } from '@/schemas/theatre'
 import { BookingInclusions } from '@/features/booking/components/BookingInclusions'
-import { guestRangeText, getVerifiedFacilities, CONFIRM_TEXT } from '@/content/bookingInclusions'
+import { guestRangeText, theatreFacts, theatreSpec } from '@/features/catalog/theatre'
+import { useTheatre } from '@/features/catalog/api'
+import { useCalendar, useSlots } from '@/features/booking/hooks/useAvailability'
 
 const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }
 const stagger = { show: { transition: { staggerChildren: 0.07 } } }
@@ -39,19 +37,6 @@ function StaggerGrid({ children, className }: { children: React.ReactNode; class
       {children}
     </motion.div>
   )
-}
-
-interface Slot {
-  id: string
-  start: string
-  end: string
-  status: 'available' | 'booked' | 'high_demand' | 'held'
-  pricePaise: number
-}
-
-interface CalendarDay {
-  date: string
-  status: 'available' | 'fully_booked' | 'high_demand' | 'offer_date' | 'unavailable'
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -108,23 +93,10 @@ export default function TheatreDetailPage() {
   const [selectedDate, setSelectedDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'))
   const [currentMonth, setCurrentMonth] = useState(format(new Date(), 'yyyy-MM'))
 
-  const { data: theatre, isLoading, isError, refetch } = useQuery({
-    queryKey: theatreKeys.detail(slug ?? ''),
-    queryFn: () => api.get<Theatre>(`/theatres/${slug}`),
-    enabled: !!slug,
-  })
+  const { data: theatre, isLoading, isError, refetch } = useTheatre(slug)
 
-const { data: slots, isLoading: slotsLoading } = useQuery({
-    queryKey: availabilityKeys.slots(theatre?.id ?? '', selectedDate),
-    queryFn: () => api.get<Slot[]>(`/availability?theatre=${theatre?.id}&date=${selectedDate}`),
-    enabled: !!theatre?.id && !!selectedDate,
-  })
-
-  const { data: calendar } = useQuery({
-    queryKey: availabilityKeys.calendar(theatre?.id ?? '', currentMonth),
-    queryFn: () => api.get<CalendarDay[]>(`/availability/calendar?theatre=${theatre?.id}&month=${currentMonth}`),
-    enabled: !!theatre?.id,
-  })
+  const { data: slots, isLoading: slotsLoading } = useSlots(theatre?.id ?? null, selectedDate)
+  const { data: calendar } = useCalendar(theatre?.id ?? null, currentMonth)
 
   if (isLoading) {
     return (
@@ -167,7 +139,7 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
           <div className="flex items-center gap-4">
             <span className="font-display text-lg font-bold text-[#2a0e4f]">{theatre.name}</span>
             <span className="h-4 w-px bg-[#e8d5a3]" />
-            <span className="text-sm text-[#5b4578]/60">{guestRangeText(theatre.slug, 'guests')}</span>
+            <span className="text-sm text-[#5b4578]/60">{guestRangeText(theatre, 'guests')}</span>
           </div>
           <div className="flex items-center gap-5">
             <PriceTag paise={theatre.startingPricePaise} />
@@ -238,7 +210,7 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
                 transition={{ delay: 0.5, duration: 0.5, ease: 'easeOut' }} style={{ transformOrigin: 'left' }}
                 className="mt-3 flex items-center gap-3">
                 <div className="h-[2px] w-10 bg-gradient-to-r from-[#c9a84c] to-[#eed98a] rounded-full" />
-                <span className="text-white/60 text-sm">{guestRangeText(theatre.slug, 'guests')}</span>
+                <span className="text-white/60 text-sm">{guestRangeText(theatre, 'guests')}</span>
               </motion.div>
             </motion.div>
           </div>
@@ -262,7 +234,7 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
             variants={{ show: { transition: { staggerChildren: 0.06, delayChildren: 0.2 } } }}
           >
             {[
-              { icon: <Users size={15} />, label: guestRangeText(theatre.slug) },
+              { icon: <Users size={15} />, label: guestRangeText(theatre) },
               { icon: <Monitor size={15} />, label: theatre.screenSize },
               { icon: <Monitor size={15} />, label: theatre.resolution },
               { icon: <Volume2 size={15} />, label: theatre.soundSystem },
@@ -288,7 +260,7 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
               <RevealSection>
                 <SectionTitle>About this Theatre</SectionTitle>
                 <p className="text-[#5b4578]/80 leading-relaxed text-base">
-                  {getVerifiedFacilities(theatre.slug)[0] ?? CONFIRM_TEXT}. {theatre.tagline}. More details: {CONFIRM_TEXT}.
+                  {theatre.description || `${theatreSpec(theatre)}. ${theatre.tagline}.`}
                 </p>
               </RevealSection>
 
@@ -296,7 +268,7 @@ const { data: slots, isLoading: slotsLoading } = useQuery({
               <RevealSection>
                 <SectionTitle>Facilities Included</SectionTitle>
                 <StaggerGrid className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {[...getVerifiedFacilities(theatre.slug), `Other facilities: ${CONFIRM_TEXT}`].map((f) => (
+                  {theatreFacts(theatre).map((f) => (
                     <motion.li key={f} variants={fadeUp} transition={{ duration: 0.35 }}
                       whileHover={{ y: -3, boxShadow: '0 6px 20px rgba(201,168,76,0.15)' }}
                       className="flex items-center gap-2.5 bg-white rounded-xl px-4 py-3 border border-[#f0e6cc] text-sm text-[#2a0e4f] font-medium shadow-sm list-none cursor-default">

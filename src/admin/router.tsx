@@ -26,6 +26,8 @@ const BookingDetailPage = lazy(() => import('./features/bookings/pages/BookingDe
 const NewBookingPage = lazy(() => import('./features/bookings/pages/NewBookingPage'))
 const LeadsPage = lazy(() => import('./features/leads/pages/LeadsPage'))
 const LeadDetailPage = lazy(() => import('./features/leads/pages/LeadDetailPage'))
+const PackagesPage = lazy(() => import('./features/packages/pages/PackagesPage'))
+const ReviewsPage = lazy(() => import('./features/reviews/pages/ReviewsPage'))
 const ReportsPage = lazy(() => import('./features/reports/pages/ReportsPage'))
 const StaffPage = lazy(() => import('./features/users/pages/StaffPage'))
 const AccountPage = lazy(() => import('./features/account/pages/AccountPage'))
@@ -78,6 +80,8 @@ const builtRoutes: RouteObject[] = [
     ],
   },
   { path: 'reports', element: <ReportsPage /> },
+  { path: 'packages', element: <PackagesPage /> },
+  { path: 'reviews', element: <ReviewsPage /> },
   {
     path: 'staff',
     element: (
@@ -90,7 +94,7 @@ const builtRoutes: RouteObject[] = [
   { path: 'account', element: <AccountPage /> },
 ]
 
-const builtPaths = new Set(['/', '/theatres', '/slots', '/addons', '/offers', '/settings', '/bookings', '/leads', '/reports', '/staff'])
+const builtPaths = new Set(['/', '/theatres', '/slots', '/addons', '/offers', '/settings', '/bookings', '/leads', '/reports', '/packages', '/reviews', '/staff'])
 
 const placeholderRoutes: RouteObject[] = NAV_ITEMS.filter((item) => !builtPaths.has(item.path)).map((item) => ({
   path: `${item.path.slice(1)}/*`,

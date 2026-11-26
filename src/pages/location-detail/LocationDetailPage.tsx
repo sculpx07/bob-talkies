@@ -3,8 +3,10 @@ import { Seo } from '@/components/seo/Seo'
 import { Button } from '@/components/ui/Button'
 import { PageShell, SectionHeader } from '@/components/layout/PageShell'
 import { MapPin, Phone, Clock, Car, ExternalLink } from 'lucide-react'
+import { useContact } from '@/features/site/api'
 
 export default function LocationDetailPage() {
+  const contact = useContact()
   return (
     <>
       <Seo
@@ -26,7 +28,7 @@ export default function LocationDetailPage() {
                 <MapPin size={18} className="text-gold-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-text-primary mb-0.5">Address</p>
-                  Kukatpally Housing Board Colony,<br />Kukatpally, Hyderabad, Telangana 500072
+                  {contact.address}
                 </div>
               </div>
               <div className="flex items-start gap-3 text-text-secondary">
@@ -50,7 +52,7 @@ export default function LocationDetailPage() {
                 <Phone size={18} className="text-gold-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="font-semibold text-text-primary mb-0.5">Contact</p>
-                  <a href="tel:+919876543210" className="hover:text-gold-400 transition-colors">+91 98765 43210</a>
+                  <a href={`tel:${contact.phone.replace(/\s/g, '')}`} className="hover:text-gold-400 transition-colors">{contact.phone}</a>
                 </div>
               </div>
             </div>

@@ -1,10 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
-import { guestRangeText } from '@/content/bookingInclusions'
-import { useQuery } from '@tanstack/react-query'
-import { theatreKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
-import type { Theatre } from '@/schemas/theatre'
+import { guestRangeText } from '@/features/catalog/theatre'
 import { Seo } from '@/components/seo/Seo'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -14,6 +10,7 @@ import { PageShell, SectionHeader } from '@/components/layout/PageShell'
 import { formatINR } from '@/lib/utils/currency'
 import { trackEvent } from '@/features/tracking/events'
 import { Users, Monitor, Search } from 'lucide-react'
+import { useTheatres } from '@/features/catalog/api'
 
 export default function SearchPage() {
   const [params, setParams] = useSearchParams()
@@ -22,11 +19,7 @@ export default function SearchPage() {
   const [occasion, setOccasion] = useState(params.get('occasion') ?? '')
   const [hasSearched, setHasSearched] = useState(false)
 
-  const { data: theatres = [], isLoading, refetch } = useQuery({
-    queryKey: theatreKeys.list(),
-    queryFn: () => api.get<Theatre[]>('/theatres'),
-    enabled: false,
-  })
+  const { data: theatres = [], isLoading, refetch } = useTheatres({ enabled: false })
 
   function handleSearch() {
     setHasSearched(true)
@@ -104,7 +97,7 @@ export default function SearchPage() {
                         {t.currentOffer && <Badge variant="gold">{t.currentOffer}</Badge>}
                       </div>
                       <div className="flex flex-wrap gap-2 text-xs text-text-muted mb-3">
-                        <span className="flex items-center gap-1"><Users size={11} />{guestRangeText(t.slug, '')}</span>
+                        <span className="flex items-center gap-1"><Users size={11} />{guestRangeText(t, '')}</span>
                         <span className="flex items-center gap-1"><Monitor size={11} />{t.screenSize}</span>
                       </div>
                       <p className="text-gold-400 font-semibold text-sm mb-4">{formatINR(t.startingPricePaise)} onwards</p>

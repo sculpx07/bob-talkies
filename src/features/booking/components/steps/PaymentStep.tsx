@@ -4,19 +4,23 @@ import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../../state/booking.context'
 import { bookingApi } from '../../api'
 import { PriceSummary } from '../PriceSummary'
-import { ProvisionalNote } from '../ProvisionalNote'
-import { hasExtraGuestLine } from '@/content/bookingInclusions'
 import { motion } from 'framer-motion'
 import { formatINR } from '@/lib/utils/currency'
 import { Check, CreditCard, Shield } from 'lucide-react'
 import { trackEvent } from '@/features/tracking/events'
 import { clearBookingState } from '../../state/booking.storage'
+import { ApiError } from '@/lib/api/client'
+import { useSiteConfig } from '@/features/site/api'
 
 export function PaymentStep() {
   const { state, dispatch } = useBooking()
   const navigate = useNavigate()
   const [payFull, setPayFull] = useState(false)
   const payLock = useRef(false)
+  const [error, setError] = useState('')
+  const { data: site } = useSiteConfig()
+  const advancePercent = site?.pricing.advancePercent
+  const allowFullPayment = site?.pricing.allowFullPayment ?? true
 
   const quote = state.serverQuote
   const advanceAmount = quote?.advancePaise ?? 0
@@ -51,6 +55,7 @@ export function PaymentStep() {
       dispatch({ type: 'SET_BOOKING_ID', bookingId: booking.id, expiresAt: booking.slotHoldExpiresAt ?? '' })
       proceedToPayment(booking.id)
     },
+    onError: (e: Error) => failed(e),
   })
 
   const { mutate: payOrder, isPending: paying } = useMutation({
@@ -59,18 +64,24 @@ export function PaymentStep() {
       trackEvent('payment_started', { bookingId, amount: payAmount, payFull })
       openGateway(order, bookingId)
     },
+    onError: (e: Error) => failed(e),
   })
+
+  /** Shows the reason and unlocks the button; an expired hold means the next tap creates a new booking. */
+  function failed(e: Error) {
+    if (e instanceof ApiError && e.code === 'HOLD_EXPIRED') dispatch({ type: 'CLEAR_BOOKING' })
+    setError(e.message || 'Something went wrong. Please try again.')
+    payLock.current = false
+  }
 
   function proceedToPayment(bookingId: string) {
     payOrder(bookingId)
   }
 
-  function openGateway(order: { gatewayOrderId: string; amount: number; key: string }, bookingId: string) {
-    // In dev/mocks, simulate payment success
-    if (import.meta.env.VITE_USE_MOCKS === 'true') {
-      trackEvent('purchase', { bookingId, transactionId: order.gatewayOrderId, value: payAmount })
-      clearBookingState()
-      navigate(`/book/success/${bookingId}`)
+  function openGateway(order: { gatewayOrderId: string; amount: number; key: string; provider: string }, bookingId: string) {
+    // Until Razorpay is set up the backend uses the 'dev' provider: a test screen with "Payment successful" / "Payment failed"
+    if (order.provider === 'dev') {
+      navigate(`/book/test-payment/${encodeURIComponent(bookingId)}?order=${encodeURIComponent(order.gatewayOrderId)}&amount=${order.amount}`)
       return
     }
 
@@ -98,6 +109,7 @@ export function PaymentStep() {
   function handlePay() {
     if (payLock.current) return
     payLock.current = true
+    setError('')
     dispatch({ type: 'SET_PAY_FULL', payFull })
     if (state.bookingId) {
       proceedToPayment(state.bookingId)
@@ -109,9 +121,9 @@ export function PaymentStep() {
   const isLoading = creating || paying
 
   const options = [
-    { full: false, title: 'Pay Advance (30%)', amount: advanceAmount, note: `Remaining ${formatINR(totalAmount - advanceAmount)} at the venue.` },
+    { full: false, title: `Pay Advance (${advancePercent ?? '…'}%)`, amount: advanceAmount, note: `Remaining ${formatINR(totalAmount - advanceAmount)} at the venue.` },
     { full: true, title: 'Pay Full Amount', amount: totalAmount, note: 'Nothing due at the venue.' },
-  ]
+  ].filter((o) => !o.full || allowFullPayment)
 
   return (
     <div>
@@ -165,7 +177,8 @@ export function PaymentStep() {
         Payments are secured by Razorpay. We never store your card details.
       </div>
 
-      {hasExtraGuestLine(quote?.lineItems) && <ProvisionalNote className="mt-6 -mb-3" short="The amount to pay is provisional until the extra guest rate is confirmed." />}
+      {error && <p role="alert" className="mt-5 rounded-2xl bg-[#fdecf2] px-4 py-3 text-center text-sm font-medium text-[#c2255c]">{error}</p>}
+
       <motion.button
         type="button"
         onClick={handlePay}

@@ -1,6 +1,5 @@
 import { useParams, Link, useLocation } from 'react-router-dom'
-import { guestRangeText } from '@/content/bookingInclusions'
-import { useQuery } from '@tanstack/react-query'
+import { guestRangeText } from '@/features/catalog/theatre'
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight, Check } from 'lucide-react'
@@ -9,11 +8,9 @@ import { Seo } from '@/components/seo/Seo'
 import { Accordion } from '@/components/ui/Accordion'
 import { TheatreCardSkeleton } from '@/components/ui/Skeleton'
 import { formatINR } from '@/lib/utils/currency'
-import { api } from '@/lib/api/client'
-import { theatreKeys } from '@/lib/api/queryKeys'
 import { OCCASIONS, getOccasionBySlug } from '@/content/occasions'
-import type { Theatre } from '@/schemas/theatre'
 import { useOccasionServices, OccasionServiceList } from '@/components/home/OccasionServices'
+import { useTheatres } from '@/features/catalog/api'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const VIEW = { once: true, margin: '0px 0px -80px 0px' }
@@ -39,10 +36,7 @@ export default function OccasionPage() {
   const slug = rawSlug ?? SEO_SLUG_MAP[location.pathname.replace('/', '')] ?? 'birthday'
   const occasion = getOccasionBySlug(slug) ?? OCCASIONS[0]
 
-  const { data: theatres, isLoading: theatresLoading } = useQuery({
-    queryKey: theatreKeys.list(),
-    queryFn: () => api.get<Theatre[]>('/theatres'),
-  })
+  const { data: theatres, isLoading: theatresLoading } = useTheatres()
 
 const heroRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
@@ -213,7 +207,7 @@ const heroRef = useRef<HTMLElement>(null)
                         <p className="font-display text-2xl font-semibold">{t.name}</p>
                         <p className="line-clamp-1 text-sm text-white/80">{t.tagline}</p>
                         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-                          <span className="rounded-full bg-white/15 px-2.5 py-1 backdrop-blur">{guestRangeText(t.slug, 'guests')}</span>
+                          <span className="rounded-full bg-white/15 px-2.5 py-1 backdrop-blur">{guestRangeText(t, 'guests')}</span>
                           <span className="ml-auto rounded-full bg-[#f5d7a1] px-3 py-1 font-bold text-[#4a2a00]">from {formatINR(t.startingPricePaise)}</span>
                         </div>
                       </div>

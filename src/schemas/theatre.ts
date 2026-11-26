@@ -8,6 +8,8 @@ export const TheatreSchema = z.object({
   description: z.string(),
   capacityMin: z.number().int(),
   capacityMax: z.number().int(),
+  /** guests covered by the base price */
+  includedGuests: z.number().int(),
   screenSize: z.string(),
   resolution: z.string(),
   soundSystem: z.string(),
@@ -18,6 +20,8 @@ export const TheatreSchema = z.object({
   weekdayPricePaise: z.number().int(),
   weekendPricePaise: z.number().int(),
   extraGuestPricePaise: z.number().int(),
+  /** e.g. "3 hr package" */
+  durationNote: z.string().optional(),
   images: z.array(z.string()),
   videoUrl: z.string().optional(),
   currentOffer: z.string().optional(),

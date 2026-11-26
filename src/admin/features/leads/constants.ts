@@ -28,6 +28,7 @@ export const LEAD_TRANSITIONS: Record<LeadStatus, LeadStatus[]> = {
 
 export const LEAD_SOURCE_LABELS: Record<LeadSource, string> = {
   contact_page: 'Website form',
+  vibe_hall_enquiry: 'Vibe Hall form',
   website: 'Website',
   phone: 'Phone',
   whatsapp: 'WhatsApp',

@@ -1,4 +1,4 @@
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react'
+import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from 'react'
 import { cn } from '@/admin/lib/utils/cn'
 
 interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
@@ -41,9 +41,12 @@ interface SwitchProps {
 
 /** On / off toggle, e.g. "Active". */
 export function Switch({ checked, onChange, label, description, disabled, id, className }: SwitchProps) {
+  // the label must point at the button, so an id is generated when none is given
+  const autoId = useId()
+  const controlId = id ?? autoId
   const toggle = (
     <button
-      id={id}
+      id={controlId}
       type="button"
       role="switch"
       aria-checked={checked}
@@ -61,7 +64,7 @@ export function Switch({ checked, onChange, label, description, disabled, id, cl
   return (
     <div className={cn('flex items-start justify-between gap-4', className)}>
       <div className="text-sm">
-        {label && <label htmlFor={id} className="font-medium text-slate-700">{label}</label>}
+        {label && <label htmlFor={controlId} className="font-medium text-slate-700">{label}</label>}
         {description && <p className="text-xs text-slate-500">{description}</p>}
       </div>
       {toggle}

@@ -4,19 +4,16 @@ import { Seo } from '@/components/seo/Seo'
 import { PageShell, SectionHeader } from '@/components/layout/PageShell'
 import { Mail, MapPin, Phone, PhoneCall, MessageCircle, Clock, Car, ArrowRight } from 'lucide-react'
 import type { SVGProps } from 'react'
-import { config } from '@/lib/config'
+import { useContact } from '@/features/site/api'
 
 const LOCATIONS = [
   {
     id: 'loc-kukatpally',
     slug: 'kukatpally',
     name: 'BOB Talkies — Kukatpally',
-    address: 'Kukatpally Housing Board Colony, Kukatpally, Hyderabad, Telangana 500072',
-    phone: '+91 98765 43210',
     hours: '10:00 AM – 1:30 AM (next day)',
     landmarks: 'Near Kukatpally Bus Stand, 2 min from KPHB Metro Station',
     parking: 'Free parking available',
-    theatreCount: 5,
     image: 'https://images.unsplash.com/photo-1555461083-e9a7f92d35e1?w=800',
   },
 ]
@@ -55,12 +52,12 @@ const SOCIALS = [
   { label: 'Facebook', href: 'https://www.facebook.com/people/Bob-Talkies/61563074844760/', Icon: FacebookIcon },
 ]
 
-const waNumber = config.whatsappNumber
+type Contact = ReturnType<typeof useContact>
 
-const CONTACT_CARDS = [
+const contactCards = ({ whatsappNumber: waNumber, phone, email }: Contact) => [
   {
     icon: PhoneCall,
-    title: `+91 ${waNumber.slice(2)}`,
+    title: phone || `+${waNumber}`,
     text: 'Call us for bookings, offers and any questions about your celebration.',
     cta: 'Call Us Now',
     href: `tel:+${waNumber}`,
@@ -75,10 +72,10 @@ const CONTACT_CARDS = [
   },
   {
     icon: Mail,
-    title: 'info@bobtalkies.com',
+    title: email,
     text: 'Write to us for enquiries, group bookings and special celebration requests.',
     cta: 'Send Email Now',
-    href: 'mailto:info@bobtalkies.com',
+    href: `mailto:${email}`,
   },
   {
     icon: InstagramIcon,
@@ -94,6 +91,7 @@ const EASE = [0.22, 1, 0.36, 1] as const
 const VIEW = { once: true, margin: '0px 0px -80px 0px' }
 
 export default function LocationsPage() {
+  const contact = useContact()
   return (
     <>
       <Seo
@@ -138,7 +136,7 @@ export default function LocationsPage() {
 
         {/* Quick contact cards */}
         <ul className="mx-auto mb-16 grid max-w-6xl gap-5 sm:grid-cols-2 lg:mb-24 lg:grid-cols-4">
-          {CONTACT_CARDS.map((c, idx) => {
+          {contactCards(contact).map((c, idx) => {
             const Icon = c.icon
             const inner = (
               <>
@@ -172,10 +170,10 @@ export default function LocationsPage() {
 
         {LOCATIONS.map((loc) => {
           const details = [
-            { icon: MapPin, label: 'Address', value: loc.address },
+            { icon: MapPin, label: 'Address', value: contact.address },
             { icon: Clock, label: 'Opening Hours', value: loc.hours },
             { icon: Car, label: 'Parking & Landmarks', value: `${loc.parking} · ${loc.landmarks}` },
-            { icon: Phone, label: 'Phone', value: loc.phone, href: `tel:${loc.phone}` },
+            { icon: Phone, label: 'Phone', value: contact.phone, href: `tel:${contact.phone.replace(/\s/g, '')}` },
           ]
           return (
             <motion.div

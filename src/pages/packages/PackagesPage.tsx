@@ -1,9 +1,5 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import { packageKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
-import type { Package } from '@/schemas/package'
 import { Seo } from '@/components/seo/Seo'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
@@ -12,13 +8,11 @@ import { PageShell, SectionHeader, Section } from '@/components/layout/PageShell
 import { formatINR } from '@/lib/utils/currency'
 import { Check, Users } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
+import { usePackages } from '@/features/catalog/api'
 
 export default function PackagesPage() {
   const [isWeekend, setIsWeekend] = useState(false)
-  const { data: packages = [], isLoading } = useQuery({
-    queryKey: packageKeys.list(),
-    queryFn: () => api.get<Package[]>('/packages'),
-  })
+  const { data: packages = [], isLoading } = usePackages()
 
   const tierColors: Record<string, string> = {
     silver: 'text-text-secondary border-border-subtle',

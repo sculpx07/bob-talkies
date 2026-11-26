@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import {
-  BarChart3, CalendarClock, CalendarDays, Clapperboard, Gift, LayoutDashboard, Settings, Sparkles, TicketPercent, Users, UserRound,
+  BarChart3, CalendarClock, MessageSquareQuote, Package, CalendarDays, Clapperboard, Gift, LayoutDashboard, Settings, Sparkles, TicketPercent, Users, UserRound,
 } from 'lucide-react'
 import { ROLES, type RoleName } from '@/admin/types/auth'
 
@@ -41,6 +41,8 @@ export const NAV_SECTIONS: NavSection[] = [
       { label: 'Slots & calendar', path: '/slots', icon: CalendarClock, description: 'Daily slots, blocked dates and special dates.' },
       { label: 'Add-ons & cakes', path: '/addons', icon: Gift, description: 'Cakes and their sizes, effects, decor, flowers, gifts, photography.' },
       { label: 'Offers', path: '/offers', icon: TicketPercent, description: 'Coupon codes, rules and a preview tool.' },
+      { label: 'Packages', path: '/packages', icon: Package, description: 'Celebration packages on the website.' },
+      { label: 'Reviews', path: '/reviews', icon: MessageSquareQuote, description: 'Customer testimonials on the website.' },
     ],
   },
   {

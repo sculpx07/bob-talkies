@@ -21,11 +21,16 @@ export interface Settings {
     email: string
     address: string
   }
+  /** overall rating shown on the website's Reviews page */
+  reviews: {
+    googleRating: number
+    googleReviewCount: number
+  }
   updatedBy: UserRef | null
   updatedAt: string
 }
 
-export type SettingsSection = 'pricing' | 'booking' | 'contact'
+export type SettingsSection = 'pricing' | 'booking' | 'contact' | 'reviews'
 
 /** Any subset of sections and fields, e.g. { pricing: { gstPercent: 12 } } */
 export type SettingsPatch = { [S in SettingsSection]?: Partial<Settings[S]> }

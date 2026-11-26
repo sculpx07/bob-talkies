@@ -1,6 +1,8 @@
 import { z } from 'zod'
 import { paiseToRupees, rupeesToPaise } from '@/admin/lib/utils/money'
-import type { SettingChange, Settings, SettingsPatch } from './types'
+import type { SettingChange, Settings, SettingsPatch, SettingsSection } from './types'
+
+export const SETTINGS_SECTIONS: SettingsSection[] = ['pricing', 'booking', 'contact', 'reviews']
 
 const whole = (min: number, max: number, label: string) =>
   z.number({ error: `Enter ${label}` }).int('Whole number').min(min, `At least ${min}`).max(max, `At most ${max}`)
@@ -27,6 +29,11 @@ export const settingsFormSchema = z.object({
     email: z.string().trim().toLowerCase().email('Enter a valid email'),
     address: z.string().trim().min(5, 'Too short').max(300),
   }),
+  reviews: z.object({
+    googleRating: z.number({ error: 'Enter the rating' }).min(0, 'At least 0').max(5, 'At most 5')
+      .refine((n) => Math.abs(n * 10 - Math.round(n * 10)) < 1e-9, 'One decimal place, e.g. 4.9'),
+    googleReviewCount: whole(0, 10_000_000, 'the count'),
+  }),
 })
 
 export type SettingsFormValues = z.infer<typeof settingsFormSchema>
@@ -37,15 +44,17 @@ export function settingsToForm(s: Settings): SettingsFormValues {
     pricing: { ...pricing, decorationPrice: Number(paiseToRupees(decorationPricePaise)) },
     booking: { ...s.booking },
     contact: { ...s.contact },
+    reviews: { ...s.reviews },
   }
 }
 
-function formToSettings(v: SettingsFormValues): Pick<Settings, 'pricing' | 'booking' | 'contact'> {
+function formToSettings(v: SettingsFormValues): Pick<Settings, SettingsSection> {
   const { decorationPrice, ...pricing } = v.pricing
   return {
     pricing: { ...pricing, decorationPricePaise: rupeesToPaise(decorationPrice) ?? 0 },
     booking: v.booking,
     contact: { ...v.contact, email: v.contact.email.trim().toLowerCase() },
+    reviews: v.reviews,
   }
 }
 
@@ -54,7 +63,7 @@ export function diffSettings(current: Settings, values: SettingsFormValues): { p
   const next = formToSettings(values)
   const patch: Record<string, Record<string, unknown>> = {}
   const changes: SettingChange[] = []
-  for (const section of ['pricing', 'booking', 'contact'] as const) {
+  for (const section of SETTINGS_SECTIONS) {
     for (const [field, to] of Object.entries(next[section])) {
       const from = (current[section] as Record<string, unknown>)[field]
       if (from === to) continue

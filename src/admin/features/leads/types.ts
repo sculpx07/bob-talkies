@@ -4,7 +4,7 @@ import type { BookingStatus } from '@/admin/features/bookings/types'
 /** Lead shapes from the bob-admin backend (src/models/lead.model.js). */
 
 export type LeadStatus = 'new' | 'contacted' | 'follow_up' | 'converted' | 'lost' | 'spam'
-export type LeadSource = 'contact_page' | 'website' | 'phone' | 'whatsapp' | 'instagram' | 'walk_in' | 'referral' | 'other'
+export type LeadSource = 'contact_page' | 'website' | 'vibe_hall_enquiry' | 'phone' | 'whatsapp' | 'instagram' | 'walk_in' | 'referral' | 'other'
 export type LeadPriority = 'low' | 'normal' | 'high'
 export type LeadActivityType = 'created' | 'note' | 'call' | 'whatsapp' | 'email' | 'status_change' | 'assigned' | 'converted'
 

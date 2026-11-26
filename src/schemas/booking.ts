@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const BookingStatusSchema = z.enum([
   'PENDING', 'SLOT_HELD', 'PAYMENT_PENDING', 'CONFIRMED',
-  'COMPLETED', 'CANCELLED', 'FAILED',
+  'COMPLETED', 'NO_SHOW', 'CANCELLED', 'FAILED',
 ])
 export type BookingStatus = z.infer<typeof BookingStatusSchema>
 

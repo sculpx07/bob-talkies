@@ -9,12 +9,12 @@ import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { useToast } from '@/components/ui/Toast'
 import { LeadSchema, type Lead } from '@/schemas/lead'
-import { api } from '@/lib/api/client'
 import { trackEvent } from '@/features/tracking/events'
 import { getLastTouchUTM } from '@/features/tracking/utm'
 import { Phone, MessageCircle, Mail, MapPin, Check, ArrowUpRight, Send, Sparkles } from 'lucide-react'
-import { config } from '@/lib/config'
 import { useState } from 'react'
+import { useContact } from '@/features/site/api'
+import { leadApi } from '@/features/leads/api'
 
 const OCCASION_OPTIONS = [
   'Birthday', 'Anniversary', 'Proposal', 'Date Night',
@@ -22,6 +22,7 @@ const OCCASION_OPTIONS = [
 ]
 
 export default function ContactPage() {
+  const { whatsappNumber, email } = useContact()
   const [submitted, setSubmitted] = useState(false)
   const { toast } = useToast()
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<Lead>({
@@ -32,7 +33,7 @@ export default function ContactPage() {
   const { mutate: submitLead, isPending } = useMutation({
     mutationFn: (data: Lead) => {
       const utmData = getLastTouchUTM()
-      return api.post('/leads', {
+      return leadApi.submit({
         ...data,
         source: 'contact_page',
         utmSource: utmData?.utm_source,
@@ -47,12 +48,12 @@ export default function ContactPage() {
     onError: () => toast('error', 'Failed to submit', 'Please try again or reach us on WhatsApp.'),
   })
 
-  const waLink = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent('Hi! I\'d like to know more about BOB Talkies.')}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hi! I\'d like to know more about BOB Talkies.')}`
 
   const items = [
-    { icon: <Phone size={18} />, label: 'Phone', value: `+91 ${config.whatsappNumber.slice(2)}`, href: `tel:+${config.whatsappNumber}` },
+    { icon: <Phone size={18} />, label: 'Phone', value: `+91 ${whatsappNumber.slice(2)}`, href: `tel:+${whatsappNumber}` },
     { icon: <MessageCircle size={18} />, label: 'WhatsApp', value: 'Chat with us', href: waLink },
-    { icon: <Mail size={18} />, label: 'Email', value: 'hello@bobtalkies.com', href: 'mailto:hello@bobtalkies.com' },
+    { icon: <Mail size={18} />, label: 'Email', value: email, href: `mailto:${email}` },
     { icon: <MapPin size={18} />, label: 'Location', value: 'Kukatpally, Hyderabad, Telangana', href: 'https://maps.google.com' },
   ]
 

@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, MessageCircle, Zap } from 'lucide-react'
-import { config } from '@/lib/config'
+import { useWhatsappNumber } from '@/features/site/api'
 
 const USE_CASES = [
   { emoji: '🎂', label: 'Large Birthday Parties' },
@@ -16,6 +16,7 @@ const USE_CASES = [
 ]
 
 export function VibeHallSpotlight() {
+  const whatsappNumber = useWhatsappNumber()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px 18% 0px' })
 
@@ -116,7 +117,7 @@ export function VibeHallSpotlight() {
                 Explore Vibe Hall <ArrowRight size={14} />
               </Link>
               <a
-                href={`https://wa.me/${config.whatsappNumber}?text=Hi! I'm interested in booking Vibe Hall for a group event.`}
+                href={`https://wa.me/${whatsappNumber}?text=Hi! I'm interested in booking Vibe Hall for a group event.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-sm font-semibold text-white/80 hover:bg-white/10 transition-colors"

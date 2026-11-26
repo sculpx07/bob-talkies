@@ -2,11 +2,12 @@ import { useParams, Link } from 'react-router-dom'
 import { Seo } from '@/components/seo/Seo'
 import { Button } from '@/components/ui/Button'
 import { XCircle, RefreshCw, MessageCircle } from 'lucide-react'
-import { config } from '@/lib/config'
+import { useWhatsappNumber } from '@/features/site/api'
 
 export default function BookFailedPage() {
+  const whatsappNumber = useWhatsappNumber()
   const { bookingId } = useParams()
-  const waLink = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(`Hi! My payment for booking ${bookingId} failed. Can you help?`)}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! My payment for booking ${bookingId} failed. Can you help?`)}`
 
   return (
     <>

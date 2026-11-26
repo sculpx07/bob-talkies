@@ -1,15 +1,13 @@
 import { useMemo, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Check, X } from 'lucide-react'
-import { addonKeys } from '@/lib/api/queryKeys'
-import { api } from '@/lib/api/client'
 import type { Addon } from '@/schemas/addon'
 import { useBooking } from '../../state/booking.context'
 import { formatINR } from '@/lib/utils/currency'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils/cn'
+import { useAddons } from '@/features/catalog/api'
 
 /** Cakes whose largest size is at or above this price are listed under "Premium Cakes". */
 const PREMIUM_FROM_PAISE = 99900
@@ -39,10 +37,7 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
   const [tab, setTab] = useState<'standard' | 'premium'>('standard')
   const [openCake, setOpenCake] = useState<{ cake: Cake; index: number } | null>(null)
 
-  const { data: addons = [], isLoading } = useQuery({
-    queryKey: addonKeys.list(state.theatreId ?? undefined),
-    queryFn: () => api.get<Addon[]>(`/addons${state.theatreId ? `?theatreId=${state.theatreId}` : ''}`),
-  })
+  const { data: addons = [], isLoading } = useAddons(state.theatreId)
 
   // one card per cake, with a size option each
   const cakes = useMemo<Cake[]>(() => {

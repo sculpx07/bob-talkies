@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Camera, PlayCircle, Globe, MessageCircle, Phone, MapPin, Mail } from 'lucide-react'
-import { config } from '@/lib/config'
+import { useWhatsappNumber } from '@/features/site/api'
 
 const THEATRE_LINKS = [
   { label: 'The Delight', to: '/theatres/delight' },
@@ -42,8 +42,9 @@ const LEGAL_LINKS = [
 ]
 
 export function Footer() {
+  const whatsappNumber = useWhatsappNumber()
   const year = new Date().getFullYear()
-  const waLink = `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent('Hi! I\'d like to know more about BOB Talkies.')}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hi! I\'d like to know more about BOB Talkies.')}`
   return (
     <footer className="bg-[#0d0a14] border-t border-white/10 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -57,8 +58,8 @@ export function Footer() {
               Hyderabad's most loved private theatre experience for birthdays, anniversaries, proposals and every celebration worth remembering.
             </p>
             <div className="space-y-2 text-sm text-white/60">
-              <a href={`tel:+${config.whatsappNumber}`} className="flex items-center gap-2 hover:text-white transition-colors">
-                <Phone size={14} /> +91 {config.whatsappNumber.slice(2)}
+              <a href={`tel:+${whatsappNumber}`} className="flex items-center gap-2 hover:text-white transition-colors">
+                <Phone size={14} /> +91 {whatsappNumber.slice(2)}
               </a>
               <a href={waLink} className="flex items-center gap-2 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <MessageCircle size={14} /> WhatsApp Us

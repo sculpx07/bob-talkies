@@ -15,6 +15,8 @@ const LABELS: Record<string, { label: string; format?: (v: unknown) => string }>
   'contact.phone': { label: 'Phone' },
   'contact.email': { label: 'Email' },
   'contact.address': { label: 'Address' },
+  'reviews.googleRating': { label: 'Rating shown on website', format: (v) => `${Number(v).toFixed(1)} ★` },
+  'reviews.googleReviewCount': { label: 'Review count shown on website', format: (v) => Number(v).toLocaleString('en-IN') },
 }
 
 export const settingLabel = (path: string) => LABELS[path]?.label ?? path
