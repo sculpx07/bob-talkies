@@ -72,12 +72,25 @@ function Card({ pick, index }: { pick: Pick; index: number }) {
 
 export function ExperiencePicker() {
   return (
-    <section className="relative py-16 md:py-24" aria-labelledby="experience-picker-heading">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+    <section className="relative overflow-hidden py-16 md:py-24" aria-labelledby="experience-picker-heading">
+      {/* unique backdrop: oversized outlined watermark word, faded at both ends */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-6 -translate-x-1/2 select-none whitespace-nowrap font-display text-[26vw] font-black uppercase leading-none tracking-tight md:top-2 md:text-[17vw]"
+        style={{
+          color: 'transparent',
+          WebkitTextStroke: '1.5px rgba(245,199,106,0.16)',
+          maskImage: 'linear-gradient(to bottom, black 0%, transparent 85%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 85%)',
+        }}
+      >
+        Celebrate
+      </span>
+      <div className="relative mx-auto max-w-7xl px-4 md:px-6">
         <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div className="max-w-2xl">
             <p className="mb-2 font-cursive text-2xl text-[#c9933a]">Choose an experience</p>
-            <h2 id="experience-picker-heading" className="font-display text-3xl font-medium leading-tight text-white md:text-5xl">Not just a theatre, your occasion made special</h2>
+            <h2 id="experience-picker-heading" className="font-display text-3xl font-medium leading-tight text-white md:text-5xl">Not just a theatre, <span className="bg-gradient-to-r from-[#F5C76A] via-[#FFE3A0] to-[#E8A83E] bg-clip-text text-transparent">your occasion</span> made special</h2>
           </div>
           <p className="max-w-xs text-white/80">Pick what you are celebrating and see the services that go with it.</p>
         </div>

@@ -17,10 +17,11 @@ const TL_DOTS = dots(34, 0.11, 0, 360, (t) => 150 - t * 120, 40)
 const BR_DOTS = dots(34, 0.37, 0, 380, (t) => 120 - t * 95, 44)
 
 function GoldWave({ className, d, sparks, flip }: { className: string; d: string; sparks: typeof TL_DOTS; flip?: boolean }) {
+  const gradId = flip ? 'ft-wave-br' : 'ft-wave-tl'
   return (
     <svg aria-hidden="true" focusable="false" viewBox="0 0 400 180" className={className} style={{ transform: flip ? 'scale(-1,-1)' : undefined }}>
       <defs>
-        <linearGradient id={flip ? 'ft-wave-br' : 'ft-wave-tl'} x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#E8A83E" stopOpacity="0" />
           <stop offset="0.35" stopColor="#E8A83E" />
           <stop offset="0.7" stopColor="#FFE3A0" />
@@ -28,7 +29,7 @@ function GoldWave({ className, d, sparks, flip }: { className: string; d: string
         </linearGradient>
       </defs>
       <g className="ft-wave-glow" style={{ filter: 'drop-shadow(0 0 5px rgba(245,199,106,0.85)) drop-shadow(0 0 14px rgba(232,168,62,0.5))' }}>
-        <path d={d} fill="none" stroke={`url(#${flip ? 'ft-wave-br' : 'ft-wave-tl'})`} strokeWidth="2.4" strokeLinecap="round" />
+        <path d={d} fill="none" stroke={`url(#${gradId})`} strokeWidth="2.4" strokeLinecap="round" />
         <path d={d} fill="none" stroke="#FFE9B8" strokeOpacity="0.55" strokeWidth="0.8" strokeLinecap="round" transform="translate(0 3)" />
       </g>
       <g fill="#FFE3A0" style={{ filter: 'drop-shadow(0 0 3px rgba(255,214,130,0.9))' }}>

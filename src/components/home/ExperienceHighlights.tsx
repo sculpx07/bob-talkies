@@ -73,9 +73,20 @@ export function ExperienceHighlights() {
   return (
     <section
       ref={ref}
-      className="pb-16 pt-6 md:pb-24 md:pt-10"
+      className="relative overflow-hidden pb-16 pt-6 md:pb-24 md:pt-10"
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
+      {/* backdrop: fine gold line grid, softly faded toward every edge */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(245,199,106,0.13) 1px, transparent 1px), linear-gradient(90deg, rgba(245,199,106,0.13) 1px, transparent 1px)',
+          backgroundSize: '46px 46px',
+          maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.5) 42%, rgba(0,0,0,0.22) 62%, rgba(0,0,0,0.07) 80%, rgba(0,0,0,0) 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.5) 42%, rgba(0,0,0,0.22) 62%, rgba(0,0,0,0.07) 80%, rgba(0,0,0,0) 100%)',
+        }}
+      />
+      <div className="relative max-w-7xl mx-auto px-4 md:px-6">
 
         {/* Header */}
         <motion.div

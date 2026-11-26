@@ -25,11 +25,12 @@ export function VibeHallSpotlight() {
       ref={ref}
       className="py-16 md:py-24 relative overflow-hidden"
     >
-      {/* Ambient glows */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#34d399]/8 blur-3xl translate-x-1/3 -translate-y-1/3" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-[#c9a84c]/8 blur-3xl -translate-x-1/3 translate-y-1/3" />
-      </div>
+      {/* unique backdrop: soft bokeh light discs (echoing the photo's lights); each disc fades to nothing inside its own radius, so nothing is ever cut */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{ background: 'radial-gradient(circle 110px at 9% 22%, rgba(52,211,153,0.2) 0%, rgba(52,211,153,0.1) 55%, transparent 100%), radial-gradient(circle 70px at 20% 70%, rgba(245,199,106,0.18) 0%, rgba(245,199,106,0.09) 55%, transparent 100%), radial-gradient(circle 150px at 33% 48%, rgba(232,121,168,0.14) 0%, rgba(232,121,168,0.07) 55%, transparent 100%), radial-gradient(circle 90px at 52% 16%, rgba(245,199,106,0.16) 0%, rgba(245,199,106,0.08) 55%, transparent 100%), radial-gradient(circle 130px at 66% 76%, rgba(52,211,153,0.16) 0%, rgba(52,211,153,0.08) 55%, transparent 100%), radial-gradient(circle 80px at 78% 30%, rgba(232,121,168,0.18) 0%, rgba(232,121,168,0.09) 55%, transparent 100%), radial-gradient(circle 120px at 90% 62%, rgba(245,199,106,0.15) 0%, rgba(245,199,106,0.075) 55%, transparent 100%), radial-gradient(circle 60px at 44% 86%, rgba(52,211,153,0.2) 0%, rgba(52,211,153,0.1) 55%, transparent 100%)' , maskImage: 'linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)' }}
+      />
 
       <div className="relative max-w-7xl mx-auto px-4 md:px-6">
 

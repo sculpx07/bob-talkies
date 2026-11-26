@@ -327,14 +327,6 @@ function PersonaliseBanner({ reduce, inView }: { reduce: boolean | null; inView:
         aria-label="Personalise your surprise"
         className="group relative block transition-transform duration-500 hover:-translate-y-1"
       >
-        {/* breathing outer glow */}
-        <motion.span
-          aria-hidden
-          className="pointer-events-none absolute inset-x-8 bottom-[-6px] top-4 rounded-full bg-[#c0399a] blur-2xl"
-          animate={reduce ? { opacity: 0.3 } : { opacity: [0.22, 0.55, 0.22] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
         {/* gold border shell with a light that travels around it */}
         <div className="relative overflow-hidden rounded-[2.5rem] bg-[linear-gradient(135deg,#e8d48a,#8c5a1f_45%,#e8d48a)] p-[1.5px] shadow-[0_18px_44px_rgba(107,35,152,0.38)]">
           {!reduce && (
@@ -618,10 +610,10 @@ export function ExperienceCategories() {
         </motion.div>
 
         {/* Content */}
-        <div className="grid gap-5 lg:h-[clamp(470px,calc(100vh-190px),620px)] lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:grid-rows-1 lg:gap-6">
+        <div className="grid gap-5 lg:min-h-[clamp(470px,calc(100vh-190px),620px)] lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:grid-rows-1 lg:gap-6">
           {/* ───────── LEFT: 3D cover-flow panel ───────── */}
           <motion.div
-            className="relative flex h-[540px] min-h-0 flex-col overflow-hidden rounded-[2rem] bg-[#0a0516] shadow-[0_24px_60px_rgba(42,14,79,0.32)] lg:h-full"
+            className="relative flex h-[540px] min-h-0 flex-col overflow-hidden rounded-[2rem] bg-[#0a0516] shadow-[0_24px_60px_rgba(42,14,79,0.32)] lg:h-auto"
             initial={{ opacity: 0, x: -30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.25, duration: 0.7, ease: EASE }}
@@ -851,7 +843,7 @@ export function ExperienceCategories() {
           </motion.div>
 
           {/* ───────── RIGHT: events of the chosen category + banner ───────── */}
-          <div className="flex min-h-0 flex-col gap-3 lg:h-full">
+          <div className="flex min-h-0 flex-col gap-3">
             <div className="flex shrink-0 items-center justify-between px-1">
               <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#8f6420]">
                 {active.label} · {n} experiences
