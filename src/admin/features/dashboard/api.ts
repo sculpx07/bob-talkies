@@ -12,8 +12,9 @@ export const dashboardKeys = {
 }
 
 /** Bookings that hold a slot on `date`, earliest slot first. */
-export function useBookingsOn(date: string) {
+export function useBookingsOn(date: string, enabled = true) {
   return useQuery({
+    enabled,
     queryKey: dashboardKeys.bookingsOn(date),
     queryFn: () =>
       api.get<Paginated<'bookings', BookingListItem>>('/bookings', {

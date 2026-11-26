@@ -1,23 +1,23 @@
-/** Role names, same as the backend (bob-admin src/constants/roles.js). */
-export const ROLES = {
-  SUPER_ADMIN: 'super_admin',
-  ADMIN: 'admin',
-} as const
-export type RoleName = (typeof ROLES)[keyof typeof ROLES]
+import type { Permission } from './permissions'
 
+/** A staff role (Roles & permissions). The system role (Super Admin) has every permission. */
 export interface Role {
   id: string
-  name: RoleName
+  /** stable key, e.g. "front_desk" */
+  name: string
   displayName: string
   description?: string
+  isSystem: boolean
 }
 
-/** The signed-in staff member (GET /auth/me). */
+/** The signed-in staff member (GET /auth/me, sign-in reply). */
 export interface AdminUser {
   id: string
   name: string
   email: string
   role: Role
+  /** everything this person may do; the backend checks the same keys */
+  permissions: Permission[]
   isActive: boolean
   lastLoginAt?: string
 }

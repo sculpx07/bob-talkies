@@ -1,8 +1,9 @@
-import type { RoleName } from '@/admin/types/auth'
-
+/** The role shown next to a staff member (permissions live on the role, see Roles & permissions). */
 export interface StaffRole {
-  name: RoleName
+  id: string
+  name: string
   displayName: string
+  isSystem: boolean
 }
 
 /** A staff account as the Staff screen sees it (GET /users). */
@@ -21,14 +22,16 @@ export interface StaffListParams {
   limit?: number
   sort?: string
   search?: string
-  role?: RoleName
+  /** role id */
+  role?: string
   isActive?: boolean
 }
 
 export interface StaffInput {
   name: string
   email: string
-  role: RoleName
+  /** role id */
+  role: string
 }
 
 /** Create and reset-password replies carry a one-time password. */

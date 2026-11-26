@@ -80,7 +80,9 @@ function TheatreListingCard({
   const { data: site } = useSiteConfig()
   const dow = getDay(parseISO(date))
   const isWeekend = dow === 0 || dow === 6
-  const price = isWeekend ? theatre.weekendPricePaise : theatre.weekdayPricePaise // price for the chosen date
+  // price for the chosen date: the picked slot's own price (custom price / slot offer), else the theatre price
+  const pickedSlot = slots.find((s) => s.id === selectedSlotId)
+  const price = pickedSlot?.pricePaise ?? (isWeekend ? theatre.weekendPricePaise : theatre.weekdayPricePaise)
   const extraGuests = Math.max(0, guests - theatre.includedGuests)
   const selected = selectedSlotId !== null
   // advance to reserve the slot: the advance % (Settings) of theatre price + extra guests (before tax and add-ons)
@@ -178,13 +180,14 @@ function TheatreListingCard({
                 const booked = slot.status === 'booked' || slot.status === 'held'
                 const hot = slot.status === 'high_demand'
                 const active = selectedSlotId === slot.id
+                const onOffer = !booked && slot.originalPricePaise != null && slot.originalPricePaise > slot.pricePaise
                 return (
                   <button
                     key={slot.id}
                     type="button"
                     disabled={booked}
                     aria-pressed={active}
-                    title={hot && !booked ? 'Filling fast' : undefined}
+                    title={slot.offerLabel && !booked ? slot.offerLabel : hot && !booked ? 'Filling fast' : undefined}
                     onClick={() => onPickSlot(slot.id)}
                     className={cn(
                       'relative w-[5.2rem] rounded-xl border px-1 py-1.5 text-center text-[10.5px] font-semibold leading-snug transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c0125a]',
@@ -195,15 +198,20 @@ function TheatreListingCard({
                   >
                     {formatTime(slot.start)} -<br />{formatTime(slot.end)}
                     <span className="mt-0.5 block text-[9px] font-bold leading-tight">
-                      {!isWeekend && !booked && (
+                      {onOffer && (
                         <s className={cn('mr-0.5 opacity-50', active ? 'text-white' : 'text-[#9a6575]')}>
-                          {formatINR(theatre.weekendPricePaise)}
+                          {formatINR(slot.originalPricePaise!)}
                         </s>
                       )}
-                      <span className={cn(active ? 'text-white/90' : booked ? 'text-[#b9aac9]' : !isWeekend ? 'text-[#c2255c]' : 'text-[#9a6575]')}>
-                        {formatINR(price)}
+                      <span className={cn(active ? 'text-white/90' : booked ? 'text-[#b9aac9]' : onOffer ? 'text-[#c2255c]' : 'text-[#9a6575]')}>
+                        {formatINR(slot.pricePaise)}
                       </span>
                     </span>
+                    {onOffer && (
+                      <span className={cn('block truncate text-[8.5px] font-bold uppercase leading-tight tracking-wide', active ? 'text-white/90' : 'text-[#c2255c]')}>
+                        {slot.offerLabel}
+                      </span>
+                    )}
                     {hot && !active && !booked && <Zap size={10} className="absolute -right-1 -top-1 rounded-full bg-white text-[#c2255c]" />}
                   </button>
                 )

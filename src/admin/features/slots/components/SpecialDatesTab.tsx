@@ -13,6 +13,8 @@ import { formatDate, todayISO } from '@/admin/lib/utils/date'
 import { useDeleteSpecialDate, useSaveSpecialDate, useSpecialDates } from '../api'
 import type { SpecialDate, TheatreRef } from '../types'
 import { SPECIAL_DATE_BADGE } from '../utils'
+import { Can } from '@/admin/auth/guards'
+import { PERMISSIONS } from '@/admin/types/permissions'
 
 const TYPE_OPTIONS = [
   { value: 'high_demand', label: 'High demand' },
@@ -139,7 +141,7 @@ export function SpecialDatesTab({ theatre }: { theatre: TheatreRef }) {
             <div className="w-36">
               <Select aria-label="Which dates" value={range} onChange={(e) => setRange(e.target.value as 'upcoming' | 'all')} options={[{ value: 'upcoming', label: 'Upcoming' }, { value: 'all', label: 'All, incl. past' }]} />
             </div>
-            <Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Mark date</Button>
+            <Can permission={PERMISSIONS.SLOTS_EDIT}><Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Mark date</Button></Can>
           </>
         }
       />

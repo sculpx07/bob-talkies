@@ -13,6 +13,8 @@ import { useOfferStats, useOffers, useSetOfferActive } from '../api'
 import { OfferPreviewModal } from '../components/OfferPreviewModal'
 import type { Offer, OfferStatus } from '../types'
 import { OFFER_STATUS_BADGE, OFFER_STATUS_ORDER, formatDiscount, formatUsage, offerRules } from '../utils'
+import { Can } from '@/admin/auth/guards'
+import { PERMISSIONS } from '@/admin/types/permissions'
 
 export default function OffersListPage() {
   const navigate = useNavigate()
@@ -110,7 +112,7 @@ export default function OffersListPage() {
         actions={
           <>
             <Button variant="secondary" leftIcon={<FlaskConical className="h-4 w-4" />} onClick={() => preview.open('')}>Try a code</Button>
-            <Link to="/offers/new"><Button leftIcon={<Plus className="h-4 w-4" />}>Add offer</Button></Link>
+            <Can permission={PERMISSIONS.OFFERS_CREATE}><Link to="/offers/new"><Button leftIcon={<Plus className="h-4 w-4" />}>Add offer</Button></Link></Can>
           </>
         }
       />
@@ -152,7 +154,7 @@ export default function OffersListPage() {
           empty={
             filters.search || filters.status
               ? <EmptyState title="No offers match" action={<Button variant="secondary" onClick={resetFilters}>Show all</Button>} />
-              : <EmptyState icon={<TicketPercent className="h-5 w-5" />} title="No offers yet" action={<Link to="/offers/new"><Button>Add offer</Button></Link>} />
+              : <EmptyState icon={<TicketPercent className="h-5 w-5" />} title="No offers yet" action={<Can permission={PERMISSIONS.OFFERS_CREATE}><Link to="/offers/new"><Button>Add offer</Button></Link></Can>} />
           }
         />
         <Pagination pagination={query.data?.pagination} onPageChange={(page) => setFilters({ page })} />

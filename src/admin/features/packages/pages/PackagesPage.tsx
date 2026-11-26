@@ -8,11 +8,12 @@ import {
 import { useUrlFilters } from '@/admin/hooks/useUrlFilters'
 import { errorMessage } from '@/admin/lib/api/errors'
 import { formatPaise } from '@/admin/lib/utils/money'
-import { ROLES } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { useDeletePackage, usePackages, useSetPackageAvailable } from '../api'
 import { TIER_OPTIONS, tierOption } from '../constants'
 import { PackageFormModal } from '../components/PackageFormModal'
 import type { CelebrationPackage, PackageTier } from '../types'
+import { Can } from '@/admin/auth/guards'
 
 const STATUS_OPTIONS = [{ value: 'true', label: 'On website' }, { value: 'false', label: 'Hidden' }]
 
@@ -69,7 +70,7 @@ function PackageCard({ pkg, canDelete, onEdit, onDelete }: { pkg: CelebrationPac
 /** Website packages (Silver, Gold, ...), shown on the customer Packages page. */
 export default function PackagesPage() {
   const toast = useToast()
-  const { hasRole } = useAuth()
+  const { can } = useAuth()
   const [f, setFilters, reset] = useUrlFilters({ search: '', tier: '', status: '' })
   const query = usePackages({
     limit: 100,
@@ -97,7 +98,7 @@ export default function PackagesPage() {
       <PageHeader
         title="Packages"
         description="Celebration packages on the website's Packages page."
-        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => setEditing('new')}>Add package</Button>}
+        actions={<Can permission={PERMISSIONS.PACKAGES_CREATE}><Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => setEditing('new')}>Add package</Button></Can>}
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -116,13 +117,13 @@ export default function PackagesPage() {
           <EmptyState
             icon={<PackageIcon className="h-5 w-5" />}
             title={hasFilters ? 'No packages match' : 'No packages yet'}
-            action={hasFilters ? <Button variant="secondary" onClick={reset}>Clear filters</Button> : <Button onClick={() => setEditing('new')}>Add package</Button>}
+            action={hasFilters ? <Button variant="secondary" onClick={reset}>Clear filters</Button> : <Can permission={PERMISSIONS.PACKAGES_CREATE}><Button onClick={() => setEditing('new')}>Add package</Button></Can>}
           />
         </Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {packages.map((p) => (
-            <PackageCard key={p.id} pkg={p} canDelete={hasRole(ROLES.SUPER_ADMIN)} onEdit={() => setEditing(p)} onDelete={() => setDeleting(p)} />
+            <PackageCard key={p.id} pkg={p} canDelete={can(PERMISSIONS.PACKAGES_DELETE)} onEdit={() => setEditing(p)} onDelete={() => setDeleting(p)} />
           ))}
         </div>
       )}

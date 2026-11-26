@@ -128,3 +128,24 @@ export interface BookingIssue {
   severity: 'error' | 'warning'
   message: string
 }
+
+/** An online payment attempt (Razorpay order or test-screen payment) for a website booking. */
+export interface PaymentAttempt {
+  id: string
+  provider: 'dev' | 'razorpay'
+  /** Razorpay: 'test' or 'live' keys */
+  mode: string
+  orderId: string
+  amountPaise: number
+  payFull: boolean
+  status: 'created' | 'paid' | 'failed'
+  gatewayPaymentId: string
+  confirmedVia: '' | 'test_screen' | 'checkout' | 'webhook'
+  failureReason: string
+  lastFailure: { code: string; description: string; at: string } | null
+  /** money was taken but the booking could not be confirmed: refund the customer */
+  refundNeeded: boolean
+  paidAt: string | null
+  failedAt: string | null
+  createdAt: string
+}

@@ -1,24 +1,24 @@
 import { useParams } from 'react-router-dom'
 import {
-  CalendarClock, CheckCircle2, ExternalLink, Gift, IndianRupee, MessageCircle, MoreHorizontal, Pencil, Phone, Timer, Trash2, UserX, XCircle,
+  AlertTriangle, CalendarClock, CheckCircle2, ExternalLink, Gift, IndianRupee, MessageCircle, MoreHorizontal, Pencil, Phone, Timer, Trash2, UserX, XCircle,
 } from 'lucide-react'
 import { PageHeader } from '@/admin/components/layout/PageHeader'
 import {
   Badge, Button, Card, CardBody, CardHeader, ConfirmDialog, ErrorState, IconButton, LoadingBlock, Menu, StatusBadge, useToast, type MenuItem,
 } from '@/admin/components/ui'
 import { useAuth } from '@/admin/auth/AuthProvider'
-import { ROLES } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { occasionLabel } from '@/admin/constants/catalog'
 import { useDisclosure, useDisclosureWith } from '@/admin/hooks/useDisclosure'
 import { errorMessage } from '@/admin/lib/api/errors'
 import { formatDate, formatDateTime, formatTime } from '@/admin/lib/utils/date'
 import { formatPaise } from '@/admin/lib/utils/money'
 import { cn } from '@/admin/lib/utils/cn'
-import { useBooking, useRemovePayment } from '../api'
+import { useBooking, usePaymentAttempts, useRemovePayment } from '../api'
 import {
   BOOKING_STATUS_BADGE, EDITABLE_STATUSES, MANUAL_PAYMENT_METHODS, PAYABLE_STATUSES, PAYMENT_METHOD_LABELS, PAYMENT_STATUS_BADGE, SOURCE_LABELS, canMoveTo,
 } from '../constants'
-import type { BookingDetail, BookingPayment } from '../types'
+import type { BookingDetail, BookingPayment, PaymentAttempt } from '../types'
 import { formatCountdown, hoursUntilSlot, useNow, whatsappLink } from '../utils'
 import {
   CancelBookingModal, CloseBookingModal, ConfirmBookingModal, EditDetailsModal, RecordPaymentModal, RescheduleModal,
@@ -85,6 +85,57 @@ function PaymentsCard({ b, onRecord, onRemove, canRemove }: { b: BookingDetail; 
   )
 }
 
+const ATTEMPT_BADGE = {
+  created: { label: 'Open', tone: 'neutral' },
+  paid: { label: 'Paid', tone: 'success' },
+  failed: { label: 'Failed', tone: 'danger' },
+} as const
+
+const VIA_LABEL: Record<PaymentAttempt['confirmedVia'], string> = {
+  '': '', test_screen: 'test screen', checkout: 'Razorpay checkout', webhook: 'Razorpay webhook',
+}
+
+/** Online payment attempts (website bookings): what the gateway did, and any refund owed. */
+function OnlinePaymentsCard({ attempts }: { attempts: PaymentAttempt[] }) {
+  const refunds = attempts.filter((a) => a.refundNeeded)
+  return (
+    <Card>
+      <CardHeader title="Online payment attempts" description="Payments started on the website, newest first." />
+      <CardBody className="space-y-3">
+        {refunds.length > 0 && (
+          <p role="alert" className="flex gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span><strong>Refund needed:</strong> {refunds.map((a) => `${formatPaise(a.amountPaise)} (${a.gatewayPaymentId})`).join(', ')} was paid after the slot hold expired. Refund it from the Razorpay dashboard.</span>
+          </p>
+        )}
+        <ul className="divide-y divide-slate-100 text-sm">
+          {attempts.map((a) => (
+            <li key={a.id} className="flex items-start justify-between gap-3 py-2">
+              <div className="min-w-0">
+                <p className="font-medium text-slate-900">
+                  {formatPaise(a.amountPaise)} · {a.payFull ? 'full amount' : 'advance'}
+                  <span className="ml-2 text-xs font-normal text-slate-500">{a.provider === 'razorpay' ? `Razorpay${a.mode === 'test' ? ' (test)' : ''}` : 'Test screen'}</span>
+                </p>
+                <p className="truncate text-xs text-slate-500">
+                  {formatDateTime(a.paidAt ?? a.failedAt ?? a.createdAt)} · order {a.orderId}
+                  {a.gatewayPaymentId ? ` · payment ${a.gatewayPaymentId}` : ''}
+                  {a.confirmedVia && a.status === 'paid' ? ` · confirmed by ${VIA_LABEL[a.confirmedVia]}` : ''}
+                </p>
+                {a.status === 'failed' && a.failureReason && <p className="text-xs text-red-600">{a.failureReason}</p>}
+                {a.status === 'created' && a.lastFailure && <p className="text-xs text-amber-700">Last try failed: {a.lastFailure.description}</p>}
+              </div>
+              <div className="flex shrink-0 gap-1">
+                {a.refundNeeded && <Badge tone="danger">Refund needed</Badge>}
+                <Badge tone={ATTEMPT_BADGE[a.status].tone} dot>{ATTEMPT_BADGE[a.status].label}</Badge>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </CardBody>
+    </Card>
+  )
+}
+
 function HistoryCard({ b }: { b: BookingDetail }) {
   const events = [
     ...b.statusHistory.map((h) => ({ at: h.at, text: `${h.from ? `${BOOKING_STATUS_BADGE[h.from].label} → ` : ''}${BOOKING_STATUS_BADGE[h.to].label}`, note: h.note, by: h.by?.name })),
@@ -112,9 +163,10 @@ function HistoryCard({ b }: { b: BookingDetail }) {
 export default function BookingDetailPage() {
   const { id = '' } = useParams()
   const toast = useToast()
-  const { hasRole } = useAuth()
+  const { can } = useAuth()
   const now = useNow()
   const query = useBooking(id)
+  const attempts = usePaymentAttempts(id)
   const removePayment = useRemovePayment()
 
   const confirm = useDisclosure()
@@ -131,7 +183,11 @@ export default function BookingDetailPage() {
   if (query.isLoading) return <LoadingBlock />
   if (query.error || !b) return <ErrorState error={query.error} retry={() => query.refetch()} title="Could not load this booking" />
 
-  const editable = EDITABLE_STATUSES.includes(b.status)
+  // what the role allows (the backend checks the same permissions)
+  const mayEdit = can(PERMISSIONS.BOOKINGS_EDIT)
+  const mayCancel = can(PERMISSIONS.BOOKINGS_CANCEL)
+  const mayRecordPayment = can(PERMISSIONS.BOOKINGS_PAYMENTS)
+  const editable = mayEdit && EDITABLE_STATUSES.includes(b.status)
   const slotStarted = hoursUntilSlot(b.date, b.slotStart, now) <= 0
   const holdLeft = b.holdExpiresAt ? formatCountdown(b.holdExpiresAt, now) : null
 
@@ -141,8 +197,8 @@ export default function BookingDetailPage() {
       { label: 'Change guests & extras', icon: <Gift />, onSelect: extras.open },
       { label: 'Reschedule', icon: <CalendarClock />, onSelect: reschedule.open },
     ] : []),
-    ...(canMoveTo(b.status, 'NO_SHOW') ? [{ label: 'Mark no-show', icon: <UserX />, onSelect: noShow.open, disabled: !slotStarted }] : []),
-    ...(canMoveTo(b.status, 'CANCELLED') ? [{ label: 'Cancel booking', icon: <XCircle />, danger: true, onSelect: cancel.open }] : []),
+    ...(mayEdit && canMoveTo(b.status, 'NO_SHOW') ? [{ label: 'Mark no-show', icon: <UserX />, onSelect: noShow.open, disabled: !slotStarted }] : []),
+    ...(mayCancel && canMoveTo(b.status, 'CANCELLED') ? [{ label: 'Cancel booking', icon: <XCircle />, danger: true, onSelect: cancel.open }] : []),
   ]
 
   return (
@@ -159,13 +215,13 @@ export default function BookingDetailPage() {
         }
         actions={
           <>
-            {canMoveTo(b.status, 'CONFIRMED') && <Button leftIcon={<CheckCircle2 className="h-4 w-4" />} onClick={confirm.open}>Confirm</Button>}
-            {canMoveTo(b.status, 'COMPLETED') && (
+            {mayEdit && canMoveTo(b.status, 'CONFIRMED') && <Button leftIcon={<CheckCircle2 className="h-4 w-4" />} onClick={confirm.open}>Confirm</Button>}
+            {mayEdit && canMoveTo(b.status, 'COMPLETED') && (
               <Button variant="secondary" leftIcon={<CheckCircle2 className="h-4 w-4" />} onClick={complete.open} disabled={!slotStarted} title={slotStarted ? undefined : 'Available once the slot has started'}>
                 Mark completed
               </Button>
             )}
-            {PAYABLE_STATUSES.includes(b.status) && b.balanceDuePaise > 0 && <Button variant="secondary" leftIcon={<IndianRupee className="h-4 w-4" />} onClick={pay.open}>Record payment</Button>}
+            {mayRecordPayment && PAYABLE_STATUSES.includes(b.status) && b.balanceDuePaise > 0 && <Button variant="secondary" leftIcon={<IndianRupee className="h-4 w-4" />} onClick={pay.open}>Record payment</Button>}
             {moreItems.length > 0 && <Menu trigger={<IconButton label="More actions" variant="secondary"><MoreHorizontal className="h-4 w-4" /></IconButton>} items={moreItems} />}
           </>
         }
@@ -225,10 +281,11 @@ export default function BookingDetailPage() {
           <BillCard b={b} />
           <PaymentsCard
             b={b}
-            onRecord={PAYABLE_STATUSES.includes(b.status) ? pay.open : undefined}
-            canRemove={hasRole(ROLES.SUPER_ADMIN)}
+            onRecord={mayRecordPayment && PAYABLE_STATUSES.includes(b.status) ? pay.open : undefined}
+            canRemove={can(PERMISSIONS.BOOKINGS_REMOVE_PAYMENT)}
             onRemove={(p) => confirmRemovePayment.open(p)}
           />
+          {attempts.data && attempts.data.length > 0 && <OnlinePaymentsCard attempts={attempts.data} />}
         </div>
 
         <div className="space-y-6">

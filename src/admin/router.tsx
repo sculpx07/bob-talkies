@@ -1,9 +1,10 @@
-import { lazy } from 'react'
-import { createBrowserRouter, type RouteObject } from 'react-router-dom'
-import { RequireAuth, RequireRole } from './auth/guards'
+import { lazy, type ReactNode } from 'react'
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom'
+import { useAuth } from './auth/AuthProvider'
+import { RequireAuth, RequirePermission } from './auth/guards'
 import { AdminLayout } from './components/layout/AdminLayout'
 import { NAV_ITEMS } from './components/layout/nav'
-import { ROLES } from './types/auth'
+import { PERMISSIONS, type Permission } from './types/permissions'
 import { NotFoundPage, RouteErrorPage } from './features/placeholder/ErrorPages'
 
 // Pages load on demand, so the first screen stays small.
@@ -31,80 +32,89 @@ const ReviewsPage = lazy(() => import('./features/reviews/pages/ReviewsPage'))
 const ReportsPage = lazy(() => import('./features/reports/pages/ReportsPage'))
 const StaffPage = lazy(() => import('./features/users/pages/StaffPage'))
 const AccountPage = lazy(() => import('./features/account/pages/AccountPage'))
+const RolesPage = lazy(() => import('./features/roles/pages/RolesPage'))
+const RoleEditorPage = lazy(() => import('./features/roles/pages/RoleEditorPage'))
+
+const P = PERMISSIONS
+/** Page that needs at least one of the permissions; others see "no access". */
+const guard = (anyOf: Permission[], element: ReactNode) => <RequirePermission anyOf={anyOf}>{element}</RequirePermission>
+
+/** "/": the dashboard, or the first page this person may open when their role has no dashboard. */
+function HomeRoute() {
+  const { can } = useAuth()
+  if (can(P.DASHBOARD_VIEW)) return <DashboardPage />
+  const first = NAV_ITEMS.find((item) => item.path !== '/' && can(item.permission))
+  return first ? <Navigate to={first.path} replace /> : guard([P.DASHBOARD_VIEW], null)
+}
 
 /**
  * Pages that are built. Every other sidebar item shows a placeholder until its
  * module lands; add the module's routes here (and its path to builtPaths) as it is built.
  */
 const builtRoutes: RouteObject[] = [
-  { index: true, element: <DashboardPage /> },
+  { index: true, element: <HomeRoute /> },
   {
     path: 'theatres',
     children: [
-      { index: true, element: <TheatresListPage /> },
-      { path: 'new', element: <TheatreCreatePage /> },
-      { path: ':id', element: <TheatreEditPage /> },
+      { index: true, element: guard([P.THEATRES_VIEW], <TheatresListPage />) },
+      { path: 'new', element: guard([P.THEATRES_CREATE], <TheatreCreatePage />) },
+      { path: ':id', element: guard([P.THEATRES_VIEW], <TheatreEditPage />) },
     ],
   },
-  { path: 'slots', element: <SlotsPage /> },
+  { path: 'slots', element: guard([P.SLOTS_VIEW], <SlotsPage />) },
   {
     path: 'addons',
     children: [
-      { index: true, element: <AddonsPage /> },
-      { path: 'new', element: <AddonCreatePage /> },
-      { path: ':id', element: <AddonEditPage /> },
+      { index: true, element: guard([P.ADDONS_VIEW], <AddonsPage />) },
+      { path: 'new', element: guard([P.ADDONS_CREATE], <AddonCreatePage />) },
+      { path: ':id', element: guard([P.ADDONS_VIEW], <AddonEditPage />) },
     ],
   },
   {
     path: 'offers',
     children: [
-      { index: true, element: <OffersListPage /> },
-      { path: 'new', element: <OfferCreatePage /> },
-      { path: ':id', element: <OfferEditPage /> },
+      { index: true, element: guard([P.OFFERS_VIEW], <OffersListPage />) },
+      { path: 'new', element: guard([P.OFFERS_CREATE], <OfferCreatePage />) },
+      { path: ':id', element: guard([P.OFFERS_VIEW], <OfferEditPage />) },
     ],
   },
-  { path: 'settings', element: <SettingsPage /> },
+  { path: 'settings', element: guard([P.SETTINGS_VIEW], <SettingsPage />) },
   {
     path: 'bookings',
     children: [
-      { index: true, element: <BookingsPage /> },
-      { path: 'new', element: <NewBookingPage /> },
-      { path: ':id', element: <BookingDetailPage /> },
+      { index: true, element: guard([P.BOOKINGS_VIEW], <BookingsPage />) },
+      { path: 'new', element: guard([P.BOOKINGS_CREATE], <NewBookingPage />) },
+      { path: ':id', element: guard([P.BOOKINGS_VIEW], <BookingDetailPage />) },
     ],
   },
   {
     path: 'leads',
     children: [
-      { index: true, element: <LeadsPage /> },
-      { path: ':id', element: <LeadDetailPage /> },
+      { index: true, element: guard([P.LEADS_VIEW], <LeadsPage />) },
+      { path: ':id', element: guard([P.LEADS_VIEW], <LeadDetailPage />) },
     ],
   },
-  { path: 'reports', element: <ReportsPage /> },
-  { path: 'packages', element: <PackagesPage /> },
-  { path: 'reviews', element: <ReviewsPage /> },
+  { path: 'reports', element: guard([P.REPORTS_VIEW], <ReportsPage />) },
+  { path: 'packages', element: guard([P.PACKAGES_VIEW], <PackagesPage />) },
+  { path: 'reviews', element: guard([P.REVIEWS_VIEW], <ReviewsPage />) },
+  { path: 'staff', element: guard([P.STAFF_VIEW], <StaffPage />) },
   {
-    path: 'staff',
-    element: (
-      <RequireRole roles={[ROLES.SUPER_ADMIN]}>
-        <StaffPage />
-      </RequireRole>
-    ),
+    path: 'roles',
+    children: [
+      { index: true, element: guard([P.ROLES_VIEW], <RolesPage />) },
+      { path: 'new', element: guard([P.ROLES_MANAGE], <RoleEditorPage />) },
+      { path: ':id', element: guard([P.ROLES_VIEW], <RoleEditorPage />) },
+    ],
   },
   // every signed-in staff member; reached from the user menu, not the sidebar
   { path: 'account', element: <AccountPage /> },
 ]
 
-const builtPaths = new Set(['/', '/theatres', '/slots', '/addons', '/offers', '/settings', '/bookings', '/leads', '/reports', '/packages', '/reviews', '/staff'])
+const builtPaths = new Set(['/', '/theatres', '/slots', '/addons', '/offers', '/settings', '/bookings', '/leads', '/reports', '/packages', '/reviews', '/staff', '/roles'])
 
 const placeholderRoutes: RouteObject[] = NAV_ITEMS.filter((item) => !builtPaths.has(item.path)).map((item) => ({
   path: `${item.path.slice(1)}/*`,
-  element: item.roles ? (
-    <RequireRole roles={item.roles}>
-      <PlaceholderPage item={item} />
-    </RequireRole>
-  ) : (
-    <PlaceholderPage item={item} />
-  ),
+  element: guard([item.permission], <PlaceholderPage item={item} />),
 }))
 
 export const router = createBrowserRouter(

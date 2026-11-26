@@ -10,7 +10,11 @@ export interface Slot {
   start: string
   end: string
   status: 'available' | 'high_demand' | 'booked' | 'held'
+  /** price for that date (after the slot offer, if any) */
   pricePaise: number
+  /** with a slot offer: the usual price, shown struck through, and the offer's name */
+  originalPricePaise?: number
+  offerLabel?: string
 }
 
 export interface CalendarDay {

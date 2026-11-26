@@ -9,6 +9,21 @@ export interface TheatreRef {
   slug: string
 }
 
+export type SlotOfferDiscountType = 'percent' | 'flat'
+
+/** Automatic discount on a slot's price (e.g. "Happy hours" 20% off). */
+export interface SlotOffer {
+  isActive: boolean
+  label: string
+  discountType: SlotOfferDiscountType
+  /** percent: 1-90; flat: paise */
+  discountValue: number
+  days: number[]
+  /** optional YYYY-MM-DD range, both ends included */
+  validFrom: string | null
+  validUntil: string | null
+}
+
 export interface Slot {
   id: string
   theatre: TheatreRef
@@ -19,6 +34,8 @@ export interface Slot {
   /** null = use the theatre's price */
   weekdayPricePaise: number | null
   weekendPricePaise: number | null
+  /** null = no slot offer */
+  offer: SlotOffer | null
   startMinutes: number
   durationMinutes: number
   isActive: boolean
@@ -34,6 +51,7 @@ export interface SlotInput {
   daysOfWeek: number[]
   weekdayPricePaise: number | null
   weekendPricePaise: number | null
+  offer: SlotOffer | null
   isActive: boolean
 }
 
@@ -87,6 +105,8 @@ export interface DaySchedule {
     durationMinutes: number
     pricePaise: number
     priceSource: 'slot' | 'theatre'
+    /** the slot offer that applies on this date, with the price after it */
+    offer: { label: string; discountPaise: number; pricePaise: number } | null
     status: ScheduleSlotStatus
     blockReason: string | null
     booking: {

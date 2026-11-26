@@ -56,8 +56,20 @@ export function DayPreviewTab({ theatre, date, onDateChange }: { theatre: Theatr
                   </div>
                   <StatusBadge status={s.status} map={SCHEDULE_STATUS_BADGE} />
                 </div>
-                <p className="mt-3 text-lg font-semibold tabular-nums text-slate-900">{formatPaise(s.pricePaise)}</p>
-                <p className="text-xs text-slate-500">{s.priceSource === 'slot' ? 'Custom slot price' : 'Theatre price'}</p>
+                {s.offer ? (
+                  <>
+                    <p className="mt-3 flex items-baseline gap-2 tabular-nums">
+                      <span className="text-lg font-semibold text-slate-900">{formatPaise(s.offer.pricePaise)}</span>
+                      <s className="text-sm text-slate-400">{formatPaise(s.pricePaise)}</s>
+                    </p>
+                    <p className="text-xs text-emerald-700">{s.offer.label}: {formatPaise(s.offer.discountPaise)} off</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="mt-3 text-lg font-semibold tabular-nums text-slate-900">{formatPaise(s.pricePaise)}</p>
+                    <p className="text-xs text-slate-500">{s.priceSource === 'slot' ? 'Custom slot price' : 'Theatre price'}</p>
+                  </>
+                )}
                 {s.blockReason && !s.booking && <p className="mt-2 text-xs text-slate-600">Blocked: {s.blockReason}</p>}
                 {s.booking && (
                   <Link to={`/bookings/${s.booking.id}`} className="focus-ring mt-3 flex items-center justify-between gap-2 rounded-lg bg-slate-50 px-2.5 py-2 text-xs hover:bg-slate-100">

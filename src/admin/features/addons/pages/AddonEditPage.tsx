@@ -4,7 +4,7 @@ import { MoreHorizontal, Trash2 } from 'lucide-react'
 import { PageHeader } from '@/admin/components/layout/PageHeader'
 import { Badge, ConfirmDialog, ErrorState, IconButton, LoadingBlock, Menu, useToast } from '@/admin/components/ui'
 import { Can } from '@/admin/auth/guards'
-import { ROLES } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { useDisclosure } from '@/admin/hooks/useDisclosure'
 import { errorMessage } from '@/admin/lib/api/errors'
 import { formatDateTime } from '@/admin/lib/utils/date'
@@ -46,7 +46,7 @@ export default function AddonEditPage() {
           </span>
         }
         actions={
-          <Can roles={[ROLES.SUPER_ADMIN]}>
+          <Can permission={PERMISSIONS.ADDONS_DELETE}>
             <Menu
               trigger={<IconButton label="More actions" variant="secondary"><MoreHorizontal className="h-4 w-4" /></IconButton>}
               items={[{ label: 'Delete add-on', icon: <Trash2 />, danger: true, onSelect: confirmDelete.open }]}

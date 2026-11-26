@@ -2,7 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { api, refreshTokens } from '@/admin/lib/api/client'
 import { tokens } from '@/admin/lib/api/tokens'
 import { queryClient } from '@/admin/lib/api/queryClient'
-import type { AdminUser, RoleName, SignInResponse } from '@/admin/types/auth'
+import type { AdminUser, SignInResponse } from '@/admin/types/auth'
+import type { Permission } from '@/admin/types/permissions'
 
 type AuthStatus = 'loading' | 'authenticated' | 'anonymous'
 
@@ -13,7 +14,8 @@ interface AuthContextValue {
   sessionExpired: boolean
   signIn: (email: string, password: string) => Promise<AdminUser>
   signOut: () => Promise<void>
-  hasRole: (...roles: RoleName[]) => boolean
+  /** true when the signed-in person has at least one of the permissions */
+  can: (...permissions: Permission[]) => boolean
   /** refresh the signed-in user after they edit their own name or email */
   updateUser: (patch: Partial<Pick<AdminUser, 'name' | 'email'>>) => void
 }
@@ -81,15 +83,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus('anonymous')
   }, [])
 
-  const hasRole = useCallback((...roles: RoleName[]) => Boolean(user && roles.includes(user.role.name)), [user])
+  const can = useCallback((...permissions: Permission[]) => Boolean(user && permissions.some((p) => user.permissions.includes(p))), [user])
+
+  // Role changes made by someone else show up without signing out: re-read permissions when the tab is back in focus.
+  useEffect(() => {
+    if (status !== 'authenticated') return
+    const reload = () => {
+      if (document.visibilityState !== 'visible') return
+      api.get<{ user: AdminUser }>('/auth/me').then(({ user: me }) => setUser(me)).catch(() => { /* session errors are handled by the API client */ })
+    }
+    document.addEventListener('visibilitychange', reload)
+    return () => document.removeEventListener('visibilitychange', reload)
+  }, [status])
 
   const updateUser = useCallback((patch: Partial<Pick<AdminUser, 'name' | 'email'>>) => {
     setUser((current) => (current ? { ...current, ...patch } : current))
   }, [])
 
   const value = useMemo(
-    () => ({ status, user, sessionExpired, signIn, signOut, hasRole, updateUser }),
-    [status, user, sessionExpired, signIn, signOut, hasRole, updateUser],
+    () => ({ status, user, sessionExpired, signIn, signOut, can, updateUser }),
+    [status, user, sessionExpired, signIn, signOut, can, updateUser],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

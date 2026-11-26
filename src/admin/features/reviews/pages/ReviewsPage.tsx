@@ -11,18 +11,19 @@ import { useSettings } from '@/admin/features/settings/api'
 import { useUrlFilters } from '@/admin/hooks/useUrlFilters'
 import { errorMessage } from '@/admin/lib/api/errors'
 import { formatDate } from '@/admin/lib/utils/date'
-import { ROLES } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { useDeleteReview, useReviewStats, useReviews, useSetReviewPublished } from '../api'
 import { RATING_OPTIONS, SOURCE_LABELS, SOURCE_OPTIONS } from '../constants'
 import { ReviewFormModal } from '../components/ReviewFormModal'
 import type { Review, ReviewSource } from '../types'
+import { Can } from '@/admin/auth/guards'
 
 const STATUS_OPTIONS = [{ value: 'true', label: 'Published' }, { value: 'false', label: 'Hidden' }]
 
 /** Testimonials for the website's Reviews page. */
 export default function ReviewsPage() {
   const toast = useToast()
-  const { hasRole } = useAuth()
+  const { can } = useAuth()
   const stats = useReviewStats()
   const settings = useSettings()
   const setPublished = useSetReviewPublished()
@@ -52,7 +53,7 @@ export default function ReviewsPage() {
   const actions = (r: Review): MenuItem[] => [
     { label: 'Edit', icon: <Pencil />, onSelect: () => setEditing(r) },
     { label: r.isPublished ? 'Hide from website' : 'Publish', icon: r.isPublished ? <EyeOff /> : <Eye />, onSelect: () => togglePublished(r) },
-    ...(hasRole(ROLES.SUPER_ADMIN) ? [{ label: 'Delete', icon: <Trash2 />, danger: true, onSelect: () => setDeleting(r) }] : []),
+    ...(can(PERMISSIONS.REVIEWS_DELETE) ? [{ label: 'Delete', icon: <Trash2 />, danger: true, onSelect: () => setDeleting(r) }] : []),
   ]
 
   const columns: Column<Review>[] = [
@@ -90,7 +91,7 @@ export default function ReviewsPage() {
       <PageHeader
         title="Reviews"
         description="Customer testimonials on the website's Reviews page."
-        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => setEditing('new')}>Add review</Button>}
+        actions={<Can permission={PERMISSIONS.REVIEWS_CREATE}><Button leftIcon={<Plus className="h-4 w-4" />} onClick={() => setEditing('new')}>Add review</Button></Can>}
       />
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">

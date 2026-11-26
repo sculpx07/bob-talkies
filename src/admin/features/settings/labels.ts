@@ -16,6 +16,10 @@ const LABELS: Record<string, { label: string; format?: (v: unknown) => string }>
   'contact.email': { label: 'Email' },
   'contact.address': { label: 'Address' },
   'reviews.googleRating': { label: 'Rating shown on website', format: (v) => `${Number(v).toFixed(1)} ★` },
+  'payments.provider': { label: 'Payment provider', format: (v) => (v === 'razorpay' ? 'Razorpay' : v === 'dev' ? 'Test payment screen' : String(v)) },
+  'payments.razorpay.keyId': { label: 'Razorpay Key ID' },
+  'payments.razorpay.keySecret': { label: 'Razorpay Key Secret' },
+  'payments.razorpay.webhookSecret': { label: 'Razorpay Webhook Secret' },
   'reviews.googleReviewCount': { label: 'Review count shown on website', format: (v) => Number(v).toLocaleString('en-IN') },
 }
 

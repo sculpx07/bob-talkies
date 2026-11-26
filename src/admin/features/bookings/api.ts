@@ -3,7 +3,7 @@ import { api } from '@/admin/lib/api/client'
 import type { Paginated } from '@/admin/types/api'
 import { scheduleKeys } from '@/admin/features/slots/api'
 import { dashboardKeys } from '@/admin/features/dashboard/api'
-import type { BookingDetail, BookingDetailsInput, BookingListItem, BookingListParams, BookingSource, DayBoard, PaymentInput } from './types'
+import type { BookingDetail, BookingDetailsInput, BookingListItem, BookingListParams, BookingSource, DayBoard, PaymentAttempt, PaymentInput } from './types'
 import type { AddonLine } from './quote'
 
 export const bookingKeys = {
@@ -132,5 +132,13 @@ export function useRescheduleBooking() {
     mutationFn: ({ id, ...input }: { id: string; date: string; slot: string; reason: string; allowOverride?: boolean }) =>
       api.post<{ booking: BookingDetail; newSlotPriceTodayPaise: number; priceDifferencePaise: number }>(`/bookings/${id}/reschedule`, input),
     onSuccess: (r) => onChanged(r.booking),
+  })
+}
+
+/** Online payment attempts of a booking, newest first (website bookings). */
+export function usePaymentAttempts(id: string) {
+  return useQuery({
+    queryKey: [...bookingKeys.detail(id), 'payment-attempts'] as const,
+    queryFn: ({ signal }) => api.get<{ attempts: PaymentAttempt[] }>(`/bookings/${id}/payment-attempts`, undefined, signal).then((r) => r.attempts),
   })
 }

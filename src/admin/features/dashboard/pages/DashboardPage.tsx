@@ -3,7 +3,8 @@ import { AlarmClock, ArrowRight, CalendarDays, IndianRupee, UserRound, Wallet } 
 import { PageHeader } from '@/admin/components/layout/PageHeader'
 import { TrendBars } from '@/admin/components/charts'
 import { Card, CardBody, CardHeader, DataTable, EmptyState, Skeleton, StatCard, StatusBadge, type Column } from '@/admin/components/ui'
-import { useCurrentUser } from '@/admin/auth/AuthProvider'
+import { useAuth, useCurrentUser } from '@/admin/auth/AuthProvider'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { BOOKING_STATUS_BADGE, PAYMENT_STATUS_BADGE } from '@/admin/features/bookings/constants'
 import type { BookingListItem } from '@/admin/features/bookings/types'
 import { useReportOverview, useReportSummary } from '@/admin/features/reports/api'
@@ -99,12 +100,16 @@ function WeekStrip({ days }: { days: ReportOverview['nextDays'] }) {
 
 export default function DashboardPage() {
   const user = useCurrentUser()
+  const { can } = useAuth()
   const navigate = useNavigate()
   const today = todayISO()
-  const bookings = useBookingsOn(today)
+  // panels backed by other sections show only when the role has them
+  const seesBookings = can(PERMISSIONS.BOOKINGS_VIEW)
+  const seesReports = can(PERMISSIONS.REPORTS_VIEW)
+  const bookings = useBookingsOn(today, seesBookings)
   const leads = useLeadStats()
   const overview = useReportOverview()
-  const last30 = useReportSummary(presetRange('last30'))
+  const last30 = useReportSummary(presetRange('last30'), seesReports)
 
   const o = overview.data
   const todays = bookings.data?.bookings ?? []
@@ -125,14 +130,14 @@ export default function DashboardPage() {
           hint={leads.data && `${leads.data.dueFollowUps} follow-up${leads.data.dueFollowUps === 1 ? '' : 's'} due · ${leads.data.unassignedOpen} not assigned`} />
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-2">
+      <div className={cn('mt-6 grid gap-6', seesReports && 'xl:grid-cols-2')}>
         <Card>
           <CardHeader title="Next 7 days" description="Slots sold out of slots open, per day." />
           <CardBody>
             {o ? <WeekStrip days={o.nextDays} /> : <Skeleton className="h-28 w-full" />}
           </CardBody>
         </Card>
-        <Card>
+        {seesReports && <Card>
           <CardHeader
             title="Revenue, last 30 days"
             description={last30.data ? `${formatPaise(last30.data.totals.revenuePaise)} from ${last30.data.totals.bookings} bookings` : 'By celebration date'}
@@ -148,10 +153,10 @@ export default function DashboardPage() {
               />
             ) : <Skeleton className="h-36 w-full" />}
           </CardBody>
-        </Card>
+        </Card>}
       </div>
 
-      <Card className="mt-6 overflow-hidden">
+      {seesBookings && <Card className="mt-6 overflow-hidden">
         <CardHeader title="Today's schedule" description="Every booking holding a slot today, earliest first." />
         <DataTable
           columns={scheduleColumns}
@@ -163,7 +168,7 @@ export default function DashboardPage() {
           onRowClick={(b) => navigate(`/bookings/${b.id}`)}
           empty={<EmptyState icon={<CalendarDays className="h-5 w-5" />} title="No bookings today" description="New bookings will appear here automatically." />}
         />
-      </Card>
+      </Card>}
 
       <Card className="mt-6 overflow-hidden">
         <CardHeader title="Upcoming with balance due" description="Confirmed bookings that still owe money, soonest first." />

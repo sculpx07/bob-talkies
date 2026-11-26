@@ -6,7 +6,7 @@ import {
   Badge, Button, Card, ConfirmDialog, ErrorState, IconButton, LoadingBlock, Menu, Tabs, useToast, type MenuItem,
 } from '@/admin/components/ui'
 import { useAuth } from '@/admin/auth/AuthProvider'
-import { ROLES } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { useDisclosure } from '@/admin/hooks/useDisclosure'
 import { errorMessage } from '@/admin/lib/api/errors'
 import { formatDateTime } from '@/admin/lib/utils/date'
@@ -22,7 +22,7 @@ export default function TheatreEditPage() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const toast = useToast()
-  const { hasRole } = useAuth()
+  const { can } = useAuth()
   const [params, setParams] = useSearchParams()
   const tab = params.get('tab') ?? 'details'
 
@@ -63,7 +63,7 @@ export default function TheatreEditPage() {
 
   const menuItems: MenuItem[] = [
     { label: theatre.isActive ? 'Deactivate' : 'Activate', icon: <Power />, onSelect: toggleActive },
-    ...(hasRole(ROLES.SUPER_ADMIN) ? [{ label: 'Delete theatre', icon: <Trash2 />, danger: true, onSelect: confirmDelete.open }] : []),
+    ...(can(PERMISSIONS.THEATRES_DELETE) ? [{ label: 'Delete theatre', icon: <Trash2 />, danger: true, onSelect: confirmDelete.open }] : []),
   ]
 
   return (
@@ -111,8 +111,8 @@ export default function TheatreEditPage() {
         ]}
       />
 
-      {!hasRole(ROLES.SUPER_ADMIN) && (
-        <Card className="mt-6 px-5 py-4 text-sm text-slate-500">Only a super admin can delete a theatre. You can deactivate it instead.</Card>
+      {!can(PERMISSIONS.THEATRES_DELETE) && (
+        <Card className="mt-6 px-5 py-4 text-sm text-slate-500">Your role cannot delete theatres. You can deactivate it instead.</Card>
       )}
 
       <ConfirmDialog

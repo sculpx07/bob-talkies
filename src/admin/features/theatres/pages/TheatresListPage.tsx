@@ -9,6 +9,8 @@ import { errorMessage } from '@/admin/lib/api/errors'
 import { formatPaise } from '@/admin/lib/utils/money'
 import { useSetTheatreActive, useTheatres } from '../api'
 import type { Theatre } from '../types'
+import { Can } from '@/admin/auth/guards'
+import { PERMISSIONS } from '@/admin/types/permissions'
 
 const STATUS_OPTIONS = [
   { value: 'active', label: 'Active' },
@@ -134,7 +136,7 @@ export default function TheatresListPage() {
       <PageHeader
         title="Theatres"
         description="Theatres customers can book, with their capacity, prices and photos."
-        actions={<Link to="/theatres/new"><Button leftIcon={<Plus className="h-4 w-4" />}>Add theatre</Button></Link>}
+        actions={<Can permission={PERMISSIONS.THEATRES_CREATE}><Link to="/theatres/new"><Button leftIcon={<Plus className="h-4 w-4" />}>Add theatre</Button></Link></Can>}
       />
 
       <Card className="overflow-hidden">
@@ -160,7 +162,7 @@ export default function TheatresListPage() {
             hasFilters ? (
               <EmptyState title="No theatres match" description="Try a different search or clear the filters." action={<Button variant="secondary" onClick={resetFilters}>Clear filters</Button>} />
             ) : (
-              <EmptyState icon={<Clapperboard className="h-5 w-5" />} title="No theatres yet" description="Add your first theatre to start taking bookings." action={<Link to="/theatres/new"><Button>Add theatre</Button></Link>} />
+              <EmptyState icon={<Clapperboard className="h-5 w-5" />} title="No theatres yet" description="Add your first theatre to start taking bookings." action={<Can permission={PERMISSIONS.THEATRES_CREATE}><Link to="/theatres/new"><Button>Add theatre</Button></Link></Can>} />
             )
           }
         />

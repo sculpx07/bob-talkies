@@ -28,7 +28,7 @@ function PricingExample({ gst, included, advance }: { gst: number; included: boo
   )
 }
 
-/** Business settings. Everyone can read them; only a super admin can save. */
+/** Business settings. Everyone with "View settings" reads them; "Edit settings" saves. */
 export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdit: boolean }) {
   const toast = useToast()
   const update = useUpdateSettings()
@@ -69,7 +69,7 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
     <form onSubmit={review} noValidate className="space-y-6">
       {!canEdit && (
         <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
-          <Lock className="h-4 w-4 shrink-0" /> Only a super admin can change these settings.
+          <Lock className="h-4 w-4 shrink-0" /> Your role can view these settings but not change them.
         </div>
       )}
       {formErrors.length > 0 && (

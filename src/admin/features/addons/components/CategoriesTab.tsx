@@ -12,9 +12,10 @@ import { useDisclosure, useDisclosureWith } from '@/admin/hooks/useDisclosure'
 import { errorMessage } from '@/admin/lib/api/errors'
 import { applyServerErrors } from '@/admin/lib/forms'
 import { slugify } from '@/admin/lib/utils/slugify'
-import { ROLES } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { useAddonCategories, useDeleteCategory, useSaveCategory } from '../api'
 import type { AddonCategory } from '../types'
+import { Can } from '@/admin/auth/guards'
 
 const schema = z.object({
   name: z.string().trim().min(2, 'Name must be at least 2 characters').max(60),
@@ -86,7 +87,7 @@ function CategoryModal({ open, onOpenChange, category }: { open: boolean; onOpen
 /** Add-on categories (Cakes, Effects, Decor Items, ...). */
 export function CategoriesTab() {
   const toast = useToast()
-  const { hasRole } = useAuth()
+  const { can } = useAuth()
   const categories = useAddonCategories()
   const save = useSaveCategory()
   const remove = useDeleteCategory()
@@ -128,7 +129,7 @@ export function CategoriesTab() {
       className: 'w-12',
       cell: (c) => {
         const items: MenuItem[] = [{ label: 'Edit', icon: <Pencil />, onSelect: () => edit.open(c) }]
-        if (hasRole(ROLES.SUPER_ADMIN)) {
+        if (can(PERMISSIONS.ADDONS_DELETE)) {
           items.push({ label: c.addonCount ? `Delete (has ${c.addonCount} add-ons)` : 'Delete', icon: <Trash2 />, danger: true, disabled: c.addonCount > 0, onSelect: () => confirmDelete.open(c) })
         }
         return <Menu trigger={<IconButton label={`Actions for ${c.name}`}><MoreHorizontal className="h-4 w-4" /></IconButton>} items={items} />
@@ -141,7 +142,7 @@ export function CategoriesTab() {
       <CardHeader
         title="Categories"
         description="Group add-ons on the website. Only empty categories can be deleted; deactivate the rest."
-        actions={<Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Add category</Button>}
+        actions={<Can permission={PERMISSIONS.ADDONS_EDIT}><Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Add category</Button></Can>}
       />
       <DataTable
         columns={columns}
@@ -151,7 +152,7 @@ export function CategoriesTab() {
         error={categories.error}
         onRetry={() => categories.refetch()}
         onRowClick={(c) => edit.open(c)}
-        empty={<EmptyState icon={<FolderTree className="h-5 w-5" />} title="No categories yet" action={<Button onClick={add.open}>Add category</Button>} />}
+        empty={<EmptyState icon={<FolderTree className="h-5 w-5" />} title="No categories yet" action={<Can permission={PERMISSIONS.ADDONS_EDIT}><Button onClick={add.open}>Add category</Button></Can>} />}
       />
       <CategoryModal open={add.isOpen} onOpenChange={add.setOpen} />
       <CategoryModal open={edit.isOpen} onOpenChange={(o) => !o && edit.close()} category={edit.item ?? undefined} />

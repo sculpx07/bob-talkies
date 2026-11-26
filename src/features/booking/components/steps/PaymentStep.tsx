@@ -2,7 +2,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../../state/booking.context'
-import { bookingApi } from '../../api'
+import { bookingApi, type PayOrderResponse, type RazorpayVerifyRequest } from '../../api'
+import { loadRazorpayCheckout } from '../../razorpay'
 import { PriceSummary } from '../PriceSummary'
 import { motion } from 'framer-motion'
 import { formatINR } from '@/lib/utils/currency'
@@ -11,12 +12,15 @@ import { trackEvent } from '@/features/tracking/events'
 import { clearBookingState } from '../../state/booking.storage'
 import { ApiError } from '@/lib/api/client'
 import { useSiteConfig } from '@/features/site/api'
+import { customerSession } from '@/features/auth/session'
+import { useToast } from '@/components/ui/Toast'
 
 export function PaymentStep() {
   const { state, dispatch } = useBooking()
   const navigate = useNavigate()
   const [payFull, setPayFull] = useState(false)
   const payLock = useRef(false)
+  const { toast } = useToast()
   const [error, setError] = useState('')
   const { data: site } = useSiteConfig()
   const advancePercent = site?.pricing.advancePercent
@@ -69,6 +73,15 @@ export function PaymentStep() {
 
   /** Shows the reason and unlocks the button; an expired hold means the next tap creates a new booking. */
   function failed(e: Error) {
+    // no login (or an expired one) for this number: verify it again on the details step
+    if (e instanceof ApiError && (e.status === 401 || e.code === 'MOBILE_NOT_VERIFIED')) {
+      customerSession.clear()
+      dispatch({ type: 'SET_VERIFIED_MOBILE', mobile: null })
+      dispatch({ type: 'GO_STEP', step: 4 })
+      toast('info', 'Please verify your mobile number', 'We will send you a fresh OTP before you pay.')
+      payLock.current = false
+      return
+    }
     if (e instanceof ApiError && e.code === 'HOLD_EXPIRED') dispatch({ type: 'CLEAR_BOOKING' })
     setError(e.message || 'Something went wrong. Please try again.')
     payLock.current = false
@@ -78,32 +91,47 @@ export function PaymentStep() {
     payOrder(bookingId)
   }
 
-  function openGateway(order: { gatewayOrderId: string; amount: number; key: string; provider: string }, bookingId: string) {
-    // Until Razorpay is set up the backend uses the 'dev' provider: a test screen with "Payment successful" / "Payment failed"
+  // Razorpay's success handler -> the backend checks the signature and the payment, then confirms the booking
+  const { mutate: verifyPayment, isPending: confirming } = useMutation({
+    mutationFn: (body: RazorpayVerifyRequest) => bookingApi.verifyRazorpayPayment(body),
+    onSuccess: (booking) => {
+      trackEvent('purchase', { bookingId: booking.id, value: payAmount })
+      clearBookingState()
+      navigate(`/book/success/${encodeURIComponent(booking.id)}`)
+    },
+    onError: (e: Error) => failed(e),
+  })
+
+  async function openGateway(order: PayOrderResponse, bookingId: string) {
+    // the 'dev' provider (Settings → Payments): test screen with "Payment successful" / "Payment failed"
     if (order.provider === 'dev') {
       navigate(`/book/test-payment/${encodeURIComponent(bookingId)}?order=${encodeURIComponent(order.gatewayOrderId)}&amount=${order.amount}`)
       return
     }
 
-    // Real Razorpay integration
-    const rzp = new (window as unknown as { Razorpay: new (opts: unknown) => { open: () => void } }).Razorpay({
-      key: order.key,
-      order_id: order.gatewayOrderId,
-      amount: order.amount,
-      currency: 'INR',
-      name: 'BOB Talkies',
-      description: 'Private Theatre Booking',
-      handler: (response: { razorpay_payment_id: string }) => {
-        trackEvent('purchase', { bookingId, transactionId: response.razorpay_payment_id, value: payAmount })
-        clearBookingState()
-        navigate(`/book/success/${bookingId}`)
-      },
-      modal: {
-        ondismiss: () => navigate(`/book/failed/${bookingId}`),
-      },
-      theme: { color: '#C9A24B' },
-    })
-    rzp.open()
+    try {
+      const Razorpay = await loadRazorpayCheckout()
+      new Razorpay({
+        key: order.key,
+        order_id: order.gatewayOrderId,
+        amount: order.amount,
+        currency: order.currency,
+        name: order.name ?? 'BOB Talkies',
+        description: order.description ?? 'Private theatre booking',
+        prefill: order.prefill,
+        notes: { bookingRef: bookingId },
+        theme: { color: '#8b1a3a' },
+        handler: (response) => verifyPayment({
+          razorpayOrderId: response.razorpay_order_id,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpaySignature: response.razorpay_signature,
+        }),
+        // closed without paying: the slot stays held for a few minutes, so the failed page offers a retry
+        modal: { ondismiss: () => navigate(`/book/failed/${encodeURIComponent(bookingId)}`) },
+      }).open()
+    } catch (e) {
+      failed(e as Error)
+    }
   }
 
   function handlePay() {
@@ -118,7 +146,7 @@ export function PaymentStep() {
     }
   }
 
-  const isLoading = creating || paying
+  const isLoading = creating || paying || confirming
 
   const options = [
     { full: false, title: `Pay Advance (${advancePercent ?? '…'}%)`, amount: advanceAmount, note: `Remaining ${formatINR(totalAmount - advanceAmount)} at the venue.` },
@@ -188,7 +216,7 @@ export function PaymentStep() {
         className="mt-6 mb-24 flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#8b1a3a,#d9126a)] px-6 py-4 text-base font-semibold text-white shadow-[0_14px_34px_rgba(107,35,152,0.4)] disabled:opacity-60"
       >
         <CreditCard size={18} aria-hidden="true" />
-        {isLoading ? 'Processing…' : `Pay ${formatINR(payAmount)} Securely`}
+        {confirming ? 'Confirming your payment…' : isLoading ? 'Processing…' : `Pay ${formatINR(payAmount)} Securely`}
       </motion.button>
     </div>
   )

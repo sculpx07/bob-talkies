@@ -2,13 +2,22 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Copy, KeyRound } from 'lucide-react'
-import { Button, FormField, Input, Modal, useToast } from '@/admin/components/ui'
+import { useCurrentUser } from '@/admin/auth/AuthProvider'
+import { Button, FormField, Input, LoadingBlock, Modal, useToast } from '@/admin/components/ui'
 import { applyServerErrors } from '@/admin/lib/forms'
 import { cn } from '@/admin/lib/utils/cn'
+import { useRoles } from '@/admin/features/roles/api'
+import type { RoleRecord } from '@/admin/features/roles/types'
+import type { AdminUser } from '@/admin/types/auth'
 import { useCreateStaff, useUpdateStaff } from '../api'
-import { ROLE_OPTIONS } from '../constants'
 import { staffSchema, type StaffFormValues } from '../schema'
 import type { StaffMember } from '../types'
+
+/** Same rule as the backend: only a super admin gives the Super Admin role; others only roles within their own permissions. */
+export function canAssignRole(me: AdminUser, role: RoleRecord) {
+  if (role.isSystem) return me.role.isSystem
+  return role.permissions.every((p) => me.permissions.includes(p))
+}
 
 // ---------------------------------------------------------------- add / edit
 
@@ -24,16 +33,20 @@ export function StaffFormModal({ open, onOpenChange, member, isSelf, onCreated, 
   onSaved?: (member: StaffMember) => void
 }) {
   const toast = useToast()
+  const me = useCurrentUser()
+  const roles = useRoles(open)
   const create = useCreateStaff()
   const update = useUpdateStaff()
   const [formError, setFormError] = useState('')
 
-  const defaults = (): StaffFormValues => ({ name: member?.name ?? '', email: member?.email ?? '', role: member?.role?.name ?? 'admin' })
+  // new staff start on the first role this person may give that is not Super Admin
+  const firstRole = roles.data?.find((r) => !r.isSystem && canAssignRole(me, r))?.id ?? ''
+  const defaults = (): StaffFormValues => ({ name: member?.name ?? '', email: member?.email ?? '', role: member?.role?.id ?? firstRole })
   const { register, handleSubmit, reset, setError, watch, setValue, formState: { errors, isSubmitting } } = useForm<StaffFormValues>({
     resolver: zodResolver(staffSchema),
     defaultValues: defaults(),
   })
-  useEffect(() => { if (open) { reset(defaults()); setFormError('') } }, [open, member]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (open) { reset(defaults()); setFormError('') } }, [open, member, firstRole]) // eslint-disable-line react-hooks/exhaustive-deps
   const role = watch('role')
 
   const submit = handleSubmit(async (v) => {
@@ -70,23 +83,34 @@ export function StaffFormModal({ open, onOpenChange, member, isSelf, onCreated, 
         <fieldset>
           <legend className="mb-1.5 text-sm font-medium text-slate-700">Role</legend>
           {isSelf ? (
-            <p className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">You cannot change your own role. Another super admin can.</p>
+            <p className="rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">You cannot change your own role. Another person who manages staff can.</p>
+          ) : roles.isLoading ? (
+            <LoadingBlock />
           ) : (
-            <div className="grid gap-2 sm:grid-cols-2">
-              {ROLE_OPTIONS.map((r) => (
-                <label key={r.value} className={cn(
-                  'flex cursor-pointer gap-3 rounded-lg border p-3 text-sm',
-                  role === r.value ? 'border-violet-500 bg-violet-50 ring-1 ring-violet-500' : 'border-slate-200 hover:border-slate-300',
-                )}>
-                  <input type="radio" className="mt-0.5 accent-violet-600" value={r.value} checked={role === r.value} onChange={() => setValue('role', r.value)} />
-                  <span>
-                    <span className="block font-medium text-slate-900">{r.label}</span>
-                    <span className="block text-xs text-slate-500">{r.description}</span>
-                  </span>
-                </label>
-              ))}
+            <div className="grid max-h-72 gap-2 overflow-y-auto sm:grid-cols-2">
+              {roles.data?.map((r) => {
+                const allowed = canAssignRole(me, r)
+                return (
+                  <label
+                    key={r.id}
+                    title={allowed ? undefined : 'This role has permissions you do not have'}
+                    className={cn(
+                      'flex gap-3 rounded-lg border p-3 text-sm',
+                      allowed ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
+                      role === r.id ? 'border-violet-500 bg-violet-50 ring-1 ring-violet-500' : 'border-slate-200 hover:border-slate-300',
+                    )}
+                  >
+                    <input type="radio" className="mt-0.5 accent-violet-600" value={r.id} checked={role === r.id} disabled={!allowed} onChange={() => setValue('role', r.id, { shouldDirty: true })} />
+                    <span className="min-w-0">
+                      <span className="block font-medium text-slate-900">{r.displayName}</span>
+                      <span className="line-clamp-2 block text-xs text-slate-500">{r.description || (r.isSystem ? 'Every permission' : `${r.permissions.length} permissions`)}</span>
+                    </span>
+                  </label>
+                )
+              })}
             </div>
           )}
+          {errors.role?.message && <p className="mt-1 text-xs text-red-600">{errors.role.message}</p>}
         </fieldset>
       </form>
     </Modal>

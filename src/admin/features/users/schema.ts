@@ -11,7 +11,7 @@ export const passwordRule = z
 export const staffSchema = z.object({
   name: z.string().trim().min(2, 'Name must be at least 2 characters').max(100),
   email: z.string().trim().toLowerCase().email('Enter a valid email'),
-  role: z.enum(['admin', 'super_admin']),
+  role: z.string().min(1, 'Choose a role'),
 })
 export type StaffFormValues = z.infer<typeof staffSchema>
 

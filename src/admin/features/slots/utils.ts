@@ -1,5 +1,6 @@
 import type { BadgeTone } from '@/admin/components/ui'
-import type { ScheduleSlotStatus, SpecialDateType } from './types'
+import { formatPaise } from '@/admin/lib/utils/money'
+import type { ScheduleSlotStatus, SlotOffer, SpecialDateType } from './types'
 
 const SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -33,6 +34,19 @@ export function formatDuration(minutes: number): string {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
   return [h && `${h}h`, m && `${m}m`].filter(Boolean).join(' ') || '0m'
+}
+
+/** "20% off" / "₹300 off" */
+export const formatOfferDiscount = (o: Pick<SlotOffer, 'discountType' | 'discountValue'>) =>
+  o.discountType === 'percent' ? `${o.discountValue}% off` : `${formatPaise(o.discountValue)} off`
+
+/** When a slot offer runs: "Mon–Fri · until 2026-12-31" */
+export function formatOfferWhen(o: SlotOffer): string {
+  const parts = [formatDays(o.days)]
+  if (o.validFrom && o.validUntil) parts.push(`${o.validFrom} to ${o.validUntil}`)
+  else if (o.validFrom) parts.push(`from ${o.validFrom}`)
+  else if (o.validUntil) parts.push(`until ${o.validUntil}`)
+  return parts.join(' · ')
 }
 
 export const SPECIAL_DATE_BADGE: Record<SpecialDateType, { label: string; tone: BadgeTone }> = {

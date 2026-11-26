@@ -5,7 +5,7 @@ import { BRAND, NAV_SECTIONS } from './nav'
 
 /** Navigation list; used fixed on desktop and inside a drawer on mobile. */
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
-  const { hasRole } = useAuth()
+  const { can } = useAuth()
 
   return (
     <nav className="flex h-full flex-col bg-white" aria-label="Main">
@@ -16,7 +16,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       <div className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
         {NAV_SECTIONS.map((section, i) => {
-          const items = section.items.filter((item) => !item.roles || hasRole(...item.roles))
+          const items = section.items.filter((item) => can(item.permission))
           if (!items.length) return null
           return (
             <div key={section.title ?? i}>

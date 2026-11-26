@@ -16,6 +16,7 @@ import { useTheatres } from '@/features/catalog/api'
 import { useSiteConfig } from '@/features/site/api'
 import { formatINR } from '@/lib/utils/currency'
 import { useRequestOtp, useVerifyOtp } from '@/features/auth/api'
+import { isSignedInAs } from '@/features/auth/session'
 
 const DetailsSchema = z.object({
   name: z.string().trim().min(2, 'Please enter the booking name'),
@@ -106,10 +107,10 @@ export function BasicDetailsStep({ onBack, onDone }: { onBack: () => void; onDon
     })
   }
 
-  // "Next step": already-verified numbers go straight on, others get the OTP check first
+  // "Next step": a number already verified on this device (with its login saved) goes straight on; others get the OTP first
   function onNext(d: DetailsForm) {
     save(d)
-    if (state.verifiedMobile === d.mobile) { onDone(); return }
+    if (state.verifiedMobile === d.mobile && isSignedInAs(d.mobile)) { onDone(); return }
     sendOtp(d.mobile)
   }
 

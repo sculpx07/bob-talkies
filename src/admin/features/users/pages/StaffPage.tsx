@@ -10,10 +10,10 @@ import { useDisclosure } from '@/admin/hooks/useDisclosure'
 import { useUrlFilters } from '@/admin/hooks/useUrlFilters'
 import { errorMessage } from '@/admin/lib/api/errors'
 import { formatDate, timeAgo } from '@/admin/lib/utils/date'
-import type { RoleName } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
+import { useRoles } from '@/admin/features/roles/api'
 import { useResetStaffPassword, useSetStaffActive, useStaff } from '../api'
-import { ROLE_OPTIONS, roleLabel } from '../constants'
-import { StaffFormModal, TemporaryPasswordModal } from '../components/StaffModals'
+import { StaffFormModal, TemporaryPasswordModal, canAssignRole } from '../components/StaffModals'
 import type { StaffMember } from '../types'
 
 type PendingAction = { kind: 'deactivate' | 'reactivate' | 'reset'; member: StaffMember }
@@ -21,10 +21,12 @@ type ShownPassword = { member: StaffMember; password: string; reason: 'created' 
 
 const STATUS_OPTIONS = [{ value: 'true', label: 'Active' }, { value: 'false', label: 'Deactivated' }]
 
-/** Staff accounts (super admin only): add, edit, deactivate, reset password. */
+/** Staff accounts: add, edit, deactivate, reset password ("Manage staff"); everyone with "View staff" sees the list. */
 export default function StaffPage() {
   const me = useCurrentUser()
-  const { updateUser } = useAuth()
+  const { can, updateUser } = useAuth()
+  const canManage = can(PERMISSIONS.STAFF_MANAGE)
+  const roles = useRoles()
   const toast = useToast()
   const add = useDisclosure()
   const [editing, setEditing] = useState<StaffMember | null>(null)
@@ -39,7 +41,7 @@ export default function StaffPage() {
     limit: 25,
     sort: f.sort,
     search: f.search || undefined,
-    role: (f.role || undefined) as RoleName | undefined,
+    role: f.role || undefined,
     isActive: f.status ? f.status === 'true' : undefined,
   })
   const hasFilters = Boolean(f.search || f.role || f.status)
@@ -60,6 +62,13 @@ export default function StaffPage() {
     } catch (err) {
       toast.error(errorMessage(err))
     }
+  }
+
+  // you can manage people whose role is within your own permissions (the backend checks the same)
+  const manageable = (m: StaffMember) => {
+    if (!canManage) return false
+    const r = roles.data?.find((x) => x.id === m.role?.id)
+    return isMe(m) || !r || canAssignRole(me, r)
   }
 
   const rowActions = (m: StaffMember): MenuItem[] => [
@@ -84,7 +93,7 @@ export default function StaffPage() {
         </div>
       ),
     },
-    { key: 'role', header: 'Role', cell: (m) => <Badge tone={m.role?.name === 'super_admin' ? 'brand' : 'neutral'}>{roleLabel(m.role?.name)}</Badge> },
+    { key: 'role', header: 'Role', cell: (m) => <Badge tone={m.role?.isSystem ? 'brand' : 'neutral'}>{m.role?.displayName ?? '—'}</Badge> },
     { key: 'status', header: 'Status', cell: (m) => (m.isActive ? <Badge tone="success" dot>Active</Badge> : <Badge tone="danger" dot>Deactivated</Badge>) },
     {
       key: 'lastLoginAt',
@@ -99,7 +108,7 @@ export default function StaffPage() {
       header: <span className="sr-only">Actions</span>,
       align: 'right',
       className: 'w-12',
-      cell: (m) => (
+      cell: (m) => manageable(m) && (
         <Menu items={rowActions(m)} trigger={<IconButton label={`Actions for ${m.name}`}><MoreHorizontal className="h-4 w-4" /></IconButton>} />
       ),
     },
@@ -117,13 +126,13 @@ export default function StaffPage() {
       <PageHeader
         title="Staff"
         description="Who can sign in to the admin panel, and what they can do."
-        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Add staff member</Button>}
+        actions={canManage && <Button leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Add staff member</Button>}
       />
 
       <Card className="overflow-hidden">
         <div className="flex flex-wrap items-center gap-3 border-b border-slate-100 p-4">
           <SearchInput value={f.search} onChange={(search) => setFilters({ search })} placeholder="Name or email" />
-          <div className="w-40"><Select aria-label="Role" value={f.role} onChange={(e) => setFilters({ role: e.target.value })} placeholder="Any role" options={ROLE_OPTIONS.map(({ value, label }) => ({ value, label }))} /></div>
+          <div className="w-40"><Select aria-label="Role" value={f.role} onChange={(e) => setFilters({ role: e.target.value })} placeholder="Any role" options={(roles.data ?? []).map((r) => ({ value: r.id, label: r.displayName }))} /></div>
           <div className="w-40"><Select aria-label="Status" value={f.status} onChange={(e) => setFilters({ status: e.target.value })} placeholder="Any status" options={STATUS_OPTIONS} /></div>
           {hasFilters && <Button variant="ghost" size="sm" onClick={reset}>Clear filters</Button>}
         </div>

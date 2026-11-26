@@ -36,7 +36,7 @@ export default function AccountPage() {
   const rows: [string, ReactNode][] = [
     ['Name', user.name],
     ['Email', user.email],
-    ['Role', <Badge key="role" tone={user.role.name === 'super_admin' ? 'brand' : 'neutral'}>{user.role.displayName}</Badge>],
+    ['Role', <Badge key="role" tone={user.role.isSystem ? 'brand' : 'neutral'}>{user.role.displayName}</Badge>],
     ['Last sign-in', user.lastLoginAt ? formatDateTime(user.lastLoginAt) : '—'],
   ]
 
@@ -45,7 +45,7 @@ export default function AccountPage() {
       <PageHeader title="My account" description="Your profile and password." />
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
         <Card>
-          <CardHeader title="Profile" description="A super admin can change your name, email or role from Staff." />
+          <CardHeader title="Profile" description="Someone who manages staff can change your name, email or role." />
           <CardBody>
             <dl className="divide-y divide-slate-100 text-sm">
               {rows.map(([label, value]) => (

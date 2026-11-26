@@ -1,22 +1,23 @@
 import { CalendarClock, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useAuth } from '@/admin/auth/AuthProvider'
 import {
-  Button, Card, CardHeader, ConfirmDialog, DataTable, EmptyState, IconButton, Menu, Switch, useToast, type Column, type MenuItem,
+  Badge, Button, Card, CardHeader, ConfirmDialog, DataTable, EmptyState, IconButton, Menu, Switch, useToast, type Column, type MenuItem,
 } from '@/admin/components/ui'
 import { useDisclosure, useDisclosureWith } from '@/admin/hooks/useDisclosure'
 import { errorMessage } from '@/admin/lib/api/errors'
 import { formatTime } from '@/admin/lib/utils/date'
 import { formatPaise } from '@/admin/lib/utils/money'
-import { ROLES } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { useDeleteSlot, useSetSlotActive, useSlots } from '../api'
 import type { Slot, TheatreRef } from '../types'
-import { endsNextDay, formatDays, formatDuration } from '../utils'
+import { endsNextDay, formatDays, formatDuration, formatOfferDiscount, formatOfferWhen } from '../utils'
 import { SlotFormModal } from './SlotFormModal'
+import { Can } from '@/admin/auth/guards'
 
 /** The daily slots of one theatre. */
 export function SlotsTab({ theatre }: { theatre: TheatreRef }) {
   const toast = useToast()
-  const { hasRole } = useAuth()
+  const { can } = useAuth()
   const slots = useSlots(theatre.id)
   const setActive = useSetSlotActive()
   const remove = useDeleteSlot()
@@ -72,6 +73,22 @@ export function SlotsTab({ theatre }: { theatre: TheatreRef }) {
         ),
     },
     {
+      key: 'offer',
+      header: 'Offer',
+      cell: (s) =>
+        !s.offer ? (
+          <span className="text-slate-400">—</span>
+        ) : (
+          <div className="text-xs">
+            <p className="flex items-center gap-1.5">
+              <span className="font-medium text-slate-900">{s.offer.label}</span>
+              <Badge tone={s.offer.isActive ? 'success' : 'neutral'}>{s.offer.isActive ? formatOfferDiscount(s.offer) : 'Paused'}</Badge>
+            </p>
+            <p className="text-slate-500">{formatOfferWhen(s.offer)}</p>
+          </div>
+        ),
+    },
+    {
       key: 'active',
       header: 'Active',
       cell: (s) => <Switch checked={s.isActive} onChange={() => toggle(s)} disabled={setActive.isPending && setActive.variables?.id === s.id} />,
@@ -83,7 +100,7 @@ export function SlotsTab({ theatre }: { theatre: TheatreRef }) {
       className: 'w-12',
       cell: (s) => {
         const items: MenuItem[] = [{ label: 'Edit', icon: <Pencil />, onSelect: () => edit.open(s) }]
-        if (hasRole(ROLES.SUPER_ADMIN)) items.push({ label: 'Delete', icon: <Trash2 />, danger: true, onSelect: () => confirmDelete.open(s) })
+        if (can(PERMISSIONS.SLOTS_DELETE)) items.push({ label: 'Delete', icon: <Trash2 />, danger: true, onSelect: () => confirmDelete.open(s) })
         return <Menu trigger={<IconButton label={`Actions for ${s.startTime} slot`}><MoreHorizontal className="h-4 w-4" /></IconButton>} items={items} />
       },
     },
@@ -94,7 +111,7 @@ export function SlotsTab({ theatre }: { theatre: TheatreRef }) {
       <CardHeader
         title={`${theatre.name} slots`}
         description="Repeat every day they run. Overlapping active slots are not allowed."
-        actions={<Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Add slot</Button>}
+        actions={<Can permission={PERMISSIONS.SLOTS_EDIT}><Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Add slot</Button></Can>}
       />
       <DataTable
         columns={columns}
@@ -103,7 +120,7 @@ export function SlotsTab({ theatre }: { theatre: TheatreRef }) {
         loading={slots.isLoading}
         error={slots.error}
         onRetry={() => slots.refetch()}
-        empty={<EmptyState icon={<CalendarClock className="h-5 w-5" />} title="No slots yet" description="Add the time slots customers can book." action={<Button onClick={add.open}>Add slot</Button>} />}
+        empty={<EmptyState icon={<CalendarClock className="h-5 w-5" />} title="No slots yet" description="Add the time slots customers can book." action={<Can permission={PERMISSIONS.SLOTS_EDIT}><Button onClick={add.open}>Add slot</Button></Can>} />}
       />
 
       <SlotFormModal open={add.isOpen} onOpenChange={add.setOpen} theatre={theatre} />

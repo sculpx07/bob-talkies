@@ -2,14 +2,15 @@ import { useSearchParams } from 'react-router-dom'
 import { PageHeader } from '@/admin/components/layout/PageHeader'
 import { ErrorState, LoadingBlock, Tabs } from '@/admin/components/ui'
 import { useAuth } from '@/admin/auth/AuthProvider'
-import { ROLES } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { formatDateTime } from '@/admin/lib/utils/date'
 import { useSettings } from '../api'
 import { HistoryTab } from '../components/HistoryTab'
 import { SettingsForm } from '../components/SettingsForm'
+import { PaymentSettingsPanel } from '../payments/PaymentSettingsPanel'
 
 export default function SettingsPage() {
-  const { hasRole } = useAuth()
+  const { can } = useAuth()
   const [params, setParams] = useSearchParams()
   const settings = useSettings()
   const tab = params.get('tab') ?? 'settings'
@@ -30,7 +31,8 @@ export default function SettingsPage() {
           value={tab}
           onValueChange={(value) => setParams(value === 'settings' ? {} : { tab: value }, { replace: true })}
           items={[
-            { value: 'settings', label: 'Settings', content: <SettingsForm settings={s} canEdit={hasRole(ROLES.SUPER_ADMIN)} /> },
+            { value: 'settings', label: 'Settings', content: <SettingsForm settings={s} canEdit={can(PERMISSIONS.SETTINGS_EDIT)} /> },
+            { value: 'payments', label: 'Payments', content: <PaymentSettingsPanel canEdit={can(PERMISSIONS.SETTINGS_PAYMENTS)} /> },
             { value: 'history', label: 'Change history', content: <HistoryTab /> },
           ]}
         />

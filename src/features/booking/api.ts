@@ -43,6 +43,19 @@ export interface PayOrderResponse {
   key: string
   /** 'dev' = the test payment screen; 'razorpay' = the real gateway */
   provider: string
+  /** Razorpay: 'test' or 'live' keys */
+  mode?: string
+  /** shown in Razorpay Checkout */
+  name?: string
+  description?: string
+  prefill?: { name?: string; email?: string; contact?: string }
+}
+
+/** Razorpay Checkout's answer, sent to the backend to verify */
+export interface RazorpayVerifyRequest {
+  razorpayOrderId: string
+  razorpayPaymentId: string
+  razorpaySignature: string
 }
 
 /** Entry pass (GET /passes/:token) */
@@ -71,6 +84,10 @@ export const bookingApi = {
   /** the test payment screen's answer (only while the backend uses the 'dev' payment provider) */
   completeTestPayment: (orderId: string, result: TestPaymentResult) =>
     api.post<Booking>('/payments/dev/complete', { orderId, result }),
+
+  /** verifies a Razorpay Checkout payment (signature + payment lookup) and confirms the booking */
+  verifyRazorpayPayment: (body: RazorpayVerifyRequest) =>
+    api.post<Booking>('/payments/razorpay/verify', body),
 
   getPass: (token: string) =>
     api.get<PassData>(`/passes/${encodeURIComponent(token)}`),

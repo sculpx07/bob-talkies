@@ -2,7 +2,6 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { api } from '@/admin/lib/api/client'
 import { tokens } from '@/admin/lib/api/tokens'
 import type { Paginated } from '@/admin/types/api'
-import type { RoleName } from '@/admin/types/auth'
 import type { ChangePasswordInput, StaffInput, StaffListParams, StaffMember, StaffWithPassword } from './types'
 
 /** Minimal staff shape for pickers (assign a lead, filter by staff member). */
@@ -10,7 +9,7 @@ export interface StaffOption {
   id: string
   name: string
   email: string
-  role: { name: RoleName; displayName: string } | null
+  role: { id: string; name: string; displayName: string } | null
 }
 
 export const userKeys = {
@@ -33,7 +32,7 @@ export function useStaffOptions() {
   })
 }
 
-/** Every staff account (super admin). */
+/** Every staff account (needs "View staff"). */
 export function useStaff(params: StaffListParams) {
   return useQuery({
     queryKey: userKeys.list(params),
@@ -42,7 +41,7 @@ export function useStaff(params: StaffListParams) {
   })
 }
 
-// ---------------------------------------------------------------- mutations (super admin)
+// ---------------------------------------------------------------- mutations (need "Manage staff")
 
 function useStaffMutation<TVars, TResult>(fn: (vars: TVars) => Promise<TResult>) {
   const qc = useQueryClient()

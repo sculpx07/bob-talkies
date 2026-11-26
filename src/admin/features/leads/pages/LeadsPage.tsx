@@ -13,6 +13,8 @@ import { useLeadStats, useLeads } from '../api'
 import { LEAD_SOURCE_LABELS, LEAD_STATUS_BADGE, LEAD_STATUS_ORDER, PRIORITY_BADGE } from '../constants'
 import { LeadFormModal } from '../components/LeadModals'
 import type { LeadListItem, LeadSource, LeadStatus } from '../types'
+import { Can } from '@/admin/auth/guards'
+import { PERMISSIONS } from '@/admin/types/permissions'
 
 const isOverdue = (l: LeadListItem) => Boolean(l.followUpAt && new Date(l.followUpAt) <= new Date() && ['new', 'contacted', 'follow_up'].includes(l.status))
 
@@ -79,7 +81,7 @@ export default function LeadsPage() {
       <PageHeader
         title="Leads"
         description="Enquiries from the website form, phone and WhatsApp."
-        actions={<Button leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Log enquiry</Button>}
+        actions={<Can permission={PERMISSIONS.LEADS_CREATE}><Button leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Log enquiry</Button></Can>}
       />
 
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">

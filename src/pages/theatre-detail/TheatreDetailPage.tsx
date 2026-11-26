@@ -496,7 +496,15 @@ export default function TheatreDetailPage() {
                                 <span className="text-[9px] font-black uppercase text-orange-500 border border-orange-200 bg-orange-50 rounded-full px-1.5 py-0.5 tracking-wide">Hot</span>
                               )}
                             </span>
-                            <span className="font-bold text-[#7a5500] text-sm">{formatINR(slot.pricePaise)}</span>
+                            <span className="text-right text-sm">
+                              {slot.originalPricePaise != null && slot.originalPricePaise > slot.pricePaise && (
+                                <>
+                                  <span className="block text-[9px] font-black uppercase tracking-wide text-[#c2255c]">{slot.offerLabel}</span>
+                                  <s className="mr-1 text-xs text-[#5b2535]/40">{formatINR(slot.originalPricePaise)}</s>
+                                </>
+                              )}
+                              <span className="font-bold text-[#7a5500]">{formatINR(slot.pricePaise)}</span>
+                            </span>
                           </Link>
                         ))}
                       </div>

@@ -24,7 +24,7 @@ export function useSettingHistory(page: number) {
   })
 }
 
-/** Super admin only. Sends only the changed fields. */
+/** Needs "Edit settings". Sends only the changed fields. */
 export function useUpdateSettings() {
   const qc = useQueryClient()
   return useMutation({

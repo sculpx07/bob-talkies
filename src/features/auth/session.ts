@@ -62,6 +62,9 @@ if (typeof window !== 'undefined') {
   })
 }
 
+/** True when this device holds a login for that mobile number (booking needs it). */
+export const isSignedInAs = (mobile: string) => read()?.customer.mobile === mobile && Boolean(read()?.token)
+
 /** The signed-in customer, re-rendering when they sign in or out. */
 export function useCustomerSession(): CustomerSession | null {
   return useSyncExternalStore(customerSession.subscribe, read, () => null)

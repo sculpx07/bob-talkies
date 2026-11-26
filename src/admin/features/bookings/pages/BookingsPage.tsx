@@ -5,6 +5,8 @@ import { Button, Tabs } from '@/admin/components/ui'
 import { todayISO } from '@/admin/lib/utils/date'
 import { BookingsTable } from '../components/BookingsTable'
 import { DayBoardView } from '../components/DayBoardView'
+import { Can } from '@/admin/auth/guards'
+import { PERMISSIONS } from '@/admin/types/permissions'
 
 /** Bookings: the day board (default) and the full list. Tab and board date live in the URL. */
 export default function BookingsPage() {
@@ -21,7 +23,7 @@ export default function BookingsPage() {
       <PageHeader
         title="Bookings"
         description="Today's board, every booking, and what is due. Click an open slot on the board to book it."
-        actions={<Link to={`/bookings/new${view === 'board' ? `?date=${date}` : ''}`}><Button leftIcon={<Plus className="h-4 w-4" />}>New booking</Button></Link>}
+        actions={<Can permission={PERMISSIONS.BOOKINGS_CREATE}><Link to={`/bookings/new${view === 'board' ? `?date=${date}` : ''}`}><Button leftIcon={<Plus className="h-4 w-4" />}>New booking</Button></Link></Can>}
       />
       <Tabs
         value={view}

@@ -3,7 +3,6 @@ import { ChevronDown, ExternalLink, LogOut, Menu as MenuIcon, UserRound } from '
 import { useAuth, useCurrentUser } from '@/admin/auth/AuthProvider'
 import { Badge, IconButton, Menu } from '@/admin/components/ui'
 import { env } from '@/admin/config/env'
-import { ROLES } from '@/admin/types/auth'
 
 const initials = (name: string) => name.split(/\s+/).map((p) => p[0]).slice(0, 2).join('').toUpperCase()
 
@@ -57,7 +56,7 @@ export function Topbar({ onOpenNav }: { onOpenNav: () => void }) {
               <span className="block text-sm font-medium text-slate-800">{user.name}</span>
               <span className="block text-xs text-slate-500">{user.role.displayName}</span>
             </span>
-            {user.role.name === ROLES.SUPER_ADMIN && <Badge tone="brand" className="hidden md:inline-flex">Super admin</Badge>}
+            {user.role.isSystem && <Badge tone="brand" className="hidden md:inline-flex">Super admin</Badge>}
             <ChevronDown className="h-4 w-4 text-slate-400" />
           </button>
         }

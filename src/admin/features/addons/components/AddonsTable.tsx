@@ -9,6 +9,8 @@ import { cn } from '@/admin/lib/utils/cn'
 import { formatPaise } from '@/admin/lib/utils/money'
 import { useAddonCategories, useAddons, useSetAddonStatus, useSetVariantStock } from '../api'
 import type { Addon, AddonListParams } from '../types'
+import { Can } from '@/admin/auth/guards'
+import { PERMISSIONS } from '@/admin/types/permissions'
 
 const STATUS_OPTIONS = [
   { value: 'listed', label: 'Listed' },
@@ -152,7 +154,7 @@ export function AddonsTable() {
         </div>
         {hasFilters && <Button variant="ghost" size="sm" onClick={resetFilters}>Clear filters</Button>}
         <div className="flex-1" />
-        <Link to="/addons/new"><Button leftIcon={<Plus className="h-4 w-4" />}>Add add-on</Button></Link>
+        <Can permission={PERMISSIONS.ADDONS_CREATE}><Link to="/addons/new"><Button leftIcon={<Plus className="h-4 w-4" />}>Add add-on</Button></Link></Can>
       </div>
       <DataTable
         columns={columns}
@@ -167,7 +169,7 @@ export function AddonsTable() {
         empty={
           hasFilters
             ? <EmptyState title="No add-ons match" action={<Button variant="secondary" onClick={resetFilters}>Clear filters</Button>} />
-            : <EmptyState icon={<Gift className="h-5 w-5" />} title="No add-ons yet" action={<Link to="/addons/new"><Button>Add add-on</Button></Link>} />
+            : <EmptyState icon={<Gift className="h-5 w-5" />} title="No add-ons yet" action={<Can permission={PERMISSIONS.ADDONS_CREATE}><Link to="/addons/new"><Button>Add add-on</Button></Link></Can>} />
         }
       />
       <Pagination pagination={query.data?.pagination} onPageChange={(page) => setFilters({ page })} />

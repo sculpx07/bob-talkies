@@ -6,7 +6,7 @@ import {
   Badge, Button, Card, CardBody, CardHeader, ConfirmDialog, ErrorState, IconButton, LoadingBlock, Menu, SegmentedControl, Select, StatusBadge, Textarea, useToast, type MenuItem,
 } from '@/admin/components/ui'
 import { useAuth } from '@/admin/auth/AuthProvider'
-import { ROLES } from '@/admin/types/auth'
+import { PERMISSIONS } from '@/admin/types/permissions'
 import { occasionLabel } from '@/admin/constants/catalog'
 import { BOOKING_STATUS_BADGE } from '@/admin/features/bookings/constants'
 import { whatsappLink } from '@/admin/features/bookings/utils'
@@ -51,7 +51,7 @@ export default function LeadDetailPage() {
   const { id = '' } = useParams()
   const navigate = useNavigate()
   const toast = useToast()
-  const { hasRole } = useAuth()
+  const { can } = useAuth()
   const query = useLead(id)
   const staff = useStaffOptions()
   const assign = useAssignLead()
@@ -72,7 +72,7 @@ export default function LeadDetailPage() {
   const moreItems: MenuItem[] = [
     { label: 'Edit lead', icon: <Pencil />, onSelect: edit.open },
     ...(open && bookings.length ? [{ label: 'Link existing booking', icon: <Link2 />, onSelect: link.open }] : []),
-    ...(hasRole(ROLES.SUPER_ADMIN) ? [{ label: 'Delete lead', icon: <Trash2 />, danger: true, onSelect: confirmDelete.open }] : []),
+    ...(can(PERMISSIONS.LEADS_DELETE) ? [{ label: 'Delete lead', icon: <Trash2 />, danger: true, onSelect: confirmDelete.open }] : []),
   ]
 
   return (

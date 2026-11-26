@@ -8,6 +8,8 @@ import { formatDate, formatTime, todayISO } from '@/admin/lib/utils/date'
 import { useDeleteBlock, useSlotBlocks } from '../api'
 import type { SlotBlock, TheatreRef } from '../types'
 import { BlockFormModal } from './BlockFormModal'
+import { Can } from '@/admin/auth/guards'
+import { PERMISSIONS } from '@/admin/types/permissions'
 
 const days = (b: SlotBlock) => differenceInCalendarDays(parseISO(b.endDate), parseISO(b.startDate)) + 1
 
@@ -73,7 +75,7 @@ export function BlocksTab({ theatre }: { theatre: TheatreRef }) {
             <div className="w-36">
               <Select aria-label="Which blocks" value={range} onChange={(e) => { setRange(e.target.value as 'upcoming' | 'all'); setPage(1) }} options={[{ value: 'upcoming', label: 'Upcoming' }, { value: 'all', label: 'All, incl. past' }]} />
             </div>
-            <Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Block dates</Button>
+            <Can permission={PERMISSIONS.SLOTS_EDIT}><Button size="sm" leftIcon={<Plus className="h-4 w-4" />} onClick={add.open}>Block dates</Button></Can>
           </>
         }
       />
