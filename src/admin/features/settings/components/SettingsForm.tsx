@@ -41,7 +41,8 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
   useEffect(() => { reset(settingsToForm(settings)) }, [settings, reset])
 
   const [gst, included, advance, decoration] = watch(['pricing.gstPercent', 'pricing.pricesIncludeGst', 'pricing.advancePercent', 'pricing.decorationPrice'])
-  const [loyaltyOn, loyaltyType, loyaltyValue, loyaltyMin, loyaltyLabel, loyaltyCap] = watch(['loyalty.enabled', 'loyalty.discountType', 'loyalty.discountValue', 'loyalty.minCompletedBookings', 'loyalty.label', 'loyalty.maxDiscount'])
+  const [loyaltyOn, loyaltyType, loyaltyValue, loyaltyMin, loyaltyLabel, loyaltyCap, loyaltyReward] = watch(['loyalty.enabled', 'loyalty.discountType', 'loyalty.discountValue', 'loyalty.minCompletedBookings', 'loyalty.label', 'loyalty.maxDiscount', 'loyalty.rewardType'])
+  const [rewardsOn, pointValue, perBooking, maxRedeem] = watch(['rewards.enabled', 'rewards.pointValue', 'rewards.pointsPerBooking', 'rewards.maxRedeemPercent'])
 
   // review the exact changes before saving: these settings move money
   const review = handleSubmit((values) => {
@@ -60,7 +61,7 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
       setPending(null)
     } catch (err) {
       setPending(null)
-      setFormErrors(applyServerErrors(err, setError, SETTINGS_SECTIONS, (f) => f.replace(/decorationPricePaise$/, 'decorationPrice').replace(/maxDiscountPaise$/, 'maxDiscount')))
+      setFormErrors(applyServerErrors(err, setError, SETTINGS_SECTIONS, (f) => f.replace(/decorationPricePaise$/, 'decorationPrice').replace(/maxDiscountPaise$/, 'maxDiscount').replace(/pointValuePaise$/, 'pointValue')))
     }
   }
 
@@ -117,6 +118,14 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
           <FormField label="Refund cut-off" required hint="Cancelling at least this long before the slot is refundable" error={e.booking?.refundCutoffHours?.message}>
             {(f) => <Input {...f} type="number" min={0} max={720} trailing="h" {...register('booking.refundCutoffHours', num)} />}
           </FormField>
+          <FullWidth>
+            <Controller control={control} name="booking.allowCustomerEdits" render={({ field }) => (
+              <Switch id="allowCustomerEdits" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Customers can change their confirmed booking on the website" description="Guests, decoration and add-ons. No payment at that moment: the total is re-priced and the balance is paid at the venue (never below what is already paid)." />
+            )} />
+          </FullWidth>
+          <FormField label="Changes close" required hint="Before the slot starts" error={e.booking?.customerEditCutoffMinutes?.message}>
+            {(f) => <Input {...f} type="number" min={0} max={10080} trailing="min before" {...register('booking.customerEditCutoffMinutes', num)} />}
+          </FormField>
         </FormSection>
 
         <FormSection title="Contact" description="Shown to customers on the website and in messages.">
@@ -138,15 +147,24 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
           </FullWidth>
         </FormSection>
 
-        <FormSection title="Regular customers" description="An automatic discount for customers who have celebrated with you before, counted by completed bookings on their mobile number. Staff bookings use the number typed in; on the website it applies once the customer signs in with OTP.">
+        <FormSection title="Regular customers" description="Rewards for customers who have celebrated with you before, counted by completed bookings on their mobile number. Staff bookings use the number typed in; on the website it applies once the customer signs in with OTP.">
           <FullWidth>
             <Controller control={control} name="loyalty.enabled" render={({ field }) => (
-              <Switch id="loyaltyEnabled" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Give regular customers a discount" description="Taken off the price before GST, without a coupon code." />
+              <Switch id="loyaltyEnabled" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Reward regular customers" description="Automatically, without a coupon code." />
             )} />
           </FullWidth>
           <FormField label="Regular after" required hint="Completed bookings with the same mobile number" error={e.loyalty?.minCompletedBookings?.message}>
             {(f) => <Input {...f} type="number" min={1} max={100} trailing="bookings" {...register('loyalty.minCompletedBookings', num)} />}
           </FormField>
+          <FormField label="They get" required hint="Bonus points need BOB Points switched on (below)">
+            {(f) => <Select {...f} options={[{ value: 'discount', label: 'A discount on the bill' }, { value: 'points', label: 'Bonus BOB Points' }, { value: 'both', label: 'Discount + bonus points' }]} {...register('loyalty.rewardType')} />}
+          </FormField>
+          {loyaltyReward !== 'discount' && (
+            <FormField label="Bonus points" required hint="Extra points each time a regular's booking is completed" error={e.loyalty?.bonusPoints?.message}>
+              {(f) => <Input {...f} type="number" min={0} trailing="pts" {...register('loyalty.bonusPoints', num)} />}
+            </FormField>
+          )}
+          {loyaltyReward !== 'points' && (<>
           <FormField label="Name on the bill" required error={e.loyalty?.label?.message}>
             {(f) => <Input {...f} maxLength={40} placeholder="Regular customer" {...register('loyalty.label')} />}
           </FormField>
@@ -169,14 +187,52 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
           )}
           <FullWidth>
             <Controller control={control} name="loyalty.stackWithCoupons" render={({ field }) => (
-              <Switch id="loyaltyStack" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Combine with coupon codes" description="Off: a regular customer using a coupon gets the coupon instead." />
+              <Switch id="loyaltyStack" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Combine with coupon codes" description="Off: a regular customer using a coupon gets the coupon instead of the discount (bonus points are still given)." />
             )} />
           </FullWidth>
-          {loyaltyOn && Number.isFinite(loyaltyValue) && (
+          </>)}
+          {loyaltyOn && loyaltyReward !== 'points' && Number.isFinite(loyaltyValue) && (
             <FullWidth>
               <p className="rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
                 After {Number.isFinite(loyaltyMin) ? loyaltyMin : '–'} completed booking(s), customers see “{(loyaltyLabel || 'Regular customer').trim()} discount ({loyaltyType === 'flat' ? formatPaise(rupeesToPaise(loyaltyValue)) : `${loyaltyValue}%`})”
                 {loyaltyType === 'percent' ? <> — {formatPaise(Math.min(Math.round((EXAMPLE_PAISE * loyaltyValue) / 100), loyaltyCap ? rupeesToPaise(loyaltyCap) ?? Infinity : Infinity))} off a {formatPaise(EXAMPLE_PAISE)} booking.</> : '.'}
+              </p>
+            </FullWidth>
+          )}
+        </FormSection>
+
+        <FormSection title="BOB Points" description="One balance per customer (by mobile number). Earned when a booking is completed and through referrals; spent at checkout as a discount before GST. Website customers see and use them after signing in with OTP.">
+          <FullWidth>
+            <Controller control={control} name="rewards.enabled" render={({ field }) => (
+              <Switch id="rewardsEnabled" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="BOB Points are on" description="Off: no points are earned or spent, and the website hides points." />
+            )} />
+          </FullWidth>
+          <FormField label="Value of 1 point" required hint="What a point takes off the bill" error={e.rewards?.pointValue?.message}>
+            {(f) => <MoneyInput {...f} step="0.01" {...register('rewards.pointValue', num)} />}
+          </FormField>
+          <FormField label="Points per completed booking" required error={e.rewards?.pointsPerBooking?.message}>
+            {(f) => <Input {...f} type="number" min={0} trailing="pts" {...register('rewards.pointsPerBooking', num)} />}
+          </FormField>
+          <FormField label="Referrer gets" required hint="When a friend they referred completes their first booking" error={e.rewards?.referrerPoints?.message}>
+            {(f) => <Input {...f} type="number" min={0} trailing="pts" {...register('rewards.referrerPoints', num)} />}
+          </FormField>
+          <FormField label="Referred friend gets" required hint="On their first completed booking" error={e.rewards?.friendPoints?.message}>
+            {(f) => <Input {...f} type="number" min={0} trailing="pts" {...register('rewards.friendPoints', num)} />}
+          </FormField>
+          <FormField label="Points can pay up to" required hint="Share of a booking, before GST (1 to 90)" error={e.rewards?.maxRedeemPercent?.message}>
+            {(f) => <Input {...f} type="number" min={1} max={90} trailing="%" {...register('rewards.maxRedeemPercent', num)} />}
+          </FormField>
+          <FormField label="Fewest points per use" required hint="0 = any amount" error={e.rewards?.minRedeemPoints?.message}>
+            {(f) => <Input {...f} type="number" min={0} trailing="pts" {...register('rewards.minRedeemPoints', num)} />}
+          </FormField>
+          <FormField label="Referral rewards per person" required hint="Per calendar month; more referrals are not rewarded" error={e.rewards?.monthlyReferralCap?.message}>
+            {(f) => <Input {...f} type="number" min={1} max={1000} trailing="/ month" {...register('rewards.monthlyReferralCap', num)} />}
+          </FormField>
+          {rewardsOn && Number.isFinite(pointValue) && Number.isFinite(perBooking) && (
+            <FullWidth>
+              <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                A completed booking earns {perBooking} pts, worth {formatPaise(Math.round(perBooking * (rupeesToPaise(pointValue) ?? 0)))} off a later booking.
+                {Number.isFinite(maxRedeem) && <> On a {formatPaise(EXAMPLE_PAISE)} booking, points can take off up to {formatPaise(Math.round((EXAMPLE_PAISE * maxRedeem) / 100))}.</>}
               </p>
             </FullWidth>
           )}

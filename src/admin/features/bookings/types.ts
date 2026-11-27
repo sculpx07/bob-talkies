@@ -30,6 +30,15 @@ export interface BookingListItem {
   paymentStatus: PaymentStatus
   /** money given back (processed refunds, Admin → Payments) */
   refundedPaise?: number
+  /** BOB Points spent on it (given back if cancelled / unpaid) and earned when completed */
+  rewards?: {
+    pointsRedeemed: number
+    pointValuePaise: number
+    returnedAt: string | null
+    pointsEarned: number
+    regularBonusPoints?: number
+    earnedAt: string | null
+  }
   holdExpiresAt: string | null
   createdAt: string
 }
@@ -45,7 +54,7 @@ export interface BookingPayment {
 }
 
 export interface BookingLineItem {
-  type: 'theatre' | 'extra_guests' | 'decoration' | 'addon' | 'slot_offer' | 'loyalty' | 'discount' | 'tax'
+  type: 'theatre' | 'extra_guests' | 'decoration' | 'addon' | 'slot_offer' | 'loyalty' | 'discount' | 'points' | 'tax'
   label: string
   paise: number
   /** GST already inside the prices: shown, not added */
@@ -81,6 +90,8 @@ export interface BookingDetail extends Omit<BookingListItem, 'theatre' | 'slot'>
   passToken: string | null
   statusHistory: Array<{ from: BookingStatus | null; to: BookingStatus; at: string; by: UserRef | null; note: string }>
   reschedules: Array<{ fromDate: string; fromTime: string; toDate: string; toTime: string; reason: string; at: string; by: UserRef | null }>
+  /** guests / decoration / add-ons changes (by staff, or by the customer on the website) */
+  edits?: Array<{ at: string; by: 'customer' | 'staff'; user: UserRef | null; summary: string; fromTotalPaise: number; toTotalPaise: number }>
   createdBy: UserRef | null
   updatedBy: UserRef | null
   updatedAt: string

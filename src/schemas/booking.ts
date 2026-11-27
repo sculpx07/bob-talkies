@@ -25,7 +25,10 @@ export const BookingRequestSchema = z.object({
 export type BookingRequest = z.infer<typeof BookingRequestSchema>
 
 export const BookingSchema = z.object({
+  /** private reference used in links (never shown) */
   id: z.string(),
+  /** the booking number customers and staff quote, e.g. BTNWBQXJY2 */
+  bookingNumber: z.string().optional(),
   status: BookingStatusSchema,
   theatreId: z.string(),
   theatreName: z.string(),
@@ -37,6 +40,8 @@ export const BookingSchema = z.object({
   slotEnd: z.string(),
   occasion: z.string(),
   guests: z.number().int(),
+  /** theme decoration booked */
+  decoration: z.boolean().optional(),
   addonIds: z.array(z.string()),
   couponCode: z.string().optional(),
   customerName: z.string(),
@@ -49,5 +54,11 @@ export const BookingSchema = z.object({
   passToken: z.string().optional(),
   createdAt: z.string(),
   slotHoldExpiresAt: z.string().optional(),
+  /** the customer may change guests / decoration / add-ons until editableUntil */
+  canEdit: z.boolean().optional(),
+  editableUntil: z.string().optional(),
+  /** why it cannot be changed (when canEdit is false) */
+  editNote: z.string().optional(),
+  lastEditedAt: z.string().optional(),
 })
 export type Booking = z.infer<typeof BookingSchema>

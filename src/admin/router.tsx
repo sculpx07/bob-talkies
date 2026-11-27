@@ -32,6 +32,7 @@ const PackagesPage = lazy(() => import('./features/packages/pages/PackagesPage')
 const ReviewsPage = lazy(() => import('./features/reviews/pages/ReviewsPage'))
 const ReportsPage = lazy(() => import('./features/reports/pages/ReportsPage'))
 const PaymentsPage = lazy(() => import('./features/payments/pages/PaymentsPage'))
+const RewardsPage = lazy(() => import('./features/rewards/pages/RewardsPage'))
 const StaffPage = lazy(() => import('./features/users/pages/StaffPage'))
 const AccountPage = lazy(() => import('./features/account/pages/AccountPage'))
 const RolesPage = lazy(() => import('./features/roles/pages/RolesPage'))
@@ -97,6 +98,7 @@ const builtRoutes: RouteObject[] = [
     ],
   },
   { path: 'payments', element: guard([P.PAYMENTS_VIEW], <PaymentsPage />) },
+  { path: 'rewards', element: guard([P.REWARDS_VIEW], <RewardsPage />) },
   { path: 'reports', element: guard([P.REPORTS_VIEW], <ReportsPage />) },
   { path: 'packages', element: guard([P.PACKAGES_VIEW], <PackagesPage />) },
   { path: 'reviews', element: guard([P.REVIEWS_VIEW], <ReviewsPage />) },
@@ -113,7 +115,7 @@ const builtRoutes: RouteObject[] = [
   { path: 'account', element: <AccountPage /> },
 ]
 
-const builtPaths = new Set(['/', '/theatres', '/slots', '/addons', '/offers', '/settings', '/bookings', '/leads', '/payments', '/reports', '/packages', '/reviews', '/staff', '/roles'])
+const builtPaths = new Set(['/', '/theatres', '/slots', '/addons', '/offers', '/settings', '/bookings', '/leads', '/payments', '/rewards', '/reports', '/packages', '/reviews', '/staff', '/roles'])
 
 const placeholderRoutes: RouteObject[] = NAV_ITEMS.filter((item) => !builtPaths.has(item.path)).map((item) => ({
   path: `${item.path.slice(1)}/*`,

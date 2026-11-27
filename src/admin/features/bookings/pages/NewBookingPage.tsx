@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Tag, X } from 'lucide-react'
+import { Star, Tag, X } from 'lucide-react'
 import { PageHeader } from '@/admin/components/layout/PageHeader'
 import {
   Badge, Button, Card, CardBody, CardHeader, Checkbox, FormField, Input, MoneyInput, SegmentedControl, Select, Switch, Textarea, useToast,
@@ -35,6 +35,7 @@ const schema = z
     decoration: z.boolean(),
     addons: z.array(z.object({ addon: z.string(), variant: z.string().optional(), quantity: z.number() })),
     couponCode: z.string(),
+    usePoints: z.boolean(),
     name: z.string().trim().min(2, 'Enter the customer name').max(100),
     mobile: z.string().trim().regex(/^[6-9]\d{9}$/, 'Enter a valid 10-digit mobile number'),
     email: z.string().trim().toLowerCase().email('Enter a valid email').or(z.literal('')),
@@ -79,24 +80,24 @@ export default function NewBookingPage() {
     resolver: zodResolver(schema),
     defaultValues: {
       theatre: params.get('theatre') ?? '', date: params.get('date') ?? todayISO(), slot: params.get('slot') ?? '',
-      guests: 2, kids: 0, decoration: true, addons: [], couponCode: '',
+      guests: 2, kids: 0, decoration: true, addons: [], couponCode: '', usePoints: false,
       name: '', mobile: '', email: '', occasion: '', consentWhatsapp: true,
       specialInstructions: '', cakeRequest: '', addonRequest: '', internalNotes: '',
       source: 'phone', mode: 'confirm', recordPayment: true, payAmount: NaN, payMethod: 'upi', payReference: '', allowOverride: false,
     },
   })
 
-  const [theatreId, date, slot, guests, decoration, addons, couponCode, mode, recordPayment, allowOverride, mobile] =
-    watch(['theatre', 'date', 'slot', 'guests', 'decoration', 'addons', 'couponCode', 'mode', 'recordPayment', 'allowOverride', 'mobile'])
+  const [theatreId, date, slot, guests, decoration, addons, couponCode, mode, recordPayment, allowOverride, mobile, usePoints] =
+    watch(['theatre', 'date', 'slot', 'guests', 'decoration', 'addons', 'couponCode', 'mode', 'recordPayment', 'allowOverride', 'mobile', 'usePoints'])
   // regular-customer discount: once a full mobile number is typed
   const customerMobile = /^[6-9]\d{9}$/.test(mobile?.trim() ?? '') ? mobile.trim() : undefined
   const theatre = theatres.data?.find((t) => t.id === theatreId)
 
   const quoteInput = useMemo(() => (
     theatreId && date && slot && guests >= 1
-      ? { theatre: theatreId, date, slot, guests, decoration, addons, ...(couponCode && { couponCode }), ...(customerMobile && { customerMobile }) }
+      ? { theatre: theatreId, date, slot, guests, decoration, addons, ...(couponCode && { couponCode }), ...(customerMobile && { customerMobile, ...(usePoints && { usePoints: true }) }) }
       : null
-  ), [theatreId, date, slot, guests, decoration, addons, couponCode, customerMobile])
+  ), [theatreId, date, slot, guests, decoration, addons, couponCode, customerMobile, usePoints])
   const quote = useQuote(quoteInput)
   const q = quoteInput ? quote.data : undefined
 
@@ -131,6 +132,7 @@ export default function NewBookingPage() {
       const booking = await create.mutateAsync({
         theatre: v.theatre, date: v.date, slot: v.slot, guests: v.guests, kids: v.kids, decoration: v.decoration, addons: v.addons,
         ...(v.couponCode && { couponCode: v.couponCode }),
+        ...(v.usePoints && q?.points?.used && { usePoints: true }),
         customer: { name: v.name, mobile: v.mobile, email: v.email },
         occasion: v.occasion, consentWhatsapp: v.consentWhatsapp,
         specialInstructions: v.specialInstructions, cakeRequest: v.cakeRequest, addonRequest: v.addonRequest, internalNotes: v.internalNotes,
@@ -256,6 +258,28 @@ export default function NewBookingPage() {
               {couponProblem && <p className="mt-2 text-xs text-amber-700">{q?.coupon?.reason}. Remove it to continue.</p>}
             </CardBody>
           </Card>
+
+          {/* BOB Points of the customer typed in (by mobile) */}
+          {q?.points?.enabled && customerMobile && (
+            <Card>
+              <CardHeader title="BOB Points" description={`Balance ${q.points.balance.toLocaleString('en-IN')} pts · this booking earns ${q.points.earnPoints} pts when completed${q.points.regularBonusPoints ? ` (incl. ${q.points.regularBonusPoints} regular bonus)` : ''}`} />
+              <CardBody>
+                {q.points.usable > 0 ? (
+                  <Controller control={control} name="usePoints" render={({ field }) => (
+                    <Switch
+                      id="usePoints"
+                      checked={field.value}
+                      onChange={field.onChange}
+                      label={field.value && q.points?.used ? `Using ${q.points.used.toLocaleString('en-IN')} pts (−${formatPaise(q.points.discountPaise)})` : `Use ${q.points!.usable.toLocaleString('en-IN')} pts (−${formatPaise(q.points!.usable * q.points!.pointValuePaise)})`}
+                      description="Only with the customer's agreement. Points come back if the booking is cancelled or not paid."
+                    />
+                  )} />
+                ) : (
+                  <p className="flex items-center gap-2 text-sm text-slate-500"><Star className="h-4 w-4 text-amber-500" />{q.points.balance > 0 ? 'Not enough points for this booking yet.' : 'No points yet.'}</p>
+                )}
+              </CardBody>
+            </Card>
+          )}
 
           <QuotePanel quote={q} loading={quote.isLoading} error={quoteInput ? quote.error : undefined} refreshing={quote.isFetching && Boolean(q)} />
 

@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { motion } from 'framer-motion'
@@ -7,10 +7,9 @@ import { Seo } from '@/components/seo/Seo'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { formatINR } from '@/lib/utils/currency'
 import { formatDate, formatTime } from '@/lib/utils/date'
-import { Check, Calendar, MapPin, MessageCircle, QrCode, Users, ArrowRight, Sparkles, Gift, Share2, Star, Film, Send } from 'lucide-react'
-import { awardBookingPoints, buildReferralUrl } from '@/lib/utils/bobRewards'
+import { Check, Calendar, MapPin, MessageCircle, QrCode, Users, ArrowRight, Sparkles, Gift, Share2, Star } from 'lucide-react'
+import { referralUrl, shareLink, useMyRewards, useRewardsProgram } from '@/features/rewards/api'
 import { useWhatsappNumber } from '@/features/site/api'
-import { mediaStore } from '@/features/booking/mediaStore'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const CONFETTI = [
@@ -26,36 +25,20 @@ export default function BookSuccessPage() {
   useEffect(() => { dispatch({ type: 'RESET' }) }, [dispatch])
   const { data: booking, isLoading } = useBookingStatus(bookingId ?? null)
 
-  // award points once per booking (guard by bookingId so strict-mode double-fire is safe)
-  const [reward, setReward] = useState<{ points: number; total: number; bookings: number } | null>(null)
-  useEffect(() => {
-    if (!booking || booking.status !== 'CONFIRMED') return
-    const key = `bob_awarded_${bookingId}`
-    if (localStorage.getItem(key)) return
-    localStorage.setItem(key, '1')
-    setReward(awardBookingPoints())
-  }, [booking, bookingId])
+  // BOB Points are added by the backend once the celebration is completed; this shows what is coming
+  const program = useRewardsProgram()
+  const { data: myRewards } = useMyRewards()
+  const reward = program?.enabled && myRewards && booking?.status === 'CONFIRMED'
+    ? {
+        points: myRewards.pointsPerBooking + (myRewards.repeatGuest.active ? myRewards.repeatGuest.bonusPoints : 0),
+        total: myRewards.balance,
+        repeatGuest: myRewards.repeatGuest.active,
+        code: myRewards.referral.code,
+        friendPoints: myRewards.referral.friendPoints,
+      }
+    : null
 
-  // Personalised media files uploaded during booking
-  const [mediaFiles, setMediaFiles] = useState<File[]>([])
-  const [mediaPreviews, setMediaPreviews] = useState<string[]>([])
-  const previewsRef = useRef<string[]>([])
-  useEffect(() => {
-    const files = mediaStore.get()
-    if (files.length === 0) return
-    const urls = files.map((f) => URL.createObjectURL(f))
-    previewsRef.current = urls
-    setMediaFiles(files)
-    setMediaPreviews(urls)
-    mediaStore.clear()
-    return () => urls.forEach(URL.revokeObjectURL)
-  }, [])
-
-  const waMediaText = mediaFiles.length > 0
-    ? `Hi BOB Talkies! 🎬 My booking is confirmed.\n\nBooking ID: ${bookingId}\n\nI'm sharing my personalised photos & videos below — please have them ready for my surprise experience! ✨`
-    : `Hi! I just booked a private theatre (Booking ID: ${bookingId}). Need help with my booking.`
-
-  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMediaText)}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! I just booked a private theatre (Booking no. ${booking?.bookingNumber ?? bookingId}). Need help with my booking.`)}`
   const confirmed = booking?.status === 'CONFIRMED'
 
   return (
@@ -152,8 +135,8 @@ export default function BookSuccessPage() {
                 <div className="relative flex items-center justify-between overflow-hidden bg-[linear-gradient(135deg,#5c1535,#8b1a3a_60%,#d9126a)] px-6 py-5 text-white">
                   <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
                   <div className="relative">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">Booking ID</p>
-                    <p className="font-mono text-lg font-bold tracking-wider">{booking.id}</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">Booking no.</p>
+                    <p className="font-mono text-lg font-bold tracking-wider">{booking.bookingNumber ?? booking.id}</p>
                   </div>
                   <span className="relative flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold backdrop-blur">
                     <Sparkles size={12} /> CONFIRMED
@@ -227,61 +210,6 @@ export default function BookSuccessPage() {
                 </motion.div>
               )}
 
-              {/* ── Personalised media share card ── */}
-              {mediaFiles.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.25, duration: 0.7, ease: EASE }}
-                  className="mt-5 overflow-hidden rounded-3xl bg-white shadow-[0_12px_32px_rgba(107,35,152,0.15)] ring-1 ring-[#f5d5e0]"
-                >
-                  <div className="flex items-center gap-3 bg-[linear-gradient(135deg,#25D366,#128C7E)] px-5 py-4">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
-                      <Send size={17} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-white">Send your photos &amp; videos</p>
-                      <p className="text-xs text-white/80">We'll play them on the big screen as your surprise!</p>
-                    </div>
-                  </div>
-
-                  <div className="p-4">
-                    {/* Thumbnails */}
-                    <div className="mb-3 grid grid-cols-4 gap-2 sm:grid-cols-5">
-                      {mediaPreviews.map((src, i) => {
-                        const isVideo = mediaFiles[i]?.type.startsWith('video/')
-                        return (
-                          <div key={i} className="relative aspect-square overflow-hidden rounded-xl bg-[#fce8f0]">
-                            {isVideo ? (
-                              <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-[#3d0a24]/10">
-                                <Film size={18} className="text-[#c0125a]" />
-                                <span className="line-clamp-1 px-1 text-center text-[9px] text-[#5a2035]">{mediaFiles[i].name}</span>
-                              </div>
-                            ) : (
-                              <img src={src} alt="" className="h-full w-full object-cover" />
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-
-                    <p className="mb-3 text-xs leading-relaxed text-[#5a2035]">
-                      Tap the button below to open our WhatsApp chat with your booking details pre-filled, then <span className="font-semibold text-[#3d0a24]">send these {mediaFiles.length} file{mediaFiles.length > 1 ? 's' : ''} in that chat</span> — our team will take care of the rest.
-                    </p>
-
-                    <a
-                      href={waLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] py-3 text-sm font-bold text-white shadow-[0_8px_20px_rgba(37,211,102,0.4)] transition-transform hover:scale-[1.02]"
-                    >
-                      <MessageCircle size={16} />
-                      Open WhatsApp &amp; Share Files
-                    </a>
-                  </div>
-                </motion.div>
-              )}
-
               {/* Actions */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -301,7 +229,7 @@ export default function BookSuccessPage() {
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(37,211,102,0.35)]"
                 >
-                  <MessageCircle size={16} /> {mediaFiles.length > 0 ? 'WhatsApp Team' : 'WhatsApp Support'}
+                  <MessageCircle size={16} /> WhatsApp Support
                 </a>
               </motion.div>
 
@@ -319,43 +247,41 @@ export default function BookSuccessPage() {
                       <Star size={18} fill="#c9a84c" stroke="none" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs font-black text-[#8a6010] uppercase tracking-widest">BOB Points Earned!</p>
+                      <p className="text-xs font-black text-[#8a6010] uppercase tracking-widest">BOB Points on the way!</p>
                       <p className="font-black text-[#3d0a24] text-lg leading-tight">
                         +{reward.points} pts
-                        <span className="ml-2 text-sm font-semibold text-[#5b2535]/60">({reward.total} total)</span>
+                        <span className="ml-2 text-sm font-semibold text-[#5b2535]/60">after your celebration ({reward.total} in your account)</span>
                       </p>
                     </div>
-                    {reward.bookings >= 2 && (
+                    {reward.repeatGuest && (
                       <span className="rounded-full bg-[#34d399]/20 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2a7a4f]">
                         Repeat Guest ✓
                       </span>
                     )}
                   </div>
 
-                  {/* refer & earn */}
+                  {/* refer & earn (needs the customer's own code) */}
+                  {reward.code && (
                   <div className="px-5 py-4">
                     <p className="text-xs font-black text-[#3d0a24] mb-1 flex items-center gap-1.5">
                       <Gift size={12} className="text-[#c9a84c]" /> Refer &amp; Earn
                     </p>
                     <p className="text-[11px] text-[#5b2535]/70 mb-3 leading-relaxed">
-                      Share your referral link. When a friend completes their first booking, you both earn BOB credits.
+                      Share your referral link. When a friend completes their first booking, you both earn BOB Points.
                     </p>
                     <button
                       type="button"
-                      onClick={async () => {
-                        const url = buildReferralUrl()
-                        const text = '🎬 Book a private theatre at BOB Talkies and use my link — we both earn BOB Points!'
-                        try {
-                          if (navigator.share) await navigator.share({ title: 'BOB Talkies', text, url })
-                          else { await navigator.clipboard.writeText(url) }
-                        } catch { /* dismissed */ }
-                      }}
+                      onClick={() => shareLink({
+                        url: referralUrl(reward.code!),
+                        text: `🎬 Book a private theatre at BOB Talkies with my link — you get ${reward.friendPoints} BOB Points on your first celebration!`,
+                      })}
                       className="flex w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-xs font-black text-white transition-all hover:scale-[1.02]"
                       style={{ background: 'linear-gradient(135deg,#5c1535,#7b1535)' }}
                     >
                       <Share2 size={13} /> Share Referral Link
                     </button>
                   </div>
+                  )}
                 </motion.div>
               )}
 

@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { paiseToRupees, rupeesToPaise } from '@/admin/lib/utils/money'
 import type { SettingChange, Settings, SettingsPatch, SettingsSection } from './types'
 
-export const SETTINGS_SECTIONS: SettingsSection[] = ['pricing', 'booking', 'contact', 'reviews', 'loyalty']
+export const SETTINGS_SECTIONS: SettingsSection[] = ['pricing', 'booking', 'contact', 'reviews', 'loyalty', 'rewards']
 
 const whole = (min: number, max: number, label: string) =>
   z.number({ error: `Enter ${label}` }).int('Whole number').min(min, `At least ${min}`).max(max, `At most ${max}`)
@@ -22,6 +22,8 @@ export const settingsFormSchema = z.object({
     minLeadHours: whole(0, 168, 'hours'),
     maxAdvanceDays: whole(1, 365, 'days'),
     refundCutoffHours: whole(0, 720, 'hours'),
+    allowCustomerEdits: z.boolean(),
+    customerEditCutoffMinutes: whole(0, 10_080, 'minutes'),
   }),
   contact: z.object({
     whatsappNumber: z.string().trim().regex(/^\d{10,15}$/, 'Digits only with country code, e.g. 919876543210'),
@@ -37,6 +39,8 @@ export const settingsFormSchema = z.object({
   loyalty: z.object({
     enabled: z.boolean(),
     minCompletedBookings: whole(1, 100, 'the number of bookings'),
+    rewardType: z.enum(['discount', 'points', 'both']),
+    bonusPoints: whole(0, 100_000, 'the bonus points'),
     discountType: z.enum(['percent', 'flat']),
     /** percent, or rupees for a flat discount */
     discountValue: z.number({ error: 'Enter the discount' }).positive('More than 0').max(100_000),
@@ -48,6 +52,18 @@ export const settingsFormSchema = z.object({
     if (l.discountType === 'percent' && (!Number.isInteger(l.discountValue) || l.discountValue > 50)) {
       ctx.addIssue({ code: 'custom', path: ['discountValue'], message: 'A whole percent, at most 50' })
     }
+  }),
+  rewards: z.object({
+    enabled: z.boolean(),
+    /** rupees on screen (paise in the API) */
+    pointValue: z.number({ error: 'Enter the value' }).min(0.01, 'At least ₹0.01').max(1000, 'At most ₹1,000')
+      .refine((n) => Math.abs(n * 100 - Math.round(n * 100)) < 1e-9, 'At most 2 decimal places'),
+    pointsPerBooking: whole(0, 100_000, 'the points'),
+    referrerPoints: whole(0, 100_000, 'the points'),
+    friendPoints: whole(0, 100_000, 'the points'),
+    maxRedeemPercent: whole(1, 90, 'the share'),
+    minRedeemPoints: whole(0, 100_000, 'the points'),
+    monthlyReferralCap: whole(1, 1000, 'the limit'),
   }),
 })
 
@@ -65,6 +81,10 @@ export function settingsToForm(s: Settings): SettingsFormValues {
       discountValue: s.loyalty.discountType === 'flat' ? Number(paiseToRupees(s.loyalty.discountValue)) : s.loyalty.discountValue,
       maxDiscount: s.loyalty.maxDiscountPaise ? Number(paiseToRupees(s.loyalty.maxDiscountPaise)) : undefined,
     },
+    rewards: (() => {
+      const { pointValuePaise, ...r } = s.rewards
+      return { ...r, pointValue: Number(paiseToRupees(pointValuePaise)) }
+    })(),
   }
 }
 
@@ -84,6 +104,10 @@ function formToSettings(v: SettingsFormValues): Pick<Settings, SettingsSection> 
         // a cap only limits a percent discount
         maxDiscountPaise: l.discountType === 'percent' && maxDiscount ? rupeesToPaise(maxDiscount) ?? null : null,
       }
+    })(),
+    rewards: (() => {
+      const { pointValue, ...r } = v.rewards
+      return { ...r, pointValuePaise: rupeesToPaise(pointValue) ?? 100 }
     })(),
   }
 }

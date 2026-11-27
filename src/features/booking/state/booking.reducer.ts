@@ -30,6 +30,8 @@ export interface BookingState {
   kids: number
   decoration: boolean
   verifiedMobile: string | null
+  /** pay part of the booking with BOB Points (signed-in customers) */
+  usePoints: boolean
 }
 
 export interface ServerQuote {
@@ -38,6 +40,18 @@ export interface ServerQuote {
   advancePaise: number
   balancePaise: number
   couponApplied?: string
+  /** BOB Points (only for a signed-in customer) */
+  points?: {
+    balance: number
+    /** most points this booking can take */
+    usable: number
+    used: number
+    discountPaise: number
+    pointValuePaise: number
+    /** what completing this booking earns (incl. a regular-customer bonus) */
+    earnPoints: number
+    regularBonusPoints?: number
+  }
 }
 
 export type BookingAction =
@@ -61,6 +75,7 @@ export type BookingAction =
   | { type: 'SET_KIDS'; kids: number }
   | { type: 'SET_DECORATION'; decoration: boolean }
   | { type: 'SET_VERIFIED_MOBILE'; mobile: string | null }
+  | { type: 'SET_USE_POINTS'; usePoints: boolean }
   | { type: 'GO_STEP'; step: number }
   | { type: 'NEXT_STEP' }
   | { type: 'PREV_STEP' }
@@ -95,6 +110,7 @@ export const initialBookingState: BookingState = {
   kids: 0,
   decoration: true,
   verifiedMobile: null,
+  usePoints: false,
 }
 
 /** The held booking (if any) no longer matches the selection: the next "Pay" creates a new one. */
@@ -136,6 +152,7 @@ export function bookingReducer(state: BookingState, action: BookingAction): Book
     case 'SET_KIDS': return { ...state, kids: action.kids, serverQuote: null, ...newBooking }
     case 'SET_DECORATION': return { ...state, decoration: action.decoration, serverQuote: null, ...newBooking }
     case 'SET_VERIFIED_MOBILE': return { ...state, verifiedMobile: action.mobile }
+    case 'SET_USE_POINTS': return action.usePoints === state.usePoints ? state : { ...state, usePoints: action.usePoints, ...newBooking }
     case 'SET_PAY_FULL': return { ...state, payFull: action.payFull }
     case 'GO_STEP': return { ...state, step: action.step }
     case 'NEXT_STEP': return { ...state, step: state.step + 1 }

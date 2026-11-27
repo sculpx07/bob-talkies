@@ -52,6 +52,22 @@ function BillCard({ b }: { b: BookingDetail }) {
         </ul>
         <div className="mt-2 flex justify-between border-t border-slate-200 pt-2 text-base font-semibold"><span>Total</span><span className="tabular-nums">{formatPaise(b.totalPaise)}</span></div>
         <p className="mt-1 text-xs text-slate-500">Advance at booking: {formatPaise(b.pricing.advancePaise)} ({b.pricing.advancePercent}%)</p>
+        {b.rewards && (b.rewards.pointsRedeemed > 0 || b.rewards.earnedAt) && (
+          <div className="mt-3 space-y-1 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-900">
+            {b.rewards.pointsRedeemed > 0 && (
+              <p>
+                BOB Points used: <strong>{b.rewards.pointsRedeemed.toLocaleString('en-IN')} pts</strong> (−{formatPaise(b.rewards.pointsRedeemed * b.rewards.pointValuePaise)})
+                {b.rewards.returnedAt && <> · given back {formatDateTime(b.rewards.returnedAt)}</>}
+              </p>
+            )}
+            {b.rewards.earnedAt && (
+              <p>
+                Earned on completion: <strong>{(b.rewards.pointsEarned + (b.rewards.regularBonusPoints ?? 0)).toLocaleString('en-IN')} pts</strong>
+                {b.rewards.regularBonusPoints ? ` (incl. ${b.rewards.regularBonusPoints} regular bonus)` : ''}
+              </p>
+            )}
+          </div>
+        )}
       </CardBody>
     </Card>
   )
@@ -167,6 +183,13 @@ function HistoryCard({ b }: { b: BookingDetail }) {
   const events = [
     ...b.statusHistory.map((h) => ({ at: h.at, text: `${h.from ? `${BOOKING_STATUS_BADGE[h.from].label} → ` : ''}${BOOKING_STATUS_BADGE[h.to].label}`, note: h.note, by: h.by?.name })),
     ...b.reschedules.map((r) => ({ at: r.at, text: `Moved ${formatDate(r.fromDate)} ${formatTime(r.fromTime)} → ${formatDate(r.toDate)} ${formatTime(r.toTime)}`, note: r.reason, by: r.by?.name })),
+    // guests / decoration / add-ons changes and what they did to the total
+    ...(b.edits ?? []).map((e) => ({
+      at: e.at,
+      text: `${e.by === 'customer' ? 'Changed by the customer' : 'Changed'}: ${formatPaise(e.fromTotalPaise)} → ${formatPaise(e.toTotalPaise)}`,
+      note: e.summary,
+      by: e.by === 'customer' ? 'Customer (website)' : e.user?.name,
+    })),
   ].sort((a, c) => new Date(c.at).getTime() - new Date(a.at).getTime())
   return (
     <Card>
