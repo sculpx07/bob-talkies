@@ -36,6 +36,7 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
   const { state, dispatch } = useBooking()
   const [tab, setTab] = useState<'standard' | 'premium'>('standard')
   const [openCake, setOpenCake] = useState<{ cake: Cake; index: number } | null>(null)
+  const [showError, setShowError] = useState(false)
 
   const { data: addons = [], isLoading } = useAddons(state.theatreId)
 
@@ -52,6 +53,9 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
   }, [addons])
   const allCakeIds = useMemo(() => new Set(cakes.flatMap((c) => c.sizes.map((s) => s.id))), [cakes])
   const shown = cakes.filter((c) => (tab === 'premium') === (c.sizes[c.sizes.length - 1].pricePaise >= PREMIUM_FROM_PAISE))
+
+  const hasCake = useMemo(() => cakes.some((c) => c.sizes.some((s) => state.addonIds.includes(s.id))), [cakes, state.addonIds])
+  const customRequestMissing = hasCake && !state.customRequest.trim()
 
   const chosenSize = (cake: Cake) => cake.sizes.find((s) => state.addonIds.includes(s.id))
 
@@ -72,7 +76,14 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
         <button type="button" onClick={onBack} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8b1a3a] hover:underline">
           <ArrowLeft size={15} /> Back
         </button>
-        <button type="button" onClick={onSkip} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8b1a3a] hover:underline">
+        <button
+          type="button"
+          onClick={() => {
+            if (customRequestMissing) { setShowError(true); return }
+            onSkip()
+          }}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#8b1a3a] hover:underline"
+        >
           Add later after booking <ArrowRight size={15} />
         </button>
       </div>
@@ -80,15 +91,25 @@ export function CakeStep({ onBack, onSkip }: { onBack: () => void; onSkip: () =>
       <h2 className="font-display text-3xl font-bold text-[#3d0a24] md:text-4xl">Choose cake</h2>
       <p className="mb-6 mt-1 text-sm text-[#5b2535]">Pick a cake below, or describe a customized one. You can skip this step.</p>
       {(
-        <div className="mb-7 rounded-2xl bg-[#fdf6ff] p-4 ring-1 ring-[#f5d5e0]">
-          <label htmlFor="custom-request" className="mb-1.5 block text-sm font-semibold text-[#3d0a24]">Customize as per your requirement</label>
+        <div className={cn('mb-7 rounded-2xl bg-[#fdf6ff] p-4 ring-1', showError && customRequestMissing ? 'ring-[#c0125a]' : 'ring-[#f5d5e0]')}>
+          <label htmlFor="custom-request" className="mb-1.5 flex items-center gap-1 text-sm font-semibold text-[#3d0a24]">
+            Customize as per your requirement
+            {hasCake && <span className="text-[#c0125a]" aria-hidden="true">*</span>}
+          </label>
           <textarea
             id="custom-request" rows={3} value={state.customRequest}
-            onChange={(e) => dispatch({ type: 'SET_CUSTOM_REQUEST', text: e.target.value.slice(0, 400) })}
-            placeholder="Flavour, theme, message on the cake, anything special"
-            className="w-full resize-none rounded-xl border border-[#f5d5e0] bg-white px-4 py-3 text-sm text-[#3d0a24] outline-none placeholder:text-[#b0a0c8] focus:border-[#c0125a] focus:ring-2 focus:ring-[#c0125a]/25"
+            onChange={(e) => { setShowError(false); dispatch({ type: 'SET_CUSTOM_REQUEST', text: e.target.value.slice(0, 400) }) }}
+            placeholder={hasCake ? 'Required — flavour, theme, message on the cake, anything special' : 'Flavour, theme, message on the cake, anything special'}
+            className={cn(
+              'w-full resize-none rounded-xl border bg-white px-4 py-3 text-sm text-[#3d0a24] outline-none placeholder:text-[#b0a0c8] focus:ring-2',
+              showError && customRequestMissing ? 'border-[#c0125a] focus:border-[#c0125a] focus:ring-[#c0125a]/25' : 'border-[#f5d5e0] focus:border-[#c0125a] focus:ring-[#c0125a]/25',
+            )}
           />
-          <p className="mt-1 text-right text-[11px] text-[#7d4555]">{state.customRequest.length}/400. Our team will confirm custom cakes with you.</p>
+          {showError && customRequestMissing ? (
+            <p className="mt-1 text-[11px] font-semibold text-[#c0125a]">Please tell us how you'd like the cake — this is required when a cake is added.</p>
+          ) : (
+            <p className="mt-1 text-right text-[11px] text-[#7d4555]">{state.customRequest.length}/400. Our team will confirm custom cakes with you.</p>
+          )}
         </div>
       )}
 

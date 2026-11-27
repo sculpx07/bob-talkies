@@ -105,6 +105,7 @@ export default function BookPage() {
   const { data: slotList = [] } = useSlots(state.theatreId, state.date)
   const chosenSlot = slotList.find((sl) => sl.id === state.slotId) ?? null
   const chosenAddons = addonList.filter((ad) => state.addonIds.includes(ad.id))
+  const hasCakeSelected = chosenAddons.some((ad) => ad.category === 'cake')
 
   if (!occasion || !date) return <Navigate to="/" state={{ highlightPlan: true }} replace />
 
@@ -344,7 +345,7 @@ export default function BookPage() {
               <StickyPriceBar
                 onNext={handleNext}
                 onBack={handleBack}
-                canProceed={canProceed(step, state)}
+                canProceed={step === 6 ? (hasCakeSelected ? Boolean(state.customRequest.trim()) : true) : canProceed(step, state)}
                 nextLabel={step === 7 ? 'Review and pay' : 'Continue'}
               />
             )}
