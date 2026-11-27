@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useBooking } from '@/features/booking/state/booking.context'
 import { motion } from 'framer-motion'
@@ -7,9 +7,10 @@ import { Seo } from '@/components/seo/Seo'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { formatINR } from '@/lib/utils/currency'
 import { formatDate, formatTime } from '@/lib/utils/date'
-import { Check, Calendar, MapPin, MessageCircle, QrCode, Users, ArrowRight, Sparkles, Gift, Share2, Star } from 'lucide-react'
+import { Check, Calendar, MapPin, MessageCircle, QrCode, Users, ArrowRight, Sparkles, Gift, Share2, Star, Film, Send } from 'lucide-react'
 import { awardBookingPoints, buildReferralUrl } from '@/lib/utils/bobRewards'
 import { useWhatsappNumber } from '@/features/site/api'
+import { mediaStore } from '@/features/booking/mediaStore'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const CONFETTI = [
@@ -35,7 +36,26 @@ export default function BookSuccessPage() {
     setReward(awardBookingPoints())
   }, [booking, bookingId])
 
-  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! I just booked a private theatre (Booking ID: ${bookingId}). Need help with my booking.`)}`
+  // Personalised media files uploaded during booking
+  const [mediaFiles, setMediaFiles] = useState<File[]>([])
+  const [mediaPreviews, setMediaPreviews] = useState<string[]>([])
+  const previewsRef = useRef<string[]>([])
+  useEffect(() => {
+    const files = mediaStore.get()
+    if (files.length === 0) return
+    const urls = files.map((f) => URL.createObjectURL(f))
+    previewsRef.current = urls
+    setMediaFiles(files)
+    setMediaPreviews(urls)
+    mediaStore.clear()
+    return () => urls.forEach(URL.revokeObjectURL)
+  }, [])
+
+  const waMediaText = mediaFiles.length > 0
+    ? `Hi BOB Talkies! 🎬 My booking is confirmed.\n\nBooking ID: ${bookingId}\n\nI'm sharing my personalised photos & videos below — please have them ready for my surprise experience! ✨`
+    : `Hi! I just booked a private theatre (Booking ID: ${bookingId}). Need help with my booking.`
+
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMediaText)}`
   const confirmed = booking?.status === 'CONFIRMED'
 
   return (
@@ -207,6 +227,61 @@ export default function BookSuccessPage() {
                 </motion.div>
               )}
 
+              {/* ── Personalised media share card ── */}
+              {mediaFiles.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.25, duration: 0.7, ease: EASE }}
+                  className="mt-5 overflow-hidden rounded-3xl bg-white shadow-[0_12px_32px_rgba(107,35,152,0.15)] ring-1 ring-[#f5d5e0]"
+                >
+                  <div className="flex items-center gap-3 bg-[linear-gradient(135deg,#25D366,#128C7E)] px-5 py-4">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20">
+                      <Send size={17} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-white">Send your photos &amp; videos</p>
+                      <p className="text-xs text-white/80">We'll play them on the big screen as your surprise!</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4">
+                    {/* Thumbnails */}
+                    <div className="mb-3 grid grid-cols-4 gap-2 sm:grid-cols-5">
+                      {mediaPreviews.map((src, i) => {
+                        const isVideo = mediaFiles[i]?.type.startsWith('video/')
+                        return (
+                          <div key={i} className="relative aspect-square overflow-hidden rounded-xl bg-[#fce8f0]">
+                            {isVideo ? (
+                              <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-[#3d0a24]/10">
+                                <Film size={18} className="text-[#c0125a]" />
+                                <span className="line-clamp-1 px-1 text-center text-[9px] text-[#5a2035]">{mediaFiles[i].name}</span>
+                              </div>
+                            ) : (
+                              <img src={src} alt="" className="h-full w-full object-cover" />
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    <p className="mb-3 text-xs leading-relaxed text-[#5a2035]">
+                      Tap the button below to open our WhatsApp chat with your booking details pre-filled, then <span className="font-semibold text-[#3d0a24]">send these {mediaFiles.length} file{mediaFiles.length > 1 ? 's' : ''} in that chat</span> — our team will take care of the rest.
+                    </p>
+
+                    <a
+                      href={waLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] py-3 text-sm font-bold text-white shadow-[0_8px_20px_rgba(37,211,102,0.4)] transition-transform hover:scale-[1.02]"
+                    >
+                      <MessageCircle size={16} />
+                      Open WhatsApp &amp; Share Files
+                    </a>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Actions */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -226,7 +301,7 @@ export default function BookSuccessPage() {
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(37,211,102,0.35)]"
                 >
-                  <MessageCircle size={16} /> WhatsApp Support
+                  <MessageCircle size={16} /> {mediaFiles.length > 0 ? 'WhatsApp Team' : 'WhatsApp Support'}
                 </a>
               </motion.div>
 
