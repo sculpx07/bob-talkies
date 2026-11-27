@@ -35,22 +35,10 @@
 
   body {
     background-color: #0a0120;
-    background-image: url('/bg.png');
-    background-size: cover;
-    background-position: center top;
-    background-attachment: fixed;
     color: var(--text-primary);
     font-family: 'Jost', 'Manrope', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Wide screens: the background is drawn by RootLayout as mirrored copies of
-     bg.png stacked down the page, so the repeat has no visible seam. */
-  @media (min-width: 768px) {
-    body {
-      background-image: none;
-    }
   }
 
   h1, h2, h3, h4, h5, h6 {
