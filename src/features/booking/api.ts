@@ -70,6 +70,28 @@ export interface PassData {
   balancePaise: number; status: string; qrCode: string;
 }
 
+/** A change to a confirmed booking: the full new selection. */
+export interface BookingEditRequest {
+  /** everyone attending */
+  guests: number
+  decoration: boolean
+  /** website add-on ids; a repeated id adds one more */
+  addonIds: string[]
+}
+
+/** The new bill for a change, before saving. */
+export interface BookingEditPreview {
+  lineItems: Array<{ label: string; paise: number }>
+  totalPaise: number
+  previousTotalPaise: number
+  differencePaise: number
+  paidPaise: number
+  balancePaise: number
+  /** why the change cannot be saved (empty when it can) */
+  problems: string[]
+  belowPaid: boolean
+}
+
 export type TestPaymentResult = 'success' | 'failed'
 
 export const bookingApi = {
@@ -96,6 +118,14 @@ export const bookingApi = {
 
   getPass: (token: string) =>
     api.get<PassData>(`/passes/${encodeURIComponent(token)}`),
+
+  /** the new bill for a change to the customer's booking (nothing saved) */
+  previewEdit: (ref: string, body: BookingEditRequest, token: string) =>
+    api.post<BookingEditPreview>(`/me/bookings/${encodeURIComponent(ref)}/edit-preview`, body, token),
+
+  /** saves the change: re-priced, nothing to pay now (the balance at the venue changes) */
+  editBooking: (ref: string, body: BookingEditRequest, token: string) =>
+    api.patch<Booking>(`/me/bookings/${encodeURIComponent(ref)}`, body, token),
 
   /** the signed-in customer's bookings */
   myBookings: (token: string) =>

@@ -11,6 +11,8 @@ const LABELS: Record<string, { label: string; format?: (v: unknown) => string }>
   'booking.minLeadHours': { label: 'Minimum notice', format: (v) => `${v} h` },
   'booking.maxAdvanceDays': { label: 'Booking window', format: (v) => `${v} days` },
   'booking.refundCutoffHours': { label: 'Refund cut-off', format: (v) => `${v} h` },
+  'booking.allowCustomerEdits': { label: 'Customers can change their booking', format: (v) => (v ? 'Yes' : 'No') },
+  'booking.customerEditCutoffMinutes': { label: 'Changes close before the slot', format: (v) => `${v} min` },
   'contact.whatsappNumber': { label: 'WhatsApp' },
   'contact.phone': { label: 'Phone' },
   'contact.email': { label: 'Email' },

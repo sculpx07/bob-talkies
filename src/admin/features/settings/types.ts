@@ -14,6 +14,10 @@ export interface Settings {
     minLeadHours: number
     maxAdvanceDays: number
     refundCutoffHours: number
+    /** customers may change guests / decoration / add-ons on the website ... */
+    allowCustomerEdits: boolean
+    /** ... until this many minutes before the slot */
+    customerEditCutoffMinutes: number
   }
   contact: {
     whatsappNumber: string

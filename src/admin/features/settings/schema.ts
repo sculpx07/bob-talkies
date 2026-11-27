@@ -22,6 +22,8 @@ export const settingsFormSchema = z.object({
     minLeadHours: whole(0, 168, 'hours'),
     maxAdvanceDays: whole(1, 365, 'days'),
     refundCutoffHours: whole(0, 720, 'hours'),
+    allowCustomerEdits: z.boolean(),
+    customerEditCutoffMinutes: whole(0, 10_080, 'minutes'),
   }),
   contact: z.object({
     whatsappNumber: z.string().trim().regex(/^\d{10,15}$/, 'Digits only with country code, e.g. 919876543210'),

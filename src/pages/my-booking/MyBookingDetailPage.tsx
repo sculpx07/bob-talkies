@@ -1,7 +1,7 @@
 ﻿import type { CSSProperties } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, MessageCircle, Ticket, Users, Clock, MapPin } from 'lucide-react'
+import { ArrowRight, MessageCircle, Pencil, Ticket, Users, Clock, MapPin } from 'lucide-react'
 import { useBookingStatus } from '@/features/booking/hooks/useBookingStatus'
 import { Seo } from '@/components/seo/Seo'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -172,7 +172,19 @@ export default function MyBookingDetailPage() {
                 <MessageCircle size={16} /> Support on WhatsApp
               </a>
             </div>
-            <p className="mt-4 text-center text-xs text-white/80">To reschedule or cancel, contact us on WhatsApp.</p>
+            {booking.canEdit && (
+              <Link
+                to={`/my-booking/${encodeURIComponent(booking.id)}/edit`}
+                className="mt-3 flex h-12 items-center justify-center gap-2 rounded-full border-2 border-[#F5C76A] text-sm font-bold text-[#F5C76A] transition-colors hover:bg-[#F5C76A] hover:text-[#3d0a24]"
+              >
+                <Pencil size={16} /> Change guests, decoration or add-ons
+              </Link>
+            )}
+            <p className="mt-4 text-center text-xs text-white/80">
+              {booking.canEdit && booking.editableUntil
+                ? `You can change your booking until ${new Date(booking.editableUntil).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })} — no payment needed, the balance is paid at the venue. To reschedule or cancel, contact us on WhatsApp.`
+                : 'To reschedule or cancel, contact us on WhatsApp.'}
+            </p>
           </motion.div>
         ) : null}
       </PageShell>

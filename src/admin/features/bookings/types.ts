@@ -90,6 +90,8 @@ export interface BookingDetail extends Omit<BookingListItem, 'theatre' | 'slot'>
   passToken: string | null
   statusHistory: Array<{ from: BookingStatus | null; to: BookingStatus; at: string; by: UserRef | null; note: string }>
   reschedules: Array<{ fromDate: string; fromTime: string; toDate: string; toTime: string; reason: string; at: string; by: UserRef | null }>
+  /** guests / decoration / add-ons changes (by staff, or by the customer on the website) */
+  edits?: Array<{ at: string; by: 'customer' | 'staff'; user: UserRef | null; summary: string; fromTotalPaise: number; toTotalPaise: number }>
   createdBy: UserRef | null
   updatedBy: UserRef | null
   updatedAt: string

@@ -183,6 +183,13 @@ function HistoryCard({ b }: { b: BookingDetail }) {
   const events = [
     ...b.statusHistory.map((h) => ({ at: h.at, text: `${h.from ? `${BOOKING_STATUS_BADGE[h.from].label} → ` : ''}${BOOKING_STATUS_BADGE[h.to].label}`, note: h.note, by: h.by?.name })),
     ...b.reschedules.map((r) => ({ at: r.at, text: `Moved ${formatDate(r.fromDate)} ${formatTime(r.fromTime)} → ${formatDate(r.toDate)} ${formatTime(r.toTime)}`, note: r.reason, by: r.by?.name })),
+    // guests / decoration / add-ons changes and what they did to the total
+    ...(b.edits ?? []).map((e) => ({
+      at: e.at,
+      text: `${e.by === 'customer' ? 'Changed by the customer' : 'Changed'}: ${formatPaise(e.fromTotalPaise)} → ${formatPaise(e.toTotalPaise)}`,
+      note: e.summary,
+      by: e.by === 'customer' ? 'Customer (website)' : e.user?.name,
+    })),
   ].sort((a, c) => new Date(c.at).getTime() - new Date(a.at).getTime())
   return (
     <Card>

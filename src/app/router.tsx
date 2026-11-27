@@ -48,6 +48,7 @@ const BookFailed = lazy_(() => import('@/pages/book-failed/BookFailedPage'))
 const TestPayment = lazy_(() => import('@/pages/test-payment/TestPaymentPage'))
 const MyBooking = lazy_(() => import('@/pages/my-booking/MyBookingPage'))
 const MyBookingDetail = lazy_(() => import('@/pages/my-booking/MyBookingDetailPage'))
+const EditBooking = lazy_(() => import('@/pages/my-booking/EditBookingPage'))
 const Pass = lazy_(() => import('@/pages/pass/PassPage'))
 const About = lazy_(() => import('@/pages/about/AboutPage'))
 const Contact = lazy_(() => import('@/pages/contact/ContactPage'))
@@ -101,6 +102,7 @@ export const router = createBrowserRouter([
       { path: 'book/test-payment/:bookingId', element: <TestPayment /> },
       { path: 'my-booking', element: <MyBooking /> },
       { path: 'my-booking/:bookingId', element: <MyBookingDetail /> },
+      { path: 'my-booking/:bookingId/edit', element: <EditBooking /> },
       { path: 'pass/:token', element: <Pass /> },
       { path: 'about', element: <About /> },
       { path: 'contact', element: <Contact /> },

@@ -118,6 +118,14 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
           <FormField label="Refund cut-off" required hint="Cancelling at least this long before the slot is refundable" error={e.booking?.refundCutoffHours?.message}>
             {(f) => <Input {...f} type="number" min={0} max={720} trailing="h" {...register('booking.refundCutoffHours', num)} />}
           </FormField>
+          <FullWidth>
+            <Controller control={control} name="booking.allowCustomerEdits" render={({ field }) => (
+              <Switch id="allowCustomerEdits" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Customers can change their confirmed booking on the website" description="Guests, decoration and add-ons. No payment at that moment: the total is re-priced and the balance is paid at the venue (never below what is already paid)." />
+            )} />
+          </FullWidth>
+          <FormField label="Changes close" required hint="Before the slot starts" error={e.booking?.customerEditCutoffMinutes?.message}>
+            {(f) => <Input {...f} type="number" min={0} max={10080} trailing="min before" {...register('booking.customerEditCutoffMinutes', num)} />}
+          </FormField>
         </FormSection>
 
         <FormSection title="Contact" description="Shown to customers on the website and in messages.">
