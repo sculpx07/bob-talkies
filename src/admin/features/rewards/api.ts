@@ -1,7 +1,9 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/admin/lib/api/client'
 import type { Paginated } from '@/admin/types/api'
-import type { ActivityEntry, ActivityParams, AdjustPointsInput, CustomerRewards, Referral, ReferralStatus, ReferralsParams } from './types'
+import type {
+  ActivityEntry, ActivityParams, AdjustPointsInput, CustomerRewards, Referral, ReferralStatus, ReferralsParams, RewardsCustomerRow, RewardsCustomersParams, RewardsCustomersSummary,
+} from './types'
 
 export const rewardsKeys = {
   all: ['rewards'] as const,
@@ -11,6 +13,15 @@ export const rewardsKeys = {
 }
 
 const MOBILE_RE = /^[6-9]\d{9}$/
+
+/** Every customer with their points and what is still to come. */
+export function useRewardsCustomers(params: RewardsCustomersParams) {
+  return useQuery({
+    queryKey: [...rewardsKeys.all, 'customers', params] as const,
+    queryFn: ({ signal }) => api.get<Paginated<'customers', RewardsCustomerRow> & { summary: RewardsCustomersSummary }>('/rewards/customers', { ...params }, signal),
+    placeholderData: keepPreviousData,
+  })
+}
 
 /** A customer's points and history, by mobile number (only for a full 10-digit number). */
 export function useCustomerRewards(mobile: string) {

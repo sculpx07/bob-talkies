@@ -31,6 +31,35 @@ export interface CustomerRewards {
   history: RewardEntry[]
 }
 
+/** GET /rewards/customers: one row per customer (website account or anyone who booked). */
+export interface RewardsCustomerRow {
+  mobile: string
+  name: string
+  customerId: string | null
+  balance: number
+  valuePaise: number
+  /** points still to come: confirmed bookings not completed yet, and referral points waiting on a friend's booking */
+  pending: { bookingPoints: number; awaitingBookings: number; referralPoints: number }
+  bookings: number
+  completed: number
+  regular: boolean
+  lastBookingAt: string | null
+}
+
+export interface RewardsCustomersSummary {
+  enabled: boolean
+  customers: number
+  withPoints: number
+  pointsHeld: number
+  pointsHeldValuePaise: number
+  pendingPoints: number
+  awaitingBookings: number
+}
+
+export interface RewardsCustomersParams extends ListParams {
+  show?: 'all' | 'points' | 'pending'
+}
+
 export interface AdjustPointsInput {
   /** + adds, - takes away */
   points: number

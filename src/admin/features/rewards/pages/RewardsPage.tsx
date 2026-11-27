@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Ban, Gift, History, Search, Star, Users } from 'lucide-react'
+import { ArrowLeft, Ban, Gift, History, Hourglass, Star, Users } from 'lucide-react'
 import { useAuth } from '@/admin/auth/AuthProvider'
 import { PageHeader } from '@/admin/components/layout/PageHeader'
 import {
@@ -13,9 +13,9 @@ import { formatDateTime } from '@/admin/lib/utils/date'
 import { formatPaise } from '@/admin/lib/utils/money'
 import { cn } from '@/admin/lib/utils/cn'
 import { PERMISSIONS } from '@/admin/types/permissions'
-import { useAdjustPoints, useCustomerRewards, useReferrals, useRejectReferral, useRewardActivity } from '../api'
+import { useAdjustPoints, useCustomerRewards, useReferrals, useRejectReferral, useRewardActivity, useRewardsCustomers } from '../api'
 import { REFERRAL_STATUS_BADGE, REWARD_TYPE_LABELS } from '../constants'
-import type { Referral, ReferralStatus, RewardEntry, RewardType, ActivityEntry } from '../types'
+import type { ActivityEntry, Referral, ReferralStatus, RewardEntry, RewardsCustomerRow, RewardsCustomersParams, RewardType } from '../types'
 
 const MOBILE_RE = /^[6-9]\d{9}$/
 const pts = (n: number) => `${n > 0 ? '+' : ''}${n.toLocaleString('en-IN')} pts`
@@ -69,15 +69,121 @@ function AdjustModal({ mobile, open, onOpenChange }: { mobile: string; open: boo
   )
 }
 
+/** All customers with their points; a row opens that customer. */
+function CustomersList({ onOpen }: { onOpen: (mobile: string) => void }) {
+  const [f, setFilters, reset] = useUrlFilters({ page: 1, show: '', search: '', sort: '-lastBookingAt' })
+  const query = useRewardsCustomers({ page: f.page, limit: 25, sort: f.sort, search: f.search || undefined, show: (f.show || 'all') as RewardsCustomersParams['show'] })
+  const s = query.data?.summary
+
+  const columns: Column<RewardsCustomerRow>[] = [
+    {
+      key: 'name',
+      header: 'Customer',
+      sortable: true,
+      cell: (c) => (
+        <div className="min-w-0">
+          <p className="truncate font-medium text-slate-900">{c.name || '—'}</p>
+          <p className="text-xs text-slate-500">{c.mobile}{!c.customerId && ' · no website login yet'}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'balance',
+      header: 'Points',
+      sortable: true,
+      align: 'right',
+      cell: (c) => (
+        <div className="text-right">
+          <p className={cn('font-semibold tabular-nums', c.balance > 0 ? 'text-slate-900' : 'text-slate-400')}>{c.balance.toLocaleString('en-IN')} pts</p>
+          {c.balance > 0 && <p className="text-xs text-slate-500">worth {formatPaise(c.valuePaise)}</p>}
+        </div>
+      ),
+    },
+    {
+      key: 'pending',
+      header: 'Pending',
+      sortable: true,
+      align: 'right',
+      cell: (c) => {
+        const total = c.pending.bookingPoints + c.pending.referralPoints
+        if (!total) return <span className="text-xs text-slate-400">—</span>
+        return (
+          <div className="text-right">
+            <p className="font-semibold tabular-nums text-amber-700">+{total.toLocaleString('en-IN')} pts</p>
+            <p className="text-xs text-slate-500">
+              {[
+                c.pending.awaitingBookings > 0 && `${c.pending.awaitingBookings} booking${c.pending.awaitingBookings === 1 ? '' : 's'} to complete`,
+                c.pending.referralPoints > 0 && `${c.pending.referralPoints} referral`,
+              ].filter(Boolean).join(' · ')}
+            </p>
+          </div>
+        )
+      },
+    },
+    {
+      key: 'bookings',
+      header: 'Bookings',
+      sortable: true,
+      hideOnMobile: true,
+      cell: (c) => (
+        <div className="text-sm">
+          <span className="tabular-nums text-slate-700">{c.completed} completed</span>
+          <span className="text-slate-400"> / {c.bookings}</span>
+          {c.regular && <Badge tone="success" className="ml-2">Regular</Badge>}
+        </div>
+      ),
+    },
+    { key: 'lastBookingAt', header: 'Last booking', sortable: true, hideOnMobile: true, cell: (c) => <span className="text-xs text-slate-600">{c.lastBookingAt ? formatDateTime(c.lastBookingAt) : '—'}</span> },
+  ]
+
+  return (
+    <div className="space-y-4">
+      {s && !s.enabled && <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">BOB Points are switched off in Settings: nothing is earned or spent, and nothing is pending.</p>}
+      <div className="grid gap-3 sm:grid-cols-3">
+        <StatCard label="Points held by customers" value={`${(s?.pointsHeld ?? 0).toLocaleString('en-IN')} pts`} icon={<Star />} tone="brand" loading={query.isLoading} hint={s ? `Worth ${formatPaise(s.pointsHeldValuePaise)} · ${s.withPoints} customer${s.withPoints === 1 ? '' : 's'}` : undefined} />
+        <StatCard label="Pending points" value={`${(s?.pendingPoints ?? 0).toLocaleString('en-IN')} pts`} icon={<Hourglass />} tone={s?.pendingPoints ? 'warning' : 'neutral'} loading={query.isLoading} hint={s ? `Added when ${s.awaitingBookings} confirmed booking${s.awaitingBookings === 1 ? ' is' : 's are'} completed` : undefined} />
+        <StatCard label="Customers" value={String(s?.customers ?? 0)} icon={<Users />} loading={query.isLoading} hint="Website logins and everyone who booked" />
+      </div>
+      <Card className="overflow-hidden">
+        <div className="flex flex-wrap items-center gap-3 border-b border-slate-100 p-4">
+          <SearchInput value={f.search} onChange={(search) => setFilters({ search })} placeholder="Name or mobile" />
+          <div className="w-52">
+            <Select aria-label="Show" value={f.show} onChange={(e) => setFilters({ show: e.target.value })} placeholder="All customers"
+              options={[{ value: 'points', label: 'Has points' }, { value: 'pending', label: 'Points pending' }]} />
+          </div>
+          {(f.search || f.show) && <Button variant="ghost" size="sm" onClick={reset}>Clear filters</Button>}
+        </div>
+        <DataTable
+          columns={columns}
+          rows={query.data?.customers}
+          rowKey={(c) => c.mobile}
+          loading={query.isLoading || query.isPlaceholderData}
+          error={query.error}
+          onRetry={() => query.refetch()}
+          sort={f.sort}
+          onSortChange={(sort) => setFilters({ sort })}
+          onRowClick={(c) => onOpen(c.mobile)}
+          empty={<EmptyState icon={<Users className="h-5 w-5" />} title={f.search || f.show ? 'No customers match' : 'No customers yet'} description="Customers appear after their first booking or website sign-in." />}
+        />
+        <Pagination pagination={query.data?.pagination} onPageChange={(page) => setFilters({ page })} />
+      </Card>
+    </div>
+  )
+}
+
+/** The list, or one customer's points and history (?mobile=…). */
 function CustomerTab({ canAdjust }: { canAdjust: boolean }) {
   const [f, setFilters] = useUrlFilters({ mobile: '' })
-  const [text, setText] = useState(f.mobile)
+  return MOBILE_RE.test(f.mobile)
+    ? <CustomerDetail mobile={f.mobile} canAdjust={canAdjust} onBack={() => setFilters({ mobile: '' })} />
+    : <CustomersList onOpen={(mobile) => setFilters({ mobile })} />
+}
+
+function CustomerDetail({ mobile, canAdjust, onBack }: { mobile: string; canAdjust: boolean; onBack: () => void }) {
   const [adjusting, setAdjusting] = useState(false)
-  const mobile = f.mobile
   const query = useCustomerRewards(mobile)
   const r = query.data
 
-  const look = () => setFilters({ mobile: text.trim() })
   const historyColumns: Column<RewardEntry>[] = [
     { key: 'createdAt', header: 'When', cell: (e) => <span className="whitespace-nowrap text-xs text-slate-600">{formatDateTime(e.createdAt)}</span> },
     { key: 'type', header: 'What', cell: (e) => <span className="text-sm text-slate-800">{REWARD_TYPE_LABELS[e.type as RewardType] ?? e.label}</span> },
@@ -87,22 +193,9 @@ function CustomerTab({ canAdjust }: { canAdjust: boolean }) {
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardBody>
-          <form className="flex flex-wrap items-end gap-3" onSubmit={(e) => { e.preventDefault(); look() }}>
-            <div className="w-full max-w-xs">
-              <FormField label="Customer mobile" error={text && !MOBILE_RE.test(text.trim()) ? 'Enter a 10-digit mobile number' : undefined}>
-                {(fp) => <Input {...fp} inputMode="numeric" maxLength={10} placeholder="9876543210" value={text} onChange={(e) => setText(e.target.value.replace(/\D/g, ''))} leading={<Search className="h-4 w-4" />} />}
-              </FormField>
-            </div>
-            <Button type="submit" disabled={!MOBILE_RE.test(text.trim())}>Show points</Button>
-          </form>
-        </CardBody>
-      </Card>
+      <Button variant="ghost" size="sm" leftIcon={<ArrowLeft className="h-4 w-4" />} onClick={onBack}>All customers</Button>
 
-      {!MOBILE_RE.test(mobile) ? (
-        <Card><EmptyState icon={<Star className="h-5 w-5" />} title="Look up a customer" description="Enter their mobile number to see their BOB Points, referrals and history." /></Card>
-      ) : query.isLoading ? <LoadingBlock /> : query.error ? <ErrorState error={query.error} retry={() => query.refetch()} /> : r && (
+      {query.isLoading ? <LoadingBlock /> : query.error ? <ErrorState error={query.error} retry={() => query.refetch()} /> : r && (
         <>
           {!r.enabled && <p className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">BOB Points are switched off in Settings: nothing is earned or spent right now.</p>}
           <div className="grid gap-3 sm:grid-cols-3">
