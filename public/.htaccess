@@ -1,0 +1,13 @@
+# Used by Apache / LiteSpeed hosting (ignored by nginx, which needs the same rules in its site config).
+# The admin panel is a separate app: /admin/* must load /admin/index.html, everything else /index.html.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # real files and folders are served as they are
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
+  RewriteRule ^admin(/.*)?$ /admin/index.html [L]
+  RewriteRule ^ /index.html [L]
+</IfModule>
