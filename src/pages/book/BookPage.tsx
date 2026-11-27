@@ -2,7 +2,7 @@
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Pencil, Users, CalendarDays, Clapperboard, Share2, Bookmark, BookmarkCheck, Gift, Zap, RotateCcw, Star } from 'lucide-react'
-import { getPoints, getBookingCount, buildReferralUrl } from '@/lib/utils/bobRewards'
+import { referralUrl, shareLink, useMyRewards, useRewardsProgram } from '@/features/rewards/api'
 import { SAVED_KEY, SAVED_EVENT } from '@/features/booking/useSavedPlan'
 import { useToast } from '@/components/ui/Toast'
 import { useSlots } from '@/features/booking/hooks/useAvailability'
@@ -67,6 +67,10 @@ export default function BookPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { toast } = useToast()
+  // BOB Points: the programme rules, and the signed-in customer's balance
+  const program = useRewardsProgram()
+  const rewardsOn = Boolean(program?.enabled)
+  const { data: myRewards } = useMyRewards()
   const [saved, setSaved] = useState(() => {
     try { return Boolean(localStorage.getItem(SAVED_KEY)) } catch { return false }
   })
@@ -154,18 +158,16 @@ export default function BookPage() {
 
   async function sharePlan() {
     if (!occasion || !date) { toast('info', 'Pick an occasion and date first'); return }
-    const refUrl = buildReferralUrl()
-    const url = `${refUrl}&occasion=${occasion}&guests=${guests}&date=${date}`
-    const text = `🎬 Book a private theatre at BOB Talkies! ${guests} guests on ${prettyDate}. Use my link to book and we both earn BOB Points!`
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: 'BOB Talkies — Private Theatre', text, url })
-      } else {
-        await navigator.clipboard.writeText(url)
-        toast('success', 'Referral link copied!', 'Share it — you both earn BOB Points when they book.')
-      }
-    } catch {
-      /* share sheet dismissed */
+    // signed in: the link carries the customer's own referral code
+    const code = rewardsOn ? myRewards?.referral.code : null
+    const plan = `occasion=${encodeURIComponent(occasion)}&guests=${guests}&date=${date}`
+    const url = code ? `${referralUrl(code)}&${plan}` : `${window.location.origin}/book?${plan}`
+    const text = code
+      ? `🎬 Book a private theatre at BOB Talkies! ${guests} guests on ${prettyDate}. Use my link and we both earn BOB Points!`
+      : `🎬 Book a private theatre at BOB Talkies! ${guests} guests on ${prettyDate}.`
+    const result = await shareLink({ title: 'BOB Talkies — Private Theatre', text, url })
+    if (result === 'copied') {
+      toast('success', code ? 'Referral link copied!' : 'Link copied!', code ? 'Share it — you both earn BOB Points when they celebrate.' : 'Sign in from My Booking to share your own referral link.')
     }
   }
 
@@ -393,9 +395,11 @@ export default function BookPage() {
               {step >= 4 && step < LAST_STEP && <div className="px-4 pb-4"><BookingSummaryCard /></div>}
 
               {/* Rewards strip */}
-              {(() => {
-                const pts = getPoints()
-                const bookings = getBookingCount()
+              {rewardsOn && program && (() => {
+                const pts = myRewards?.balance ?? 0
+                const repeatActive = myRewards?.repeatGuest.active ?? false
+                // what completing this booking earns (the quote knows a regular customer's bonus)
+                const earn = state.serverQuote?.points?.earnPoints ?? program.pointsPerBooking
                 return (
                   <div className="mx-4 mb-3 overflow-hidden rounded-2xl border border-[#c9a84c]/30 bg-gradient-to-br from-[#fffaf0] to-[#fdf4f5]">
                     {/* header */}
@@ -416,22 +420,22 @@ export default function BookPage() {
                       {/* 1. Refer & Earn — always first */}
                       <li className="flex items-start gap-2 text-[11px] text-[#5b2535]/80 font-medium">
                         <Users size={11} className="mt-0.5 shrink-0 text-[#c9a84c]" />
-                        <span>Refer friends &amp; earn BOB credits when they book</span>
+                        <span>Refer friends &amp; earn {program.referrerPoints} BOB Points when they celebrate</span>
                       </li>
                       {/* 2. Repeat Guest Offers */}
-                      <li className="flex items-start gap-2 text-[11px] font-medium" style={{ color: bookings >= 2 ? '#2a7a4f' : '#5b2535cc' }}>
-                        <RotateCcw size={11} className="mt-0.5 shrink-0" style={{ color: bookings >= 2 ? '#34d399' : '#c9a84c' }} />
+                      <li className="flex items-start gap-2 text-[11px] font-medium" style={{ color: repeatActive ? '#2a7a4f' : '#5b2535cc' }}>
+                        <RotateCcw size={11} className="mt-0.5 shrink-0" style={{ color: repeatActive ? '#34d399' : '#c9a84c' }} />
                         <span>
                           Repeat guest upgrades &amp; offers
-                          {bookings >= 2 && <span className="ml-1 text-[9px] font-black text-[#34d399] uppercase tracking-wide">Active ✓</span>}
+                          {repeatActive && <span className="ml-1 text-[9px] font-black text-[#34d399] uppercase tracking-wide">Active ✓</span>}
                         </span>
                       </li>
                       {/* 3. Earn BOB Points */}
                       <li className="flex items-start gap-2 text-[11px] text-[#5b2535]/80 font-medium">
                         <Zap size={11} className="mt-0.5 shrink-0 text-[#c9a84c]" />
                         <span>
-                          +{50} BOB Points on this booking
-                          {pts > 0 && <span className="ml-1 text-[9px] text-[#8a6010] font-black">({pts} earned so far)</span>}
+                          +{earn} BOB Points when this celebration is completed
+                          {pts > 0 && <span className="ml-1 text-[9px] text-[#8a6010] font-black">({pts} in your account)</span>}
                         </span>
                       </li>
                     </ul>

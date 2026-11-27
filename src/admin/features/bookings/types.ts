@@ -30,6 +30,15 @@ export interface BookingListItem {
   paymentStatus: PaymentStatus
   /** money given back (processed refunds, Admin → Payments) */
   refundedPaise?: number
+  /** BOB Points spent on it (given back if cancelled / unpaid) and earned when completed */
+  rewards?: {
+    pointsRedeemed: number
+    pointValuePaise: number
+    returnedAt: string | null
+    pointsEarned: number
+    regularBonusPoints?: number
+    earnedAt: string | null
+  }
   holdExpiresAt: string | null
   createdAt: string
 }
@@ -45,7 +54,7 @@ export interface BookingPayment {
 }
 
 export interface BookingLineItem {
-  type: 'theatre' | 'extra_guests' | 'decoration' | 'addon' | 'slot_offer' | 'loyalty' | 'discount' | 'tax'
+  type: 'theatre' | 'extra_guests' | 'decoration' | 'addon' | 'slot_offer' | 'loyalty' | 'discount' | 'points' | 'tax'
   label: string
   paise: number
   /** GST already inside the prices: shown, not added */

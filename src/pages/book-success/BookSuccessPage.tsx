@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { formatINR } from '@/lib/utils/currency'
 import { formatDate, formatTime } from '@/lib/utils/date'
 import { Check, Calendar, MapPin, MessageCircle, QrCode, Users, ArrowRight, Sparkles, Gift, Share2, Star } from 'lucide-react'
-import { awardBookingPoints, buildReferralUrl } from '@/lib/utils/bobRewards'
+import { referralUrl, shareLink, useMyRewards, useRewardsProgram } from '@/features/rewards/api'
 import { useWhatsappNumber } from '@/features/site/api'
 
 const EASE = [0.22, 1, 0.36, 1] as const
@@ -25,17 +25,20 @@ export default function BookSuccessPage() {
   useEffect(() => { dispatch({ type: 'RESET' }) }, [dispatch])
   const { data: booking, isLoading } = useBookingStatus(bookingId ?? null)
 
-  // award points once per booking (guard by bookingId so strict-mode double-fire is safe)
-  const [reward, setReward] = useState<{ points: number; total: number; bookings: number } | null>(null)
-  useEffect(() => {
-    if (!booking || booking.status !== 'CONFIRMED') return
-    const key = `bob_awarded_${bookingId}`
-    if (localStorage.getItem(key)) return
-    localStorage.setItem(key, '1')
-    setReward(awardBookingPoints())
-  }, [booking, bookingId])
+  // BOB Points are added by the backend once the celebration is completed; this shows what is coming
+  const program = useRewardsProgram()
+  const { data: myRewards } = useMyRewards()
+  const reward = program?.enabled && myRewards && booking?.status === 'CONFIRMED'
+    ? {
+        points: myRewards.pointsPerBooking + (myRewards.repeatGuest.active ? myRewards.repeatGuest.bonusPoints : 0),
+        total: myRewards.balance,
+        repeatGuest: myRewards.repeatGuest.active,
+        code: myRewards.referral.code,
+        friendPoints: myRewards.referral.friendPoints,
+      }
+    : null
 
-  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! I just booked a private theatre (Booking ID: ${bookingId}). Need help with my booking.`)}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! I just booked a private theatre (Booking no. ${booking?.bookingNumber ?? bookingId}). Need help with my booking.`)}`
   const confirmed = booking?.status === 'CONFIRMED'
 
   return (
@@ -132,8 +135,8 @@ export default function BookSuccessPage() {
                 <div className="relative flex items-center justify-between overflow-hidden bg-[linear-gradient(135deg,#5c1535,#8b1a3a_60%,#d9126a)] px-6 py-5 text-white">
                   <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
                   <div className="relative">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">Booking ID</p>
-                    <p className="font-mono text-lg font-bold tracking-wider">{booking.id}</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">Booking no.</p>
+                    <p className="font-mono text-lg font-bold tracking-wider">{booking.bookingNumber ?? booking.id}</p>
                   </div>
                   <span className="relative flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold backdrop-blur">
                     <Sparkles size={12} /> CONFIRMED
@@ -244,43 +247,41 @@ export default function BookSuccessPage() {
                       <Star size={18} fill="#c9a84c" stroke="none" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs font-black text-[#8a6010] uppercase tracking-widest">BOB Points Earned!</p>
+                      <p className="text-xs font-black text-[#8a6010] uppercase tracking-widest">BOB Points on the way!</p>
                       <p className="font-black text-[#3d0a24] text-lg leading-tight">
                         +{reward.points} pts
-                        <span className="ml-2 text-sm font-semibold text-[#5b2535]/60">({reward.total} total)</span>
+                        <span className="ml-2 text-sm font-semibold text-[#5b2535]/60">after your celebration ({reward.total} in your account)</span>
                       </p>
                     </div>
-                    {reward.bookings >= 2 && (
+                    {reward.repeatGuest && (
                       <span className="rounded-full bg-[#34d399]/20 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-[#2a7a4f]">
                         Repeat Guest ✓
                       </span>
                     )}
                   </div>
 
-                  {/* refer & earn */}
+                  {/* refer & earn (needs the customer's own code) */}
+                  {reward.code && (
                   <div className="px-5 py-4">
                     <p className="text-xs font-black text-[#3d0a24] mb-1 flex items-center gap-1.5">
                       <Gift size={12} className="text-[#c9a84c]" /> Refer &amp; Earn
                     </p>
                     <p className="text-[11px] text-[#5b2535]/70 mb-3 leading-relaxed">
-                      Share your referral link. When a friend completes their first booking, you both earn BOB credits.
+                      Share your referral link. When a friend completes their first booking, you both earn BOB Points.
                     </p>
                     <button
                       type="button"
-                      onClick={async () => {
-                        const url = buildReferralUrl()
-                        const text = '🎬 Book a private theatre at BOB Talkies and use my link — we both earn BOB Points!'
-                        try {
-                          if (navigator.share) await navigator.share({ title: 'BOB Talkies', text, url })
-                          else { await navigator.clipboard.writeText(url) }
-                        } catch { /* dismissed */ }
-                      }}
+                      onClick={() => shareLink({
+                        url: referralUrl(reward.code!),
+                        text: `🎬 Book a private theatre at BOB Talkies with my link — you get ${reward.friendPoints} BOB Points on your first celebration!`,
+                      })}
                       className="flex w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-xs font-black text-white transition-all hover:scale-[1.02]"
                       style={{ background: 'linear-gradient(135deg,#5c1535,#7b1535)' }}
                     >
                       <Share2 size={13} /> Share Referral Link
                     </button>
                   </div>
+                  )}
                 </motion.div>
               )}
 

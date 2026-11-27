@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api/client'
 import { config as env } from '@/lib/config'
+import type { LoyaltyProgram, RewardsProgram } from '@/features/rewards/api'
 
 /** Business settings the website shows or calculates with (bob-admin GET /public/config, edited in Admin → Settings). */
 export interface SiteConfig {
@@ -24,6 +25,10 @@ export interface SiteConfig {
     email: string
     address: string
   }
+  /** BOB Points rules (Admin → Settings → BOB Points) */
+  rewards?: RewardsProgram
+  /** regular customers (Admin → Settings → Regular customers) */
+  loyalty?: LoyaltyProgram
 }
 
 export const siteKeys = { config: ['site', 'config'] as const }

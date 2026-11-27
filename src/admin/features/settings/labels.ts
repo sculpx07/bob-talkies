@@ -27,6 +27,16 @@ const LABELS: Record<string, { label: string; format?: (v: unknown) => string }>
   'loyalty.maxDiscountPaise': { label: 'Regular discount cap', format: (v) => formatPaise(Number(v)) },
   'loyalty.label': { label: 'Regular discount name on bill' },
   'loyalty.stackWithCoupons': { label: 'Combine with coupons', format: (v) => (v ? 'Yes' : 'No') },
+  'loyalty.rewardType': { label: 'Regular customers get', format: (v) => ({ discount: 'Discount', points: 'Bonus points', both: 'Discount + bonus points' } as Record<string, string>)[String(v)] ?? String(v) },
+  'loyalty.bonusPoints': { label: 'Regular bonus points', format: (v) => Number(v).toLocaleString('en-IN') + ' pts' },
+  'rewards.enabled': { label: 'BOB Points', format: (v) => (v ? 'On' : 'Off') },
+  'rewards.pointValuePaise': { label: 'Value of 1 point', format: (v) => formatPaise(Number(v)) },
+  'rewards.pointsPerBooking': { label: 'Points per completed booking', format: (v) => Number(v).toLocaleString('en-IN') + ' pts' },
+  'rewards.referrerPoints': { label: 'Referrer gets', format: (v) => Number(v).toLocaleString('en-IN') + ' pts' },
+  'rewards.friendPoints': { label: 'Referred friend gets', format: (v) => Number(v).toLocaleString('en-IN') + ' pts' },
+  'rewards.maxRedeemPercent': { label: 'Points can pay up to', format: (v) => v + '% of a booking' },
+  'rewards.minRedeemPoints': { label: 'Fewest points per use', format: (v) => Number(v).toLocaleString('en-IN') + ' pts' },
+  'rewards.monthlyReferralCap': { label: 'Referral rewards per person per month', format: (v) => String(v) },
   'reviews.googleReviewCount': { label: 'Review count shown on website', format: (v) => Number(v).toLocaleString('en-IN') },
 }
 

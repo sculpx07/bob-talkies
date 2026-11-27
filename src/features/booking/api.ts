@@ -12,6 +12,8 @@ export interface QuoteRequest {
   decoration?: boolean
   addonIds: string[]
   couponCode?: string
+  /** spend BOB Points (signed-in customer) */
+  usePoints?: boolean
 }
 
 export interface BookingCreateRequest {
@@ -29,6 +31,9 @@ export interface BookingCreateRequest {
   specialInstructions?: string
   consentTnC: boolean
   consentWhatsapp: boolean
+  usePoints?: boolean
+  /** the ?ref= code of the referral link the customer arrived with */
+  referralCode?: string
 }
 
 export interface PayOrderRequest {

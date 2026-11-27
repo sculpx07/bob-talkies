@@ -2,20 +2,30 @@
 import { Link } from 'react-router-dom'
 import { Seo } from '@/components/seo/Seo'
 import { PageShell } from '@/components/layout/PageShell'
-import { ArrowRight, Gift, Users, Cake, RotateCcw, Zap, Calendar, Star } from 'lucide-react'
+import { ArrowRight, Gift, Star } from 'lucide-react'
+import { useClubBenefits } from '@/features/rewards/benefits'
+import { useMyRewards } from '@/features/rewards/api'
+import { formatINR } from '@/lib/utils/currency'
 
-const PERKS = [
-  { icon: Gift,      title: 'Earn BOB Points',    desc: 'Earn reward points on eligible bookings and redeem them for benefits.', accent: '#c9a84c', badge: 'Points' },
-  { icon: Users,     title: 'Refer & Earn',       desc: 'Refer friends and receive BOB credits when they complete eligible bookings.', accent: '#e0457b', badge: 'Credits' },
-  { icon: Cake,      title: 'Birthday Specials',  desc: 'Exclusive birthday-month offers and surprises just for you.', accent: '#e879a0', badge: 'Birthday' },
-  { icon: RotateCcw, title: 'Repeat Guest Offers', desc: 'Special rewards and upgrades for returning customers who love BOB Talkies.', accent: '#10b981', badge: 'Loyalty' },
-  { icon: Zap,       title: 'Early Access',       desc: 'Priority access to new experiences, seasonal themes and special events.', accent: '#f59e0b', badge: 'Priority' },
-  { icon: Calendar,  title: 'Weekday Deals',      desc: 'Exclusive savings on eligible weekday bookings — more value, less wait.', accent: '#0ea5e9', badge: 'Savings' },
-]
+// accent per benefit card, in order
+const ACCENTS = ['#c9a84c', '#e0457b', '#0ea5e9', '#10b981', '#e879a0', '#f59e0b']
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
 export default function RewardsPage() {
+  // everything below comes from Admin → Settings (BOB Points, Regular customers) and the customer's own points
+  const { enabled, program, benefits } = useClubBenefits()
+  const { data: mine } = useMyRewards()
+  const PERKS = benefits.map((b, i) => ({ ...b, desc: b.long, accent: ACCENTS[i % ACCENTS.length] }))
+  const perBooking = program?.pointsPerBooking ?? 0
+  const chips = program
+    ? [
+        { t: `+${perBooking} pts`, c: '-right-4 top-6' },
+        { t: `Pay up to ${program.maxRedeemPercent}%`, c: '-left-6 top-1/2' },
+        { t: 'Refer & Earn', c: 'right-2 -bottom-4' },
+      ]
+    : []
+
   return (
     <div
       className="rewards-plum"
@@ -45,7 +55,7 @@ export default function RewardsPage() {
       `}</style>
       <Seo
         title="BOB Rewards — Earn Points, Perks & More | BOB Talkies"
-        description="Join the BOB Rewards programme. Earn points on bookings, refer friends for credits, enjoy birthday specials and exclusive early access."
+        description="BOB Rewards: earn BOB Points on every celebration, refer friends for bonus points, enjoy repeat-guest perks and pay part of your next booking with points."
         canonical="/rewards"
       />
       <PageShell className="!pt-0 md:!pt-0">
@@ -92,7 +102,9 @@ export default function RewardsPage() {
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16, duration: 0.5 }}
                 className="mb-8 max-w-xl text-lg leading-relaxed text-white/85"
               >
-                Every booking gets you closer to something special. Discover all the ways BOB Talkies rewards your loyalty.
+                {enabled
+                  ? 'Every booking gets you closer to something special. Discover all the ways BOB Talkies rewards your loyalty.'
+                  : 'BOB Rewards are coming soon. Until then, enjoy our current offers on every celebration.'}
               </motion.p>
 
               <motion.div
@@ -100,15 +112,16 @@ export default function RewardsPage() {
                 className="flex flex-wrap items-center gap-4"
               >
                 <Link to="/book" className="group inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(50,16,95,0.3)] transition-transform hover:-translate-y-0.5">
-                  Book &amp; Start Earning <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+                  {enabled ? 'Book & Start Earning' : 'Book Now'} <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
                 </Link>
-                <Link to="/contact" className="glass-card inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition-colors hover:brightness-125">
-                  Know More
+                <Link to={enabled ? '/my-booking' : '/offers'} className="glass-card inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold text-white transition-colors hover:brightness-125">
+                  {enabled ? 'My Points' : 'See Offers'}
                 </Link>
               </motion.div>
             </div>
 
-            {/* floating member card with orbiting chips */}
+            {/* floating member card with orbiting chips: the signed-in customer's balance, or what a celebration earns */}
+            {enabled && program && (
             <motion.div
               initial={{ opacity: 0, y: 40, rotate: -4 }} animate={{ opacity: 1, y: 0, rotate: -3 }} transition={{ delay: 0.2, duration: 0.8, ease: EASE }}
               className="relative mx-auto w-full max-w-sm"
@@ -125,18 +138,18 @@ export default function RewardsPage() {
                 <span className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#f5bd61]/30 blur-2xl" aria-hidden="true" />
                 <div className="relative flex items-start justify-between">
                   <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#f5d7a1]">BOB Points</p>
-                    <p className="mt-2 font-display text-6xl font-bold leading-none">1,250</p>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#f5d7a1]">{mine ? 'Your BOB Points' : 'Every celebration earns'}</p>
+                    <p className="mt-2 font-display text-6xl font-bold leading-none">{mine ? mine.balance.toLocaleString('en-IN') : `+${perBooking}`}</p>
                   </div>
                   <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25"><Star size={22} fill="#f5d7a1" stroke="none" /></span>
                 </div>
                 <div className="relative mt-8 flex items-center justify-between text-xs text-white/75">
-                  <span>BOB Club member</span>
+                  <span>{mine ? `Worth ${formatINR(mine.valuePaise)} · BOB Club member` : `BOB Points · 1 pt = ${formatINR(program.pointValuePaise)}`}</span>
                   <span className="h-8 w-11 rounded-md bg-[linear-gradient(135deg,#f5d7a1,#c9a84c)]" aria-hidden="true" />
                 </div>
               </motion.div>
 
-              {[{ t: '+50 pts', c: '-right-4 top-6' }, { t: 'Birthday 🎂', c: '-left-6 top-1/2' }, { t: 'Refer & Earn', c: 'right-2 -bottom-4' }].map((chip, i) => (
+              {chips.map((chip, i) => (
                 <motion.span
                   key={chip.t}
                   className={`absolute ${chip.c} rounded-full bg-white px-4 py-2 text-xs font-bold text-[#3d0a24] shadow-[0_10px_24px_rgba(107,35,152,0.2)] ring-1 ring-[#f8dce4]`}
@@ -146,10 +159,12 @@ export default function RewardsPage() {
                 </motion.span>
               ))}
             </motion.div>
+            )}
           </div>
         </section>
 
-        {/* ── Perks bento ── */}
+        {/* ── Perks bento (live rules; hidden while BOB Points are off) ── */}
+        {PERKS.length > 0 && (
         <section className="pb-16 md:pb-24">
           <div className="mx-auto max-w-6xl px-4 md:px-8">
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -157,7 +172,7 @@ export default function RewardsPage() {
                 const Icon = perk.icon
                 return (
                   <motion.div
-                    key={perk.title}
+                    key={perk.key}
                     initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }}
                     transition={{ delay: (i % 3) * 0.08, duration: 0.55, ease: EASE }}
                     whileHover={{ y: -8 }}
@@ -175,6 +190,7 @@ export default function RewardsPage() {
             </div>
           </div>
         </section>
+        )}
 
         {/* ── CTA banner ── */}
         <section className="pb-20 md:pb-28">
@@ -188,10 +204,14 @@ export default function RewardsPage() {
               <div className="relative">
                 <p className="mb-3 text-xs font-black uppercase tracking-[0.3em] text-[#f5d7a1]">Start Today</p>
                 <h2 className="mb-4 text-2xl font-black !text-white md:text-4xl">
-                  Your next booking earns your<br className="hidden md:block" /> first BOB Points.
+                  {enabled
+                    ? <>Your next celebration earns<br className="hidden md:block" /> {perBooking} BOB Points.</>
+                    : <>Plan your next<br className="hidden md:block" /> private celebration.</>}
                 </h2>
                 <p className="mx-auto mb-8 max-w-lg text-sm text-white/80 md:text-base">
-                  No sign-up required. Book any experience at BOB Talkies and your rewards start accumulating automatically.
+                  {enabled
+                    ? 'No sign-up needed. Book with your mobile number and the points are added automatically once your celebration is completed.'
+                    : 'Pick a theatre, a date and a slot — your private screen is ready when you arrive.'}
                 </p>
                 <Link to="/book" className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-bold text-[#3d0a24] shadow-[0_12px_28px_rgba(0,0,0,0.25)] transition-transform hover:scale-105">
                   Book Now <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />

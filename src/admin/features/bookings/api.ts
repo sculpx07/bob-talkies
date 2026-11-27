@@ -86,6 +86,8 @@ export function useRemovePayment() {
 }
 
 export interface CreateBookingInput {
+  /** spend the customer's BOB Points (by their mobile) */
+  usePoints?: boolean
   theatre: string
   date: string
   slot: string

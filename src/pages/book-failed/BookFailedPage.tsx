@@ -3,11 +3,14 @@ import { Seo } from '@/components/seo/Seo'
 import { Button } from '@/components/ui/Button'
 import { XCircle, RefreshCw, MessageCircle } from 'lucide-react'
 import { useWhatsappNumber } from '@/features/site/api'
+import { useBookingStatus } from '@/features/booking/hooks/useBookingStatus'
 
 export default function BookFailedPage() {
   const whatsappNumber = useWhatsappNumber()
   const { bookingId } = useParams()
-  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! My payment for booking ${bookingId} failed. Can you help?`)}`
+  const { data: booking } = useBookingStatus(bookingId ?? null)
+  const number = booking?.bookingNumber ?? bookingId
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! My payment for booking ${number} failed. Can you help?`)}`
 
   return (
     <>
@@ -22,7 +25,7 @@ export default function BookFailedPage() {
             Your slot is still held for a few minutes. Please try again.
           </p>
           {bookingId && (
-            <p className="text-xs text-text-muted mb-8">Reference: <span className="font-mono text-gold-400">{bookingId}</span></p>
+            <p className="text-xs text-text-muted mb-8">Booking no.: <span className="font-mono text-gold-400">{number}</span></p>
           )}
           <div className="space-y-3">
             <Button asChild fullWidth size="lg">

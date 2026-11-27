@@ -2,19 +2,13 @@
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
-  Gift, Users, Cake, Heart, Zap, CalendarDays,
   Lock, Clock, CheckCircle, DollarSign, Shield, Headphones,
   ArrowRight, Sparkles,
 } from 'lucide-react'
+import { useClubBenefits } from '@/features/rewards/benefits'
 
-const BENEFITS = [
-  { icon: Gift,        color: '#f5d7a1', title: 'Earn BOB Points',    desc: 'Get reward points on every booking.' },
-  { icon: Users,       color: '#d8c8ff', title: 'Refer & Earn',       desc: 'Earn credits when friends book.' },
-  { icon: Cake,        color: '#ffc2d1', title: 'Birthday Specials',  desc: 'Exclusive offers in your birth month.' },
-  { icon: Heart,       color: '#ffd2a8', title: 'Repeat Guest Perks', desc: 'Upgrades for returning guests.' },
-  { icon: Zap,         color: '#b8f0d8', title: 'Early Access',       desc: 'First to know about new experiences.' },
-  { icon: CalendarDays,color: '#c6ccff', title: 'Weekday Deals',      desc: 'Exclusive savings weekdays.' },
-]
+// icon tints for the club benefit nodes, in order
+const TINTS = ['#f5d7a1', '#d8c8ff', '#b8f0d8', '#ffd2a8', '#ffc2d1', '#c6ccff']
 
 const PROMISES = [
   { icon: Lock,        title: 'Exclusively Yours',    desc: 'Your theatre — no shared screenings.' },
@@ -28,6 +22,10 @@ const PROMISES = [
 export function BobPerks() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px 18% 0px' })
+  // the club benefits come from Admin → Settings; with BOB Points off only the promise is shown
+  const { benefits: list } = useClubBenefits()
+  const BENEFITS = list.map((b, i) => ({ ...b, color: TINTS[i % TINTS.length] }))
+  const clubOn = BENEFITS.length > 0
 
   return (
     <section ref={ref} className="relative overflow-x-clip pb-16 pt-6 md:pb-24 md:pt-8">
@@ -78,7 +76,7 @@ export function BobPerks() {
             <Sparkles size={15} className="text-[#d4a94a]" />
             <p className="font-cursive text-xl text-[#c9933a]">The BOB Family</p>
           </div>
-          <h2 className="text-2xl font-black text-white md:text-3xl">Club Benefits &amp; Our Promise</h2>
+          <h2 className="text-2xl font-black text-white md:text-3xl">{clubOn ? <>Club Benefits &amp; Our Promise</> : 'Our Promise'}</h2>
           <motion.div
             className="mx-auto mt-3 h-[3px] rounded-full bg-[#d4a94a]"
             initial={{ width: 0 }}
@@ -87,8 +85,9 @@ export function BobPerks() {
           />
         </motion.div>
 
-        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-8">
+        <div className={clubOn ? 'grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-8' : 'mx-auto max-w-3xl'}>
           {/* ── The BOB Club: benefits orbiting a join badge ── */}
+          {clubOn && (
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
@@ -134,12 +133,12 @@ export function BobPerks() {
               {/* orbiting benefit nodes */}
               {BENEFITS.map((b, i) => {
                 const Icon = b.icon
-                const ang = (-90 + i * 60) * (Math.PI / 180)
+                const ang = (-90 + i * (360 / BENEFITS.length)) * (Math.PI / 180)
                 const x = 50 + Math.cos(ang) * 41
                 const y = 50 + Math.sin(ang) * 41
                 return (
                   <motion.div
-                    key={b.title}
+                    key={b.key}
                     className="absolute w-[158px]"
                     style={{ left: `${x}%`, top: `${y}%`, x: '-50%', y: '-50%' }}
                     initial={{ opacity: 0, scale: 0.6 }}
@@ -155,7 +154,7 @@ export function BobPerks() {
                         <Icon size={19} strokeWidth={1.8} style={{ color: b.color }} />
                       </span>
                       <p className="text-[13px] font-bold leading-tight text-[#3d0a24]">{b.title}</p>
-                      <p className="mt-1 text-[11px] leading-snug text-[#5b2535]">{b.desc}</p>
+                      <p className="mt-1 text-[11px] leading-snug text-[#5b2535]">{b.short}</p>
                     </motion.div>
                   </motion.div>
                 )
@@ -168,12 +167,12 @@ export function BobPerks() {
                 {BENEFITS.map(b => {
                   const Icon = b.icon
                   return (
-                    <div key={b.title} className="rounded-3xl glass-card bg-white p-4 text-center shadow-[0_12px_30px_rgba(107,35,152,0.12)] ring-1 ring-[#f8dce4]">
+                    <div key={b.key} className="rounded-3xl glass-card bg-white p-4 text-center shadow-[0_12px_30px_rgba(107,35,152,0.12)] ring-1 ring-[#f8dce4]">
                       <span className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#5c1535,#a81a3a)]">
                         <Icon size={19} strokeWidth={1.8} style={{ color: b.color }} />
                       </span>
                       <p className="text-[13px] font-bold text-[#3d0a24]">{b.title}</p>
-                      <p className="mt-1 text-[11px] leading-snug text-[#5b2535]">{b.desc}</p>
+                      <p className="mt-1 text-[11px] leading-snug text-[#5b2535]">{b.short}</p>
                     </div>
                   )
                 })}
@@ -189,6 +188,7 @@ export function BobPerks() {
               </div>
             </div>
           </motion.div>
+          )}
 
           {/* ── The BOB Promise: animated vertical timeline ── */}
           <motion.div

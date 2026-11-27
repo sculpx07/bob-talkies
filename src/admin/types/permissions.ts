@@ -21,6 +21,9 @@ export const PERMISSIONS = {
   PAYMENTS_VIEW: 'payments.view',
   PAYMENTS_REFUND: 'payments.refund',
 
+  REWARDS_VIEW: 'rewards.view',
+  REWARDS_ADJUST: 'rewards.adjust',
+
   REPORTS_VIEW: 'reports.view',
   REPORTS_EXPORT: 'reports.export',
 

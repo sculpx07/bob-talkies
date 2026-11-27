@@ -1,5 +1,5 @@
 ﻿import { useState, useRef } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { useBooking } from '../../state/booking.context'
 import { bookingApi, type PayOrderResponse, type RazorpayVerifyRequest } from '../../api'
@@ -7,13 +7,14 @@ import { loadRazorpayCheckout } from '../../razorpay'
 import { PriceSummary } from '../PriceSummary'
 import { motion } from 'framer-motion'
 import { formatINR } from '@/lib/utils/currency'
-import { Check, CreditCard, Shield } from 'lucide-react'
+import { Check, CreditCard, Shield, Star } from 'lucide-react'
 import { trackEvent } from '@/features/tracking/events'
 import { clearBookingState } from '../../state/booking.storage'
 import { ApiError } from '@/lib/api/client'
 import { useSiteConfig } from '@/features/site/api'
 import { customerSession } from '@/features/auth/session'
 import { useToast } from '@/components/ui/Toast'
+import { arrivedWithReferralCode } from '@/features/rewards/api'
 
 export function PaymentStep() {
   const { state, dispatch } = useBooking()
@@ -21,6 +22,7 @@ export function PaymentStep() {
   const [payFull, setPayFull] = useState(false)
   const payLock = useRef(false)
   const { toast } = useToast()
+  const queryClient = useQueryClient()
   const [error, setError] = useState('')
   const { data: site } = useSiteConfig()
   const advancePercent = site?.pricing.advancePercent
@@ -30,6 +32,9 @@ export function PaymentStep() {
   const advanceAmount = quote?.advancePaise ?? 0
   const totalAmount = quote?.totalPaise ?? 0
   const payAmount = payFull ? totalAmount : advanceAmount
+  // BOB Points the signed-in customer can put towards this booking
+  const points = quote?.points
+  const canUsePoints = Boolean(points && points.usable > 0)
 
   const { mutate: createBooking, isPending: creating } = useMutation({
     mutationFn: () =>
@@ -54,8 +59,11 @@ export function PaymentStep() {
         ].filter(Boolean).join('\n') || undefined,
         consentTnC: state.consentTnC,
         consentWhatsapp: state.consentWhatsapp,
+        ...(state.usePoints && canUsePoints && { usePoints: true }),
+        referralCode: arrivedWithReferralCode(),
       }),
     onSuccess: (booking) => {
+      queryClient.invalidateQueries({ queryKey: ['rewards'] }) // points spent on it
       dispatch({ type: 'SET_BOOKING_ID', bookingId: booking.id, expiresAt: booking.slotHoldExpiresAt ?? '' })
       proceedToPayment(booking.id)
     },
@@ -159,6 +167,32 @@ export function PaymentStep() {
       <p className="mb-7 text-sm text-[#5b2535]">Review your booking and choose how much to pay.</p>
 
       <PriceSummary />
+
+      {/* BOB Points: pay part of the booking with them */}
+      {canUsePoints && points && (
+        <button
+          type="button"
+          role="switch"
+          aria-checked={state.usePoints}
+          onClick={() => dispatch({ type: 'SET_USE_POINTS', usePoints: !state.usePoints })}
+          className={`bk-glass-card mt-6 flex w-full items-center gap-4 rounded-3xl border-2 p-5 text-left transition-colors ${state.usePoints ? 'border-[#F5C76A]' : 'border-transparent'}`}
+        >
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F5C76A]/25" aria-hidden="true">
+            <Star size={20} fill="#F5C76A" stroke="none" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold text-[#5b2535]">Use my BOB Points</span>
+            <span className="block text-xs text-[#7d4555]">
+              {state.usePoints && points.used > 0
+                ? `${points.used.toLocaleString('en-IN')} pts used · ${formatINR(points.discountPaise)} off`
+                : `Use ${points.usable.toLocaleString('en-IN')} of your ${points.balance.toLocaleString('en-IN')} pts and save ${formatINR(points.usable * points.pointValuePaise)}`}
+            </span>
+          </span>
+          <span className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${state.usePoints ? 'bg-[#F5C76A]' : 'bg-white/30'}`} aria-hidden="true">
+            <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${state.usePoints ? 'left-[1.375rem]' : 'left-0.5'}`} />
+          </span>
+        </button>
+      )}
 
       {/* Payment choice */}
       <p className="mb-3 mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#8b1a3a]">How would you like to pay?</p>

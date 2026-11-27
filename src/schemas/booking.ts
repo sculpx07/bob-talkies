@@ -25,7 +25,10 @@ export const BookingRequestSchema = z.object({
 export type BookingRequest = z.infer<typeof BookingRequestSchema>
 
 export const BookingSchema = z.object({
+  /** private reference used in links (never shown) */
   id: z.string(),
+  /** the booking number customers and staff quote, e.g. BTNWBQXJY2 */
+  bookingNumber: z.string().optional(),
   status: BookingStatusSchema,
   theatreId: z.string(),
   theatreName: z.string(),

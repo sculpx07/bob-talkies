@@ -44,7 +44,7 @@ export default function MyBookingDetailPage() {
   const { data: booking, isLoading, isError, refetch } = useBookingStatus(bookingId ?? null)
   const { data: theatres = [] } = useTheatres()
   const theatre = theatres.find((t) => t.id === booking?.theatreId)
-  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! I need help with my booking ${bookingId}.`)}`
+  const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! I need help with my booking ${booking?.bookingNumber ?? bookingId}.`)}`
 
   const d = booking ? new Date(`${booking.date}T00:00:00`) : null
   const paidPct = booking && booking.totalPaise > 0 ? Math.min(100, Math.round((booking.advancePaidPaise / booking.totalPaise) * 100)) : 0
@@ -147,8 +147,8 @@ export default function MyBookingDetailPage() {
               </div>
 
               <div className="flex flex-col items-start sm:items-end">
-                <Barcode value={booking.id} />
-                <p className="mt-2 font-mono text-xs font-semibold tracking-[0.18em] text-[#3d0a24]">{booking.id}</p>
+                <Barcode value={booking.bookingNumber ?? booking.id} />
+                <p className="mt-2 font-mono text-xs font-semibold tracking-[0.18em] text-[#3d0a24]">{booking.bookingNumber ?? booking.id}</p>
               </div>
             </div>
 

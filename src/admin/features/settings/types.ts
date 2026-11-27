@@ -30,6 +30,9 @@ export interface Settings {
   loyalty: {
     enabled: boolean
     minCompletedBookings: number
+    /** discount on the bill, bonus BOB Points on completion, or both */
+    rewardType: LoyaltyRewardType
+    bonusPoints: number
     discountType: 'percent' | 'flat'
     /** percent: 1-50; flat: paise */
     discountValue: number
@@ -37,11 +40,26 @@ export interface Settings {
     label: string
     stackWithCoupons: boolean
   }
+  /** BOB Points: earned on completed bookings and referrals, spent at checkout */
+  rewards: {
+    enabled: boolean
+    /** what 1 point is worth */
+    pointValuePaise: number
+    pointsPerBooking: number
+    referrerPoints: number
+    friendPoints: number
+    /** points can pay at most this share of a booking (before GST) */
+    maxRedeemPercent: number
+    minRedeemPoints: number
+    monthlyReferralCap: number
+  }
   updatedBy: UserRef | null
   updatedAt: string
 }
 
-export type SettingsSection = 'pricing' | 'booking' | 'contact' | 'reviews' | 'loyalty'
+export type LoyaltyRewardType = 'discount' | 'points' | 'both'
+
+export type SettingsSection = 'pricing' | 'booking' | 'contact' | 'reviews' | 'loyalty' | 'rewards'
 
 /** Any subset of sections and fields, e.g. { pricing: { gstPercent: 12 } } */
 export type SettingsPatch = { [S in SettingsSection]?: Partial<Settings[S]> }

@@ -13,6 +13,7 @@ export function useCurrentQuote() {
     decoration: state.decoration,
     addonIds: state.addonIds,
     couponCode: state.couponCode ?? undefined,
+    ...(state.usePoints && { usePoints: true }),
   })
   const quote = query.data
   useEffect(() => {

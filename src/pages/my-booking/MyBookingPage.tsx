@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
@@ -11,28 +11,36 @@ import { PageShell, SectionHeader } from '@/components/layout/PageShell'
 import { formatDate, formatTime } from '@/lib/utils/date'
 import { formatINR } from '@/lib/utils/currency'
 import { Phone, Ticket, Calendar, ChevronRight, Star, Gift, Users, RotateCcw, Bookmark, ArrowRight, Share2 } from 'lucide-react'
-import { getPoints, getBookingCount, buildReferralUrl } from '@/lib/utils/bobRewards'
+import { referralUrl, shareLink, useMyRewards } from '@/features/rewards/api'
 import { useSavedPlan } from '@/features/booking/useSavedPlan'
 import { OCCASIONS } from '@/content/occasions'
 import { useRequestOtp, useVerifyOtp } from '@/features/auth/api'
 import { bookingApi } from '@/features/booking/api'
+import { customerSession } from '@/features/auth/session'
+import { ApiError } from '@/lib/api/client'
 
 type AuthState = 'idle' | 'otp_sent' | 'authenticated'
 
 function RewardsSidebar({ bookingCount }: { bookingCount: number }) {
-  const pts = getPoints()
-  const bookings = bookingCount === 0 ? 0 : Math.max(getBookingCount(), bookingCount)
+  const { data: rewards } = useMyRewards()
+  const pts = rewards?.balance ?? 0
+  const completed = rewards?.repeatGuest.completedBookings ?? 0
+  const needed = rewards?.repeatGuest.needed ?? 2
+  const repeatActive = rewards?.repeatGuest.active ?? false
+  const perBooking = rewards?.pointsPerBooking ?? 0
   const { plan, resume } = useSavedPlan()
   const occasion = plan ? OCCASIONS.find(o => o.slug === plan.occasion) : null
 
-  async function shareRef() {
-    const url = buildReferralUrl()
-    const text = '🎬 Book a private theatre at BOB Talkies — use my link and we both earn BOB Points!'
-    try {
-      if (navigator.share) await navigator.share({ title: 'BOB Talkies', text, url })
-      else await navigator.clipboard.writeText(url)
-    } catch { /* dismissed */ }
+  function shareRef() {
+    if (!rewards?.referral.code) return
+    shareLink({
+      url: referralUrl(rewards.referral.code),
+      text: `🎬 Book a private theatre at BOB Talkies with my link — you get ${rewards.referral.friendPoints} BOB Points on your first celebration!`,
+    })
   }
+
+  // BOB Points switched off in Admin → Settings: nothing to show
+  if (rewards && !rewards.enabled) return null
 
   return (
     <div className="flex flex-col gap-4">
@@ -52,23 +60,28 @@ function RewardsSidebar({ bookingCount }: { bookingCount: number }) {
           <div className="flex items-start gap-5">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#f5d7a1]">BOB Points</p>
-              <p className="mt-1 font-display text-5xl font-bold leading-none">{pts}</p>
+              <p className="mt-1 font-display text-5xl font-bold leading-none">{pts.toLocaleString('en-IN')}</p>
+              {rewards && pts > 0 && <p className="mt-1.5 text-xs text-white/75">Worth {formatINR(rewards.valuePaise)} on your next booking</p>}
+              {rewards && rewards.upcomingPoints > 0 && <p className="mt-0.5 text-xs text-[#f5d7a1]">+{rewards.upcomingPoints} on the way after your upcoming celebration</p>}
             </div>
             <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25"><Star size={20} fill="#f5d7a1" stroke="none" /></span>
           </div>
-          {bookings >= 2 && (
+          {repeatActive && (
             <span className="relative mt-3 inline-block rounded-full bg-emerald-400/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-200 ring-1 ring-emerald-300/30">Repeat Guest ✓</span>
           )}
         </div>
 
         <ul className="relative grid flex-1 gap-5 border-t border-white/20 pt-5 text-sm sm:grid-cols-2 lg:border-t-0 lg:pt-0 xl:grid-flow-col xl:auto-cols-fr">
           {/* Refer & Earn is only offered once the guest has at least one booking */}
-          {bookings >= 1 && (
+          {bookingCount >= 1 && rewards?.referral.code && (
             <li className="flex items-start gap-3">
               <Users size={15} className="mt-0.5 shrink-0 text-[#f5d7a1]" />
               <div>
                 <p className="font-bold">Refer &amp; Earn</p>
-                <p className="mt-0.5 text-xs leading-snug text-white/75">Share your link. Friend books → you both earn credits.</p>
+                <p className="mt-0.5 text-xs leading-snug text-white/75">
+                  Share your link. Friend celebrates → you get {rewards.referral.referrerPoints}, they get {rewards.referral.friendPoints} points.
+                  {rewards.referral.rewarded > 0 && ` ${rewards.referral.rewarded} friend${rewards.referral.rewarded === 1 ? '' : 's'} so far.`}
+                </p>
                 <button type="button" onClick={shareRef} className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-[11px] font-bold text-[#3d0a24]">
                   <Share2 size={11} /> Share referral link
                 </button>
@@ -78,9 +91,11 @@ function RewardsSidebar({ bookingCount }: { bookingCount: number }) {
           <li className="flex items-start gap-3">
             <RotateCcw size={15} className="mt-0.5 shrink-0 text-[#f5d7a1]" />
             <div>
-              <p className="font-bold">Repeat Guest Offers {bookings >= 2 && <span className="ml-1 text-[10px] font-bold text-emerald-300">Active</span>}</p>
+              <p className="font-bold">Repeat Guest Offers {repeatActive && <span className="ml-1 text-[10px] font-bold text-emerald-300">Active</span>}</p>
               <p className="mt-0.5 text-xs leading-snug text-white/75">
-                {bookings >= 2 ? `${bookings} bookings completed — you qualify for upgrades & special offers.` : 'Complete 2+ bookings to unlock repeat guest upgrades.'}
+                {repeatActive
+                  ? `${completed} bookings completed — ${[rewards?.repeatGuest.discount && 'a discount on every booking', rewards?.repeatGuest.bonusPoints && `+${rewards.repeatGuest.bonusPoints} bonus points each time`].filter(Boolean).join(' and ') || 'you qualify for special offers'}.`
+                  : `Complete ${needed}+ bookings to unlock repeat guest rewards${completed ? ` (${completed} done)` : ''}.`}
               </p>
             </div>
           </li>
@@ -88,7 +103,7 @@ function RewardsSidebar({ bookingCount }: { bookingCount: number }) {
             <Gift size={15} className="mt-0.5 shrink-0 text-[#f5d7a1]" />
             <div>
               <p className="font-bold">Earn BOB Points</p>
-              <p className="mt-0.5 text-xs leading-snug text-white/75">+50 pts every eligible booking. {pts > 0 ? `${pts} earned so far.` : 'Book to start earning.'}</p>
+              <p className="mt-0.5 text-xs leading-snug text-white/75">+{perBooking} pts every completed booking. {pts > 0 ? 'Use them to pay at checkout.' : 'Book to start earning.'}</p>
             </div>
           </li>
         </ul>
@@ -132,10 +147,12 @@ function RewardsSidebar({ bookingCount }: { bookingCount: number }) {
 }
 
 export default function MyBookingPage() {
-  const [authState, setAuthState] = useState<AuthState>('idle')
-  const [mobile, setMobile] = useState('')
+  // already signed in on this device (OTP during booking or an earlier visit): no second OTP
+  const [saved] = useState(() => customerSession.get())
+  const [authState, setAuthState] = useState<AuthState>(saved?.token ? 'authenticated' : 'idle')
+  const [mobile, setMobile] = useState(saved?.customer.mobile ?? '')
   const [otp, setOtp] = useState('')
-  const [token, setToken] = useState('')
+  const [token, setToken] = useState(saved?.token ?? '')
   const [mobileError, setMobileError] = useState('')
   const [otpError, setOtpError] = useState('')
 
@@ -159,11 +176,21 @@ export default function MyBookingPage() {
       onError: (e) => setOtpError(e.message || 'Invalid OTP. Please try again.'),
     })
 
-  const { data: bookingsData, isLoading } = useQuery({
+  const { data: bookingsData, isLoading, error: bookingsError } = useQuery({
     queryKey: ['my-bookings', token],
     queryFn: () => bookingApi.myBookings(token),
     enabled: authState === 'authenticated',
+    retry: (count, e) => !(e instanceof ApiError && e.status === 401) && count < 2,
   })
+
+  // the saved login ran out: ask for an OTP again
+  useEffect(() => {
+    if (bookingsError instanceof ApiError && bookingsError.status === 401) {
+      customerSession.clear()
+      setToken('')
+      setAuthState('idle')
+    }
+  }, [bookingsError])
 
   const bookings = bookingsData?.data ?? []
 
@@ -373,7 +400,7 @@ export default function MyBookingPage() {
                               <span className="font-bold text-[#3d0a24]">{formatINR(b.totalPaise)}</span>
                               {ok && <span className="flex items-center gap-1 text-xs font-bold text-[#c9933a]"><Star size={11} fill="#c9a84c" stroke="none" /> +50 pts</span>}
                             </div>
-                            <p className="mt-2 font-mono text-[11px] tracking-wide text-[#9a6575]">{b.id}</p>
+                            <p className="mt-2 font-mono text-[11px] tracking-wide text-[#9a6575]">{b.bookingNumber ? `Booking no. ${b.bookingNumber}` : b.id}</p>
                           </div>
                           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e6d4ee] text-[#8b1a3a] transition-colors group-hover:border-transparent group-hover:bg-[#8b1a3a] group-hover:text-white">
                             <ChevronRight size={18} />

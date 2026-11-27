@@ -20,8 +20,10 @@ export interface QuoteInput {
   decoration: boolean
   addons: AddonLine[]
   couponCode?: string
-  /** gives the regular-customer discount */
+  /** gives the regular-customer discount, and shows their BOB Points */
   customerMobile?: string
+  /** spend the customer's BOB Points */
+  usePoints?: boolean
   /** price a change to this existing booking */
   booking?: string
 }
@@ -38,7 +40,9 @@ export interface Quote {
   addons: Array<{ addonId: string; variant: { id: string; label: string } | null; name: string; unitPricePaise: number; quantity: number; linePaise: number }>
   coupon: { code: string; applied: boolean; reason: string | null; discountPaise: number; checkedAtCheckout?: string[] } | null
   /** regular-customer discount: why it is (not) given */
-  loyalty?: { enabled: boolean; eligible: boolean; applied: boolean; completedBookings: number; needed: number; discountPaise: number; label: string; reason: string }
+  loyalty?: { enabled: boolean; eligible: boolean; applied: boolean; completedBookings: number; needed: number; discountPaise: number; label: string; reason: string; bonusPoints: number }
+  /** BOB Points of the customer (by mobile): balance, how many this booking can take, what it earns */
+  points?: { enabled: boolean; balance: number; usable: number; used: number; discountPaise: number; pointValuePaise: number; earnPoints: number; regularBonusPoints: number; label: string }
   breakdown: { subtotalPaise: number; discountPaise: number; loyaltyPaise?: number; gstPercent: number; pricesIncludeGst: boolean; gstPaise: number }
   totalPaise: number
   advancePercent: number
