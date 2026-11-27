@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 import {
-  BarChart3, CalendarClock, MessageSquareQuote, Package, CalendarDays, Clapperboard, Gift, LayoutDashboard, Settings, ShieldCheck, Sparkles, TicketPercent, Users, UserRound,
+  BarChart3, CalendarClock, MessageSquareQuote, ReceiptIndianRupee, Package, CalendarDays, Clapperboard, Gift, LayoutDashboard, Settings, ShieldCheck, Sparkles, TicketPercent, Users, UserRound,
 } from 'lucide-react'
 import { PERMISSIONS as P, type Permission } from '@/admin/types/permissions'
 
@@ -33,6 +33,7 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { label: 'Bookings', path: '/bookings', icon: CalendarDays, permission: P.BOOKINGS_VIEW, description: 'Day board, booking list, manual bookings, payments, reschedules and cancellations.' },
       { label: 'Leads', path: '/leads', icon: UserRound, permission: P.LEADS_VIEW, hideWhenCrmManaged: true, description: 'Enquiries from the website and phone, follow-ups and conversions.' },
+      { label: 'Payments', path: '/payments', icon: ReceiptIndianRupee, permission: P.PAYMENTS_VIEW, description: 'Money received, refunds and what is waiting to be refunded.' },
       { label: 'Reports', path: '/reports', icon: BarChart3, permission: P.REPORTS_VIEW, description: 'Revenue, collections, occupancy, add-ons, offers and leads, with CSV export.' },
     ],
   },

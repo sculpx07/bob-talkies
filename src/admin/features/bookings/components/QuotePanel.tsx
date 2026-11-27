@@ -40,8 +40,8 @@ export function QuotePanel({ quote, loading, error, refreshing, title = 'Price',
             <ul className="divide-y divide-slate-100 text-sm">
               {quote.lineItems.map((l, idx) => (
                 <li key={idx} className="flex justify-between gap-3 py-1.5">
-                  <span className={cn('text-slate-600', l.type === 'discount' && 'text-emerald-700')}>{l.label}</span>
-                  <span className={cn('tabular-nums', l.type === 'discount' && 'text-emerald-700', l.included && 'text-slate-400')}>
+                  <span className={cn('text-slate-600', l.paise < 0 && 'text-emerald-700')}>{l.label}</span>
+                  <span className={cn('tabular-nums', l.paise < 0 && 'text-emerald-700', l.included && 'text-slate-400')}>
                     {l.paise < 0 ? `−${formatPaise(-l.paise)}` : formatPaise(l.paise)}{l.included ? ' (incl.)' : ''}
                   </span>
                 </li>

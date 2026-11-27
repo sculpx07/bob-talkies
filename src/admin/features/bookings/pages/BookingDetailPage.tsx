@@ -1,7 +1,10 @@
 import { useParams } from 'react-router-dom'
 import {
-  AlertTriangle, CalendarClock, CheckCircle2, ExternalLink, Gift, IndianRupee, MessageCircle, MoreHorizontal, Pencil, Phone, Timer, Trash2, UserX, XCircle,
+  AlertTriangle, CalendarClock, CheckCircle2, ExternalLink, Gift, IndianRupee, MessageCircle, MoreHorizontal, Pencil, Phone, RotateCcw, Timer, Trash2, UserX, XCircle,
 } from 'lucide-react'
+import { useBookingRefunds } from '@/admin/features/payments/api'
+import { RefundModal } from '@/admin/features/payments/components/RefundModal'
+import { REFUND_METHOD_SHORT, REFUND_STATUS_BADGE } from '@/admin/features/payments/constants'
 import { PageHeader } from '@/admin/components/layout/PageHeader'
 import {
   Badge, Button, Card, CardBody, CardHeader, ConfirmDialog, ErrorState, IconButton, LoadingBlock, Menu, StatusBadge, useToast, type MenuItem,
@@ -40,8 +43,8 @@ function BillCard({ b }: { b: BookingDetail }) {
         <ul className="divide-y divide-slate-100 text-sm">
           {b.pricing.lineItems.map((l, i) => (
             <li key={i} className="flex justify-between gap-4 py-1.5">
-              <span className={cn('text-slate-600', l.type === 'discount' && 'text-emerald-700')}>{l.label}</span>
-              <span className={cn('tabular-nums', l.type === 'discount' && 'text-emerald-700', l.included && 'text-slate-400')}>
+              <span className={cn('text-slate-600', l.paise < 0 && 'text-emerald-700')}>{l.label}</span>
+              <span className={cn('tabular-nums', l.paise < 0 && 'text-emerald-700', l.included && 'text-slate-400')}>
                 {l.paise < 0 ? `−${formatPaise(-l.paise)}` : formatPaise(l.paise)}{l.included ? ' (incl.)' : ''}
               </span>
             </li>
@@ -54,13 +57,21 @@ function BillCard({ b }: { b: BookingDetail }) {
   )
 }
 
-function PaymentsCard({ b, onRecord, onRemove, canRemove }: { b: BookingDetail; onRecord?: () => void; onRemove: (p: BookingPayment) => void; canRemove: boolean }) {
+function PaymentsCard({ b, onRecord, onRemove, canRemove, onRefund }: { b: BookingDetail; onRecord?: () => void; onRemove: (p: BookingPayment) => void; canRemove: boolean; onRefund?: () => void }) {
+  const refunds = useBookingRefunds(b.id)
+  const list = refunds.data?.refunds ?? []
+  const canStillRefund = (refunds.data?.payments ?? []).some((p) => p.refundablePaise > 0)
   return (
     <Card>
       <CardHeader
         title="Payments"
-        description={<><StatusBadge status={b.paymentStatus} map={PAYMENT_STATUS_BADGE} /> <span className="ml-1">{formatPaise(b.amountPaidPaise)} paid · {formatPaise(b.balanceDuePaise)} due</span></>}
-        actions={onRecord && b.balanceDuePaise > 0 ? <Button size="sm" leftIcon={<IndianRupee className="h-4 w-4" />} onClick={onRecord}>Record payment</Button> : undefined}
+        description={<><StatusBadge status={b.paymentStatus} map={PAYMENT_STATUS_BADGE} /> <span className="ml-1">{formatPaise(b.amountPaidPaise)} paid · {formatPaise(b.balanceDuePaise)} due{b.refundedPaise ? ` · ${formatPaise(b.refundedPaise)} refunded` : ''}</span></>}
+        actions={
+          <div className="flex gap-2">
+            {onRefund && canStillRefund && <Button size="sm" variant="secondary" leftIcon={<RotateCcw className="h-4 w-4" />} onClick={onRefund}>Refund</Button>}
+            {onRecord && b.balanceDuePaise > 0 && <Button size="sm" leftIcon={<IndianRupee className="h-4 w-4" />} onClick={onRecord}>Record payment</Button>}
+          </div>
+        }
       />
       <CardBody>
         {b.payments.length ? (
@@ -73,13 +84,29 @@ function PaymentsCard({ b, onRecord, onRemove, canRemove }: { b: BookingDetail; 
                     {formatDateTime(p.receivedAt)}{p.recordedBy ? ` · by ${p.recordedBy.name}` : ''}{p.reference ? ` · ref ${p.reference}` : ''}{p.note ? ` · ${p.note}` : ''}
                   </p>
                 </div>
-                {canRemove && (MANUAL_PAYMENT_METHODS as readonly string[]).includes(p.method) && (
+                {canRemove && (MANUAL_PAYMENT_METHODS as readonly string[]).includes(p.method) && !list.some((r) => r.source.paymentId === p.id && r.status !== 'failed') && (
                   <IconButton size="sm" label="Remove payment" onClick={() => onRemove(p)}><Trash2 className="h-4 w-4" /></IconButton>
                 )}
               </li>
             ))}
           </ul>
         ) : <p className="text-sm text-slate-500">No payments yet.</p>}
+        {list.length > 0 && (
+          <div className="mt-4 border-t border-slate-100 pt-3">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">Refunds</p>
+            <ul className="divide-y divide-slate-100 text-sm">
+              {list.map((r) => (
+                <li key={r.id} className="flex items-center justify-between gap-3 py-2">
+                  <div>
+                    <p className="font-medium text-slate-900">−{formatPaise(r.amountPaise)} · {REFUND_METHOD_SHORT[r.method]}</p>
+                    <p className="text-xs text-slate-500">{formatDateTime(r.createdAt)}{r.createdBy ? ` · by ${r.createdBy.name}` : ''} · {r.reason}{r.reference ? ` · ref ${r.reference}` : ''}</p>
+                  </div>
+                  <StatusBadge status={r.status} map={REFUND_STATUS_BADGE} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </CardBody>
     </Card>
   )
@@ -177,6 +204,7 @@ export default function BookingDetailPage() {
   const edit = useDisclosure()
   const reschedule = useDisclosure()
   const extras = useDisclosure()
+  const refundModal = useDisclosure()
   const confirmRemovePayment = useDisclosureWith<BookingPayment>()
 
   const b = query.data
@@ -236,7 +264,15 @@ export default function BookingDetailPage() {
       {b.cancellation && (
         <div className="mb-6 rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-700">
           Cancelled {formatDateTime(b.cancellation.at)}{b.cancellation.by ? ` by ${b.cancellation.by.name}` : ''}, {b.cancellation.hoursBeforeSlot} h before the slot: {b.cancellation.reason}.{' '}
-          {b.amountPaidPaise > 0 && <strong>{b.cancellation.refundEligible ? `Refund due: ${formatPaise(b.amountPaidPaise)}.` : 'Not refundable under the policy.'}</strong>}
+          {b.amountPaidPaise > 0 && (
+            <strong>
+              {(b.refundedPaise ?? 0) >= b.amountPaidPaise
+                ? `Refunded ${formatPaise(b.refundedPaise ?? 0)}.`
+                : b.cancellation.refundEligible
+                  ? `Refund due: ${formatPaise(b.amountPaidPaise - (b.refundedPaise ?? 0))}${b.refundedPaise ? ` (${formatPaise(b.refundedPaise)} already refunded)` : ''}.`
+                  : `Not refundable under the policy${b.refundedPaise ? `; ${formatPaise(b.refundedPaise)} refunded anyway` : ''}.`}
+            </strong>
+          )}
         </div>
       )}
 
@@ -284,6 +320,7 @@ export default function BookingDetailPage() {
             onRecord={mayRecordPayment && PAYABLE_STATUSES.includes(b.status) ? pay.open : undefined}
             canRemove={can(PERMISSIONS.BOOKINGS_REMOVE_PAYMENT)}
             onRemove={(p) => confirmRemovePayment.open(p)}
+            onRefund={can(PERMISSIONS.PAYMENTS_REFUND) ? refundModal.open : undefined}
           />
           {attempts.data && attempts.data.length > 0 && <OnlinePaymentsCard attempts={attempts.data} />}
         </div>
@@ -317,6 +354,7 @@ export default function BookingDetailPage() {
       <CloseBookingModal booking={b} open={complete.isOpen} onOpenChange={complete.setOpen} outcome="completed" />
       <CloseBookingModal booking={b} open={noShow.isOpen} onOpenChange={noShow.setOpen} outcome="no_show" />
       <RecordPaymentModal booking={b} open={pay.isOpen} onOpenChange={pay.setOpen} />
+      <RefundModal open={refundModal.isOpen} onOpenChange={refundModal.setOpen} bookingId={b.id} bookingNumber={b.bookingNumber} defaultReason={b.status === 'CANCELLED' ? 'Booking cancelled' : ''} />
       <EditDetailsModal booking={b} open={edit.isOpen} onOpenChange={edit.setOpen} />
       <RescheduleModal booking={b} open={reschedule.isOpen} onOpenChange={reschedule.setOpen} />
       <ExtrasModal booking={b} open={extras.isOpen} onOpenChange={extras.setOpen} />

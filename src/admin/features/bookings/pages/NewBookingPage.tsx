@@ -86,15 +86,17 @@ export default function NewBookingPage() {
     },
   })
 
-  const [theatreId, date, slot, guests, decoration, addons, couponCode, mode, recordPayment, allowOverride] =
-    watch(['theatre', 'date', 'slot', 'guests', 'decoration', 'addons', 'couponCode', 'mode', 'recordPayment', 'allowOverride'])
+  const [theatreId, date, slot, guests, decoration, addons, couponCode, mode, recordPayment, allowOverride, mobile] =
+    watch(['theatre', 'date', 'slot', 'guests', 'decoration', 'addons', 'couponCode', 'mode', 'recordPayment', 'allowOverride', 'mobile'])
+  // regular-customer discount: once a full mobile number is typed
+  const customerMobile = /^[6-9]\d{9}$/.test(mobile?.trim() ?? '') ? mobile.trim() : undefined
   const theatre = theatres.data?.find((t) => t.id === theatreId)
 
   const quoteInput = useMemo(() => (
     theatreId && date && slot && guests >= 1
-      ? { theatre: theatreId, date, slot, guests, decoration, addons, ...(couponCode && { couponCode }) }
+      ? { theatre: theatreId, date, slot, guests, decoration, addons, ...(couponCode && { couponCode }), ...(customerMobile && { customerMobile }) }
       : null
-  ), [theatreId, date, slot, guests, decoration, addons, couponCode])
+  ), [theatreId, date, slot, guests, decoration, addons, couponCode, customerMobile])
   const quote = useQuote(quoteInput)
   const q = quoteInput ? quote.data : undefined
 

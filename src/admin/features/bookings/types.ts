@@ -28,6 +28,8 @@ export interface BookingListItem {
   amountPaidPaise: number
   balanceDuePaise: number
   paymentStatus: PaymentStatus
+  /** money given back (processed refunds, Admin → Payments) */
+  refundedPaise?: number
   holdExpiresAt: string | null
   createdAt: string
 }
@@ -43,7 +45,7 @@ export interface BookingPayment {
 }
 
 export interface BookingLineItem {
-  type: 'theatre' | 'extra_guests' | 'decoration' | 'addon' | 'discount' | 'tax'
+  type: 'theatre' | 'extra_guests' | 'decoration' | 'addon' | 'slot_offer' | 'loyalty' | 'discount' | 'tax'
   label: string
   paise: number
   /** GST already inside the prices: shown, not added */

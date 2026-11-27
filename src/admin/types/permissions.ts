@@ -18,6 +18,9 @@ export const PERMISSIONS = {
   LEADS_EDIT: 'leads.edit',
   LEADS_DELETE: 'leads.delete',
 
+  PAYMENTS_VIEW: 'payments.view',
+  PAYMENTS_REFUND: 'payments.refund',
+
   REPORTS_VIEW: 'reports.view',
   REPORTS_EXPORT: 'reports.export',
 

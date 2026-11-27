@@ -26,11 +26,22 @@ export interface Settings {
     googleRating: number
     googleReviewCount: number
   }
+  /** automatic discount for regular customers (counted by completed bookings on the same mobile) */
+  loyalty: {
+    enabled: boolean
+    minCompletedBookings: number
+    discountType: 'percent' | 'flat'
+    /** percent: 1-50; flat: paise */
+    discountValue: number
+    maxDiscountPaise: number | null
+    label: string
+    stackWithCoupons: boolean
+  }
   updatedBy: UserRef | null
   updatedAt: string
 }
 
-export type SettingsSection = 'pricing' | 'booking' | 'contact' | 'reviews'
+export type SettingsSection = 'pricing' | 'booking' | 'contact' | 'reviews' | 'loyalty'
 
 /** Any subset of sections and fields, e.g. { pricing: { gstPercent: 12 } } */
 export type SettingsPatch = { [S in SettingsSection]?: Partial<Settings[S]> }

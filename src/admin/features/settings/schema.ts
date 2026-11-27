@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { paiseToRupees, rupeesToPaise } from '@/admin/lib/utils/money'
 import type { SettingChange, Settings, SettingsPatch, SettingsSection } from './types'
 
-export const SETTINGS_SECTIONS: SettingsSection[] = ['pricing', 'booking', 'contact', 'reviews']
+export const SETTINGS_SECTIONS: SettingsSection[] = ['pricing', 'booking', 'contact', 'reviews', 'loyalty']
 
 const whole = (min: number, max: number, label: string) =>
   z.number({ error: `Enter ${label}` }).int('Whole number').min(min, `At least ${min}`).max(max, `At most ${max}`)
@@ -34,6 +34,21 @@ export const settingsFormSchema = z.object({
       .refine((n) => Math.abs(n * 10 - Math.round(n * 10)) < 1e-9, 'One decimal place, e.g. 4.9'),
     googleReviewCount: whole(0, 10_000_000, 'the count'),
   }),
+  loyalty: z.object({
+    enabled: z.boolean(),
+    minCompletedBookings: whole(1, 100, 'the number of bookings'),
+    discountType: z.enum(['percent', 'flat']),
+    /** percent, or rupees for a flat discount */
+    discountValue: z.number({ error: 'Enter the discount' }).positive('More than 0').max(100_000),
+    /** rupees; empty = no cap */
+    maxDiscount: z.number().positive('More than 0').max(100_000).optional(),
+    label: z.string().trim().min(2, 'At least 2 characters').max(40),
+    stackWithCoupons: z.boolean(),
+  }).superRefine((l, ctx) => {
+    if (l.discountType === 'percent' && (!Number.isInteger(l.discountValue) || l.discountValue > 50)) {
+      ctx.addIssue({ code: 'custom', path: ['discountValue'], message: 'A whole percent, at most 50' })
+    }
+  }),
 })
 
 export type SettingsFormValues = z.infer<typeof settingsFormSchema>
@@ -45,6 +60,11 @@ export function settingsToForm(s: Settings): SettingsFormValues {
     booking: { ...s.booking },
     contact: { ...s.contact },
     reviews: { ...s.reviews },
+    loyalty: {
+      ...s.loyalty,
+      discountValue: s.loyalty.discountType === 'flat' ? Number(paiseToRupees(s.loyalty.discountValue)) : s.loyalty.discountValue,
+      maxDiscount: s.loyalty.maxDiscountPaise ? Number(paiseToRupees(s.loyalty.maxDiscountPaise)) : undefined,
+    },
   }
 }
 
@@ -55,6 +75,16 @@ function formToSettings(v: SettingsFormValues): Pick<Settings, SettingsSection> 
     booking: v.booking,
     contact: { ...v.contact, email: v.contact.email.trim().toLowerCase() },
     reviews: v.reviews,
+    loyalty: (() => {
+      const { maxDiscount, ...l } = v.loyalty
+      return {
+        ...l,
+        label: l.label.trim(),
+        discountValue: l.discountType === 'flat' ? rupeesToPaise(l.discountValue) ?? 0 : l.discountValue,
+        // a cap only limits a percent discount
+        maxDiscountPaise: l.discountType === 'percent' && maxDiscount ? rupeesToPaise(maxDiscount) ?? null : null,
+      }
+    })(),
   }
 }
 

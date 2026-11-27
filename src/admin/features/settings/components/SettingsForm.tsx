@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Lock } from 'lucide-react'
-import { Button, ConfirmDialog, FormField, FormSection, FullWidth, Input, MoneyInput, Switch, Textarea, useToast } from '@/admin/components/ui'
+import { Button, ConfirmDialog, FormField, FormSection, FullWidth, Input, MoneyInput, Select, Switch, Textarea, useToast } from '@/admin/components/ui'
 import { applyServerErrors } from '@/admin/lib/forms'
 import { formatPaise, rupeesToPaise } from '@/admin/lib/utils/money'
 import { useUpdateSettings } from '../api'
@@ -41,6 +41,7 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
   useEffect(() => { reset(settingsToForm(settings)) }, [settings, reset])
 
   const [gst, included, advance, decoration] = watch(['pricing.gstPercent', 'pricing.pricesIncludeGst', 'pricing.advancePercent', 'pricing.decorationPrice'])
+  const [loyaltyOn, loyaltyType, loyaltyValue, loyaltyMin, loyaltyLabel, loyaltyCap] = watch(['loyalty.enabled', 'loyalty.discountType', 'loyalty.discountValue', 'loyalty.minCompletedBookings', 'loyalty.label', 'loyalty.maxDiscount'])
 
   // review the exact changes before saving: these settings move money
   const review = handleSubmit((values) => {
@@ -59,7 +60,7 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
       setPending(null)
     } catch (err) {
       setPending(null)
-      setFormErrors(applyServerErrors(err, setError, SETTINGS_SECTIONS, (f) => f.replace(/decorationPricePaise$/, 'decorationPrice')))
+      setFormErrors(applyServerErrors(err, setError, SETTINGS_SECTIONS, (f) => f.replace(/decorationPricePaise$/, 'decorationPrice').replace(/maxDiscountPaise$/, 'maxDiscount')))
     }
   }
 
@@ -135,6 +136,50 @@ export function SettingsForm({ settings, canEdit }: { settings: Settings; canEdi
               {(f) => <Textarea {...f} rows={2} {...register('contact.address')} />}
             </FormField>
           </FullWidth>
+        </FormSection>
+
+        <FormSection title="Regular customers" description="An automatic discount for customers who have celebrated with you before, counted by completed bookings on their mobile number. Staff bookings use the number typed in; on the website it applies once the customer signs in with OTP.">
+          <FullWidth>
+            <Controller control={control} name="loyalty.enabled" render={({ field }) => (
+              <Switch id="loyaltyEnabled" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Give regular customers a discount" description="Taken off the price before GST, without a coupon code." />
+            )} />
+          </FullWidth>
+          <FormField label="Regular after" required hint="Completed bookings with the same mobile number" error={e.loyalty?.minCompletedBookings?.message}>
+            {(f) => <Input {...f} type="number" min={1} max={100} trailing="bookings" {...register('loyalty.minCompletedBookings', num)} />}
+          </FormField>
+          <FormField label="Name on the bill" required error={e.loyalty?.label?.message}>
+            {(f) => <Input {...f} maxLength={40} placeholder="Regular customer" {...register('loyalty.label')} />}
+          </FormField>
+          <FormField label="Discount type" required>
+            {(f) => <Select {...f} options={[{ value: 'percent', label: 'Percent of the price' }, { value: 'flat', label: 'Flat amount' }]} {...register('loyalty.discountType')} />}
+          </FormField>
+          {loyaltyType === 'flat' ? (
+            <FormField label="Discount" required error={e.loyalty?.discountValue?.message}>
+              {(f) => <MoneyInput {...f} {...register('loyalty.discountValue', num)} />}
+            </FormField>
+          ) : (
+            <FormField label="Discount" required hint="1 to 50" error={e.loyalty?.discountValue?.message}>
+              {(f) => <Input {...f} type="number" min={1} max={50} trailing="%" {...register('loyalty.discountValue', num)} />}
+            </FormField>
+          )}
+          {loyaltyType === 'percent' && (
+            <FormField label="Maximum discount" hint="Optional cap per booking" error={e.loyalty?.maxDiscount?.message}>
+              {(f) => <MoneyInput {...f} {...register('loyalty.maxDiscount', { setValueAs: (v) => (v === '' || v === null || Number.isNaN(Number(v)) ? undefined : Number(v)) })} />}
+            </FormField>
+          )}
+          <FullWidth>
+            <Controller control={control} name="loyalty.stackWithCoupons" render={({ field }) => (
+              <Switch id="loyaltyStack" checked={field.value} onChange={field.onChange} disabled={!canEdit} label="Combine with coupon codes" description="Off: a regular customer using a coupon gets the coupon instead." />
+            )} />
+          </FullWidth>
+          {loyaltyOn && Number.isFinite(loyaltyValue) && (
+            <FullWidth>
+              <p className="rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+                After {Number.isFinite(loyaltyMin) ? loyaltyMin : '–'} completed booking(s), customers see “{(loyaltyLabel || 'Regular customer').trim()} discount ({loyaltyType === 'flat' ? formatPaise(rupeesToPaise(loyaltyValue)) : `${loyaltyValue}%`})”
+                {loyaltyType === 'percent' ? <> — {formatPaise(Math.min(Math.round((EXAMPLE_PAISE * loyaltyValue) / 100), loyaltyCap ? rupeesToPaise(loyaltyCap) ?? Infinity : Infinity))} off a {formatPaise(EXAMPLE_PAISE)} booking.</> : '.'}
+              </p>
+            </FullWidth>
+          )}
         </FormSection>
 
         <FormSection title="Reviews" description="The overall rating on the website's Reviews page, e.g. “4.9 · 847 reviews on Google”. Copy it from your Google Business profile.">

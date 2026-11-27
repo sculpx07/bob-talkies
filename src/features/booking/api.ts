@@ -69,7 +69,7 @@ export type TestPaymentResult = 'success' | 'failed'
 
 export const bookingApi = {
   getQuote: (body: QuoteRequest) =>
-    api.post<ServerQuote>('/pricing/quote', body),
+    api.post<ServerQuote>('/pricing/quote', body, customerSession.token() ?? undefined),
 
   /** holds the slot; needs the customer's OTP login (sent automatically) */
   createBooking: (body: BookingCreateRequest) =>

@@ -20,6 +20,8 @@ export interface QuoteInput {
   decoration: boolean
   addons: AddonLine[]
   couponCode?: string
+  /** gives the regular-customer discount */
+  customerMobile?: string
   /** price a change to this existing booking */
   booking?: string
 }
@@ -35,7 +37,9 @@ export interface Quote {
   lineItems: BookingLineItem[]
   addons: Array<{ addonId: string; variant: { id: string; label: string } | null; name: string; unitPricePaise: number; quantity: number; linePaise: number }>
   coupon: { code: string; applied: boolean; reason: string | null; discountPaise: number; checkedAtCheckout?: string[] } | null
-  breakdown: { subtotalPaise: number; discountPaise: number; gstPercent: number; pricesIncludeGst: boolean; gstPaise: number }
+  /** regular-customer discount: why it is (not) given */
+  loyalty?: { enabled: boolean; eligible: boolean; applied: boolean; completedBookings: number; needed: number; discountPaise: number; label: string; reason: string }
+  breakdown: { subtotalPaise: number; discountPaise: number; loyaltyPaise?: number; gstPercent: number; pricesIncludeGst: boolean; gstPaise: number }
   totalPaise: number
   advancePercent: number
   advancePaise: number

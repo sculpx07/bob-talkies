@@ -20,6 +20,13 @@ const LABELS: Record<string, { label: string; format?: (v: unknown) => string }>
   'payments.razorpay.keyId': { label: 'Razorpay Key ID' },
   'payments.razorpay.keySecret': { label: 'Razorpay Key Secret' },
   'payments.razorpay.webhookSecret': { label: 'Razorpay Webhook Secret' },
+  'loyalty.enabled': { label: 'Regular-customer discount', format: (v) => (v ? 'On' : 'Off') },
+  'loyalty.minCompletedBookings': { label: 'Regular after', format: (v) => `${v} completed booking(s)` },
+  'loyalty.discountType': { label: 'Regular discount type', format: (v) => (v === 'flat' ? 'Flat amount' : 'Percent') },
+  'loyalty.discountValue': { label: 'Regular discount' },
+  'loyalty.maxDiscountPaise': { label: 'Regular discount cap', format: (v) => formatPaise(Number(v)) },
+  'loyalty.label': { label: 'Regular discount name on bill' },
+  'loyalty.stackWithCoupons': { label: 'Combine with coupons', format: (v) => (v ? 'Yes' : 'No') },
   'reviews.googleReviewCount': { label: 'Review count shown on website', format: (v) => Number(v).toLocaleString('en-IN') },
 }
 
