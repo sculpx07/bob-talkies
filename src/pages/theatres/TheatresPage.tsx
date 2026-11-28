@@ -162,8 +162,8 @@ function TheatreReviewsSection({ theatreSlug, accent }: { theatreSlug: string; a
                   initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                   whileHover={{ y: -5 }}
-                  className="group relative flex flex-col rounded-3xl overflow-hidden bg-white border border-[#f0e6cc]"
-                  style={{ boxShadow: '0 4px 20px rgba(42,14,79,0.07)' }}
+                  className="group relative flex flex-col rounded-3xl overflow-hidden border border-white/10"
+                  style={{ background: 'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(135,0,79,0.22) 50%, rgba(59,0,42,0.35) 100%)', backdropFilter: 'blur(14px)', boxShadow: '0 12px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15)' }}
                 >
                   {/* thumb */}
                   <div
@@ -202,13 +202,13 @@ function TheatreReviewsSection({ theatreSlug, accent }: { theatreSlug: string; a
                     <div className="flex items-center gap-3">
                       <img src={r.avatar} alt={r.name} className="h-9 w-9 rounded-full object-cover ring-2" style={{ '--tw-ring-color': accent + '55' } as React.CSSProperties} />
                       <div className="flex-1 min-w-0">
-                        <p className="font-black text-[#250514] text-sm truncate">{r.name}</p>
+                        <p className="font-black text-white text-sm truncate">{r.name}</p>
                         <div className="flex gap-0.5 mt-0.5">
                           {[1,2,3,4,5].map(s => <Star key={s} size={9} fill="#f59e0b" stroke="none" />)}
                         </div>
                       </div>
                     </div>
-                    <p className="text-[#4a2d6e] text-sm leading-relaxed flex-1">
+                    <p className="text-white/80 text-sm leading-relaxed flex-1">
                       <span className="text-xl font-serif leading-none mr-0.5" style={{ color: accent }}>"</span>
                       {r.text}
                       <span className="text-xl font-serif leading-none ml-0.5" style={{ color: accent }}>"</span>
@@ -360,7 +360,7 @@ export default function TheatresPage() {
           <div className="min-h-screen animate-pulse" aria-busy="true" aria-label="Loading theatres" />
         ) : (
           <section
-            className="tp-hero relative min-h-screen w-full overflow-hidden bg-bg-navy text-white"
+            className="tp-hero relative min-h-screen w-full overflow-hidden bg-[#1a0530] text-white"
             aria-roledescription="carousel"
             aria-label="Private theatres"
           >

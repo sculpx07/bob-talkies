@@ -42,8 +42,8 @@ function StaggerGrid({ children, className }: { children: React.ReactNode; class
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-6">
-      <h2 className="font-display text-xl font-bold text-[#3d0a24] whitespace-nowrap">{children}</h2>
-      <div className="flex-1 h-px bg-gradient-to-r from-[#c9a84c]/40 to-transparent" />
+      <h2 className="font-display text-xl font-bold text-white whitespace-nowrap">{children}</h2>
+      <div className="flex-1 h-px bg-gradient-to-r from-[#c9a84c]/60 to-transparent" />
     </div>
   )
 }
@@ -134,23 +134,37 @@ export default function TheatreDetailPage() {
       />
 
       {/* Sticky bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 hidden md:block bg-white/95 backdrop-blur-md border-t border-[#e8d5a3] shadow-[0_-4px_20px_rgba(50,16,95,0.08)]">
+      <div className="fixed bottom-0 left-0 right-0 z-30 hidden md:block backdrop-blur-md border-t border-white/15 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]" style={{ background: 'rgba(67,9,72,0.92)' }}>
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <span className="font-display text-lg font-bold text-[#3d0a24]">{theatre.name}</span>
-            <span className="h-4 w-px bg-[#e8d5a3]" />
-            <span className="text-sm text-[#5b2535]/60">{guestRangeText(theatre, 'guests')}</span>
+            <span className="font-display text-lg font-bold text-white">{theatre.name}</span>
+            <span className="h-4 w-px bg-white/20" />
+            <span className="text-sm text-white/60">{guestRangeText(theatre, 'guests')}</span>
           </div>
           <div className="flex items-center gap-5">
-            <PriceTag paise={theatre.startingPricePaise} />
-            <Link to={`/book?theatre=${theatre.id}`} className="inline-flex items-center gap-2 rounded-full bg-[#5c1535] text-white text-sm font-bold px-6 py-2.5 hover:bg-[#6b1535] transition-colors shadow-[0_4px_16px_rgba(50,16,95,0.25)]">
+            <PriceTag paise={theatre.startingPricePaise} dark />
+            <Link to={`/book?theatre=${theatre.id}`} className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-white text-sm font-bold px-6 py-2.5 hover:opacity-90 transition-opacity shadow-[0_4px_16px_rgba(50,16,95,0.4)]">
               Book Now <ArrowRight size={14} />
             </Link>
           </div>
         </div>
       </div>
 
-      <PageShell fullWidth className="pb-24 bg-[#fff8f9]">
+      <div
+        style={{
+          backgroundColor: '#430948',
+          backgroundImage: [
+            'radial-gradient(ellipse 48% 18% at 78% 20%, rgba(150,14,128,0.62), rgba(150,14,128,0) 100%)',
+            'radial-gradient(ellipse 42% 20% at 16% 50%, rgba(122,10,112,0.55), rgba(122,10,112,0) 100%)',
+            'radial-gradient(ellipse 50% 14% at 68% 84%, rgba(140,12,120,0.55), rgba(140,12,120,0) 100%)',
+            'radial-gradient(ellipse 36% 8% at 14% 8%, rgba(96,8,92,0.5), rgba(96,8,92,0) 100%)',
+            'linear-gradient(180deg, #2a0430 0%, #430948 100%)',
+          ].join(','),
+          backgroundSize: '100% 1600px, 100% 1600px, 100% 1600px, 100% 1600px, 100% 600px',
+          backgroundRepeat: 'repeat-y, repeat-y, repeat-y, repeat-y, no-repeat',
+        }}
+      >
+      <PageShell fullWidth className="pb-24 bg-transparent">
 
         {/* ── Hero ── */}
         <div className="relative">
@@ -216,7 +230,7 @@ export default function TheatreDetailPage() {
           </div>
 
           {/* Thumbnail strip */}
-          <div className="bg-white border-b border-[#e8d5a3] px-4 md:px-12 py-2.5 flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
+          <div className="border-b border-white/10 px-4 md:px-12 py-2.5 flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden" style={{ background: 'rgba(26,5,48,0.75)', backdropFilter: 'blur(10px)', scrollbarWidth: 'none' }}>
             {theatre.images.map((img, i) => (
               <button key={i} onClick={() => setActiveImg(i)}
                 className={`shrink-0 w-16 h-11 rounded-lg overflow-hidden border-2 transition-all ${i === activeImg ? 'border-[#c9a84c] shadow-[0_0_8px_rgba(201,168,76,0.35)]' : 'border-transparent opacity-60 hover:opacity-100 hover:border-[#e8d5a3]'}`}>
@@ -227,7 +241,7 @@ export default function TheatreDetailPage() {
         </div>
 
         {/* ── Quick stats bar ── */}
-        <div className="bg-white border-b border-[#f0e6cc]">
+        <div className="border-b border-white/10" style={{ background: 'rgba(26,5,48,0.6)', backdropFilter: 'blur(8px)' }}>
           <motion.div
             className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex flex-wrap gap-6 md:gap-10"
             initial="hidden" animate="show"
@@ -243,7 +257,7 @@ export default function TheatreDetailPage() {
               <motion.div key={s.label} variants={fadeUp} transition={{ duration: 0.4 }}
                 className="flex items-center gap-2 text-sm">
                 <span className="text-[#c9a84c]">{s.icon}</span>
-                <span className="text-[#3d0a24] font-medium">{s.label}</span>
+                <span className="text-white/85 font-medium">{s.label}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -259,7 +273,7 @@ export default function TheatreDetailPage() {
               {/* About */}
               <RevealSection>
                 <SectionTitle>About this Theatre</SectionTitle>
-                <p className="text-[#5b2535]/80 leading-relaxed text-base">
+                <p className="text-white/70 leading-relaxed text-base">
                   {theatre.description || `${theatreSpec(theatre)}. ${theatre.tagline}.`}
                 </p>
               </RevealSection>
@@ -271,7 +285,7 @@ export default function TheatreDetailPage() {
                   {theatreFacts(theatre).map((f) => (
                     <motion.li key={f} variants={fadeUp} transition={{ duration: 0.35 }}
                       whileHover={{ y: -3, boxShadow: '0 6px 20px rgba(201,168,76,0.15)' }}
-                      className="flex items-center gap-2.5 bg-white rounded-xl px-4 py-3 border border-[#f0e6cc] text-sm text-[#3d0a24] font-medium shadow-sm list-none cursor-default">
+                      className="flex items-center gap-2.5 rounded-xl px-4 py-3 border border-white/15 text-sm text-white/90 font-medium list-none cursor-default" style={{ background: 'rgba(255,255,255,0.08)' }}>
                       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#c9a84c]/15 border border-[#c9a84c]/30">
                         <Check size={11} className="text-[#c9a84c]" />
                       </span>
@@ -284,7 +298,7 @@ export default function TheatreDetailPage() {
               {/* What's included in my booking */}
               <RevealSection>
                 <SectionTitle>What's Included in My Booking</SectionTitle>
-                <BookingInclusions theatre={theatre} />
+                <BookingInclusions theatre={theatre} dark />
               </RevealSection>
 
               {/* Suitable for */}
@@ -294,7 +308,7 @@ export default function TheatreDetailPage() {
                   {theatre.suitableFor.map((s) => (
                     <motion.span key={s} variants={fadeUp} transition={{ duration: 0.3 }}
                       whileHover={{ scale: 1.06 }}
-                      className="capitalize text-sm font-semibold text-[#7a5500] border border-[#c9a84c]/40 bg-[#c9a84c]/10 rounded-full px-4 py-1.5 hover:bg-[#c9a84c]/20 transition-colors cursor-default">
+                      className="capitalize text-sm font-semibold text-[#f5c76a] border border-[#c9a84c]/40 bg-[#c9a84c]/15 rounded-full px-4 py-1.5 hover:bg-[#c9a84c]/25 transition-colors cursor-default">
                       {s.replace(/-/g, ' ')}
                     </motion.span>
                   ))}
@@ -308,19 +322,19 @@ export default function TheatreDetailPage() {
                 return (
                   <RevealSection>
                     <div className="flex items-center gap-3 mb-2">
-                      <h2 className="font-display text-xl font-bold text-[#3d0a24] whitespace-nowrap">Guest Reviews</h2>
-                      <div className="flex-1 h-px bg-gradient-to-r from-[#c9a84c]/40 to-transparent" />
+                      <h2 className="font-display text-xl font-bold text-white whitespace-nowrap">Guest Reviews</h2>
+                      <div className="flex-1 h-px bg-gradient-to-r from-[#c9a84c]/60 to-transparent" />
                     </div>
                     <div className="flex items-center gap-2 mb-6">
                       {[1,2,3,4,5].map(s => <Star key={s} size={12} fill="#c9a84c" stroke="none" />)}
-                      <span className="text-sm font-black text-[#3d0a24]">5.0</span>
-                      <span className="text-xs text-[#5b2535]/50 ml-1">· Verified guests</span>
+                      <span className="text-sm font-black text-white">5.0</span>
+                      <span className="text-xs text-white/40 ml-1">· Verified guests</span>
                     </div>
                     <StaggerGrid className="grid sm:grid-cols-2 gap-5">
                       {reviews.map((r, i) => (
                         <motion.div key={i} variants={fadeUp} transition={{ duration: 0.4 }}
                           whileHover={{ y: -4, boxShadow: '0 12px 36px rgba(201,168,76,0.14)' }}
-                          className="group bg-white rounded-2xl border border-[#f0e6cc] hover:border-[#c9a84c] transition-all overflow-hidden">
+                          className="group rounded-2xl border border-white/10 hover:border-[#c9a84c]/60 transition-all overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(255,255,255,0.09) 0%, rgba(135,0,79,0.20) 50%, rgba(59,0,42,0.32) 100%)', backdropFilter: 'blur(14px)' }}>
                           {/* Thumb */}
                           <div
                             className="relative h-36 overflow-hidden cursor-pointer"
@@ -348,11 +362,11 @@ export default function TheatreDetailPage() {
                             <div className="flex items-center gap-3 mb-3">
                               <img src={r.avatar} alt={r.name} className="h-9 w-9 rounded-full object-cover ring-2 ring-[#c9a84c]/30" />
                               <div>
-                                <p className="font-black text-[#250514] text-sm">{r.name}</p>
+                                <p className="font-black text-white text-sm">{r.name}</p>
                                 <div className="flex gap-0.5 mt-0.5">{[1,2,3,4,5].map(s => <Star key={s} size={9} fill="#f59e0b" stroke="none" />)}</div>
                               </div>
                             </div>
-                            <p className="text-[#4a2d6e] text-sm leading-relaxed">
+                            <p className="text-white/75 text-sm leading-relaxed">
                               <span className="text-lg font-serif leading-none mr-0.5 text-[#c9a84c]">"</span>
                               {r.text}
                               <span className="text-lg font-serif leading-none ml-0.5 text-[#c9a84c]">"</span>
@@ -411,7 +425,7 @@ export default function TheatreDetailPage() {
             {/* ── Sidebar ── */}
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}>
-              <div className="sticky top-24 bg-white rounded-2xl border border-[#f0e6cc] shadow-[0_8px_32px_rgba(50,16,95,0.08)] overflow-hidden">
+              <div className="sticky top-24 rounded-2xl border border-white/15 overflow-hidden" style={{ background: 'linear-gradient(160deg, rgba(255,255,255,0.11) 0%, rgba(135,0,79,0.26) 50%, rgba(59,0,42,0.40) 100%)', backdropFilter: 'blur(16px)', boxShadow: '0 12px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.18)' }}>
                 {/* Header */}
                 <div className="bg-[#5c1535] px-5 py-4">
                   <h3 className="font-display text-lg font-bold text-white">Check Availability</h3>
@@ -423,16 +437,16 @@ export default function TheatreDetailPage() {
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <button onClick={() => setCurrentMonth(format(addMonths(parseISO(`${currentMonth}-01`), -1), 'yyyy-MM'))}
-                        className="p-1.5 rounded-lg text-[#5b2535]/50 hover:text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
+                        className="p-1.5 rounded-lg text-white/50 hover:text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
                         aria-label="Previous month"><ChevronLeft size={16} /></button>
-                      <span className="text-sm font-bold text-[#3d0a24]">{format(parseISO(`${currentMonth}-01`), 'MMMM yyyy')}</span>
+                      <span className="text-sm font-bold text-white">{format(parseISO(`${currentMonth}-01`), 'MMMM yyyy')}</span>
                       <button onClick={() => setCurrentMonth(format(addMonths(parseISO(`${currentMonth}-01`), 1), 'yyyy-MM'))}
-                        className="p-1.5 rounded-lg text-[#5b2535]/50 hover:text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
+                        className="p-1.5 rounded-lg text-white/50 hover:text-[#c9a84c] hover:bg-[#c9a84c]/10 transition-colors"
                         aria-label="Next month"><ChevronRight size={16} /></button>
                     </div>
                     <div className="grid grid-cols-7 text-center mb-1">
                       {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                        <span key={i} className="text-[9px] text-[#5b2535]/40 py-1 font-bold uppercase tracking-widest">{d}</span>
+                        <span key={i} className="text-[9px] text-white/35 py-1 font-bold uppercase tracking-widest">{d}</span>
                       ))}
                     </div>
                     <div className="grid grid-cols-7 gap-y-0.5">
@@ -450,12 +464,12 @@ export default function TheatreDetailPage() {
                               isSelected
                                 ? 'bg-[#c9a84c] text-white shadow-[0_2px_8px_rgba(201,168,76,0.4)]'
                                 : isUnavail
-                                ? 'text-[#5b2535]/20 cursor-not-allowed'
+                                ? 'text-white/20 cursor-not-allowed'
                                 : day.status === 'high_demand'
-                                ? 'text-orange-500 hover:bg-orange-50'
+                                ? 'text-orange-400 hover:bg-orange-500/15'
                                 : day.status === 'offer_date'
-                                ? 'text-[#c9a84c] hover:bg-[#c9a84c]/10'
-                                : 'text-[#3d0a24]/70 hover:bg-[#c9a84c]/10 hover:text-[#3d0a24]'
+                                ? 'text-[#c9a84c] hover:bg-[#c9a84c]/15'
+                                : 'text-white/70 hover:bg-[#c9a84c]/15 hover:text-white'
                             }`}
                           >
                             {parseInt(day.date.split('-')[2])}
@@ -469,7 +483,7 @@ export default function TheatreDetailPage() {
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <Calendar size={13} className="text-[#c9a84c]" />
-                      <span className="text-sm font-bold text-[#3d0a24]">{format(parseISO(selectedDate), 'dd MMM yyyy')}</span>
+                      <span className="text-sm font-bold text-white">{format(parseISO(selectedDate), 'dd MMM yyyy')}</span>
                     </div>
                     {slotsLoading ? (
                       <div className="space-y-2">
@@ -483,10 +497,10 @@ export default function TheatreDetailPage() {
                             to={`/book?theatre=${theatre.id}&date=${selectedDate}&slot=${slot.id}`}
                             className={`flex items-center justify-between px-3 py-2.5 rounded-xl border text-sm transition-all ${
                               slot.status === 'booked' || slot.status === 'held'
-                                ? 'border-[#f0e6cc] text-[#5b2535]/30 cursor-not-allowed pointer-events-none bg-[#fafafa]'
+                                ? 'border-white/8 text-white/25 cursor-not-allowed pointer-events-none bg-white/4'
                                 : slot.status === 'high_demand'
-                                ? 'border-orange-200 bg-orange-50 text-[#3d0a24] hover:bg-orange-100'
-                                : 'border-[#f0e6cc] hover:border-[#c9a84c] hover:bg-[#c9a84c]/5 text-[#3d0a24]'
+                                ? 'border-orange-400/40 bg-orange-500/10 text-white hover:bg-orange-500/20'
+                                : 'border-white/15 hover:border-[#c9a84c]/60 hover:bg-[#c9a84c]/10 text-white/90'
                             }`}
                           >
                             <span className="flex items-center gap-2">
@@ -499,11 +513,11 @@ export default function TheatreDetailPage() {
                             <span className="text-right text-sm">
                               {slot.originalPricePaise != null && slot.originalPricePaise > slot.pricePaise && (
                                 <>
-                                  <span className="block text-[9px] font-black uppercase tracking-wide text-[#c2255c]">{slot.offerLabel}</span>
-                                  <s className="mr-1 text-xs text-[#5b2535]/40">{formatINR(slot.originalPricePaise)}</s>
+                                  <span className="block text-[9px] font-black uppercase tracking-wide text-[#f5a0bc]">{slot.offerLabel}</span>
+                                  <s className="mr-1 text-xs text-white/35">{formatINR(slot.originalPricePaise)}</s>
                                 </>
                               )}
-                              <span className="font-bold text-[#7a5500]">{formatINR(slot.pricePaise)}</span>
+                              <span className="font-bold text-[#f5c76a]">{formatINR(slot.pricePaise)}</span>
                             </span>
                           </Link>
                         ))}
@@ -512,18 +526,18 @@ export default function TheatreDetailPage() {
                   </div>
 
                   {/* Book CTA */}
-                  <div className="pt-4 border-t border-[#f0e6cc]">
+                  <div className="pt-4 border-t border-white/10">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs text-[#5b2535]/50">Starting from</span>
-                      <PriceTag paise={theatre.startingPricePaise} />
+                      <span className="text-xs text-white/45">Starting from</span>
+                      <PriceTag paise={theatre.startingPricePaise} prefix="" dark />
                     </div>
                     <Link
                       to={`/book?theatre=${theatre.id}&date=${selectedDate}`}
-                      className="flex items-center justify-center gap-2 w-full rounded-xl bg-[#5c1535] text-white text-sm font-bold py-3 hover:bg-[#6b1535] transition-colors shadow-[0_4px_16px_rgba(50,16,95,0.22)]"
+                      className="flex items-center justify-center gap-2 w-full rounded-xl bg-[linear-gradient(135deg,#5c1535,#8b1a3a)] text-white text-sm font-bold py-3 hover:opacity-90 transition-opacity shadow-[0_4px_20px_rgba(50,16,95,0.5)]"
                     >
                       Book Now <ArrowRight size={14} />
                     </Link>
-                    <p className="text-center text-[10px] text-[#5b2535]/40 mt-2">No advance payment required</p>
+                    <p className="text-center text-[10px] text-white/35 mt-2">No advance payment required</p>
                   </div>
                 </div>
               </div>
@@ -532,6 +546,7 @@ export default function TheatreDetailPage() {
           </div>
         </div>
       </PageShell>
+      </div>
     </>
   )
 }

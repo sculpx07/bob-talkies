@@ -120,7 +120,7 @@ export function VibeHallSpotlight() {
                 href={`https://wa.me/${whatsappNumber}?text=Hi! I'm interested in booking Vibe Hall for a group event.`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#5c1535]/40 px-7 py-3.5 text-sm font-semibold text-[#5c1535] hover:bg-[#5c1535]/5 transition-colors"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 px-7 py-3.5 text-sm font-semibold text-white/80 hover:bg-white/10 transition-colors"
               >
                 <MessageCircle size={14} /> Enquire for Group Events
               </a>
@@ -141,11 +141,11 @@ export function VibeHallSpotlight() {
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.1 + i * 0.05, duration: 0.35 }}
-              className="flex items-center gap-2.5 rounded-2xl border border-[#e6d3b0] px-4 py-3"
-              style={{ background: '#ffffff' }}
+              className="flex items-center gap-2.5 rounded-2xl border border-white/15 px-4 py-3"
+              style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)' }}
             >
               <span className="text-lg">{u.emoji}</span>
-              <span className="text-[#5b2535] text-xs font-medium leading-snug">{u.label}</span>
+              <span className="text-white/85 text-xs font-medium leading-snug">{u.label}</span>
             </motion.div>
           ))}
         </motion.div>

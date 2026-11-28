@@ -14,7 +14,7 @@ import { useSiteConfig } from '@/features/site/api'
 interface Row { id: string; icon: ReactNode; title: string; lines: InclusionLine[] }
 
 /** "What's included in my booking?" accordion for one theatre. Only verified facts are shown. */
-export function BookingInclusions({ theatre, className }: { theatre: Theatre; className?: string }) {
+export function BookingInclusions({ theatre, className, dark }: { theatre: Theatre; className?: string; dark?: boolean }) {
   const [open, setOpen] = useState<string | null>(null)
 
   // real add-on catalogue for this theatre (same query the add-ons step uses)
@@ -39,22 +39,26 @@ export function BookingInclusions({ theatre, className }: { theatre: Theatre; cl
   if (CANCELLATION_LINES) rows.push({ id: 'policy', icon: <ShieldCheck size={16} />, title: 'Cancellation & rescheduling', lines: CANCELLATION_LINES })
 
   return (
-    <div className={cn('rounded-2xl bg-[#fdf6ff] ring-1 ring-[#f5d5e0]', className)}>
-      <p className="px-4 pb-1 pt-3.5 font-display text-base font-bold text-[#3d0a24]">What's included in my booking?</p>
+    <div className={cn(
+      'rounded-2xl ring-1',
+      dark ? 'ring-white/15' : 'bg-[#fdf6ff] ring-[#f5d5e0]',
+      className,
+    )} style={dark ? { background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(10px)' } : undefined}>
+      <p className={cn('px-4 pb-1 pt-3.5 font-display text-base font-bold', dark ? 'text-white' : 'text-[#3d0a24]')}>What's included in my booking?</p>
       <ul className="px-2 pb-2">
         {rows.map((r) => {
           const isOpen = open === r.id
           return (
-            <li key={r.id} className="border-b border-[#f8dce4] last:border-0">
+            <li key={r.id} className={cn('border-b last:border-0', dark ? 'border-white/10' : 'border-[#f8dce4]')}>
               <button
                 type="button"
                 onClick={() => setOpen(isOpen ? null : r.id)}
                 aria-expanded={isOpen}
-                className="flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors hover:bg-white/70"
+                className={cn('flex w-full items-center gap-3 rounded-xl px-2 py-2.5 text-left transition-colors', dark ? 'hover:bg-white/8' : 'hover:bg-white/70')}
               >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-[#a81a3a] shadow-sm">{r.icon}</span>
-                <span className="flex-1 text-sm font-semibold text-[#3d0a24]">{r.title}</span>
-                <ChevronDown size={16} className={cn('shrink-0 text-[#7d4555] transition-transform', isOpen && 'rotate-180')} />
+                <span className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#a81a3a]', dark ? 'bg-white/10' : 'bg-white shadow-sm')}>{r.icon}</span>
+                <span className={cn('flex-1 text-sm font-semibold', dark ? 'text-white/90' : 'text-[#3d0a24]')}>{r.title}</span>
+                <ChevronDown size={16} className={cn('shrink-0 transition-transform', dark ? 'text-white/50' : 'text-[#7d4555]', isOpen && 'rotate-180')} />
               </button>
               <AnimatePresence initial={false}>
                 {isOpen && (
@@ -66,9 +70,9 @@ export function BookingInclusions({ theatre, className }: { theatre: Theatre; cl
                     className="overflow-hidden"
                   >
                     {r.lines.map((l, i) => (
-                      <li key={i} className="flex items-start gap-2 px-2 pb-2 pl-[3.25rem] text-[13px] leading-snug text-[#5b2535]">
-                        {!l.pending && <Check size={13} className="mt-0.5 shrink-0 text-emerald-600" />}
-                        <span className={cn(l.pending && 'italic text-[#7d4555]')}>{l.text}</span>
+                      <li key={i} className={cn('flex items-start gap-2 px-2 pb-2 pl-[3.25rem] text-[13px] leading-snug', dark ? 'text-white/70' : 'text-[#5b2535]')}>
+                        {!l.pending && <Check size={13} className="mt-0.5 shrink-0 text-emerald-400" />}
+                        <span className={cn(l.pending && (dark ? 'italic text-white/40' : 'italic text-[#7d4555]'))}>{l.text}</span>
                       </li>
                     ))}
                   </motion.ul>
